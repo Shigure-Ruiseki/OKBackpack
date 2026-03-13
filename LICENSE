@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2021 Johann Bernhardt
+Copyright (c) 2026 Shigure Ruiseki
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+------------------------------------------------------------
+Notes on third-party components:
+
+- CraftingTweaks assets: original license retained by the authors.
+- RetroSophisticated Backpacks assets: original license retained by the authors.
+- Any code/assets under GPLv3/LGPL-3.0 or other licenses retain their original licenses.
+  These parts are NOT MIT-licensed and must comply with their respective terms.

@@ -1,0 +1,8 @@
+{
+  "multipart": [
+    { "when": { "facing": "south" }, "apply": { "model": "okbackpack:block/obsidian_backpack", "y": 0 } },
+    { "when": { "facing": "east" }, "apply": { "model": "okbackpack:block/obsidian_backpack", "y": 270 } },
+    { "when": { "facing": "north" }, "apply": { "model": "okbackpack:block/obsidian_backpack", "y": 180 } },
+    { "when": { "facing": "west" }, "apply": { "model": "okbackpack:block/obsidian_backpack", "y": 90 } }
+  ]
+}
