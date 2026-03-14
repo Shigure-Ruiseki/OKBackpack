@@ -1,8 +1,6 @@
 package ruiseki.okbackpack.common.block;
 
 import static com.gtnewhorizon.gtnhlib.client.model.ModelISBRH.JSON_ISBRH_ID;
-import static ruiseki.okbackpack.common.block.BackpackWrapper.ACCENT_COLOR;
-import static ruiseki.okbackpack.common.block.BackpackWrapper.MAIN_COLOR;
 
 import java.util.List;
 
@@ -15,7 +13,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
@@ -36,6 +33,7 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.blockstate.core.BlockPropertyTrait;
 import com.gtnewhorizon.gtnhlib.blockstate.properties.DirectionBlockProperty;
 import com.gtnewhorizon.gtnhlib.blockstate.registry.BlockPropertyRegistry;
+import com.gtnewhorizon.gtnhlib.client.model.color.BlockColor;
 import com.gtnewhorizon.gtnhlib.client.model.color.IBlockColor;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -49,11 +47,10 @@ import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.common.entity.EntityBackpack;
 import ruiseki.okcore.block.BlockOK;
-import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemBlockBauble;
 
-public class BlockBackpack extends BlockOK implements IBlockColor {
+public class BlockBackpack extends BlockOK {
 
     @Getter
     private final int backpackSlots;
@@ -139,6 +136,37 @@ public class BlockBackpack extends BlockOK implements IBlockColor {
 
     @Override
     protected void registerComponent() {
+
+        BlockColor.registerBlockColors(new IBlockColor() {
+
+            @Override
+            public int colorMultiplier(@Nullable ItemStack stack, int tintIndex) {
+                if (stack == null) return -1;
+
+                BackpackWrapper wrapper = new BackpackWrapper(stack, backpackSlots, upgradeSlots);
+                return switch (tintIndex) {
+                    case 0 -> wrapper.getMainColor();
+                    case 1 -> wrapper.getAccentColor();
+                    default -> -1;
+                };
+            }
+
+            @Override
+            public int colorMultiplier(@Nullable IBlockAccess world, int x, int y, int z, int tintIndex) {
+                if (world == null) return -1;
+
+                TileEntity te = world.getTileEntity(x, y, z);
+                if (!(te instanceof TEBackpack backpack)) return -1;
+
+                return switch (tintIndex) {
+                    case 0 -> backpack.getMainColor();
+                    case 1 -> backpack.getAccentColor();
+                    default -> -1;
+                };
+            }
+
+        }, this);
+
         BlockPropertyRegistry.registerProperty(this, property);
         BlockPropertyRegistry.registerProperty(Item.getItemFromBlock(this), property);
     }
@@ -146,36 +174,6 @@ public class BlockBackpack extends BlockOK implements IBlockColor {
     @Override
     protected void registerBlock() {
         GameRegistry.registerBlock(this, this.getItemBlockClass(), this.name);
-    }
-
-    @Override
-    public int colorMultiplier(@Nullable ItemStack stack, int tintIndex) {
-        if (stack == null) return -1;
-
-        NBTTagCompound tag = ItemNBTHelpers.getNBT(stack);
-
-        int main = tag.hasKey(MAIN_COLOR) ? tag.getInteger(MAIN_COLOR) : 0xCC613A;
-        int accent = tag.hasKey(ACCENT_COLOR) ? tag.getInteger(ACCENT_COLOR) : 0x622E1A;
-
-        return switch (tintIndex) {
-            case 0 -> main;
-            case 1 -> accent;
-            default -> -1;
-        };
-    }
-
-    @Override
-    public int colorMultiplier(@Nullable IBlockAccess world, int x, int y, int z, int tintIndex) {
-        if (world == null) return -1;
-
-        TileEntity te = world.getTileEntity(x, y, z);
-        if (!(te instanceof TEBackpack backpack)) return -1;
-
-        return switch (tintIndex) {
-            case 0 -> backpack.getMainColor();
-            case 1 -> backpack.getAccentColor();
-            default -> -1;
-        };
     }
 
     @Override

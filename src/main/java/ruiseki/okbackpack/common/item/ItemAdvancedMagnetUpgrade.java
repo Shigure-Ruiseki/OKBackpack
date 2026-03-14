@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedMagnetUpgradeWrapper;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -13,7 +14,7 @@ public class ItemAdvancedMagnetUpgrade extends ItemUpgrade<AdvancedMagnetUpgrade
     public ItemAdvancedMagnetUpgrade() {
         super("advanced_magnet_upgrade");
         setMaxStackSize(1);
-        setTextureName("advanced_magnet_upgrade");
+        setTextureName(Reference.PREFIX_MOD + "advanced_magnet_upgrade");
     }
 
     @Override

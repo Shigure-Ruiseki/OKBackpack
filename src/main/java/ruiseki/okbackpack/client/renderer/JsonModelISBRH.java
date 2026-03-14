@@ -26,8 +26,8 @@ public class JsonModelISBRH extends ModelISBRH {
 
     public static final JsonModelISBRH INSTANCE = new JsonModelISBRH();
 
-    private final ItemContext itemContext = new ItemContext();
     public final Random RAND = new Random();
+    private final ItemContext itemContext = new ItemContext();
 
     public JsonModelISBRH() {}
 
@@ -47,7 +47,6 @@ public class JsonModelISBRH extends ModelISBRH {
         GL11.glPushMatrix();
 
         GL11.glRotatef(180f, 0f, 0f, 1f);
-        GL11.glRotatef(180f, 0f, 1f, 0f);
 
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

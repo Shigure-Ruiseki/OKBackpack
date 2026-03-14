@@ -1,8 +1,6 @@
 package ruiseki.okbackpack;
 
-import net.minecraftforge.common.MinecraftForge;
-
-import ruiseki.okbackpack.common.event.ItemRenderEvent;
+import ruiseki.okbackpack.common.event.BackpackEventHandler;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.common.network.PacketQuickDraw;
 import ruiseki.okbackpack.common.network.PacketSyncCarriedItem;
@@ -23,5 +21,11 @@ public class CommonProxy extends CommonProxyComponent {
         packetHandler.register(PacketBackpackNBT.class);
         packetHandler.register(PacketSyncCarriedItem.class);
         packetHandler.register(PacketQuickDraw.class);
+    }
+
+    @Override
+    public void registerEventHooks() {
+        super.registerEventHooks();
+        BackpackEventHandler handler = new BackpackEventHandler();
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.item.wrapper.IUpgradeWrapperFactory;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapper;
 import ruiseki.okcore.helper.LangHelpers;
@@ -15,7 +16,7 @@ public class ItemUpgrade<T extends UpgradeWrapper> extends ItemOK implements IUp
     public ItemUpgrade(String name) {
         super(name);
         setNoRepair();
-        setTextureName("upgrade_base");
+        setTextureName(Reference.PREFIX_MOD + "upgrade_base");
     }
 
     public ItemUpgrade() {

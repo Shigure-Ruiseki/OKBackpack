@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Level;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
 import com.gtnewhorizon.gtnhlib.config.ConfigException;
 
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -16,8 +17,11 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.init.ModItems;
+import ruiseki.okbackpack.common.init.ModOreDicts;
+import ruiseki.okbackpack.common.recipe.ModRecipes;
 import ruiseki.okbackpack.compat.bauble.BaubleCompat;
 import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.helper.MinecraftHelpers;
@@ -50,6 +54,8 @@ public class OKBackpack extends ModBase {
         super(Reference.MOD_ID, Reference.MOD_NAME);
         putGenericReference(REFKEY_MOD_VERSION, Reference.VERSION);
         addInitListeners(new BaubleCompat());
+        addInitListeners(new ModOreDicts());
+        addInitListeners(new ModRecipes());
     }
 
     @Override
@@ -60,6 +66,7 @@ public class OKBackpack extends ModBase {
         ModItems.preInit();
         if (MinecraftHelpers.isClientSide()) {
             ModelRegistry.registerModid(Reference.MOD_ID);
+            RenderingRegistry.registerBlockHandler(JsonModelISBRH.INSTANCE);
         }
     }
 

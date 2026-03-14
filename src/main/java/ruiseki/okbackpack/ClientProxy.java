@@ -1,8 +1,8 @@
 package ruiseki.okbackpack;
 
 import net.minecraft.client.settings.KeyBinding;
-
 import net.minecraftforge.common.MinecraftForge;
+
 import org.lwjgl.input.Keyboard;
 
 import ruiseki.okbackpack.client.key.OpenBackpackHandler;

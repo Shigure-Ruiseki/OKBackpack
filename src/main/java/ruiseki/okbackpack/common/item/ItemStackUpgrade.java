@@ -40,47 +40,42 @@ public class ItemStackUpgrade extends ItemUpgrade<UpgradeWrapper> {
         int meta = stack.getItemDamage();
         switch (meta) {
             case 1:
-                return super.getUnlocalizedName(stack) + ".Gold";
+                return super.getUnlocalizedName(stack) + ".gold";
             case 2:
-                return super.getUnlocalizedName(stack) + ".Diamond";
+                return super.getUnlocalizedName(stack) + ".diamond";
             case 3:
-                return super.getUnlocalizedName(stack) + ".Netherite";
+                return super.getUnlocalizedName(stack) + ".obsidian";
             case 4:
-                return super.getUnlocalizedName(stack) + ".Omega";
+                return super.getUnlocalizedName(stack) + ".omega";
             default:
-                return super.getUnlocalizedName(stack) + ".Iron";
+                return super.getUnlocalizedName(stack) + ".iron";
         }
     }
 
     @Override
     public IIcon getIconFromDamage(int meta) {
-        switch (meta) {
-            case 1:
-                return tier2;
-            case 2:
-                return tier3;
-            case 3:
-                return tier4;
-            case 4:
-                return tierOmega;
-            default:
-                return tier1;
-        }
+        return switch (meta) {
+            case 1 -> tier2;
+            case 2 -> tier3;
+            case 3 -> tier4;
+            case 4 -> tierOmega;
+            default -> tier1;
+        };
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void registerIcons(IIconRegister reg) {
-        tier1 = reg.registerIcon(Reference.PREFIX_MOD + "backpack/stack_upgrade_tier_1");
-        tier2 = reg.registerIcon(Reference.PREFIX_MOD + "backpack/stack_upgrade_tier_2");
-        tier3 = reg.registerIcon(Reference.PREFIX_MOD + "backpack/stack_upgrade_tier_3");
-        tier4 = reg.registerIcon(Reference.PREFIX_MOD + "backpack/stack_upgrade_tier_4");
-        tierOmega = reg.registerIcon(Reference.PREFIX_MOD + "backpack/stack_upgrade_tier_omega");
+        tier1 = reg.registerIcon(Reference.PREFIX_MOD + "stack_upgrade_tier_1");
+        tier2 = reg.registerIcon(Reference.PREFIX_MOD + "stack_upgrade_tier_2");
+        tier3 = reg.registerIcon(Reference.PREFIX_MOD + "stack_upgrade_tier_3");
+        tier4 = reg.registerIcon(Reference.PREFIX_MOD + "stack_upgrade_tier_4");
+        tierOmega = reg.registerIcon(Reference.PREFIX_MOD + "stack_upgrade_tier_omega");
     }
 
     @Override
     public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
-        list.add(LangHelpers.localize("tooltip.backpack.stack_upgrade"));
+        list.add(LangHelpers.localize("tooltip.backpack.stack_upgrade", multiplier(itemstack)));
     }
 
     public int multiplier(ItemStack stack) {

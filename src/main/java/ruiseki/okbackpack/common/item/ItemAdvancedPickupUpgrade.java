@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedPickupUpgradeWrapper;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -13,7 +14,7 @@ public class ItemAdvancedPickupUpgrade extends ItemUpgrade<AdvancedPickupUpgrade
     public ItemAdvancedPickupUpgrade() {
         super("advanced_void_upgrade");
         setMaxStackSize(1);
-        setTextureName("advanced_void_upgrade");
+        setTextureName(Reference.PREFIX_MOD + "advanced_pickup_upgrade");
     }
 
     @Override
@@ -23,7 +24,7 @@ public class ItemAdvancedPickupUpgrade extends ItemUpgrade<AdvancedPickupUpgrade
 
     @Override
     public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
-        list.add(LangHelpers.localize("tooltip.backpack.advanced_void_upgrade"));
+        list.add(LangHelpers.localize("tooltip.backpack.advanced_pickup_upgrade"));
     }
 
     @Override

@@ -1,0 +1,159 @@
+# General
+
+# Key binding
+category.omoshiroikamo=Omoshiroi Kamo
+keybind.backpackOpenToggle=バックパックを開く
+
+# Config
+config.backpackConfig=バックパックの設定
+config.feedingConfig=自動食事アップグレードの設定
+config.magnetConfig=マグネットアップグレードの設定
+
+# GUI
+container.backpack=バックパック
+gui.backpack=バックパック
+gui.backpack.settings=設定
+gui.configuration_tab=設定タブ
+
+gui.backpack.pickup_settings=拾うアップグレードの設定
+gui.backpack.advanced_pickup_settings=詳細な拾うアップグレードの設定
+gui.backpack.magnet_settings=マグネットの設定
+gui.backpack.advanced_magnet_settings=詳細なマグネットアップグレードの設定
+gui.backpack.feeding_settings=自動食事アップグレードの設定
+gui.backpack.advanced_feeding_settings=詳細な自動食事アップグレードの設定
+gui.backpack.filter_settings=フィルターの設定
+gui.backpack.advanced_filter_settings=詳細なフィルターの設定
+gui.backpack.backpack_settings=バックパックの設定
+gui.backpack.memory_settings=メモリーの設定
+gui.backpack.sorting_settings=ソートの設定
+gui.backpack.crafting_settings=クラフトアップグレードの設定
+gui.backpack.void_settings=自動廃棄アップグレードの設定
+gui.backpack.advanced_void_settings=詳細な自動廃棄アップグレードの設定
+
+
+# Tooltips
+gui.backpack.stack_size_extra=数: %s / %s
+gui.backpack.not_in_effect=無効
+gui.backpack.whitelist=ホワイトリスト
+gui.backpack.blacklist=ブラックリスト
+
+gui.backpack.match_item=アイテム一致
+gui.backpack.match_mod_id=Mod ID一致
+gui.backpack.match_ore_dict=鉱石辞書一致
+
+gui.backpack.match_durability=耐久値を区別
+gui.backpack.ignore_durability=耐久値を無視
+
+gui.backpack.match_nbt=NBTを区別
+gui.backpack.ignore_nbt=NBTを無視
+
+gui.backpack.item_magnet=アイテムを吸引する
+gui.backpack.ignore_item_magnet=アイテムを吸引しない
+
+gui.backpack.exp_magnet=経験値を吸引する
+gui.backpack.ignore_exp_magnet=経験値を吸引しない
+
+gui.backpack.add_ore_dict_entry=鉱石辞書を追加
+gui.backpack.remove_ore_dict_entry=鉱石辞書を削除
+gui.backpack.ore_dict_input_help=鉱石辞書名を入力（正規表現OK）
+
+gui.complete_hunger=お腹が空いていて、食料の満腹度を\n全く無駄にしない時のみ食べる
+gui.backpack.half_hunger=お腹が空いていて、食料の満腹度を\n最大半分まで無駄にする場合でも食べる
+gui.backpack.immediate_hunger=少しでもお腹が空いたらすぐに食べる\n食料の満腹度をかなり無駄にする可能性アリ
+gui.backpack.ignore_health=体力を考慮しない\nプレイヤーの体力を無視し、満腹度設定に基づいてのみ食べる
+gui.backpack.consider_health=ダメージを受けたら即座に食べる\n体力が最大でない場合、満腹度設定が無視される
+
+gui.backpack.input_output=搬入 & 搬出
+gui.backpack.input=搬入のみ
+gui.backpack.output=搬出のみ
+
+gui.backpack.sort_inventory=バックパック内をソート
+gui.backpack.sort_by_name=名前順
+gui.backpack.sort_by_mod_id=Mod ID順
+gui.backpack.sort_by_count=個数順
+gui.backpack.sort_by_ore_dict=鉱石辞書順
+
+gui.backpack.transfer_to_player_inv=全てのアイテムをプレイヤーインベントリへ移動
+gui.backpack.transfer_to_player_inv_matched_1=一致するアイテムをプレイヤーインベントリへ移動
+gui.backpack.transfer_to_player_inv_matched_2=Shiftキーで全て移動
+gui.backpack.transfer_to_backpack_inv=全てのアイテムをバックパックへ移動
+gui.backpack.transfer_to_backpack_inv_matched_1=一致するアイテムをバックパックへ移動
+gui.backpack.transfer_to_backpack_inv_matched_2=Shiftキーで全て移動
+
+gui.backpack.memorized_slot=記憶済みのスロット
+gui.backpack.memorize_all=全スロットを記憶
+gui.backpack.unmemorize_all=全スロットの記憶を抹消
+
+gui.backpack.no_sorting_slot=ソートを除外するスロット
+gui.backpack.lock_all_sort=全スロットをソートの除外に設定
+gui.backpack.unlock_all_sort=全スロットをソートの対象に設定
+
+gui.backpack.into_backpack=Shiftクリックの結果を\nバックパックへ
+gui.backpack.into_inventory=Shiftクリックの結果を\nプレイヤーインベントリへ
+gui.backpack.used_backpack=クラフトグリッドに補充する
+gui.backpack.unused_backpack=クラフトグリッドに補充しない
+
+gui.backpack.search_hint=検索...
+gui.backpack.lock_search=検索語句を保持する
+gui.backpack.unlock_search=検索語句を保持しない
+
+gui.backpack.lock_backpack=他のプレイヤーは開けられない
+gui.backpack.unlock_backpack=他のプレイヤーも開けられる
+
+gui.backpack.keep_tab=タブを開いたままにする
+gui.backpack.not_keep_tab=タブを閉じる
+
+gui.backpack.void_any=全て廃棄
+gui.backpack.void_overflow=あふれた分を廃棄
+
+gui.backpack.void_all=GUI内でも機能する
+gui.backpack.void_automation=他のアップグレード/自動化でのみ機能する
+
+
+# Items
+tile.leather_backpack.name=革のバックパック
+tile.iron_backpack.name=鉄のバックパック
+tile.gold_backpack.name=金のバックパック
+tile.diamond_backpack.name=ダイヤモンドのバックパック
+tile.obsidian_backpack.name=黒曜石のバックパック
+
+item.upgrade_base.name=アップグレードベース
+item.stack_upgrade.iron.name=スタックアップグレード Tier 1
+item.stack_upgrade.gold.name=スタックアップグレード Tier 2
+item.stack_upgrade.diamond.name=スタックアップグレード Tier 3
+item.stack_upgrade.obsidian.name=スタックアップグレード Tier 4
+item.stack_upgrade.omega.name=スタックアップグレード Tier Ω
+item.crafting_upgrade.name=クラフトアップグレード
+item.everlasting_upgrade.name=永遠アップグレード
+item.magnet_upgrade.name=マグネットアップグレード
+item.advanced_magnet_upgrade.name=詳細なマグネットアップグレード
+item.pickup_upgrade.name=拾うアップグレード
+item.advanced_pickup_upgrade.name=詳細な拾うアップグレード
+item.feeding_upgrade.name=自動食事アップグレード
+item.advanced_feeding_upgrade.name=詳細な自動食事アップグレード
+item.filter_upgrade.name=フィルターアップグレード
+item.advanced_filter_upgrade.name=詳細なフィルターアップグレード
+item.inception_upgrade.name=インセプションアップグレード
+item.void_upgrade.name=廃棄アップグレード
+item.advanced_void_upgrade.name=詳細な廃棄アップグレード
+
+# Tooltips
+tooltip.backpack.inventory_size=インベントリサイズ: %d
+tooltip.backpack.upgrade_slots_size=アップグレードスロット: %d
+tooltip.backpack.stack_multiplier=-> スタック倍率: %d%s
+
+tooltip.backpack.magnet_upgrade=近くのエンティティを自動で拾います
+tooltip.backpack.advanced_magnet_upgrade=近くのエンティティを自動で拾います（詳細設定可能）
+tooltip.backpack.everlasting_upgrade=バックパックを無敵にし、デスポーンや奈落への落下を防ぎます。奈落に落ちても回収可能です。(バグで消えたように見えるかもしれません)
+tooltip.backpack.upgrade_base=何もしません！アップグレードスロットに入れてみてください！
+tooltip.backpack.stack_upgrade=スタックサイズを %d 倍にします
+tooltip.backpack.crafting_upgrade=バックパックの横にクラフトグリッドを追加します
+tooltip.backpack.inception_upgrade=バックパックの中にバックパックを入れられるようになります
+tooltip.backpack.pickup_upgrade=バックパックがアイテムを拾えるようにします
+tooltip.backpack.advanced_pickup_upgrade=バックパックがアイテムを拾えるようにします（詳細設定可能）
+tooltip.backpack.feeding_upgrade=バックパックがプレイヤーに自動で食事を与えられるようにします
+tooltip.backpack.advanced_feeding_upgrade=バックパックがプレイヤーに自動で食事を与えられるようにします（詳細設定可能）
+tooltip.backpack.filter_upgrade=ワールドに設置する際に搬入アイテムをフィルタリングします
+tooltip.backpack.advanced_filter_upgrade=ワールドに設置する際に搬入アイテムをフィルタリングします（詳細設定可能）
+tooltip.backpack.void_upgrade=フィルターで選択されたアイテムを消去します
+tooltip.backpack.advanced_void_upgrade=フィルターで選択されたアイテムを消去します。より詳細なフィルタリングオプションがあります

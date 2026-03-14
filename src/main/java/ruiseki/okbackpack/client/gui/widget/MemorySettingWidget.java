@@ -17,8 +17,8 @@ import ruiseki.okbackpack.common.block.BackpackSettingPanel;
 public class MemorySettingWidget extends ExpandedTabWidget {
 
     private static final List<CyclicVariantButtonWidget.Variant> RESPECT_NBT_VARIANTS = Arrays.asList(
-        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.ignore_nbt"), OKBGuiTextures.IGNORE_NBT_ICON),
-        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.match_nbt"), OKBGuiTextures.MATCH_NBT_ICON));
+        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.ignore_nbt"), OKBGuiTextures.IGNORE_NBT_ICON),
+        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.match_nbt"), OKBGuiTextures.MATCH_NBT_ICON));
 
     private final BackpackPanel panel;
     private final BackpackSettingPanel settingPanel;

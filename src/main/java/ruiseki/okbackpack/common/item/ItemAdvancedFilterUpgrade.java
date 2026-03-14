@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedFilterUpgradeWrapper;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -13,7 +14,7 @@ public class ItemAdvancedFilterUpgrade extends ItemUpgrade<AdvancedFilterUpgrade
     public ItemAdvancedFilterUpgrade() {
         super("advanced_filter_upgrade");
         setMaxStackSize(1);
-        setTextureName("advanced_filter_upgrade");
+        setTextureName(Reference.PREFIX_MOD + "advanced_filter_upgrade");
     }
 
     @Override

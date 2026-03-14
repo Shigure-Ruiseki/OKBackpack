@@ -10,6 +10,7 @@ public enum Mods {
     Baubles("Baubles"),
     BaublesExpanded("Baubles|Expanded"),
     NotEnoughItems("NotEnoughItems"),
+    EtFuturum("etfuturum"),
     ;
     // spotless:on
 

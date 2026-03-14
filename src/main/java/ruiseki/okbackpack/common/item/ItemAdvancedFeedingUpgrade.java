@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedFeedingUpgradeWrapper;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -13,7 +14,7 @@ public class ItemAdvancedFeedingUpgrade extends ItemUpgrade<AdvancedFeedingUpgra
     public ItemAdvancedFeedingUpgrade() {
         super("advanced_feeding_upgrade");
         setMaxStackSize(1);
-        setTextureName("advanced_feeding_upgrade");
+        setTextureName(Reference.PREFIX_MOD + "advanced_feeding_upgrade");
     }
 
     @Override

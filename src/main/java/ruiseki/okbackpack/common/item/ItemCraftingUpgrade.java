@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -13,7 +14,7 @@ public class ItemCraftingUpgrade extends ItemUpgrade<CraftingUpgradeWrapper> {
     public ItemCraftingUpgrade() {
         super("crafting_upgrade");
         setMaxStackSize(1);
-        setTextureName("crafting_upgrade");
+        setTextureName(Reference.PREFIX_MOD + "crafting_upgrade");
     }
 
     @Override
