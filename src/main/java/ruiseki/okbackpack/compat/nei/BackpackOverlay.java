@@ -1,10 +1,13 @@
 package ruiseki.okbackpack.compat.nei;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.cleanroommc.modularui.screen.ModularScreen;
+import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -15,9 +18,11 @@ import codechicken.nei.recipe.DefaultOverlayHandler;
 import codechicken.nei.recipe.GuiOverlayButton;
 import codechicken.nei.recipe.IRecipeHandler;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
+import ruiseki.okbackpack.client.gui.slot.CraftingSlotInfo;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingMatrixSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularFilterSlot;
+import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapper;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
@@ -36,42 +41,30 @@ public class BackpackOverlay extends DefaultOverlayHandler {
     @Override
     protected Set<Slot> getCraftMatrixSlots(GuiContainer gui, IRecipeHandler handler) {
 
-        final Set<Slot> ingredSlots = new HashSet<>();
+        final Set<Slot> slots = new HashSet<>();
 
         if (!(gui.inventorySlots instanceof BackPackContainer container)) {
-            return ingredSlots;
+            return slots;
         }
 
-        BackpackWrapper wrapper = container.wrapper;
-
-        int activeUpgrade = -1;
-
-        for (int i = 0; i < wrapper.getUpgradeHandler()
-            .getSlots(); i++) {
-
-            UpgradeWrapper upgrade = UpgradeWrapperFactory.createWrapper(
-                wrapper.getUpgradeHandler()
-                    .getStackInSlot(i));
-
-            if (upgrade != null && upgrade.isTabOpened()) {
-                activeUpgrade = i;
-                break;
-            }
+        BackpackPanel panel = getPanel(container);
+        if (panel == null) {
+            return slots;
         }
 
-        if (activeUpgrade == -1) {
-            return ingredSlots;
+        int craftingUpgradeSlot = panel.getOpenCraftingUpgradeSlot();
+        if (craftingUpgradeSlot < 0) {
+            return slots;
         }
 
-        for (Slot slot : gui.inventorySlots.inventorySlots) {
-            if (slot instanceof IndexedModularCraftingMatrixSlot matrix
-                && matrix.getUpgradeSlotIndex() == activeUpgrade) {
-
-                ingredSlots.add(slot);
-            }
+        CraftingSlotInfo info = panel.getCraftingInfo(craftingUpgradeSlot);
+        if (info == null) {
+            return slots;
         }
 
-        return ingredSlots;
+        slots.addAll(Arrays.asList(info.getCraftingMatrixSlots()));
+
+        return slots;
     }
 
     @Override
@@ -87,36 +80,22 @@ public class BackpackOverlay extends DefaultOverlayHandler {
             return recipeSlotList;
         }
 
-        BackpackWrapper wrapper = container.wrapper;
-
-        int activeUpgrade = -1;
-
-        for (int i = 0; i < wrapper.getUpgradeHandler()
-            .getSlots(); i++) {
-
-            UpgradeWrapper upgrade = UpgradeWrapperFactory.createWrapper(
-                wrapper.getUpgradeHandler()
-                    .getStackInSlot(i));
-
-            if (upgrade != null && upgrade.isTabOpened()) {
-                activeUpgrade = i;
-                break;
-            }
-        }
-
-        if (activeUpgrade == -1) {
+        BackpackPanel panel = getPanel(container);
+        if (panel == null) {
             return recipeSlotList;
         }
 
-        List<Slot> craftingSlots = new ArrayList<>();
-
-        for (Slot slot : gui.inventorySlots.inventorySlots) {
-            if (slot instanceof IndexedModularCraftingMatrixSlot matrix
-                && matrix.getUpgradeSlotIndex() == activeUpgrade) {
-
-                craftingSlots.add(slot);
-            }
+        int craftingUpgradeSlot = panel.getOpenCraftingUpgradeSlot();
+        if (craftingUpgradeSlot < 0) {
+            return recipeSlotList;
         }
+
+        CraftingSlotInfo info = panel.getCraftingInfo(craftingUpgradeSlot);
+        if (info == null) {
+            return recipeSlotList;
+        }
+
+        ModularSlot[] matrix = info.getCraftingMatrixSlots();
 
         int startX = 25;
         int startY = 6;
@@ -132,8 +111,8 @@ public class BackpackOverlay extends DefaultOverlayHandler {
 
             int index = row * 3 + col;
 
-            if (index >= 0 && index < craftingSlots.size()) {
-                recipeSlotList[i] = new Slot[] { craftingSlots.get(index) };
+            if (index >= 0 && index < matrix.length) {
+                recipeSlotList[i] = new Slot[] { matrix[index] };
             }
         }
 
@@ -192,5 +171,11 @@ public class BackpackOverlay extends DefaultOverlayHandler {
         }
 
         return itemPresenceSlots;
+    }
+
+    private BackpackPanel getPanel(BackPackContainer container) {
+        ModularScreen screen = container.getScreen();
+        if (!container.isInitialized() || !(screen.getPanelManager().getMainPanel() instanceof BackpackPanel)) return null;
+        return (BackpackPanel) screen.getPanelManager().getMainPanel();
     }
 }
