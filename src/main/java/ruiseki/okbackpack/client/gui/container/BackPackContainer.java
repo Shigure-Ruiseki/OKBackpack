@@ -312,7 +312,8 @@ public class BackPackContainer extends ModularContainer {
                             // If same item type and tags -> try merge into slot
                             if (slotStack.getItem() == heldStack.getItem()
                                 && slotStack.getItemDamage() == heldStack.getItemDamage()
-                                && ItemStack.areItemStackTagsEqual(slotStack, heldStack) && !isCraftingSlot) {
+                                && ItemStack.areItemStackTagsEqual(slotStack, heldStack)
+                                && !isCraftingSlot) {
 
                                 int lim = stackLimit(clickedSlot, heldStack);
                                 int canAdd = Math.max(0, lim - slotStack.stackSize);
