@@ -11,7 +11,6 @@ import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 
 import baubles.api.BaublesApi;
-import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.network.CodecField;
 import ruiseki.okcore.network.PacketCodec;

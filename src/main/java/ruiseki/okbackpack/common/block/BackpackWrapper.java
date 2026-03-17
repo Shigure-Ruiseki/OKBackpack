@@ -149,6 +149,7 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
         this.keepTab = true;
 
         this.backpackHandler = new BackpackItemStackHandler(backpackSlots, this) {
+
             @Override
             protected void onContentsChanged(int slot) {
                 super.onContentsChanged(slot);
@@ -157,6 +158,7 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
         };
 
         this.upgradeHandler = new UpgradeItemStackHandler(upgradeSlots) {
+
             @Override
             protected void onContentsChanged(int slot) {
                 super.onContentsChanged(slot);

@@ -43,7 +43,8 @@ public class BackpackEventHandler {
     public void onPlayerPickup(EntityItemPickupEvent event) {
         EntityPlayer player = event.entityPlayer;
         if (player.openContainer instanceof BackPackContainer) return;
-        ItemStack stack = event.item.getEntityItem().copy();
+        ItemStack stack = event.item.getEntityItem()
+            .copy();
 
         if (Mods.Baubles.isLoaded()) {
             IInventory inventory = BaublesApi.getBaubles(player);
