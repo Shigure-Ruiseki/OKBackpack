@@ -462,11 +462,10 @@ public class BackPackContainer extends ModularContainer {
             if (slotGroup == null) continue;
 
             if (slotGroup != fromSlotGroup && toSlot.func_111238_b() && toSlot.isItemValid(fromStack)) {
-
-                transferToSlot(fromSlot, toSlot, fromStack, toSlot.getStack());
-
-                if (fromStack.stackSize <= 0) {
-                    return fromStack;
+                int before = fromStack.stackSize;
+                transferToSlot(fromSlot, toSlot, fromStack);
+                if (fromStack.stackSize < before) {
+                    break;
                 }
             }
         }
@@ -504,10 +503,12 @@ public class BackPackContainer extends ModularContainer {
                 SlotGroup slotGroup = toSlot.getSlotGroup();
 
                 if (slotGroup != fromSlotGroup && toSlot.func_111238_b() && toSlot.isItemValid(fromStack)) {
-                    transferToSlot(fromSlot, toSlot, fromStack, toSlot.getStack());
+                    int before = fromStack.stackSize;
 
-                    if (fromStack.stackSize <= 0) {
-                        return fromStack;
+                    transferToSlot(fromSlot, toSlot, fromStack);
+
+                    if (fromStack.stackSize < before) {
+                        break; // ⚠️ cực quan trọng
                     }
                 }
             }
@@ -521,11 +522,13 @@ public class BackPackContainer extends ModularContainer {
                     && emptySlot.isItemValid(fromStack)) {
 
                     int limit = emptySlot.getItemStackLimit(fromStack);
-                    emptySlot.putStack(fromStack.splitStack(Math.min(fromStack.stackSize, limit)));
+                    int move = Math.min(fromStack.stackSize, limit);
+                    if (move <= 0) continue;
 
-                    if (fromStack.stackSize < 1) {
-                        return fromStack;
-                    }
+                    emptySlot.putStack(fromStack.splitStack(move));
+                    emptySlot.onSlotChanged();
+
+                    break;
                 }
             }
         }
@@ -533,9 +536,10 @@ public class BackPackContainer extends ModularContainer {
         return super.transferItem(fromSlot, fromStack);
     }
 
-    protected void transferToSlot(ModularSlot fromSlot, ModularSlot toSlot, ItemStack fromStack, ItemStack toStack) {
+    protected void transferToSlot(ModularSlot fromSlot, ModularSlot toSlot, ItemStack fromStack) {
 
         boolean isBackpackSlot = toSlot instanceof ModularBackpackSlot;
+        ItemStack toStack = toSlot.getStack();
 
         // VOID ANY
         if (isBackpackSlot && wrapper.canVoid(fromStack, IVoidUpgrade.VoidType.ANY, IVoidUpgrade.VoidInput.ALL)) {

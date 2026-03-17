@@ -144,7 +144,7 @@ public class BackpackPanel extends ModularPanel {
     public boolean isResetOpenedTabs = false;
 
     public BackpackPanel(EntityPlayer player, PanelSyncManager syncManager, UISettings settings,
-        BackpackWrapper wrapper, int width, int height) {
+        BackpackWrapper wrapper, int width, int height, Integer slotIndex) {
         super("backpack_gui");
         this.player = player;
         this.syncManager = syncManager;
@@ -199,7 +199,7 @@ public class BackpackPanel extends ModularPanel {
         settingPanel = this.syncManager
             .syncedPanel("setting_panel", true, (syncManager1, syncHandler) -> new BackpackSettingPanel(this));
 
-        this.settings.customContainer(() -> new BackPackContainer(wrapper, wrapper.slotIndex));
+        this.settings.customContainer(() -> new BackPackContainer(wrapper, slotIndex));
         this.settings.customGui(() -> BackpackGuiContainer::new);
 
         syncManager.bindPlayerInventory(player);
@@ -208,10 +208,7 @@ public class BackpackPanel extends ModularPanel {
 
     public void modifyPlayerSlot(PanelSyncManager syncManager, InventoryType inventoryType, int slotIndex,
         EntityPlayer player) {
-        if (inventoryType == InventoryTypes.BAUBLES) {
-            return;
-        }
-
+        if (inventoryType == InventoryTypes.BAUBLES) return;
         ModularSlot slot = new LockedPlayerSlot(new PlayerInvWrapper(player.inventory), slotIndex)
             .slotGroup("player_inventory");
         syncManager.itemSlot("player", slotIndex, slot);

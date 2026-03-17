@@ -90,6 +90,11 @@ public class UpgradeSlotSH extends ItemSlotSH {
                 super.readOnServer(id, buf);
                 break;
         }
+    }
+
+    @Override
+    public void readOnClient(int id, PacketBuffer buf) {
+        super.readOnClient(id, buf);
         wrapper.syncToServer();
     }
 

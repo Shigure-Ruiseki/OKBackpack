@@ -7,6 +7,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 
@@ -24,7 +25,7 @@ public class TinkersHelpers {
 
     private static final String CLASS_CRAFTING_LOGIC = "tconstruct.tools.logic.CraftingStationLogic";
     private static final String CLASS_CRAFTING_STATION = "tconstruct.tools.inventory.CraftingStationContainer";
-    private static final String METHOD_ON_CRAFT_CHANGED = MinecraftHelpers.isModdedEnvironment()
+    private static final String METHOD_ON_CRAFT_CHANGED = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")
         ? "onCraftMatrixChanged"
         : "func_75130_a";
     private static final String FIELD_CRAFT_MATRIX = "craftMatrix";

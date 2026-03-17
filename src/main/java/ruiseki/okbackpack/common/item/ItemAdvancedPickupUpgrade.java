@@ -12,7 +12,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemAdvancedPickupUpgrade extends ItemUpgrade<AdvancedPickupUpgradeWrapper> {
 
     public ItemAdvancedPickupUpgrade() {
-        super("advanced_void_upgrade");
+        super("advanced_pickup_upgrade");
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "advanced_pickup_upgrade");
     }
