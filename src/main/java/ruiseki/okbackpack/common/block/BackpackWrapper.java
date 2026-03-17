@@ -72,10 +72,6 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
 
     @Getter
     @Setter
-    private boolean searchBackpack;
-
-    @Getter
-    @Setter
     private boolean keepTab;
 
     @Getter
@@ -92,7 +88,6 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
     public static final String LOCKED_SLOTS_TAG = "LockedSlots";
     public static final String LOCKED_BACKPACK_TAG = "LockedBackpack";
     public static final String UUID_TAG = "UUID";
-    public static final String SEARCH_BACKPACK_TAG = "SearchBackpack";
     public static final String KEEP_TAB_TAG = "KeepTab";
     public static final String CUSTOM_NAME_TAG = "CustomName";
 
@@ -145,7 +140,6 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
         this.sortType = SortType.BY_NAME;
         this.lockBackpack = false;
         this.uuid = "";
-        this.searchBackpack = true;
         this.keepTab = true;
 
         this.backpackHandler = new BackpackItemStackHandler(backpackSlots, this) {
@@ -585,8 +579,6 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
 
         tag.setBoolean(LOCKED_BACKPACK_TAG, lockBackpack);
 
-        tag.setBoolean(SEARCH_BACKPACK_TAG, searchBackpack);
-
         tag.setBoolean(KEEP_TAB_TAG, keepTab);
 
         tag.setString(UUID_TAG, uuid);
@@ -652,10 +644,6 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
 
         if (tag.hasKey(LOCKED_BACKPACK_TAG)) {
             lockBackpack = tag.getBoolean(LOCKED_BACKPACK_TAG);
-        }
-
-        if (tag.hasKey(SEARCH_BACKPACK_TAG)) {
-            searchBackpack = tag.getBoolean(SEARCH_BACKPACK_TAG);
         }
 
         if (tag.hasKey(KEEP_TAB_TAG)) {

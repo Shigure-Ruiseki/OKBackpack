@@ -25,12 +25,6 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
             IKey.lang("gui.backpack.not_keep_tab"),
             OKBGuiTextures.NOT_KEEP_TAB_ICON));
 
-    private static final List<CyclicVariantButtonWidget.Variant> SEARCH_VARIANTS = Arrays.asList(
-        new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.backpack.unlock_search"),
-            OKBGuiTextures.UNLOCK_SEARCH_ICON),
-        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.lock_search"), OKBGuiTextures.LOCK_SEARCH_ICON));
-
     private static final List<CyclicVariantButtonWidget.Variant> LOCK_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.backpack.lock_backpack"),
@@ -60,14 +54,6 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
                 updateWrapper();
             });
 
-        CyclicVariantButtonWidget searchButton = new CyclicVariantButtonWidget(
-            SEARCH_VARIANTS,
-            wrapper.isSearchBackpack() ? 0 : 1,
-            (index) -> {
-                wrapper.setSearchBackpack(index == 0);
-                updateWrapper();
-            });
-
         CyclicVariantButtonWidget lockButton = new CyclicVariantButtonWidget(
             LOCK_VARIANTS,
             wrapper.isLockBackpack() ? 0 : 1,
@@ -78,7 +64,6 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
 
         buttonRow.top(28)
             .child(tabButton)
-            .child(searchButton)
             .child(lockButton);
 
         child(buttonRow);
@@ -105,7 +90,6 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
                 panel.getPlayer()
                     .getUniqueID()
                     .toString());
-            buffer.writeBoolean(wrapper.isSearchBackpack());
             buffer.writeBoolean(wrapper.isKeepTab());
         });
     }

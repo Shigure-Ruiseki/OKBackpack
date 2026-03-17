@@ -17,6 +17,10 @@ import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
 import ruiseki.okbackpack.client.gui.slot.BackpackSlot;
 import ruiseki.okbackpack.common.block.BackpackPanel;
+import ruiseki.okbackpack.common.search.ItemStackKey;
+import ruiseki.okbackpack.common.search.ItemStackKeyPool;
+import ruiseki.okbackpack.common.search.SearchNode;
+import ruiseki.okbackpack.common.search.SearchParser;
 
 public class BackpackSearchBarWidget extends TextFieldWidget {
 
@@ -32,6 +36,30 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
             .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
     }
 
+    @Override
+    public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
+        IDrawable bg = getCurrentBackground(context.getTheme(), widgetTheme);
+        if (bg != null) {
+            bg.draw(context, 2, -1, getArea().width - 4, getArea().height + 1, widgetTheme.getTheme());
+        }
+    }
+
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
+        String txt = getText();
+        if (!txt.equals(prevText)) {
+            doSearch(txt);
+            prevText = txt;
+        }
+    }
+
+    @Override
+    public void onInit() {
+        cacheOriginalOrder();
+        doSearch(prevText);
+    }
+
     private void cacheOriginalOrder() {
         Column backpackSlots = panel.getBackpackInvCol();
         if (backpackSlots == null) return;
@@ -45,44 +73,69 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
         }
     }
 
-    @Override
-    public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        IDrawable bg = getCurrentBackground(context.getTheme(), widgetTheme);
-        if (bg != null) {
-            bg.draw(context, 2, -1, getArea().width - 4, getArea().height + 1, widgetTheme.getTheme());
-        }
-    }
-
-    @Override
-    public void onUpdate() {
-        super.onUpdate();
-        String txt = getText();
-
-        if (!txt.equals(prevText)) {
-            doSearch(txt);
-            prevText = txt;
-        }
-    }
-
-    @Override
-    public void onInit() {
-        super.onInit();
-        cacheOriginalOrder();
-        if (panel.getWrapper()
-            .isSearchBackpack()) {
-            prevText = "";
-            value(new StringValue(prevText));
-        } else {
-            doSearch(prevText);
-        }
-    }
-
     public void research() {
         doSearch(prevText);
     }
 
     public void doSearch(String search) {
+        Column backpackSlots = panel.getBackpackInvCol();
+        if (backpackSlots == null) return;
 
+        IWidget parent = backpackSlots.getParent();
+        if (!(parent instanceof BackpackList backpackList)) return;
+
+        int columns = panel.getRowSize();
+        int slotSize = BackpackSlot.SIZE;
+
+        SearchNode compiledSearch = search.isEmpty() ? null : SearchParser.parse(search);
+
+        if (compiledSearch == null) {
+            for (int i = 0; i < originalOrder.size(); i++) {
+                BackpackSlot slot = originalOrder.get(i);
+                slot.setFocus(true);
+
+                int x = (i % columns) * slotSize;
+                int y = (i / columns) * slotSize;
+                slot.left(x)
+                    .top(y);
+            }
+            return;
+        }
+
+        List<BackpackSlot> matched = new ArrayList<>();
+        List<BackpackSlot> others = new ArrayList<>();
+
+        for (BackpackSlot slot : originalOrder) {
+            if (!slot.getSlot()
+                .getHasStack()) {
+                slot.setFocus(false);
+                others.add(slot);
+                continue;
+            }
+
+            ItemStackKey key = ItemStackKeyPool.get(
+                slot.getSlot()
+                    .getStack());
+            boolean match = compiledSearch.matches(key);
+            slot.setFocus(match);
+
+            if (match) matched.add(slot);
+            else others.add(slot);
+        }
+
+        matched.addAll(others);
+
+        for (int i = 0; i < matched.size(); i++) {
+            BackpackSlot slot = matched.get(i);
+            int x = (i % columns) * slotSize;
+            int y = (i / columns) * slotSize;
+            slot.left(x)
+                .top(y);
+            slot.scheduleResize();
+        }
+
+        backpackList.getScrollData()
+            .scrollTo(backpackList.getScrollArea(), 0);
     }
 
 }
