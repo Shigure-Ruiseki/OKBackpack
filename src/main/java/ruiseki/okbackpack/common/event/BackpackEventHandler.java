@@ -94,19 +94,19 @@ public class BackpackEventHandler {
 
             if (!(backpackStack.getItem() instanceof BlockBackpack.ItemBackpack backpack)) continue;
 
-            BackpackWrapper handler = new BackpackWrapper(backpackStack, backpack);
+            BackpackWrapper wrapper = new BackpackWrapper(backpackStack, backpack);
 
-            if (!handler.canPickupItem(stack)) continue;
+            if (!wrapper.canPickupItem(stack)) continue;
 
             ItemStack before = stack.copy();
 
-            ItemStack result = handler.insertItem(stack, false);
+            ItemStack result = wrapper.insertItem(stack, false);
 
             boolean changed = result == null || result.stackSize != before.stackSize;
 
             if (changed) {
                 OKBackpack.instance.getPacketHandler()
-                    .sendToServer(new PacketBackpackNBT(i, handler.getTagCompound(), type));
+                    .sendToServer(new PacketBackpackNBT(i, wrapper.getTagCompound(), type));
             }
 
             stack = result;
@@ -168,9 +168,9 @@ public class BackpackEventHandler {
                 continue;
             }
 
-            BackpackWrapper handler = new BackpackWrapper(stack, backpack);
+            BackpackWrapper wrapper = new BackpackWrapper(stack, backpack);
 
-            boolean result = handler.feed(player, handler);
+            boolean result = wrapper.feed(player, wrapper);
 
             if (result) {
                 OKBackpack.instance.getPacketHandler()
@@ -216,7 +216,7 @@ public class BackpackEventHandler {
                 continue;
             }
 
-            BackpackWrapper handler = new BackpackWrapper(stack, backpack);
+            BackpackWrapper wrapper = new BackpackWrapper(stack, backpack);
 
             AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(
                 player.posX - ModConfig.magnetRange,
@@ -226,7 +226,7 @@ public class BackpackEventHandler {
                 player.posY + ModConfig.magnetRange,
                 player.posZ + ModConfig.magnetRange);
 
-            List<Entity> entities = handler.getMagnetEntities(player.worldObj, aabb);
+            List<Entity> entities = wrapper.getMagnetEntities(player.worldObj, aabb);
             if (entities.isEmpty()) {
                 continue;
             }

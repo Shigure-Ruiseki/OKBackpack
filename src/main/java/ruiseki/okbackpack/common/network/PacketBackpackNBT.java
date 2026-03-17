@@ -59,7 +59,6 @@ public class PacketBackpackNBT extends PacketCodec {
         }
         if (stack != null) {
             stack.setTagCompound(nbt);
-            player.inventory.setInventorySlotContents(slot, stack);
         }
     }
 }
