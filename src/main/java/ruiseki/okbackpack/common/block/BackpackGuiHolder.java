@@ -18,14 +18,12 @@ public abstract class BackpackGuiHolder {
 
     protected final BackpackWrapper wrapper;
     protected final int rowSize;
-    protected final int colSize;
 
-    public BackpackGuiHolder(BackpackWrapper handler) {
-        this.wrapper = handler;
+    public BackpackGuiHolder(BackpackWrapper wrapper) {
+        this.wrapper = wrapper;
 
-        int size = handler.getSlots();
+        int size = wrapper.getSlots();
         this.rowSize = size > 81 ? 12 : 9;
-        this.colSize = (size + rowSize - 1) / rowSize;
 
     }
 
@@ -33,12 +31,11 @@ public abstract class BackpackGuiHolder {
         InventoryType type, Integer backpackSlotIndex) {
 
         int width = 20 + rowSize * ItemSlot.SIZE;
-        int height = 115 + colSize * ItemSlot.SIZE;
 
         if (backpackSlotIndex != null) wrapper.setSlotIndex(backpackSlotIndex);
         if (type != null) wrapper.setType(type);
 
-        return new BackpackPanel(player, syncManager, settings, wrapper, width, height, backpackSlotIndex);
+        return new BackpackPanel(player, syncManager, settings, wrapper, width, backpackSlotIndex);
     }
 
     protected void addCommonWidgets(BackpackPanel panel) {

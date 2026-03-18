@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
-import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.ItemInceptionUpgrade;
 import ruiseki.okbackpack.common.item.ItemStackUpgrade;
@@ -17,12 +16,10 @@ import ruiseki.okbackpack.common.item.ItemUpgrade;
 
 public class ModularUpgradeSlot extends ModularSlot {
 
-    private final BackpackPanel panel;
     private final BackpackWrapper wrapper;
 
-    public ModularUpgradeSlot(BackpackWrapper wrapper, int index, BackpackPanel panel) {
+    public ModularUpgradeSlot(BackpackWrapper wrapper, int index) {
         super(wrapper.getUpgradeHandler(), index);
-        this.panel = panel;
         this.wrapper = wrapper;
     }
 

@@ -23,17 +23,71 @@ import ruiseki.okcore.helper.ItemHandlerHelpers;
 
 public class BackpackInventoryHelpers {
 
-    public static void sortInventory(BackpackWrapper handler, boolean reverse) {
-        for (int i = 0; i < handler.getBackpackSlots() - 1; i++) {
-            if (handler.isSlotLocked(i)) continue;
-            boolean isMem = handler.isSlotMemorized(i);
-            ItemStack baseStack = handler.getStackInSlot(i);
-            if (baseStack == null) continue;
-            int slotMaxSize = baseStack.getMaxStackSize() * handler.getTotalStackMultiplier();
+    public static void sortInventory(BackpackWrapper wrapper, boolean reverse) {
 
-            for (int j = i + 1; j < handler.getBackpackSlots(); j++) {
-                if (isMem != handler.isSlotMemorized(j) || handler.isSlotLocked(j)) continue;
-                ItemStack stack = handler.getStackInSlot(j);
+        // Phase 1: memory slot
+        for (int i = 0; i < wrapper.getBackpackSlots(); i++) {
+            if (!wrapper.isSlotMemorized(i) || wrapper.isSlotLocked(i)) continue;
+
+            ItemStack mem = wrapper.getMemorizedStack(i);
+            if (mem == null) continue;
+
+            ItemStack inSlot = wrapper.getStackInSlot(i);
+
+            int limit = mem.getMaxStackSize() * wrapper.getTotalStackMultiplier();
+            int current = inSlot != null ? inSlot.stackSize : 0;
+
+            if (current >= limit) continue;
+
+            int need = limit - current;
+
+            for (int j = 0; j < wrapper.getBackpackSlots(); j++) {
+                if (i == j || wrapper.isSlotLocked(j)) continue;
+
+                ItemStack other = wrapper.getStackInSlot(j);
+                if (other == null || other.stackSize <= 0) continue;
+
+                boolean match = wrapper.isMemoryStackRespectNBT(i) ? ItemStack.areItemStacksEqual(mem, other)
+                    : other.isItemEqual(mem);
+
+                if (!match) continue;
+
+                int move = Math.min(other.stackSize, need);
+
+                if (inSlot == null) {
+                    inSlot = other.copy();
+                    inSlot.stackSize = move;
+                    wrapper.getBackpackHandler()
+                        .setStackInSlot(i, inSlot);
+                } else {
+                    inSlot.stackSize += move;
+                }
+
+                other.stackSize -= move;
+                if (other.stackSize <= 0) {
+                    wrapper.getBackpackHandler()
+                        .setStackInSlot(j, null);
+                }
+
+                need -= move;
+                if (need <= 0) break;
+            }
+        }
+
+        // Phase 2: merge stack
+        for (int i = 0; i < wrapper.getBackpackSlots() - 1; i++) {
+            if (wrapper.isSlotLocked(i)) continue;
+
+            boolean isMem = wrapper.isSlotMemorized(i);
+            ItemStack baseStack = wrapper.getStackInSlot(i);
+            if (baseStack == null) continue;
+
+            int slotMaxSize = baseStack.getMaxStackSize() * wrapper.getTotalStackMultiplier();
+
+            for (int j = i + 1; j < wrapper.getBackpackSlots(); j++) {
+                if (isMem != wrapper.isSlotMemorized(j) || wrapper.isSlotLocked(j)) continue;
+
+                ItemStack stack = wrapper.getStackInSlot(j);
                 if (!ItemHandlerHelpers.canItemStacksStack(baseStack, stack)) continue;
                 if (stack.stackSize <= 0) continue;
 
@@ -42,26 +96,30 @@ public class BackpackInventoryHelpers {
                 if (diff > 0) {
                     baseStack.stackSize += diff;
                     stack.stackSize -= diff;
+
                     if (stack.stackSize <= 0) {
-                        handler.getBackpackHandler()
+                        wrapper.getBackpackHandler()
                             .setStackInSlot(j, null);
                     }
                 } else if (diff == 0) break;
             }
         }
 
+        // Phase 3: collect items
         List<ItemStack> sorted = new ArrayList<>();
         List<Map.Entry<ItemStack, Integer>> inPlace = new ArrayList<>();
 
-        for (int i = 0; i < handler.getBackpackSlots(); i++) {
-            ItemStack stack = handler.getStackInSlot(i);
-            if (handler.isSlotMemorized(i) || handler.isSlotLocked(i)) {
+        for (int i = 0; i < wrapper.getBackpackSlots(); i++) {
+            ItemStack stack = wrapper.getStackInSlot(i);
+
+            if (wrapper.isSlotMemorized(i) || wrapper.isSlotLocked(i)) {
                 inPlace.add(new AbstractMap.SimpleEntry<>(stack, i));
             } else {
                 sorted.add(stack);
             }
         }
 
+        // Phase 4: sort
         sorted.sort((a, b) -> {
             if (a == null || a.stackSize <= 0) {
                 if (b == null || b.stackSize <= 0) return 0;
@@ -69,52 +127,49 @@ public class BackpackInventoryHelpers {
             }
             if (b == null || b.stackSize <= 0) return -1;
 
-            switch (handler.getSortType()) {
+            switch (wrapper.getSortType()) {
                 case BY_NAME:
-                    if (reverse) {
-                        return a.getDisplayName()
-                            .compareTo(b.getDisplayName());
-                    } else {
-                        return b.getDisplayName()
+                    return reverse ? a.getDisplayName()
+                        .compareTo(b.getDisplayName())
+                        : b.getDisplayName()
                             .compareTo(a.getDisplayName());
-                    }
+
                 case BY_MOD_ID:
                     String aItem = Item.itemRegistry.getNameForObject(a.getItem());
                     String bItem = Item.itemRegistry.getNameForObject(b.getItem());
+
                     String aDomain = aItem.substring(0, aItem.indexOf(":"));
                     String bDomain = bItem.substring(0, bItem.indexOf(":"));
-                    if (reverse) {
-                        return aDomain.compareTo(bDomain);
-                    } else {
-                        return bDomain.compareTo(aDomain);
-                    }
+
+                    return reverse ? aDomain.compareTo(bDomain) : bDomain.compareTo(aDomain);
+
                 case BY_COUNT:
-                    if (reverse) {
-                        return Integer.compare(a.stackSize, b.stackSize);
-                    } else {
-                        return Integer.compare(b.stackSize, a.stackSize);
-                    }
+                    return reverse ? Integer.compare(a.stackSize, b.stackSize)
+                        : Integer.compare(b.stackSize, a.stackSize);
+
                 case BY_ORE_DICT:
                     List<String> ore1 = oreNames(a);
                     List<String> ore2 = oreNames(b);
-                    if (reverse) {
-                        return compareLists(ore1, ore2);
-                    } else {
-                        return compareLists(ore2, ore1);
-                    }
+
+                    return reverse ? compareLists(ore1, ore2) : compareLists(ore2, ore1);
             }
             return 0;
         });
 
-        for (Map.Entry<ItemStack, Integer> entry : inPlace) {
-            sorted.add(entry.getValue(), entry.getKey());
+        // Phase 5: rebuild inventory
+        while (sorted.size() < wrapper.getBackpackSlots()) {
+            sorted.add(null);
         }
 
-        handler.getBackpackHandler()
-            .setSize(handler.getBackpackSlots());
+        for (Map.Entry<ItemStack, Integer> entry : inPlace) {
+            sorted.set(entry.getValue(), entry.getKey());
+        }
+
+        wrapper.getBackpackHandler()
+            .setSize(wrapper.getBackpackSlots());
 
         for (int i = 0; i < sorted.size(); i++) {
-            handler.getBackpackHandler()
+            wrapper.getBackpackHandler()
                 .insertItem(i, sorted.get(i), false);
         }
     }
@@ -136,9 +191,9 @@ public class BackpackInventoryHelpers {
         return Integer.compare(a.size(), b.size());
     }
 
-    private static boolean hasMatchingSlot(BackpackWrapper handler, ItemStack stack) {
-        for (int i = 0; i < handler.getBackpackSlots(); i++) {
-            ItemStack inSlot = handler.getStackInSlot(i);
+    private static boolean hasMatchingSlot(BackpackWrapper wrapper, ItemStack stack) {
+        for (int i = 0; i < wrapper.getBackpackSlots(); i++) {
+            ItemStack inSlot = wrapper.getStackInSlot(i);
             if (ItemHandlerHelpers.canItemStacksStack(inSlot, stack)) {
                 return true;
             }
@@ -146,7 +201,7 @@ public class BackpackInventoryHelpers {
         return false;
     }
 
-    public static void transferPlayerInventoryToBackpack(BackpackWrapper handler, PlayerMainInvWrapper playerInv,
+    public static void transferPlayerInventoryToBackpack(BackpackWrapper wrapper, PlayerMainInvWrapper playerInv,
         boolean transferMatched) {
         for (int i = 9; i < playerInv.getSlots(); i++) {
             ItemStack stack = playerInv.getStackInSlot(i);
@@ -154,24 +209,24 @@ public class BackpackInventoryHelpers {
             if (stack.getItem() instanceof BlockBackpack.ItemBackpack backpack) {
 
                 BackpackWrapper other = new BackpackWrapper(stack, backpack);
-                if (other == handler) continue;
-                if (!handler.canNestBackpack()) continue;
+                if (other.equals(wrapper)) continue;
+                if (!wrapper.canNestBackpack()) continue;
             }
 
-            if (transferMatched && !hasMatchingSlot(handler, stack)) {
+            if (transferMatched && !hasMatchingSlot(wrapper, stack)) {
                 continue;
             }
 
-            ItemStack remaining = handler.insertItem(stack, false);
+            ItemStack remaining = wrapper.insertItem(stack, false);
             playerInv.setStackInSlot(i, remaining);
 
         }
     }
 
-    public static void transferBackpackToPlayerInventory(BackpackWrapper handler, PlayerMainInvWrapper playerInv,
+    public static void transferBackpackToPlayerInventory(BackpackWrapper wrapper, PlayerMainInvWrapper playerInv,
         boolean transferMatched) {
-        for (int i = 0; i < handler.getBackpackSlots(); i++) {
-            ItemStack stack = handler.getStackInSlot(i);
+        for (int i = 0; i < wrapper.getBackpackSlots(); i++) {
+            ItemStack stack = wrapper.getStackInSlot(i);
 
             for (int j = 9; j < playerInv.getSlots(); j++) {
 
@@ -180,7 +235,7 @@ public class BackpackInventoryHelpers {
                 stack = playerInv.insertItem(j, stack, false);
             }
 
-            handler.setStackInSlot(i, stack);
+            wrapper.setStackInSlot(i, stack);
         }
     }
 
@@ -358,11 +413,11 @@ public class BackpackInventoryHelpers {
             if (backpackStack == null || backpackStack.stackSize <= 0) continue;
             if (!(backpackStack.getItem() instanceof BlockBackpack.ItemBackpack backpack)) continue;
 
-            BackpackWrapper handler = new BackpackWrapper(backpackStack, backpack);
-            ItemStack extracted = handler.extractItem(wanted, wanted.getMaxStackSize(), false);
+            BackpackWrapper wrapper = new BackpackWrapper(backpackStack, backpack);
+            ItemStack extracted = wrapper.extractItem(wanted, wanted.getMaxStackSize(), false);
 
             OKBackpack.instance.getPacketHandler()
-                .sendToServer(new PacketBackpackNBT(i, handler.getTagCompound(), type));
+                .sendToServer(new PacketBackpackNBT(i, wrapper.getTagCompound(), type));
             if (extracted != null && extracted.stackSize > 0) {
                 return extracted;
             }

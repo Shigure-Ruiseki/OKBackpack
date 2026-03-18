@@ -138,7 +138,7 @@ public class BackpackPanel extends ModularPanel {
     public boolean isResetOpenedTabs = false;
 
     public BackpackPanel(EntityPlayer player, PanelSyncManager syncManager, UISettings settings,
-        BackpackWrapper wrapper, int width, int height, Integer slotIndex) {
+        BackpackWrapper wrapper, int width, Integer slotIndex) {
         super("backpack_gui");
         this.player = player;
         this.syncManager = syncManager;
@@ -174,7 +174,7 @@ public class BackpackPanel extends ModularPanel {
         this.upgradeSlotSyncHandlers = new UpgradeSlotSH[this.wrapper.getUpgradeSlots()];
         this.upgradeSlotGroups = new UpgradeSlotUpdateGroup[this.wrapper.getUpgradeSlots()];
         for (int i = 0; i < this.wrapper.getUpgradeSlots(); i++) {
-            ModularUpgradeSlot slot = new ModularUpgradeSlot(this.wrapper, i, this);
+            ModularUpgradeSlot slot = new ModularUpgradeSlot(this.wrapper, i);
             slot.slotGroup("upgrade_inventory");
             UpgradeSlotSH syncHandler = new UpgradeSlotSH(slot, this.wrapper, this);
             slot.changeListener((lastStack, currentStack, isClient, init) -> {

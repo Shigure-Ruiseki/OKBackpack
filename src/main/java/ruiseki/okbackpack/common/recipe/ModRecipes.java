@@ -309,18 +309,16 @@ public class ModRecipes implements IInitListener {
         // Void Upgrade
         GameRegistry.addRecipe(
             new ShapedOreRecipe(
-                ModItems.VOID_UPGRADE.getItem(),
+                ModItems.VOID_UPGRADE.newItemStack(),
                 " E ",
                 "OUO",
                 "ROR",
                 'E',
                 "pearlEnder",
-                'O',
-                "blockObsidian",
-                'A',
-                new ItemStack(Items.golden_apple, 1, 0),
                 'R',
                 "dustRedstone",
+                'O',
+                "blockObsidian",
                 'U',
                 ModItems.BASE_UPGRADE.getItem()));
 

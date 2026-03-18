@@ -10,9 +10,9 @@ public class ModularBackpackSlot extends ModularSlot {
 
     protected final BackpackWrapper wrapper;
 
-    public ModularBackpackSlot(BackpackWrapper handler, int index) {
-        super(handler.getBackpackHandler(), index);
-        this.wrapper = handler;
+    public ModularBackpackSlot(BackpackWrapper wrapper, int index) {
+        super(wrapper.getBackpackHandler(), index);
+        this.wrapper = wrapper;
     }
 
     public ItemStack getMemoryStack() {

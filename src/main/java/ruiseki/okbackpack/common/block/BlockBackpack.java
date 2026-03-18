@@ -40,6 +40,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
+import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.client.renderer.IBaubleRender;
 import ruiseki.okbackpack.client.renderer.IItemJSONRender;
@@ -99,6 +100,7 @@ public class BlockBackpack extends BlockOK {
         super(name, TEBackpack.class, Material.cloth);
         setStepSound(soundTypeCloth);
         setHardness(1f);
+        setCreativeTab(OKBCreativeTab.INSTANCE);
         this.backpackSlots = backpackSlots;
         this.upgradeSlots = upgradeSlots;
         this.isFullSize = this.isOpaque = false;
@@ -240,8 +242,8 @@ public class BlockBackpack extends BlockOK {
 
         @Override
         public Entity createEntity(World world, Entity location, ItemStack stack) {
-            BackpackWrapper handler = new BackpackWrapper(stack, this);
-            return new EntityBackpack(world, location, stack, handler);
+            BackpackWrapper wrapper = new BackpackWrapper(stack, this);
+            return new EntityBackpack(world, location, stack, wrapper);
         }
 
         @Override

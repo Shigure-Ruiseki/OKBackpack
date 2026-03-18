@@ -34,10 +34,10 @@ public class SortingSettingWidget extends ExpandedTabWidget {
             .overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
-                    BackpackWrapper handler = panel.getWrapper();
+                    BackpackWrapper wrapper = panel.getWrapper();
 
-                    for (int i = 0; i < handler.getBackpackSlots(); i++) {
-                        handler.setSlotLocked(i, true);
+                    for (int i = 0; i < wrapper.getBackpackSlots(); i++) {
+                        wrapper.setSlotLocked(i, true);
                     }
 
                     for (BackpackSlotSH syncHandler : panel.getBackpackSlotSyncHandlers()) {
@@ -56,10 +56,10 @@ public class SortingSettingWidget extends ExpandedTabWidget {
             .overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
-                    BackpackWrapper handler = panel.getWrapper();
+                    BackpackWrapper wrapper = panel.getWrapper();
 
-                    for (int i = 0; i < handler.getBackpackSlots(); i++) {
-                        handler.setSlotLocked(i, false);
+                    for (int i = 0; i < wrapper.getBackpackSlots(); i++) {
+                        wrapper.setSlotLocked(i, false);
                     }
 
                     for (BackpackSlotSH syncHandler : panel.getBackpackSlotSyncHandlers()) {

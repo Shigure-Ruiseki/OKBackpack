@@ -4,6 +4,7 @@ import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.client.gui.container.BackpackGuiContainer;
+import ruiseki.okbackpack.common.init.ModItems;
 
 public class NEIConfig implements IConfigureNEI {
 
@@ -11,7 +12,7 @@ public class NEIConfig implements IConfigureNEI {
     public void loadConfig() {
         API.registerGuiOverlay(BackpackGuiContainer.class, "crafting", new BackpackPositioner());
         API.registerGuiOverlayHandler(BackpackGuiContainer.class, new BackpackOverlay(), "crafting");
-        // API.addRecipeCatalyst(BackpackItems.CRAFTING_UPGRADE.newItemStack(), "crafting");
+        API.addRecipeCatalyst(ModItems.CRAFTING_UPGRADE.newItemStack(), "crafting");
     }
 
     @Override

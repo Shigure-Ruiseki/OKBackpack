@@ -54,8 +54,8 @@ public class OKBackpack extends ModBase {
         super(Reference.MOD_ID, Reference.MOD_NAME);
         putGenericReference(REFKEY_MOD_VERSION, Reference.VERSION);
         addInitListeners(new BaubleCompat());
-        addInitListeners(new ModOreDicts());
         addInitListeners(new ModRecipes());
+        addInitListeners(new ModOreDicts());
     }
 
     @Override
@@ -108,7 +108,7 @@ public class OKBackpack extends ModBase {
 
     @Override
     public CreativeTabs constructDefaultCreativeTab() {
-        return null;
+        return OKBCreativeTab.INSTANCE;
     }
 
     @Override
