@@ -42,10 +42,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
 import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
-import ruiseki.okbackpack.client.renderer.IBaubleRender;
-import ruiseki.okbackpack.client.renderer.IItemJSONRender;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
+import ruiseki.okbackpack.client.renderer.player.IArmorRender;
+import ruiseki.okbackpack.client.renderer.player.IBaubleRender;
+import ruiseki.okbackpack.client.renderer.player.PlayerRenderContext;
 import ruiseki.okbackpack.common.entity.EntityBackpack;
 import ruiseki.okcore.block.BlockOK;
 import ruiseki.okcore.helper.LangHelpers;
@@ -199,7 +200,7 @@ public class BlockBackpack extends BlockOK {
     }
 
     public static class ItemBackpack extends ItemBlockBauble
-        implements IGuiHolder<PlayerInventoryGuiData>, IBaubleRender, IItemJSONRender {
+        implements IGuiHolder<PlayerInventoryGuiData>, IBaubleRender, IArmorRender {
 
         @Getter
         private int backpackSlots = 27;
@@ -318,31 +319,19 @@ public class BlockBackpack extends BlockOK {
         }
 
         @Override
-        public void onPlayerBaubleRender(ItemStack stack, RenderPlayerEvent event, RenderHelpers.RenderType type) {
-            if (stack == null || type != RenderHelpers.RenderType.BODY) {
-                return;
-            }
-
-            GL11.glPushMatrix();
-            GL11.glTranslatef(0f, 0.3f, 0.3f);
-            RenderHelpers.rotateIfSneaking(event.entityPlayer);
-            JsonModelISBRH.INSTANCE.renderToEntity(stack);
-            GL11.glPopMatrix();
-
+        public void collectContext(ItemStack stack, EntityPlayer player, PlayerRenderContext context) {
+            context.setRenderCape(false);
         }
 
         @Override
-        public void onArmorRender(ItemStack stack, RenderPlayerEvent event, RenderHelpers.RenderType type) {
-            if (stack == null || type != RenderHelpers.RenderType.BODY) {
-                return;
-            }
-
+        public void render(ItemStack stack, EntityPlayer player, RenderPlayerEvent event,
+            RenderHelpers.RenderType type) {
+            if (stack == null || type != RenderHelpers.RenderType.BODY) return;
             GL11.glPushMatrix();
             GL11.glTranslatef(0f, 0.3f, 0.3f);
             RenderHelpers.rotateIfSneaking(event.entityPlayer);
             JsonModelISBRH.INSTANCE.renderToEntity(stack);
             GL11.glPopMatrix();
-
         }
     }
 }
