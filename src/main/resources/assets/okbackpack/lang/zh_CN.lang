@@ -17,7 +17,7 @@ gui.sort_type.by_ore_dict=按矿物词典
 gui.sort_order.asc=升序
 gui.sort_order.desc=降序
 
-# Backpack ==============================================
+# Backpack =
 
 # Config
 config.backpackConfig=背包设置
@@ -47,8 +47,9 @@ gui.backpack.crafting_settings=合成设置
 gui.backpack.void_settings=虚空设置
 gui.backpack.advanced_void_settings=高级虚空设置
 
+
 # Tooltips
-gui.backpack.stack_size_extra=数量：%s / %s
+gui.backpack.stack_size_extra=数量: %s / %s
 gui.backpack.not_in_effect=未生效
 gui.backpack.whitelist=白名单
 gui.backpack.blacklist=黑名单
@@ -110,20 +111,21 @@ gui.backpack.used_backpack=自动重填合成栏
 gui.backpack.unused_backpack=不自动重填合成栏
 
 gui.backpack.search_hint=搜索…
-gui.backpack.lock_search=保留搜索内容：开
-gui.backpack.unlock_search=保留搜索内容：关
+gui.backpack.lock_search=保留搜索内容: 开
+gui.backpack.unlock_search=保留搜索内容: 关
 
 gui.backpack.lock_backpack=其他玩家不可打开
 gui.backpack.unlock_backpack=其他玩家可打开
 
-gui.backpack.keep_tab=保持标签页开启：开
-gui.backpack.not_keep_tab=保持标签页开启：关
+gui.backpack.keep_tab=保持标签页开启: 开
+gui.backpack.not_keep_tab=保持标签页开启: 关
 
 gui.backpack.void_any=虚空任意物品
 gui.backpack.void_overflow=虚空溢出物品
 
 gui.backpack.void_all=在GUI中也生效
 gui.backpack.void_automation=仅在自动化/其他升级中生效
+
 
 # Items
 tile.leather_backpack.name=皮革背包
@@ -152,10 +154,11 @@ item.inception_upgrade.name=嵌套升级
 item.void_upgrade.name=虚空升级
 item.advanced_void_upgrade.name=高级虚空升级
 
+
 # Tooltips
-tooltip.backpack.inventory_size=物品栏大小：%d
-tooltip.backpack.upgrade_slots_size=升级槽位：%d
-tooltip.backpack.stack_multiplier=→ 堆叠倍率：%d%s
+tooltip.backpack.inventory_size=物品栏大小: %d
+tooltip.backpack.upgrade_slots_size=升级槽位: %d
+tooltip.backpack.stack_multiplier=→ 堆叠倍率: %d%s
 
 tooltip.backpack.magnet_upgrade=自动吸取附近实体
 tooltip.backpack.advanced_magnet_upgrade=自动吸取附近实体（具有更多配置）
