@@ -1,7 +1,5 @@
 package ruiseki.okbackpack.common.block;
 
-import static com.gtnewhorizon.gtnhlib.client.model.ModelISBRH.JSON_ISBRH_ID;
-
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -10,7 +8,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -36,7 +33,6 @@ import com.gtnewhorizon.gtnhlib.blockstate.registry.BlockPropertyRegistry;
 import com.gtnewhorizon.gtnhlib.client.model.color.BlockColor;
 import com.gtnewhorizon.gtnhlib.client.model.color.IBlockColor;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
@@ -105,11 +101,7 @@ public class BlockBackpack extends BlockOK {
         this.backpackSlots = backpackSlots;
         this.upgradeSlots = upgradeSlots;
         this.isFullSize = this.isOpaque = false;
-    }
-
-    @Override
-    public int getRenderType() {
-        return JSON_ISBRH_ID;
+        setBlockTextureName("okbackpack:backpack_cloth");
     }
 
     @Override
@@ -170,13 +162,7 @@ public class BlockBackpack extends BlockOK {
 
         }, this);
 
-        BlockPropertyRegistry.registerProperty(this, property);
-        BlockPropertyRegistry.registerProperty(Item.getItemFromBlock(this), property);
-    }
-
-    @Override
-    protected void registerBlock() {
-        GameRegistry.registerBlock(this, this.getItemBlockClass(), this.name);
+        BlockPropertyRegistry.registerBlockItemProperty(this, property);
     }
 
     @Override
