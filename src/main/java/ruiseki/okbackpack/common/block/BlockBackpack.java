@@ -101,7 +101,6 @@ public class BlockBackpack extends BlockOK {
         this.backpackSlots = backpackSlots;
         this.upgradeSlots = upgradeSlots;
         this.isFullSize = this.isOpaque = false;
-        setBlockTextureName("okbackpack:backpack_cloth");
     }
 
     @Override
