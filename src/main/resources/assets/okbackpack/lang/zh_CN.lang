@@ -92,10 +92,10 @@ gui.backpack.sort_by_ore_dict=按矿物词典排序
 
 gui.backpack.transfer_to_player_inv=转移所有物品到玩家物品栏
 gui.backpack.transfer_to_player_inv_matched_1=转移匹配物品到玩家物品栏
-gui.backpack.transfer_to_player_inv_matched_2=按住Shift 转移全部
+gui.backpack.transfer_to_player_inv_matched_2=按住 Shift 转移全部
 gui.backpack.transfer_to_backpack_inv=转移所有物品到背包
 gui.backpack.transfer_to_backpack_inv_matched_1=转移匹配物品到背包
-gui.backpack.transfer_to_backpack_inv_matched_2=按住Shift 转移全部
+gui.backpack.transfer_to_backpack_inv_matched_2=按住 Shift 转移全部
 
 gui.backpack.memorized_slot=记忆槽位
 gui.backpack.memorize_all=记忆所有槽位
@@ -105,8 +105,8 @@ gui.backpack.no_sorting_slot=不排序槽位
 gui.backpack.lock_all_sort=全部设为不排序
 gui.backpack.unlock_all_sort=全部设为可排序
 
-gui.backpack.into_backpack=按住Shift点击结果放入\n背包
-gui.backpack.into_inventory=按住Shift点击结果放入\n玩家物品栏
+gui.backpack.into_backpack=按住 Shift 点击结果放入\n背包
+gui.backpack.into_inventory=按住 Shift 点击结果放入\n玩家物品栏
 gui.backpack.used_backpack=自动重填合成栏
 gui.backpack.unused_backpack=不自动重填合成栏
 
