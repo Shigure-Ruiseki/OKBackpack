@@ -17,6 +17,7 @@
 - [X] Backpack model render on player's back when equipped
 - [X] Custom Backpack main color and accent color
 - [X] Modifier each backpack and upgrade slot size
+- [X] Sleeping Bag
 
 #### Upgrades
 
