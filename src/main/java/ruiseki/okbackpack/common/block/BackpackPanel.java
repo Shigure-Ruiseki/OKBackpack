@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IKey;
@@ -24,6 +25,7 @@ import com.cleanroommc.modularui.theme.WidgetTheme;
 import com.cleanroommc.modularui.utils.item.PlayerInvWrapper;
 import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Column;
 import com.cleanroommc.modularui.widgets.layout.Row;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
@@ -107,6 +109,8 @@ public class BackpackPanel extends ModularPanel {
     private final UISettings settings;
     @Getter
     private final BackpackWrapper wrapper;
+    @Getter
+    private final TileEntity tile;
 
     @Getter
     private final UpgradeSlotGroupWidget upgradeSlotGroupWidget;
@@ -137,10 +141,11 @@ public class BackpackPanel extends ModularPanel {
     public boolean isSortingSettingTabOpened = false;
     public boolean isResetOpenedTabs = false;
 
-    public BackpackPanel(EntityPlayer player, PanelSyncManager syncManager, UISettings settings,
+    public BackpackPanel(EntityPlayer player, TileEntity tile, PanelSyncManager syncManager, UISettings settings,
         BackpackWrapper wrapper, int width, Integer slotIndex) {
         super("backpack_gui");
         this.player = player;
+        this.tile = tile;
         this.syncManager = syncManager;
         this.settings = settings;
         this.wrapper = wrapper;
@@ -358,7 +363,26 @@ public class BackpackPanel extends ModularPanel {
                     tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
                 });
 
-        child(transferToPlayerButton).child(transferToBackpackButton);
+        ButtonWidget<?> sleepButton = new ButtonWidget<>().bottom(84)
+            .right(35)
+            .size(14)
+            .overlay(OKBGuiTextures.SLEEPING_BAG)
+            .setEnabledIf(shiftButtonWidget -> !settingPanel.isPanelOpen())
+            .onMousePressed(mouseButton -> {
+                if (mouseButton == 0) {
+                    backpackSyncHandler.syncToServer(BackpackSH.DEPLOY_SLEEPING_BAG);
+                    return true;
+                }
+                return false;
+            })
+            .tooltipAutoUpdate(true)
+            .tooltipDynamic(tooltip -> {
+                tooltip.addLine(IKey.lang("gui.backpack.sleeping_bag"));
+                tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+            });
+
+        child(transferToPlayerButton).child(transferToBackpackButton)
+            .child(sleepButton);
     }
 
     public void addBackpackInventorySlots() {

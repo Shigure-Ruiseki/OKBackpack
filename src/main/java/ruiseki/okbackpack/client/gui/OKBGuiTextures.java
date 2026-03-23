@@ -184,10 +184,10 @@ public class OKBGuiTextures {
         .xy(71, 216, 26, 26)
         .build();
 
-    public static final UITexture CRAFTING_ARROW = UITexture.builder()
-        .location(Reference.MOD_ID, "gui/gui_controls.png")
-        .imageSize(256, 256)
-        .xy(97, 209, 16, 16)
+    public static final UITexture SLEEPING_BAG = UITexture.builder()
+        .location(Reference.MOD_ID, "textures/items/sleepingBag.png")
+        .imageSize(16, 16)
+        .xy(0, 0, 16, 16)
         .build();
 
     public static UITexture icon(String name, int x, int y) {

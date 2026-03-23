@@ -1,6 +1,7 @@
 package ruiseki.okbackpack.common.block;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 
 import com.cleanroommc.modularui.api.IGuiHolder;
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
@@ -28,14 +29,14 @@ public abstract class BackpackGuiHolder {
     }
 
     protected BackpackPanel createPanel(PanelSyncManager syncManager, UISettings settings, EntityPlayer player,
-        InventoryType type, Integer backpackSlotIndex) {
+        TileEntity tile, InventoryType type, Integer backpackSlotIndex) {
 
         int width = 20 + rowSize * ItemSlot.SIZE;
 
         if (backpackSlotIndex != null) wrapper.setSlotIndex(backpackSlotIndex);
         if (type != null) wrapper.setType(type);
 
-        return new BackpackPanel(player, syncManager, settings, wrapper, width, backpackSlotIndex);
+        return new BackpackPanel(player, tile, syncManager, settings, wrapper, width, backpackSlotIndex);
     }
 
     protected void addCommonWidgets(BackpackPanel panel) {
@@ -62,7 +63,13 @@ public abstract class BackpackGuiHolder {
 
         @Override
         public ModularPanel buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-            BackpackPanel panel = createPanel(syncManager, settings, data.getPlayer(), null, null);
+            BackpackPanel panel = createPanel(
+                syncManager,
+                settings,
+                data.getPlayer(),
+                data.getTileEntity(),
+                null,
+                null);
             addCommonWidgets(panel);
             return panel;
         }
@@ -86,6 +93,7 @@ public abstract class BackpackGuiHolder {
                 syncManager,
                 settings,
                 data.getPlayer(),
+                null,
                 data.getInventoryType(),
                 data.getSlotIndex());
             addCommonWidgets(panel);

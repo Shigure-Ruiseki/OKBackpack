@@ -2,7 +2,12 @@ package ruiseki.okbackpack.client.gui.syncHandler;
 
 import java.io.IOException;
 
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.world.World;
 
 import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
@@ -11,6 +16,9 @@ import ruiseki.okbackpack.common.SortType;
 import ruiseki.okbackpack.common.block.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
+import ruiseki.okbackpack.common.block.BlockSleepingBag;
+import ruiseki.okbackpack.common.block.TEBackpack;
+import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 
 public class BackpackSH extends SyncHandler {
 
@@ -19,6 +27,7 @@ public class BackpackSH extends SyncHandler {
     public static final int UPDATE_TRANSFER_TO_BACKPACK_INV = 2;
     public static final int UPDATE_TRANSFER_TO_PLAYER_INV = 3;
     public static final int UPDATE_SETTING = 4;
+    public static final int DEPLOY_SLEEPING_BAG = 5;
 
     private final PlayerMainInvWrapper playerInv;
     private final BackpackWrapper wrapper;
@@ -52,6 +61,9 @@ public class BackpackSH extends SyncHandler {
             case UPDATE_SETTING:
                 updateBackpack(buf);
                 break;
+
+            case DEPLOY_SLEEPING_BAG:
+                deploySleepingBag();
 
             default:
                 break;
@@ -111,5 +123,45 @@ public class BackpackSH extends SyncHandler {
         wrapper.setLockBackpack(lock);
         wrapper.setUuid(uuid);
         wrapper.setKeepTab(tab);
+    }
+
+    public void deploySleepingBag() {
+        EntityPlayer player = getSyncManager().getPlayer();
+
+        World world = player.worldObj;
+        TileEntity tile = panel.getTile();
+        if (tile != null && world.getTileEntity(tile.xCoord, tile.yCoord, tile.zCoord) instanceof TEBackpack te) {
+            if (!te.isSleepingBagDeployed()) {
+                int[] can = BlockSleepingBag
+                    .canDeploySleepingBag(world, player, tile.xCoord, tile.yCoord, tile.zCoord, true);
+                if (can[0] > -1) {
+                    if (te.deploySleepingBag(player, world, can[0], can[1], can[2], can[3])) {
+                        player.closeScreen();
+                    }
+                } else if (!world.isRemote) {
+                    player.addChatComponentMessage(new ChatComponentTranslation("messages.backpack.cant.bag"));
+                }
+            } else {
+                te.removeSleepingBag(world);
+            }
+            player.closeScreen();
+        } else if (tile == null) {
+            int[] can = BlockSleepingBag
+                .canDeploySleepingBag(world, player, (int) player.posX, (int) player.posY, (int) player.posZ, false);
+            if (can[0] > -1) {
+                if (wrapper.deploySleepingBag(player, world, can[0], can[1], can[2], can[3])) {
+                    Block portableBag = world.getBlock(can[1], can[2], can[3]);
+                    if (portableBag instanceof BlockSleepingBag) {
+                        BackpackProperty.get(player)
+                            .setSleepingInPortableBag(true);
+                        ((BlockSleepingBag) portableBag)
+                            .onPortableBlockActivated(world, player, can[1], can[2], can[3]);
+                    }
+                }
+            } else if (!world.isRemote) {
+                player.addChatComponentMessage(new ChatComponentTranslation("messages.backpack.cant.bag"));
+            }
+            player.closeScreen();
+        }
     }
 }

@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Level;
 
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.common.block.BlockBackpack;
+import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.block.IBlock;
 
@@ -22,6 +23,7 @@ public enum ModBlocks {
         new BlockBackpack("diamond_backpack", ModConfig.diamondBackpackSlots, ModConfig.diamondUpgradeSlots)),
     BACKPACK_OBSIDIAN(
         new BlockBackpack("obsidian_backpack", ModConfig.obsidianBackpackSlots, ModConfig.obsidianUpgradeSlots)),
+    SLEEPING_BAG(new BlockSleepingBag()),
 
     ;
 

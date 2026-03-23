@@ -126,6 +126,8 @@ gui.backpack.void_overflow=Void Overflow
 gui.backpack.void_all=Works in Gui as well
 gui.backpack.void_automation=Only works with other upgrade/automation
 
+gui.backpack.sleeping_bag=Use Sleeping Bag
+
 
 # Items
 tile.leather_backpack.name=Leather Backpack
@@ -133,6 +135,7 @@ tile.iron_backpack.name=Iron Backpack
 tile.gold_backpack.name=Gold Backpack
 tile.diamond_backpack.name=Diamond Backpack
 tile.obsidian_backpack.name=Obsidian Backpack
+tile.sleeping_bag.name=Sleeping Bag
 
 item.upgrade_base.name=Upgrade Base
 item.stack_upgrade.iron.name=Stack Upgrade Tier 1
@@ -175,3 +178,7 @@ tooltip.backpack.filter_upgrade=Filters inserted items when placing in world
 tooltip.backpack.advanced_filter_upgrade=Filters inserted items when placing in world with more configurations
 tooltip.backpack.void_upgrade=Voids items selected in filter
 tooltip.backpack.advanced_void_upgrade=Voids items selected in filter. Has more filtering options
+
+#Messages
+messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.
+messages.cant.sleep.here=Ancient forces do not welcome sleep here.

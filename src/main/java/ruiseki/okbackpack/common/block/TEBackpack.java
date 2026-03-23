@@ -15,6 +15,7 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.item.wrapper.IVoidUpgrade;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileTicking;
@@ -28,6 +29,15 @@ public class TEBackpack extends TileTicking implements ISidedInventory, IGuiHold
 
     @NBTPersist(BackpackWrapper.BACKPACK_NBT)
     private final BackpackWrapper wrapper;
+
+    @NBTPersist
+    private boolean sleepingBagDeployed;
+    @NBTPersist
+    private int sbx;
+    @NBTPersist
+    private int sby;
+    @NBTPersist
+    private int sbz;
 
     public TEBackpack() {
         this(120, 7);
@@ -69,9 +79,7 @@ public class TEBackpack extends TileTicking implements ISidedInventory, IGuiHold
     public void setFacing(ForgeDirection facing) {
         this.facing = facing;
         markDirty();
-        if (worldObj != null) {
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-        }
+        onSendUpdate();
     }
 
     @Override
@@ -212,6 +220,38 @@ public class TEBackpack extends TileTicking implements ISidedInventory, IGuiHold
 
     public int getAccentColor() {
         return wrapper.getAccentColor();
+    }
+
+    public boolean isSleepingBagDeployed() {
+        return this.sleepingBagDeployed;
+    }
+
+    public void setSleepingBagDeployed(boolean state) {
+        this.sleepingBagDeployed = state;
+        markDirty();
+        onSendUpdate();
+    }
+
+    public boolean deploySleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ) {
+        if (world.isRemote) return false;
+
+        sleepingBagDeployed = BlockSleepingBag.spawnSleepingBag(player, world, meta, cX, cY, cZ);
+        if (sleepingBagDeployed) {
+            sbx = cX;
+            sby = cY;
+            sbz = cZ;
+            markDirty();
+            onSendUpdate();
+        }
+        return sleepingBagDeployed;
+    }
+
+    public void removeSleepingBag(World world) {
+        if (sleepingBagDeployed && world.getBlock(sbx, sby, sbz) == ModBlocks.SLEEPING_BAG.getBlock())
+            world.func_147480_a(sbx, sby, sbz, false);
+
+        sleepingBagDeployed = false;
+        markDirty();
     }
 
 }
