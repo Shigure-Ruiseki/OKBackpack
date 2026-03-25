@@ -114,15 +114,6 @@ public class BlockBackpack extends BlockOK {
         }
     }
 
-    @Override
-    protected void onPreBlockDestroyedPersistence(World world, int x, int y, int z) {
-        super.onPreBlockDestroyedPersistence(world, x, y, z);
-        TileEntity te = world.getTileEntity(x, y, z);
-        if (te instanceof TEBackpack backpack) {
-            backpack.removeSleepingBag(world);
-        }
-    }
-
     private ForgeDirection getDirectionForHeading(int heading) {
         return switch (heading) {
             case 1 -> ForgeDirection.EAST;

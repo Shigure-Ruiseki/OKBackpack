@@ -1,9 +1,13 @@
 package ruiseki.okbackpack;
 
+import java.util.Map;
+
+import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
 
 import org.apache.logging.log4j.Level;
 
+import com.google.common.collect.Maps;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
 import com.gtnewhorizon.gtnhlib.config.ConfigException;
 
@@ -18,12 +22,14 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
+import ruiseki.okbackpack.common.command.CommandBackpack;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.init.ModItems;
 import ruiseki.okbackpack.common.init.ModOreDicts;
 import ruiseki.okbackpack.common.recipe.ModRecipes;
 import ruiseki.okbackpack.compat.bauble.BaubleCompat;
 import ruiseki.okbackpack.config.ModConfig;
+import ruiseki.okcore.command.CommandMod;
 import ruiseki.okcore.helper.MinecraftHelpers;
 import ruiseki.okcore.init.ModBase;
 import ruiseki.okcore.proxy.ICommonProxy;
@@ -68,6 +74,14 @@ public class OKBackpack extends ModBase {
             ModelRegistry.registerModid(Reference.MOD_ID);
             RenderingRegistry.registerBlockHandler(JsonModelISBRH.INSTANCE);
         }
+    }
+
+    @Override
+    protected CommandMod constructBaseCommand() {
+        Map<String, ICommand> commands = Maps.newHashMap();
+        CommandMod command = new CommandBackpack(this, commands);
+        command.addAlias("okbackpack");
+        return command;
     }
 
     @Override
