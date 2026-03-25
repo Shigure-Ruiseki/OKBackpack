@@ -127,7 +127,7 @@ public class BackPackContainer extends ModularContainer {
         super.onContainerClosed(player);
 
         // Final sync before closing - ensure all changes are saved
-        if (!getGuiData().isClient() && wrapper.isDirty) {
+        if (!getGuiData().isClient()) {
             wrapper.writeToItem(player);
             // Only clear dirty if write succeeded (backpack still valid)
             if (wrapper.getBackpack() != null) {
