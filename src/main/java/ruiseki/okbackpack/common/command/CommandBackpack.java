@@ -93,21 +93,19 @@ public class CommandBackpack extends CommandMod {
         @Override
         public void processCommand(ICommandSender sender, String[] args) throws CommandException {
 
-            if (args.length < 2)
-                throw new WrongUsageException(getCommandUsage(sender));
+            if (args.length < 2) throw new WrongUsageException(getCommandUsage(sender));
 
             EntityPlayerMP[] players = PlayerSelector.matchPlayers(sender, args[0]);
 
             if (players == null) {
                 EntityPlayerMP player = getPlayer(sender, args[0]);
-                players = new EntityPlayerMP[]{player};
+                players = new EntityPlayerMP[] { player };
             }
 
             String template = args[1];
 
             File file = new File(backpackDir, template + ".json");
-            if (!file.exists())
-                throw new CommandException("Template not found: " + template);
+            if (!file.exists()) throw new CommandException("Template not found: " + template);
 
             BackpackMaterial mat;
             try {
@@ -116,8 +114,7 @@ public class CommandBackpack extends CommandMod {
                 throw new CommandException("Error reading file: " + e.getMessage());
             }
 
-            if (mat == null)
-                throw new CommandException("Failed to read template");
+            if (mat == null) throw new CommandException("Failed to read template");
 
             for (EntityPlayerMP player : players) {
 
@@ -132,11 +129,12 @@ public class CommandBackpack extends CommandMod {
         @Override
         public List addTabCompletionOptions(ICommandSender sender, String[] args) {
 
-            if (args.length == 1)
-                return getListOfStringsMatchingLastWord(args, MinecraftServer.getServer().getAllUsernames());
+            if (args.length == 1) return getListOfStringsMatchingLastWord(
+                args,
+                MinecraftServer.getServer()
+                    .getAllUsernames());
 
-            if (args.length == 2)
-                return getListOfStringsMatchingLastWord(args, getJsonFiles().toArray(new String[0]));
+            if (args.length == 2) return getListOfStringsMatchingLastWord(args, getJsonFiles().toArray(new String[0]));
 
             return null;
         }
