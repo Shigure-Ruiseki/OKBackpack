@@ -342,16 +342,14 @@ public class BackPackContainer extends ModularContainer {
                             int available = Math.min(slotStack.stackSize, slotStack.getMaxStackSize());
                             int take = mouseButton == LEFT_MOUSE ? available : (available + 1) / 2;
 
-                            ItemStack taken = slotStack.splitStack(take);
+                            ItemStack taken = clickedSlot.decrStackSize(take);
                             inventoryplayer.setItemStack(taken);
 
-                            if (slotStack.stackSize == 0) {
+                            if (clickedSlot.getStack() == null || clickedSlot.getStack().stackSize <= 0) {
                                 clickedSlot.putStack(null);
-                            } else {
-                                clickedSlot.putStack(slotStack);
                             }
 
-                            clickedSlot.onPickupFromSlot(player, inventoryplayer.getItemStack());
+                            clickedSlot.onPickupFromSlot(player, taken);
                         }
                         // Player holding something
                         else {
