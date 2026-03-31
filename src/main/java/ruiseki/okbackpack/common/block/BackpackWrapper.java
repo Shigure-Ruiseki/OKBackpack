@@ -138,6 +138,8 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
 
     public boolean isDirty;
 
+    private Runnable markDirtyCallback;
+
     public BackpackWrapper() {
         this(null, 120, 7);
     }
@@ -674,6 +676,7 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
 
     @Override
     public void deserializeNBT(NBTTagCompound tag) {
+        if (tag == null) return;
         if (tag.hasKey(BACKPACK_SLOTS, 3)) {
             this.backpackSlots = tag.getInteger(BACKPACK_SLOTS);
         }
@@ -798,6 +801,13 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
 
     public void markDirty() {
         this.isDirty = true;
+        if (markDirtyCallback != null) {
+            markDirtyCallback.run();
+        }
+    }
+
+    public void setMarkDirtyCallback(Runnable callback) {
+        this.markDirtyCallback = callback;
     }
 
     public void clearDirty() {

@@ -170,7 +170,7 @@ public class BackpackInventoryHelpers {
 
         for (int i = 0; i < sorted.size(); i++) {
             wrapper.getBackpackHandler()
-                .insertItem(i, sorted.get(i), false);
+                .setStackInSlot(i, sorted.get(i)); // FIX
         }
     }
 

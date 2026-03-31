@@ -22,13 +22,13 @@ import ruiseki.okcore.tileentity.TileTicking;
 
 public class TEBackpack extends TileTicking implements ISidedInventory, IGuiHolder<SidedPosGuiData> {
 
-    private final int[] allSlots;
+    private int[] allSlots;
 
     @NBTPersist
     private ForgeDirection facing = ForgeDirection.NORTH;
 
     @NBTPersist(BackpackWrapper.BACKPACK_NBT)
-    private final BackpackWrapper wrapper;
+    private BackpackWrapper wrapper;
 
     @NBTPersist
     private boolean sleepingBagDeployed;
@@ -40,11 +40,25 @@ public class TEBackpack extends TileTicking implements ISidedInventory, IGuiHold
     private int sbz;
 
     public TEBackpack() {
-        this(120, 7);
+        wrapper = new BackpackWrapper();
+        this.wrapper.setMarkDirtyCallback(new Runnable() {
+
+            @Override
+            public void run() {
+                markDirty();
+            }
+        });
     }
 
-    public TEBackpack(int slots, int upgradeSlots) {
-        wrapper = new BackpackWrapper(null, slots, upgradeSlots);
+    public void setWrapper(BackpackWrapper wrapper) {
+        this.wrapper = wrapper;
+        this.wrapper.setMarkDirtyCallback(new Runnable() {
+
+            @Override
+            public void run() {
+                markDirty();
+            }
+        });
         allSlots = new int[wrapper.getSlots()];
         for (int i = 0; i < allSlots.length; i++) {
             allSlots[i] = i;

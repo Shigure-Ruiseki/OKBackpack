@@ -166,7 +166,10 @@ public class BlockBackpack extends BlockOK {
 
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
-        return new TEBackpack(backpackSlots, upgradeSlots);
+        TEBackpack backpack = new TEBackpack();
+        BackpackWrapper wrapper = new BackpackWrapper(null, backpackSlots, upgradeSlots);
+        backpack.setWrapper(wrapper);
+        return backpack;
     }
 
     @Override

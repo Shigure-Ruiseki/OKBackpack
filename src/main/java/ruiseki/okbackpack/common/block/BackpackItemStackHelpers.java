@@ -37,10 +37,14 @@ public class BackpackItemStackHelpers {
 
         for (int i = 0; i < list.tagCount(); i++) {
             NBTTagCompound tag = list.getCompoundTagAt(i);
-            int j = tag.getInteger("Slot");
-
-            if (j < inventory.size()) {
-                inventory.set(j, loadItemStackExtended(tag));
+            int slot;
+            if (tag.hasKey("Slot", 3)) {
+                slot = tag.getInteger("Slot");
+            } else {
+                slot = tag.getByte("Slot") & 255;
+            }
+            if (slot >= 0 && slot < inventory.size()) {
+                inventory.set(slot, loadItemStackExtended(tag));
             }
         }
     }

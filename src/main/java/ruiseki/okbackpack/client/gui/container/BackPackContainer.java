@@ -543,6 +543,26 @@ public class BackPackContainer extends ModularContainer {
 
         int limit = stackLimit(toSlot, fromStack);
 
+        if (isBackpackSlot) {
+            int slotIndex = toSlot.getSlotIndex();
+
+            if (wrapper.isSlotMemorized(slotIndex)) {
+
+                ItemStack memory = wrapper.getMemorizedStack(slotIndex);
+
+                if (memory != null) {
+
+                    boolean match = wrapper.isMemoryStackRespectNBT(slotIndex)
+                        ? ItemStack.areItemStacksEqual(memory, fromStack)
+                        : fromStack.isItemEqual(memory);
+
+                    if (!match) {
+                        return;
+                    }
+                }
+            }
+        }
+
         // merge stack
         if (fromStack.stackSize > 0 && !fromSlot.isPhantom()
             && toStack != null
