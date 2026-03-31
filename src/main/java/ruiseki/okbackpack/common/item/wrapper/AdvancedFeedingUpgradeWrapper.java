@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.cleanroommc.modularui.utils.item.IItemHandler;
 
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
@@ -14,8 +15,8 @@ public class AdvancedFeedingUpgradeWrapper extends AdvancedUpgradeWrapper implem
     private static final String HUNGER_FEEDING_STRATEGY_TAG = "HungerFeedingStrategy";
     private static final String HURT_FEEDING_STRATEGY_TAG = "HurtFeedingStrategy";
 
-    public AdvancedFeedingUpgradeWrapper(ItemStack upgrade) {
-        super(upgrade);
+    public AdvancedFeedingUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage) {
+        super(upgrade, storage);
         handler = new UpgradeItemStackHandler(16) {
 
             @Override

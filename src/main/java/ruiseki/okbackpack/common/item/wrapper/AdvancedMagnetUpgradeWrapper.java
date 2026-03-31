@@ -2,12 +2,13 @@ package ruiseki.okbackpack.common.item.wrapper;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class AdvancedMagnetUpgradeWrapper extends AdvancedPickupUpgradeWrapper implements IMagnetUpgrade {
 
-    public AdvancedMagnetUpgradeWrapper(ItemStack upgrade) {
-        super(upgrade);
+    public AdvancedMagnetUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage) {
+        super(upgrade, storage);
     }
 
     @Override

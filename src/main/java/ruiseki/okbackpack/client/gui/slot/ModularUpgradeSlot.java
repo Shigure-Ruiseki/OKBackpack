@@ -19,7 +19,7 @@ public class ModularUpgradeSlot extends ModularSlot {
     private final BackpackWrapper wrapper;
 
     public ModularUpgradeSlot(BackpackWrapper wrapper, int index) {
-        super(wrapper.getUpgradeHandler(), index);
+        super(wrapper.upgradeHandler, index);
         this.wrapper = wrapper;
     }
 

@@ -101,23 +101,19 @@ public class BackPackContainer extends ModularContainer {
         super.detectAndSendChanges();
 
         // Server-side only: sync dirty changes to client
-        if (!getGuiData().isClient() && wrapper.isDirty) {
+        if (!getGuiData().isClient() && wrapper.isDirty && wrapper.backpack != null) {
             EntityPlayer player = getPlayer();
 
-            // Write changes to the actual ItemStack (using UUID tracking)
-            wrapper.writeToItem(player);
+            wrapper.writeToItem();
 
             // Send NBT update packet to client (only if backpack is valid)
-            if (wrapper.getBackpack() != null && wrapper.getType() != null
-                && backpackSlotIndex != null
-                && player instanceof EntityPlayerMP playerMP) {
+            if (wrapper.type != null && backpackSlotIndex != null && player instanceof EntityPlayerMP playerMP) {
                 OKBackpack.instance.getPacketHandler()
                     .sendToPlayer(
-                        new PacketBackpackNBT(backpackSlotIndex, wrapper.getTagCompound(), wrapper.getType()),
+                        new PacketBackpackNBT(backpackSlotIndex, wrapper.getTagCompound(), wrapper.type),
                         playerMP);
             }
 
-            // Clear dirty flag
             wrapper.clearDirty();
         }
     }
@@ -127,12 +123,9 @@ public class BackPackContainer extends ModularContainer {
         super.onContainerClosed(player);
 
         // Final sync before closing - ensure all changes are saved
-        if (!getGuiData().isClient()) {
-            wrapper.writeToItem(player);
-            // Only clear dirty if write succeeded (backpack still valid)
-            if (wrapper.getBackpack() != null) {
-                wrapper.clearDirty();
-            }
+        if (!getGuiData().isClient() && wrapper.backpack != null) {
+            wrapper.writeToItem();
+            wrapper.clearDirty();
         }
     }
 
@@ -186,9 +179,8 @@ public class BackPackContainer extends ModularContainer {
                         if (slot instanceof ModularCraftingSlot) continue;
 
                         if (slot instanceof IndexedModularCraftingMatrixSlot matrixSlot) {
-                            ItemStack stack = wrapper.getUpgradeHandler()
-                                .getStackInSlot(matrixSlot.getUpgradeSlotIndex());
-                            UpgradeWrapper upgradeWrapper = UpgradeWrapperFactory.createWrapper(stack);
+                            ItemStack stack = wrapper.upgradeHandler.getStackInSlot(matrixSlot.getUpgradeSlotIndex());
+                            UpgradeWrapper upgradeWrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
                             if (upgradeWrapper == null) continue;
                             if (!upgradeWrapper.isTabOpened()) continue;
                         }

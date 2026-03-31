@@ -274,8 +274,7 @@ public class CommandBackpack extends CommandMod {
         // Determine tier name
         String tier = "Base";
         for (ModBlocks block : ModBlocks.VALUES) {
-            if (block.getItem() == wrapper.getBackpack()
-                .getItem()) {
+            if (block.getItem() == wrapper.backpack.getItem()) {
                 tier = block.name()
                     .replace("BACKPACK_", "");
                 break;
@@ -286,10 +285,8 @@ public class CommandBackpack extends CommandMod {
         mat.setAccentColor(BackpackMaterial.toHexColor(wrapper.getAccentColor()));
 
         // Inventory
-        for (int i = 0; i < wrapper.getBackpackHandler()
-            .getSlots(); i++) {
-            ItemStack stack = wrapper.getBackpackHandler()
-                .getStackInSlot(i);
+        for (int i = 0; i < wrapper.backpackHandler.getSlots(); i++) {
+            ItemStack stack = wrapper.backpackHandler.getStackInSlot(i);
             if (stack != null) {
                 mat.getInventory()
                     .add(BackpackMaterial.BackpackEntry.fromItemStack(i, stack));
@@ -297,10 +294,8 @@ public class CommandBackpack extends CommandMod {
         }
 
         // Upgrades
-        for (int i = 0; i < wrapper.getUpgradeHandler()
-            .getSlots(); i++) {
-            ItemStack stack = wrapper.getUpgradeHandler()
-                .getStackInSlot(i);
+        for (int i = 0; i < wrapper.upgradeHandler.getSlots(); i++) {
+            ItemStack stack = wrapper.upgradeHandler.getStackInSlot(i);
             if (stack != null) {
                 mat.getUpgrade()
                     .add(BackpackMaterial.BackpackEntry.fromItemStack(i, stack));
@@ -311,32 +306,21 @@ public class CommandBackpack extends CommandMod {
     }
 
     private void applyMaterialToWrapper(BackpackMaterial mat, BackpackWrapper wrapper) {
-        wrapper.setMainColor(mat.parseMainColor());
-        wrapper.setAccentColor(mat.parseAccentColor());
+        wrapper.setColors(mat.parseMainColor(), mat.parseAccentColor());
 
         // Clear existing
-        for (int i = 0; i < wrapper.getBackpackHandler()
-            .getSlots(); i++)
-            wrapper.getBackpackHandler()
-                .setStackInSlot(i, null);
-        for (int i = 0; i < wrapper.getUpgradeHandler()
-            .getSlots(); i++)
-            wrapper.getUpgradeHandler()
-                .setStackInSlot(i, null);
+        for (int i = 0; i < wrapper.backpackHandler.getSlots(); i++) wrapper.backpackHandler.setStackInSlot(i, null);
+        for (int i = 0; i < wrapper.upgradeHandler.getSlots(); i++) wrapper.upgradeHandler.setStackInSlot(i, null);
 
         // Set new
         for (BackpackMaterial.BackpackEntry entry : mat.getInventory()) {
-            if (entry.slot < wrapper.getBackpackHandler()
-                .getSlots()) {
-                wrapper.getBackpackHandler()
-                    .setStackInSlot(entry.slot, entry.toItemStack());
+            if (entry.slot < wrapper.backpackHandler.getSlots()) {
+                wrapper.backpackHandler.setStackInSlot(entry.slot, entry.toItemStack());
             }
         }
         for (BackpackMaterial.BackpackEntry entry : mat.getUpgrade()) {
-            if (entry.slot < wrapper.getUpgradeHandler()
-                .getSlots()) {
-                wrapper.getUpgradeHandler()
-                    .setStackInSlot(entry.slot, entry.toItemStack());
+            if (entry.slot < wrapper.upgradeHandler.getSlots()) {
+                wrapper.upgradeHandler.setStackInSlot(entry.slot, entry.toItemStack());
             }
         }
     }

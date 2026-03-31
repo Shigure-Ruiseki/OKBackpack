@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedFilterUpgradeWrapper;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -28,7 +29,7 @@ public class ItemAdvancedFilterUpgrade extends ItemUpgrade<AdvancedFilterUpgrade
     }
 
     @Override
-    public AdvancedFilterUpgradeWrapper createWrapper(ItemStack stack) {
-        return new AdvancedFilterUpgradeWrapper(stack);
+    public AdvancedFilterUpgradeWrapper createWrapper(ItemStack stack, IStorageWrapper storage) {
+        return new AdvancedFilterUpgradeWrapper(stack, storage);
     }
 }

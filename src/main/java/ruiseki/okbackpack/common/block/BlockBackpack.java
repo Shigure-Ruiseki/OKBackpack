@@ -263,7 +263,7 @@ public class BlockBackpack extends BlockOK {
         public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
             float hitX, float hitY, float hitZ) {
 
-            if (player.isSneaking() && stack != null) {
+            if (player.isSneaking() && stack != null && !(world.getBlock(x, y, z) instanceof BlockBackpack)) {
                 if (stack.getTagCompound() == null) {
                     new BackpackWrapper(stack, this).writeToItem();
                 }

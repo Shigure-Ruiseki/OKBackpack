@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.wrapper.PickupUpgradeWrapper;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -28,7 +29,7 @@ public class ItemPickupUpgrade extends ItemUpgrade<PickupUpgradeWrapper> {
     }
 
     @Override
-    public PickupUpgradeWrapper createWrapper(ItemStack stack) {
-        return new PickupUpgradeWrapper(stack);
+    public PickupUpgradeWrapper createWrapper(ItemStack stack, IStorageWrapper storage) {
+        return new PickupUpgradeWrapper(stack, storage);
     }
 }

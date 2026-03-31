@@ -36,7 +36,7 @@ public class SortingSettingWidget extends ExpandedTabWidget {
                 if (button == 0) {
                     BackpackWrapper wrapper = panel.getWrapper();
 
-                    for (int i = 0; i < wrapper.getBackpackSlots(); i++) {
+                    for (int i = 0; i < wrapper.backpackSlots; i++) {
                         wrapper.setSlotLocked(i, true);
                     }
 
@@ -58,7 +58,7 @@ public class SortingSettingWidget extends ExpandedTabWidget {
                 if (button == 0) {
                     BackpackWrapper wrapper = panel.getWrapper();
 
-                    for (int i = 0; i < wrapper.getBackpackSlots(); i++) {
+                    for (int i = 0; i < wrapper.backpackSlots; i++) {
                         wrapper.setSlotLocked(i, false);
                     }
 

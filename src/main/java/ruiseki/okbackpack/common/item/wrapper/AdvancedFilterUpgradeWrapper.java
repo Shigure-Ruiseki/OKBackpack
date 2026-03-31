@@ -2,12 +2,13 @@ package ruiseki.okbackpack.common.item.wrapper;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class AdvancedFilterUpgradeWrapper extends AdvancedUpgradeWrapper implements IFilterUpgrade {
 
-    public AdvancedFilterUpgradeWrapper(ItemStack upgrade) {
-        super(upgrade);
+    public AdvancedFilterUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage) {
+        super(upgrade, storage);
     }
 
     @Override

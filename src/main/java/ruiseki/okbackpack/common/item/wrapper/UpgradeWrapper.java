@@ -2,16 +2,17 @@ package ruiseki.okbackpack.common.item.wrapper;
 
 import net.minecraft.item.ItemStack;
 
-import lombok.Getter;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
-public class UpgradeWrapper implements IUpgrade {
+public class UpgradeWrapper implements IUpgradeWrapper, IDirtable {
 
-    @Getter
     protected final ItemStack upgrade;
+    protected final IStorageWrapper storage;
 
-    public UpgradeWrapper(ItemStack upgrade) {
+    public UpgradeWrapper(ItemStack upgrade, IStorageWrapper storage) {
         this.upgrade = upgrade;
+        this.storage = storage;
     }
 
     @Override
@@ -29,4 +30,23 @@ public class UpgradeWrapper implements IUpgrade {
         return "";
     }
 
+    @Override
+    public boolean isDirty() {
+        return ItemNBTHelpers.getBoolean(upgrade, DIRTY_TAG, false);
+    }
+
+    @Override
+    public void markDirty() {
+        ItemNBTHelpers.setBoolean(upgrade, DIRTY_TAG, true);
+    }
+
+    @Override
+    public void markClean() {
+        ItemNBTHelpers.setBoolean(upgrade, DIRTY_TAG, false);
+    }
+
+    @Override
+    public void setDirty(boolean value) {
+        ItemNBTHelpers.setBoolean(upgrade, DIRTY_TAG, value);
+    }
 }

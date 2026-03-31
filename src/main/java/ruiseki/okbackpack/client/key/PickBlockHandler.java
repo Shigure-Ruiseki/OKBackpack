@@ -13,7 +13,7 @@ import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 
 import baubles.api.BaublesApi;
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.common.block.BackpackInventoryHelpers;
+import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.network.PacketQuickDraw;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.client.key.IKeyHandler;

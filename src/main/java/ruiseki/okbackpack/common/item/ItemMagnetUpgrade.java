@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.wrapper.MagnetUpgradeWrapper;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -28,7 +29,7 @@ public class ItemMagnetUpgrade extends ItemUpgrade<MagnetUpgradeWrapper> {
     }
 
     @Override
-    public MagnetUpgradeWrapper createWrapper(ItemStack stack) {
-        return new MagnetUpgradeWrapper(stack);
+    public MagnetUpgradeWrapper createWrapper(ItemStack stack, IStorageWrapper storage) {
+        return new MagnetUpgradeWrapper(stack, storage);
     }
 }

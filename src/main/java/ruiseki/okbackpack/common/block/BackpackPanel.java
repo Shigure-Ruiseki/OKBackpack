@@ -17,6 +17,7 @@ import com.cleanroommc.modularui.drawable.ItemDrawable;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
+import com.cleanroommc.modularui.network.NetworkUtils;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.UISettings;
@@ -66,6 +67,7 @@ import ruiseki.okbackpack.client.gui.widget.UpgradeSlotGroupWidget;
 import ruiseki.okbackpack.client.gui.widget.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.VoidUpgradeWidget;
 import ruiseki.okbackpack.common.SortType;
+import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedFeedingUpgradeWrapper;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedFilterUpgradeWrapper;
@@ -108,7 +110,7 @@ public class BackpackPanel extends ModularPanel {
     @Getter
     private final UISettings settings;
     @Getter
-    private final BackpackWrapper wrapper;
+    public final BackpackWrapper wrapper;
     @Getter
     private final TileEntity tile;
 
@@ -157,8 +159,8 @@ public class BackpackPanel extends ModularPanel {
         this.backpackSyncHandler = new BackpackSH(new PlayerMainInvWrapper(player.inventory), this.wrapper, this);
         this.syncManager.syncValue("backpack_wrapper", this.backpackSyncHandler);
 
-        this.backpackSlotSyncHandlers = new BackpackSlotSH[this.wrapper.getBackpackSlots()];
-        for (int i = 0; i < this.wrapper.getBackpackSlots(); i++) {
+        this.backpackSlotSyncHandlers = new BackpackSlotSH[this.wrapper.backpackSlots];
+        for (int i = 0; i < this.wrapper.backpackSlots; i++) {
             ModularBackpackSlot slot = new ModularBackpackSlot(this.wrapper, i);
             slot.slotGroup("backpack_inventory");
             slot.changeListener((lastStack, currentStack, isClient, init) -> {
@@ -170,14 +172,13 @@ public class BackpackPanel extends ModularPanel {
             this.syncManager.syncValue("backpack", i, syncHandler);
             this.backpackSlotSyncHandlers[i] = syncHandler;
         }
-        this.syncManager
-            .registerSlotGroup(new SlotGroup("backpack_inventory", this.wrapper.getBackpackSlots(), 100, true));
+        this.syncManager.registerSlotGroup(new SlotGroup("backpack_inventory", this.wrapper.backpackSlots, 100, true));
 
         tabWidgets = new ArrayList<>();
-        this.upgradeSlotGroupWidget = new UpgradeSlotGroupWidget(this, this.wrapper.getUpgradeSlots());
-        this.upgradeSlotSyncHandlers = new UpgradeSlotSH[this.wrapper.getUpgradeSlots()];
-        this.upgradeSlotGroups = new UpgradeSlotUpdateGroup[this.wrapper.getUpgradeSlots()];
-        for (int i = 0; i < this.wrapper.getUpgradeSlots(); i++) {
+        this.upgradeSlotGroupWidget = new UpgradeSlotGroupWidget(this, this.wrapper.upgradeSlots);
+        this.upgradeSlotSyncHandlers = new UpgradeSlotSH[this.wrapper.upgradeSlots];
+        this.upgradeSlotGroups = new UpgradeSlotUpdateGroup[this.wrapper.upgradeSlots];
+        for (int i = 0; i < this.wrapper.upgradeSlots; i++) {
             ModularUpgradeSlot slot = new ModularUpgradeSlot(this.wrapper, i);
             slot.slotGroup("upgrade_inventory");
             UpgradeSlotSH syncHandler = new UpgradeSlotSH(slot, this.wrapper, this);
@@ -215,7 +216,7 @@ public class BackpackPanel extends ModularPanel {
     }
 
     private void updateListHeight() {
-        int totalSlots = wrapper.getBackpackSlots();
+        int totalSlots = wrapper.backpackSlots;
         int rows = (totalSlots + rowSize - 1) / rowSize;
 
         int screenHeight = getScreen() != null ? getScreen().getScreenArea().height : 240;
@@ -260,7 +261,7 @@ public class BackpackPanel extends ModularPanel {
                         BackpackInventoryHelpers.sortInventory(wrapper, reverse);
 
                         backpackSyncHandler.syncToServer(BackpackSH.UPDATE_SORT_INV, buf -> {
-                            for (int i = 0; i < wrapper.getBackpackSlots(); i++) {
+                            for (int i = 0; i < wrapper.backpackSlots; i++) {
                                 buf.writeItemStackToBuffer(wrapper.getStackInSlot(i));
                             }
                         });
@@ -274,8 +275,7 @@ public class BackpackPanel extends ModularPanel {
 
         CyclicVariantButtonWidget sortTypeButton = new CyclicVariantButtonWidget(
             SORT_TYPE_VARIANTS,
-            wrapper.getSortType()
-                .ordinal(),
+            wrapper.sortType.ordinal(),
             0,
             12,
             (index) -> {
@@ -284,8 +284,9 @@ public class BackpackPanel extends ModularPanel {
 
                 backpackSyncHandler.setSortType(nextSortType);
 
-                backpackSyncHandler
-                    .syncToServer(BackpackSH.UPDATE_SET_SORT_TYPE, buf -> buf.writeInt(nextSortType.ordinal()));
+                backpackSyncHandler.syncToServer(
+                    BackpackSH.UPDATE_SET_SORT_TYPE,
+                    buf -> NetworkUtils.writeEnumValue(buf, nextSortType));
 
             }).setEnabledIf(cyclicVariantButtonWidget -> !settingPanel.isPanelOpen())
                 .top(4)
@@ -393,7 +394,7 @@ public class BackpackPanel extends ModularPanel {
 
         backpackInvCol = (Column) new Column().coverChildren();
 
-        for (int i = 0; i < wrapper.getBackpackSlots(); i++) {
+        for (int i = 0; i < wrapper.backpackSlots; i++) {
             int col = i % rowSize;
             int row = i / rowSize;
 
@@ -427,9 +428,9 @@ public class BackpackPanel extends ModularPanel {
     public void addUpgradeSlots() {
         upgradeSlotGroupWidget.name("upgrade_inventory");
         upgradeSlotGroupWidget.resizer()
-            .size(23, 10 + wrapper.getUpgradeSlots() * ItemSlot.SIZE)
+            .size(23, 10 + wrapper.upgradeSlots * ItemSlot.SIZE)
             .left(-21);
-        for (int i = 0; i < wrapper.getUpgradeSlots(); i++) {
+        for (int i = 0; i < wrapper.upgradeSlots; i++) {
             ItemSlot itemSlot = new ItemSlot().syncHandler("upgrades", i)
                 .pos(5, 5 + i * ItemSlot.SIZE)
                 .name("slot_" + i);
@@ -440,7 +441,7 @@ public class BackpackPanel extends ModularPanel {
     }
 
     public void addUpgradeTabs() {
-        for (int i = 0; i < wrapper.getUpgradeSlots(); i++) {
+        for (int i = 0; i < wrapper.upgradeSlots; i++) {
             TabWidget tab = new TabWidget(i + 1).name("upgrade_tab_" + i);
             tab.setEnabled(false);
             tabWidgets.add(tab);
@@ -472,16 +473,16 @@ public class BackpackPanel extends ModularPanel {
 
         for (int slotIndex = 0; slotIndex < upgradeSlotWidgets.size(); slotIndex++) {
             ItemSlot slotWidget = upgradeSlotWidgets.get(slotIndex);
-            ItemStack upgrade = slotWidget.getSlot()
+            ItemStack stack = slotWidget.getSlot()
                 .getStack();
-            if (!(upgrade != null && upgrade.getItem() instanceof ItemUpgrade<?>item)) {
+            if (!(stack != null && stack.getItem() instanceof ItemUpgrade<?>item)) {
                 continue;
             }
             if (!item.hasTab()) {
                 continue;
             }
 
-            UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(upgrade);
+            UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
             if (wrapper == null) {
                 continue;
             }
@@ -497,7 +498,7 @@ public class BackpackPanel extends ModularPanel {
             }
         }
 
-        for (int slotIndex = 0; slotIndex < wrapper.getUpgradeSlots(); slotIndex++) {
+        for (int slotIndex = 0; slotIndex < wrapper.upgradeSlots; slotIndex++) {
             ItemSlot slotWidget = upgradeSlotWidgets.get(slotIndex);
             ItemStack stack = slotWidget.getSlot()
                 .getStack();
@@ -513,7 +514,7 @@ public class BackpackPanel extends ModularPanel {
             TabWidget tabWidget = tabWidgets.get(tabIndex);
             UpgradeSlotUpdateGroup upgradeSlotGroup = upgradeSlotGroups[slotIndex];
 
-            UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(stack);
+            UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
             if (wrapper == null) {
                 continue;
             }
@@ -624,7 +625,7 @@ public class BackpackPanel extends ModularPanel {
     }
 
     private void disableUnusedTabWidgets(int startTabIndex) {
-        for (int i = startTabIndex; i < wrapper.getUpgradeSlots(); i++) {
+        for (int i = startTabIndex; i < wrapper.upgradeSlots; i++) {
             TabWidget tabWidget = tabWidgets.get(i);
             if (tabWidget != null) {
                 tabWidget.setEnabled(false);
@@ -634,7 +635,7 @@ public class BackpackPanel extends ModularPanel {
     }
 
     public void disableAllTabWidgets() {
-        for (int i = 0; i < wrapper.getUpgradeSlots(); i++) {
+        for (int i = 0; i < wrapper.upgradeSlots; i++) {
             TabWidget tabWidget = tabWidgets.get(i);
             if (tabWidget != null) {
                 tabWidget.setEnabled(false);
@@ -645,7 +646,7 @@ public class BackpackPanel extends ModularPanel {
     }
 
     private void syncToggles() {
-        for (int i = 0; i < wrapper.getUpgradeSlots(); i++) {
+        for (int i = 0; i < wrapper.upgradeSlots; i++) {
             UpgradeSlotGroupWidget.UpgradeToggleWidget toggleWidget = upgradeSlotGroupWidget.getToggleWidget(i);
             IToggleable wrapper = toggleWidget.getWrapper();
 
@@ -659,14 +660,14 @@ public class BackpackPanel extends ModularPanel {
     }
 
     public void resetOpenedTabsIfNotKeep() {
-        if (!wrapper.isKeepTab() && !isResetOpenedTabs) {
+        if (!wrapper.keepTab && !isResetOpenedTabs) {
             for (int i = 0; i < upgradeSlotWidgets.size(); i++) {
                 ItemSlot slotWidget = upgradeSlotWidgets.get(i);
                 ItemStack stack = slotWidget.getSlot()
                     .getStack();
                 if (stack == null || !(stack.getItem() instanceof ItemUpgrade<?>item) || !item.hasTab()) continue;
 
-                UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(stack);
+                UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
                 if (wrapper != null && wrapper.isTabOpened()) {
                     wrapper.setTabOpened(false);
                     upgradeSlotSyncHandlers[i]
@@ -682,7 +683,7 @@ public class BackpackPanel extends ModularPanel {
     }
 
     public int getOpenCraftingUpgradeSlot() {
-        for (int slotIndex = 0; slotIndex < wrapper.getUpgradeSlots(); slotIndex++) {
+        for (int slotIndex = 0; slotIndex < wrapper.upgradeSlots; slotIndex++) {
             ItemSlot slot = upgradeSlotWidgets.get(slotIndex);
             ItemStack stack = slot.getSlot()
                 .getStack();
@@ -692,7 +693,7 @@ public class BackpackPanel extends ModularPanel {
                 continue;
             }
 
-            UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(stack);
+            UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
             if (wrapper == null) continue;
 
             if (wrapper instanceof CraftingUpgradeWrapper && wrapper.isTabOpened()) {

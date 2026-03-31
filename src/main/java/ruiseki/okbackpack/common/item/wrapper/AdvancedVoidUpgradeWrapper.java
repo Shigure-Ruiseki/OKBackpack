@@ -2,12 +2,13 @@ package ruiseki.okbackpack.common.item.wrapper;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class AdvancedVoidUpgradeWrapper extends AdvancedUpgradeWrapper implements IVoidUpgrade {
 
-    public AdvancedVoidUpgradeWrapper(ItemStack upgrade) {
-        super(upgrade);
+    public AdvancedVoidUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage) {
+        super(upgrade, storage);
     }
 
     @Override

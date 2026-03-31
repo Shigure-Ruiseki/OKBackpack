@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.network.NetworkUtils;
 
 import lombok.Getter;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
@@ -42,11 +43,7 @@ public class FilterUpgradeWidget extends BasicExpandedTabWidget<FilterUpgradeWra
                     this.filterWidget.getSyncHandler()
                         .syncToServer(
                             UpgradeSlotSH.UPDATE_FILTER,
-                            buf -> {
-                                buf.writeInt(
-                                    wrapper.getfilterWay()
-                                        .ordinal());
-                            });
+                            buf -> { NetworkUtils.writeEnumValue(buf, wrapper.getfilterWay()); });
                 }
             });
 

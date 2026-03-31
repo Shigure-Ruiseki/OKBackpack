@@ -12,7 +12,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -22,16 +21,14 @@ import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.utils.item.IItemHandler;
-import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 
-import baubles.api.BaublesApi;
-import lombok.Getter;
-import lombok.Setter;
 import ruiseki.okbackpack.OKBackpack;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okbackpack.common.SortType;
+import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.init.ModItems;
 import ruiseki.okbackpack.common.item.ItemEverlastingUpgrade;
@@ -45,60 +42,40 @@ import ruiseki.okbackpack.common.item.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapper;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
-import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
-import ruiseki.okcore.persist.nbt.INBTSerializable;
 
-public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable {
+public class BackpackWrapper implements IStorageWrapper {
 
-    @Getter
-    private ItemStack backpack;
-    @Getter
-    private final BackpackItemStackHandler backpackHandler;
-    @Getter
-    private final UpgradeItemStackHandler upgradeHandler;
+    public ItemStack backpack;
+    public final BackpackItemStackHandler backpackHandler;
+    public final UpgradeItemStackHandler upgradeHandler;
+    public int backpackSlots;
+    public int upgradeSlots;
+    public int mainColor;
+    public int accentColor;
+    public SortType sortType;
+    public boolean lockBackpack;
+    public boolean keepTab;
+    public String uuid;
+    public String customName;
+    public boolean sleepingBagDeployed;
+    public int sleepingBagX;
+    public int sleepingBagY;
+    public int sleepingBagZ;
+    public int slotIndex = -1;
+    public InventoryType type = null;
+    public boolean isDirty;
+    private Runnable markDirtyCallback;
 
     public static final String BACKPACK_NBT = "BackpackNBT";
     public static final String BACKPACK_INV = "BackpackInv";
     public static final String UPGRADE_INV = "UpgradeInv";
     public static final String BACKPACK_SLOTS = "BackpackSlots";
     public static final String UPGRADE_SLOTS = "UpgradeSlots";
-
-    @Getter
-    @Setter
-    private SortType sortType;
-
-    @Getter
-    @Setter
-    private boolean lockBackpack;
-
-    @Getter
-    @Setter
-    private boolean keepTab;
-
-    @Getter
-    @Setter
-    private String uuid;
-
-    @Getter
-    @Setter
-    private String customName;
-
-    @Getter
-    @Setter
-    private boolean sleepingBagDeployed;
-    @Getter
-    @Setter
-    private int sleepingBagX;
-    @Getter
-    @Setter
-    private int sleepingBagY;
-    @Getter
-    @Setter
-    private int sleepingBagZ;
-
+    public static final String MAIN_COLOR = "MainColor";
+    public static final String ACCENT_COLOR = "AccentColor";
     public static final String MEMORY_STACK_ITEMS_TAG = "MemoryItems";
     public static final String MEMORY_STACK_RESPECT_NBT_TAG = "MemoryRespectNBT";
     public static final String SORT_TYPE_TAG = "SortType";
@@ -111,34 +88,6 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
     public static final String SLEEPING_BAG_X = "SleepingBagX";
     public static final String SLEEPING_BAG_Y = "SleepingBagY";
     public static final String SLEEPING_BAG_Z = "SleepingBagZ";
-
-    @Getter
-    @Setter
-    private int backpackSlots;
-    @Getter
-    @Setter
-    private int upgradeSlots;
-
-    @Getter
-    @Setter
-    private int mainColor;
-    @Getter
-    @Setter
-    private int accentColor;
-    @Getter
-    public static final String MAIN_COLOR = "MainColor";
-    @Getter
-    public static final String ACCENT_COLOR = "AccentColor";
-    @Getter
-    @Setter
-    protected int slotIndex = -1;
-    @Getter
-    @Setter
-    protected InventoryType type = null;
-
-    public boolean isDirty;
-
-    private Runnable markDirtyCallback;
 
     public BackpackWrapper() {
         this(null, 120, 7);
@@ -543,7 +492,7 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
     }
 
     public boolean canPlayerAccess(UUID playerUUID) {
-        return !isLockBackpack() || playerUUID.equals(UUID.fromString(getUuid()));
+        return !lockBackpack || playerUUID.equals(UUID.fromString(uuid));
     }
 
     public boolean hasCustomInventoryName() {
@@ -558,38 +507,6 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
         return backpack.getTagCompound();
     }
 
-    public ItemStack findActualStack(EntityPlayer player) {
-        if (player == null || uuid == null) return backpack;
-
-        // Check held item first (fastest)
-        ItemStack held = player.getHeldItem();
-        if (isSameBackpack(held)) return held;
-
-        // Check player inventory
-        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-            ItemStack stack = player.inventory.getStackInSlot(i);
-            if (isSameBackpack(stack)) return stack;
-        }
-
-        // Check Baubles if loaded
-        if (Mods.Baubles.isLoaded()) {
-            IInventory baubles = BaublesApi.getBaubles(player);
-            if (baubles != null) {
-                for (int i = 0; i < baubles.getSizeInventory(); i++) {
-                    ItemStack stack = baubles.getStackInSlot(i);
-                    if (isSameBackpack(stack)) return stack;
-                }
-            }
-        }
-        return backpack; // Fallback
-    }
-
-    private boolean isSameBackpack(ItemStack stack) {
-        if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack)) return false;
-        NBTTagCompound tag = stack.getTagCompound();
-        return tag != null && uuid.equals(tag.getString(UUID_TAG));
-    }
-
     public void writeToItem() {
         if (backpack == null) return;
 
@@ -602,11 +519,6 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
         root.setTag(BACKPACK_NBT, serializeNBT());
     }
 
-    public void writeToItem(EntityPlayer player) {
-        this.backpack = findActualStack(player);
-        writeToItem();
-    }
-
     public void readFromItem() {
         if (backpack == null) return;
         NBTTagCompound tag = ItemNBTHelpers.getNBT(backpack);
@@ -617,18 +529,15 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
     public NBTTagCompound serializeNBT() {
         NBTTagCompound tag = new NBTTagCompound();
 
-        int currentSlots = getBackpackSlots();
-        int upSlots = getUpgradeSlots();
-
-        if (backpackHandler.isSizeInconsistent(currentSlots)) {
-            backpackHandler.resize(currentSlots);
+        if (backpackHandler.isSizeInconsistent(backpackSlots)) {
+            backpackHandler.resize(backpackSlots);
         }
-        if (upgradeHandler.isSizeInconsistent(upSlots)) {
-            upgradeHandler.resize(upSlots);
+        if (upgradeHandler.isSizeInconsistent(upgradeSlots)) {
+            upgradeHandler.resize(upgradeSlots);
         }
 
-        tag.setInteger(BACKPACK_SLOTS, currentSlots);
-        tag.setInteger(UPGRADE_SLOTS, upSlots);
+        tag.setInteger(BACKPACK_SLOTS, backpackSlots);
+        tag.setInteger(UPGRADE_SLOTS, upgradeSlots);
         tag.setInteger(MAIN_COLOR, getMainColor());
         tag.setInteger(ACCENT_COLOR, getAccentColor());
 
@@ -640,16 +549,16 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
         tag.setTag(MEMORY_STACK_ITEMS_TAG, memoryTag);
 
         List<Boolean> respectList = backpackHandler.memorizedSlotRespectNbtList;
-        byte[] respectBytes = new byte[currentSlots];
-        for (int i = 0; i < currentSlots; i++) {
+        byte[] respectBytes = new byte[backpackSlots];
+        for (int i = 0; i < backpackSlots; i++) {
             boolean val = i < respectList.size() && respectList.get(i);
             respectBytes[i] = (byte) (val ? 1 : 0);
         }
         tag.setByteArray(MEMORY_STACK_RESPECT_NBT_TAG, respectBytes);
 
         List<Boolean> locked = backpackHandler.sortLockedSlots;
-        byte[] lockedBytes = new byte[currentSlots];
-        for (int i = 0; i < currentSlots; i++) {
+        byte[] lockedBytes = new byte[backpackSlots];
+        for (int i = 0; i < backpackSlots; i++) {
             boolean val = i < locked.size() && locked.get(i);
             lockedBytes[i] = (byte) (val ? 1 : 0);
         }
@@ -756,7 +665,7 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
             ItemStack stack = upgradeHandler.getStackInSlot(i);
             if (stack == null) continue;
 
-            UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(stack);
+            UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(stack, this);
             if (wrapper == null) continue;
 
             if (capabilityClass.isAssignableFrom(wrapper.getClass())) {
@@ -812,5 +721,21 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
 
     public void clearDirty() {
         this.isDirty = false;
+    }
+
+    @Override
+    public int getAccentColor() {
+        return accentColor;
+    }
+
+    @Override
+    public int getMainColor() {
+        return mainColor;
+    }
+
+    @Override
+    public void setColors(int mainColor, int accentColor) {
+        this.mainColor = mainColor;
+        this.accentColor = accentColor;
     }
 }

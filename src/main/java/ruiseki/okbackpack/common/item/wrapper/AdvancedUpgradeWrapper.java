@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
@@ -14,8 +15,8 @@ public class AdvancedUpgradeWrapper extends UpgradeWrapper implements IAdvancedF
     protected UpgradeItemStackHandler handler;
     private boolean filterItemsCached = false;
 
-    public AdvancedUpgradeWrapper(ItemStack upgrade) {
-        super(upgrade);
+    public AdvancedUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage) {
+        super(upgrade, storage);
         this.handler = new UpgradeItemStackHandler(16) {
 
             @Override

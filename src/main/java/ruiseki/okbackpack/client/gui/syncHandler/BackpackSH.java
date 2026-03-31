@@ -9,16 +9,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 
+import com.cleanroommc.modularui.network.NetworkUtils;
 import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 
 import ruiseki.okbackpack.common.SortType;
-import ruiseki.okbackpack.common.block.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.common.block.TEBackpack;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
+import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 
 public class BackpackSH extends SyncHandler {
 
@@ -83,20 +84,17 @@ public class BackpackSH extends SyncHandler {
     }
 
     public void setSortType(PacketBuffer buf) {
-        SortType sortType = SortType.values()[buf.readInt()];
+        SortType sortType = NetworkUtils.readEnumValue(buf, SortType.class);
         setSortType(sortType);
     }
 
     public void setSortType(SortType sortType) {
-        wrapper.setSortType(sortType);
+        wrapper.sortType = sortType;
     }
 
     public void sortInventory(PacketBuffer buf) throws IOException {
-        int size = wrapper.getBackpackSlots();
-
-        for (int i = 0; i < size; i++) {
-            wrapper.getBackpackHandler()
-                .setStackInSlot(i, buf.readItemStackFromBuffer());
+        for (int i = 0; i < wrapper.backpackSlots; i++) {
+            wrapper.backpackHandler.setStackInSlot(i, buf.readItemStackFromBuffer());
         }
     }
 
@@ -122,9 +120,9 @@ public class BackpackSH extends SyncHandler {
         boolean lock = buf.readBoolean();
         String uuid = buf.readStringFromBuffer(36);
         boolean tab = buf.readBoolean();
-        wrapper.setLockBackpack(lock);
-        wrapper.setUuid(uuid);
-        wrapper.setKeepTab(tab);
+        wrapper.lockBackpack = lock;
+        wrapper.uuid = uuid;
+        wrapper.keepTab = tab;
     }
 
     public void deploySleepingBag() {

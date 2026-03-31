@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.value.ISyncOrValue;
+import com.cleanroommc.modularui.network.NetworkUtils;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 
@@ -43,11 +44,7 @@ public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
                 if (slotSyncHandler != null) {
                     slotSyncHandler.syncToServer(
                         UpgradeSlotSH.UPDATE_BASIC_FILTERABLE,
-                        buf -> {
-                            buf.writeInt(
-                                filterableWrapper.getFilterType()
-                                    .ordinal());
-                        });
+                        buf -> { NetworkUtils.writeEnumValue(buf, filterableWrapper.getFilterType()); });
                 }
             }).size(20, 20);
 
