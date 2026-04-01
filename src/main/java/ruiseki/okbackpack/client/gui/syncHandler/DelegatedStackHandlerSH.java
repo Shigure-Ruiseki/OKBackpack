@@ -9,15 +9,17 @@ import com.cleanroommc.modularui.utils.item.EmptyHandler;
 import com.cleanroommc.modularui.utils.item.IItemHandler;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
+import ruiseki.okbackpack.api.wrapper.IStorageUpgrade;
 import ruiseki.okbackpack.client.gui.handler.DelegatedItemHandler;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.item.wrapper.IBasicFilterable;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapper;
+import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 
 public class DelegatedStackHandlerSH extends SyncHandler {
 
     public static final int UPDATE_FILTERABLE = 0;
+    public static final int UPDATE_STORAGE = 1;
 
     private final BackpackWrapper wrapper;
     private final int slotIndex;
@@ -46,13 +48,22 @@ public class DelegatedStackHandlerSH extends SyncHandler {
 
     @Override
     public void readOnServer(int id, PacketBuffer buf) {
-        ItemStack stack = wrapper.getUpgradeHandler()
-            .getStackInSlot(slotIndex);
-        if (id == UPDATE_FILTERABLE) {
-            UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(stack);
-            if (wrapper instanceof IBasicFilterable upgrade) {
-                setDelegatedStackHandler(upgrade::getFilterItems);
-            }
+        ItemStack stack = wrapper.upgradeHandler.getStackInSlot(slotIndex);
+        UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
+
+        switch (id) {
+            case UPDATE_FILTERABLE:
+                if (wrapper instanceof IBasicFilterable upgrade) {
+                    setDelegatedStackHandler(upgrade::getFilterItems);
+                }
+                break;
+            case UPDATE_STORAGE:
+                if (wrapper instanceof IStorageUpgrade upgrade) {
+                    setDelegatedStackHandler(upgrade::getStorage);
+                }
+                break;
+
         }
+
     }
 }

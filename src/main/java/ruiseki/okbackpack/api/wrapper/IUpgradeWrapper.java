@@ -1,6 +1,6 @@
-package ruiseki.okbackpack.common.item.wrapper;
+package ruiseki.okbackpack.api.wrapper;
 
-public interface IUpgrade {
+public interface IUpgradeWrapper {
 
     String TAB_STATE_TAG = "TabState";
 

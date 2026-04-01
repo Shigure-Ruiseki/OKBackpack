@@ -48,17 +48,17 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
 
         CyclicVariantButtonWidget tabButton = new CyclicVariantButtonWidget(
             KEEP_TAB_VARIANTS,
-            wrapper.isKeepTab() ? 0 : 1,
+            wrapper.keepTab ? 0 : 1,
             (index) -> {
-                wrapper.setKeepTab(index == 0);
+                wrapper.keepTab = index == 0;
                 updateWrapper();
             });
 
         CyclicVariantButtonWidget lockButton = new CyclicVariantButtonWidget(
             LOCK_VARIANTS,
-            wrapper.isLockBackpack() ? 0 : 1,
+            wrapper.lockBackpack ? 0 : 1,
             (index) -> {
-                wrapper.setLockBackpack(index == 0);
+                wrapper.lockBackpack = index == 0;
                 updateWrapper();
             });
 
@@ -85,12 +85,12 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
     private void updateWrapper() {
         BackpackSH backpackSyncHandler = this.panel.getBackpackSyncHandler();
         backpackSyncHandler.syncToServer(BackpackSH.UPDATE_SETTING, buffer -> {
-            buffer.writeBoolean(wrapper.isLockBackpack());
+            buffer.writeBoolean(wrapper.lockBackpack);
             buffer.writeStringToBuffer(
                 panel.getPlayer()
                     .getUniqueID()
                     .toString());
-            buffer.writeBoolean(wrapper.isKeepTab());
+            buffer.writeBoolean(wrapper.keepTab);
         });
     }
 }

@@ -6,10 +6,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.Reference;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapper;
+import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okcore.helper.LangHelpers;
 
-public class ItemEverlastingUpgrade extends ItemUpgrade<UpgradeWrapper> {
+public class ItemEverlastingUpgrade extends ItemUpgrade<UpgradeWrapperBase> {
 
     public ItemEverlastingUpgrade() {
         super("everlasting_upgrade");

@@ -7,12 +7,13 @@ import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
-import ruiseki.okbackpack.common.item.wrapper.IUpgradeWrapperFactory;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapper;
+import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapperFactory;
+import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemOK;
 
-public class ItemUpgrade<T extends UpgradeWrapper> extends ItemOK implements IUpgradeWrapperFactory<T> {
+public class ItemUpgrade<T extends UpgradeWrapperBase> extends ItemOK implements IUpgradeWrapperFactory<T> {
 
     public ItemUpgrade(String name) {
         super(name);
@@ -36,7 +37,7 @@ public class ItemUpgrade<T extends UpgradeWrapper> extends ItemOK implements IUp
 
     @SuppressWarnings("unchecked")
     @Override
-    public T createWrapper(ItemStack stack) {
-        return (T) new UpgradeWrapper(stack);
+    public T createWrapper(ItemStack stack, IStorageWrapper storage) {
+        return (T) new UpgradeWrapperBase(stack, storage);
     }
 }

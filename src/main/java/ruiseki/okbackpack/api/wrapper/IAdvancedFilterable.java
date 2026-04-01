@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.wrapper;
+package ruiseki.okbackpack.api.wrapper;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.block;
+package ruiseki.okbackpack.common.helpers;
 
 import java.util.List;
 

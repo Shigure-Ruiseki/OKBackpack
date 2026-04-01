@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.wrapper;
+package ruiseki.okbackpack.api.wrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.utils.item.IItemHandler;
 
-public interface IFeedingUpgrade {
+public interface IFeedingUpgrade extends ITickable {
 
     int getFoodSlot(IItemHandler handler, int foodLevel, float health, float maxHealth);
 
@@ -148,6 +148,20 @@ public interface IFeedingUpgrade {
         @Override
         public boolean isItemValidForSlot(int index, ItemStack stack) {
             return original.isItemValidForSlot(index, stack);
+        }
+    }
+
+    class FeedingStrategy {
+
+        public enum Hunger {
+            FULL,
+            HALF,
+            ALWAYS;
+        }
+
+        public enum HEALTH {
+            ALWAYS,
+            IGNORE;
         }
     }
 }

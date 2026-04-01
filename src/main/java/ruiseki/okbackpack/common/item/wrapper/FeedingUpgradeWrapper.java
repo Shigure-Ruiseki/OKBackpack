@@ -1,18 +1,22 @@
 package ruiseki.okbackpack.common.item.wrapper;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.cleanroommc.modularui.utils.item.IItemHandler;
 
+import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
+import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class FeedingUpgradeWrapper extends BasicUpgradeWrapper implements IFeedingUpgrade {
 
-    public FeedingUpgradeWrapper(ItemStack upgrade) {
-        super(upgrade);
+    public FeedingUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage) {
+        super(upgrade, storage);
         handler = new UpgradeItemStackHandler(9) {
 
             @Override
@@ -26,6 +30,11 @@ public class FeedingUpgradeWrapper extends BasicUpgradeWrapper implements IFeedi
                 tag.setTag(IBasicFilterable.FILTER_ITEMS_TAG, this.serializeNBT());
             }
         };
+    }
+
+    @Override
+    public String getSettingLangKey() {
+        return "gui.backpack.feeding_settings";
     }
 
     @Override
@@ -50,4 +59,10 @@ public class FeedingUpgradeWrapper extends BasicUpgradeWrapper implements IFeedi
         return check.getItem() instanceof ItemFood && super.checkFilter(check);
     }
 
+    @Override
+    public boolean tick(EntityPlayer player) {
+        if (player.capabilities.isCreativeMode) return false;
+        if (player.ticksExisted % 20 != 0) return false;
+        return feed(player, storage);
+    }
 }

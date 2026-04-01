@@ -13,7 +13,7 @@ import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 
 import baubles.api.BaublesApi;
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.common.block.BackpackInventoryHelpers;
+import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.network.PacketQuickDraw;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.client.key.IKeyHandler;
@@ -44,16 +44,32 @@ public class PickBlockHandler implements IKeyHandler {
 
         boolean haveItem = false;
 
-        // main inventory
-        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-            ItemStack stack = player.inventory.getStackInSlot(i);
-            if (stack != null && ItemStackHelpers.areStacksEqual(stack, wanted)) {
-                haveItem = true;
-                break;
+        // Bauble
+        if (Mods.Baubles.isLoaded()) {
+            IInventory baublesInventory = BaublesApi.getBaubles(player);
+
+            for (int i = 0; i < baublesInventory.getSizeInventory(); i++) {
+                ItemStack stack = baublesInventory.getStackInSlot(i);
+
+                if (stack != null && ItemStackHelpers.areStacksEqual(stack, wanted)) {
+                    haveItem = true;
+                    break;
+                }
             }
         }
 
-        // armor inventory
+        // Main inventory
+        if (!haveItem) {
+            for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+                ItemStack stack = player.inventory.getStackInSlot(i);
+                if (stack != null && ItemStackHelpers.areStacksEqual(stack, wanted)) {
+                    haveItem = true;
+                    break;
+                }
+            }
+        }
+
+        // Armor inventory
         if (!haveItem) {
             for (ItemStack stack : player.inventory.armorInventory) {
                 if (stack != null && ItemStackHelpers.areStacksEqual(stack, wanted)) {

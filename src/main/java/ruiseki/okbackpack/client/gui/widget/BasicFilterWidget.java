@@ -8,14 +8,15 @@ import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.value.ISyncOrValue;
+import com.cleanroommc.modularui.network.NetworkUtils;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 
 import lombok.Getter;
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.slot.FilterSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
-import ruiseki.okbackpack.common.item.wrapper.IBasicFilterable;
 
 public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
 
@@ -43,11 +44,7 @@ public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
                 if (slotSyncHandler != null) {
                     slotSyncHandler.syncToServer(
                         UpgradeSlotSH.UPDATE_BASIC_FILTERABLE,
-                        buf -> {
-                            buf.writeInt(
-                                filterableWrapper.getFilterType()
-                                    .ordinal());
-                        });
+                        buf -> { NetworkUtils.writeEnumValue(buf, filterableWrapper.getFilterType()); });
                 }
             }).size(20, 20);
 

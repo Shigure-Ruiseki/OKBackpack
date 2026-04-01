@@ -5,10 +5,11 @@ import net.minecraft.item.ItemStack;
 import com.cleanroommc.modularui.widgets.layout.Column;
 import com.cleanroommc.modularui.widgets.layout.Row;
 
-import ruiseki.okbackpack.common.item.wrapper.IBasicFilterable;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapper;
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
+import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 
-public class BasicExpandedTabWidget<T extends UpgradeWrapper & IBasicFilterable> extends ExpandedUpgradeTabWidget<T> {
+public class BasicExpandedTabWidget<T extends UpgradeWrapperBase & IBasicFilterable>
+    extends ExpandedUpgradeTabWidget<T> {
 
     protected final T wrapper;
     protected final Row startingRow;

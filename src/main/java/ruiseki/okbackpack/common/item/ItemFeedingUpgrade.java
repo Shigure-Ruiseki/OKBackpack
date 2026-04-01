@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.wrapper.FeedingUpgradeWrapper;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -28,7 +29,7 @@ public class ItemFeedingUpgrade extends ItemUpgrade<FeedingUpgradeWrapper> {
     }
 
     @Override
-    public FeedingUpgradeWrapper createWrapper(ItemStack stack) {
-        return new FeedingUpgradeWrapper(stack);
+    public FeedingUpgradeWrapper createWrapper(ItemStack stack, IStorageWrapper storage) {
+        return new FeedingUpgradeWrapper(stack, storage);
     }
 }

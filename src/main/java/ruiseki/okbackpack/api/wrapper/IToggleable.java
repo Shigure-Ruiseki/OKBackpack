@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.wrapper;
+package ruiseki.okbackpack.api.wrapper;
 
 public interface IToggleable {
 

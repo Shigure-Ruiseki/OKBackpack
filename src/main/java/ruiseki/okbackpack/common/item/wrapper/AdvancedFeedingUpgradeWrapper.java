@@ -1,11 +1,15 @@
 package ruiseki.okbackpack.common.item.wrapper;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.cleanroommc.modularui.utils.item.IItemHandler;
 
+import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
+import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
@@ -14,8 +18,8 @@ public class AdvancedFeedingUpgradeWrapper extends AdvancedUpgradeWrapper implem
     private static final String HUNGER_FEEDING_STRATEGY_TAG = "HungerFeedingStrategy";
     private static final String HURT_FEEDING_STRATEGY_TAG = "HurtFeedingStrategy";
 
-    public AdvancedFeedingUpgradeWrapper(ItemStack upgrade) {
-        super(upgrade);
+    public AdvancedFeedingUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage) {
+        super(upgrade, storage);
         handler = new UpgradeItemStackHandler(16) {
 
             @Override
@@ -29,6 +33,13 @@ public class AdvancedFeedingUpgradeWrapper extends AdvancedUpgradeWrapper implem
                 tag.setTag(IBasicFilterable.FILTER_ITEMS_TAG, this.serializeNBT());
             }
         };
+        NBTTagCompound handlerTag = ItemNBTHelpers.getCompound(upgrade, FILTER_ITEMS_TAG, false);
+        if (handlerTag != null) handler.deserializeNBT(handlerTag);
+    }
+
+    @Override
+    public String getSettingLangKey() {
+        return "gui.backpack.advanced_feeding_settings";
     }
 
     @Override
@@ -71,10 +82,9 @@ public class AdvancedFeedingUpgradeWrapper extends AdvancedUpgradeWrapper implem
     }
 
     public void setHungerFeedingStrategy(FeedingStrategy.Hunger strategy) {
-        if (strategy == null) {
-            strategy = FeedingStrategy.Hunger.FULL;
-        }
+        if (strategy == null) strategy = FeedingStrategy.Hunger.FULL;
         ItemNBTHelpers.setInt(upgrade, HUNGER_FEEDING_STRATEGY_TAG, strategy.ordinal());
+        markDirty();
     }
 
     public FeedingStrategy.HEALTH getHealthFeedingStrategy() {
@@ -84,23 +94,15 @@ public class AdvancedFeedingUpgradeWrapper extends AdvancedUpgradeWrapper implem
     }
 
     public void setHealthFeedingStrategy(FeedingStrategy.HEALTH strategy) {
-        if (strategy == null) {
-            strategy = FeedingStrategy.HEALTH.ALWAYS;
-        }
+        if (strategy == null) strategy = FeedingStrategy.HEALTH.ALWAYS;
         ItemNBTHelpers.setInt(upgrade, HURT_FEEDING_STRATEGY_TAG, strategy.ordinal());
+        markDirty();
     }
 
-    public static class FeedingStrategy {
-
-        public enum Hunger {
-            FULL,
-            HALF,
-            ALWAYS;
-        }
-
-        public enum HEALTH {
-            ALWAYS,
-            IGNORE;
-        }
+    @Override
+    public boolean tick(EntityPlayer player) {
+        if (player.capabilities.isCreativeMode) return false;
+        if (player.ticksExisted % 20 != 0) return false;
+        return feed(player, storage);
     }
 }

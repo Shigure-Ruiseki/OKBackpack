@@ -6,6 +6,9 @@ import com.cleanroommc.modularui.widgets.slot.ModularCraftingSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
+import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
+import ruiseki.okbackpack.api.wrapper.IStorageUpgrade;
 import ruiseki.okbackpack.client.gui.slot.CraftingSlotInfo;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingMatrixSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
@@ -16,9 +19,6 @@ import ruiseki.okbackpack.client.gui.syncHandler.FilterSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.FoodFilterSlotSH;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.item.wrapper.IAdvancedFilterable;
-import ruiseki.okbackpack.common.item.wrapper.IBasicFilterable;
-import ruiseki.okbackpack.common.item.wrapper.IStorageUpgrade;
 
 public class UpgradeSlotUpdateGroup {
 
@@ -143,6 +143,13 @@ public class UpgradeSlotUpdateGroup {
             slot.slotGroup("crafting_result_" + slotIndex);
             syncManager.syncValue("crafting_slot_" + slotIndex, i, new ItemSlotSH(slot));
             craftingMatrixSlots[i] = slot;
+
+            slot.changeListener((stack, onlyAmountChanged, client, init) -> {
+
+                if (!client) return;
+
+                craftingStackHandler.syncToServer(DelegatedCraftingStackHandlerSH.DETECT_CHANGES);
+            });
         }
         syncManager.registerSlotGroup(new SlotGroup("crafting_matrix_" + slotIndex, 3, false));
         craftingOutputSlot = new IndexedModularCraftingSlot(

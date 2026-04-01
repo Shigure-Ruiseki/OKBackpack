@@ -26,6 +26,7 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import ruiseki.okbackpack.OKBackpack;
+import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingMatrixSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
@@ -33,8 +34,7 @@ import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularFilterSlot;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.IVoidUpgrade;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapper;
+import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.compat.Mods;
@@ -108,17 +108,18 @@ public class BackPackContainer extends ModularContainer {
             wrapper.writeToItem(player);
 
             // Send NBT update packet to client (only if backpack is valid)
-            if (wrapper.getBackpack() != null && wrapper.getType() != null
+            if (wrapper.backpack != null && wrapper.type != null
                 && backpackSlotIndex != null
                 && player instanceof EntityPlayerMP playerMP) {
+
+                // Clear dirty flag
+                wrapper.clearDirty();
+
                 OKBackpack.instance.getPacketHandler()
                     .sendToPlayer(
-                        new PacketBackpackNBT(backpackSlotIndex, wrapper.getTagCompound(), wrapper.getType()),
+                        new PacketBackpackNBT(backpackSlotIndex, wrapper.getTagCompound(), wrapper.type),
                         playerMP);
             }
-
-            // Clear dirty flag
-            wrapper.clearDirty();
         }
     }
 
@@ -129,10 +130,7 @@ public class BackPackContainer extends ModularContainer {
         // Final sync before closing - ensure all changes are saved
         if (!getGuiData().isClient()) {
             wrapper.writeToItem(player);
-            // Only clear dirty if write succeeded (backpack still valid)
-            if (wrapper.getBackpack() != null) {
-                wrapper.clearDirty();
-            }
+            wrapper.clearDirty();
         }
     }
 
@@ -186,9 +184,9 @@ public class BackPackContainer extends ModularContainer {
                         if (slot instanceof ModularCraftingSlot) continue;
 
                         if (slot instanceof IndexedModularCraftingMatrixSlot matrixSlot) {
-                            ItemStack stack = wrapper.getUpgradeHandler()
-                                .getStackInSlot(matrixSlot.getUpgradeSlotIndex());
-                            UpgradeWrapper upgradeWrapper = UpgradeWrapperFactory.createWrapper(stack);
+                            ItemStack stack = wrapper.upgradeHandler.getStackInSlot(matrixSlot.getUpgradeSlotIndex());
+                            UpgradeWrapperBase upgradeWrapper = UpgradeWrapperFactory
+                                .createWrapper(stack, this.wrapper);
                             if (upgradeWrapper == null) continue;
                             if (!upgradeWrapper.isTabOpened()) continue;
                         }
@@ -342,16 +340,14 @@ public class BackPackContainer extends ModularContainer {
                             int available = Math.min(slotStack.stackSize, slotStack.getMaxStackSize());
                             int take = mouseButton == LEFT_MOUSE ? available : (available + 1) / 2;
 
-                            ItemStack taken = slotStack.splitStack(take);
+                            ItemStack taken = clickedSlot.decrStackSize(take);
                             inventoryplayer.setItemStack(taken);
 
-                            if (slotStack.stackSize == 0) {
+                            if (clickedSlot.getStack() == null || clickedSlot.getStack().stackSize <= 0) {
                                 clickedSlot.putStack(null);
-                            } else {
-                                clickedSlot.putStack(slotStack);
                             }
 
-                            clickedSlot.onPickupFromSlot(player, inventoryplayer.getItemStack());
+                            clickedSlot.onPickupFromSlot(player, taken);
                         }
                         // Player holding something
                         else {
@@ -542,6 +538,26 @@ public class BackPackContainer extends ModularContainer {
         }
 
         int limit = stackLimit(toSlot, fromStack);
+
+        if (isBackpackSlot) {
+            int slotIndex = toSlot.getSlotIndex();
+
+            if (wrapper.isSlotMemorized(slotIndex)) {
+
+                ItemStack memory = wrapper.getMemorizedStack(slotIndex);
+
+                if (memory != null) {
+
+                    boolean match = wrapper.isMemoryStackRespectNBT(slotIndex)
+                        ? ItemStack.areItemStacksEqual(memory, fromStack)
+                        : fromStack.isItemEqual(memory);
+
+                    if (!match) {
+                        return;
+                    }
+                }
+            }
+        }
 
         // merge stack
         if (fromStack.stackSize > 0 && !fromSlot.isPhantom()

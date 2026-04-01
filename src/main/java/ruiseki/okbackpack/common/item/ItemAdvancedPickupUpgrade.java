@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedPickupUpgradeWrapper;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -28,7 +29,7 @@ public class ItemAdvancedPickupUpgrade extends ItemUpgrade<AdvancedPickupUpgrade
     }
 
     @Override
-    public AdvancedPickupUpgradeWrapper createWrapper(ItemStack stack) {
-        return new AdvancedPickupUpgradeWrapper(stack);
+    public AdvancedPickupUpgradeWrapper createWrapper(ItemStack stack, IStorageWrapper storage) {
+        return new AdvancedPickupUpgradeWrapper(stack, storage);
     }
 }

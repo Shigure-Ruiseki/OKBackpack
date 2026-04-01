@@ -38,6 +38,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
 import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.client.renderer.player.IArmorRender;
@@ -166,7 +167,10 @@ public class BlockBackpack extends BlockOK {
 
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
-        return new TEBackpack(backpackSlots, upgradeSlots);
+        TEBackpack backpack = new TEBackpack();
+        BackpackWrapper wrapper = new BackpackWrapper(null, backpackSlots, upgradeSlots);
+        backpack.setWrapper(wrapper);
+        return backpack;
     }
 
     @Override
@@ -235,6 +239,24 @@ public class BlockBackpack extends BlockOK {
         @Override
         public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isHeld) {
             super.onUpdate(stack, world, entity, slot, isHeld);
+            if (!world.isRemote && stack != null && entity instanceof EntityPlayer player) {
+                BackpackWrapper wrapper = new BackpackWrapper(stack, this);
+                if (!stack.hasTagCompound()) {
+                    wrapper.writeToItem();
+                    stack.setTagCompound(wrapper.getTagCompound());
+                }
+
+                if (!(player.openContainer instanceof BackPackContainer)) {
+                    if (wrapper.tick(player)) {
+                        wrapper.writeToItem();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+            super.onCreated(stack, world, player);
             if (!world.isRemote && stack != null) {
                 if (!stack.hasTagCompound()) {
                     BackpackWrapper wrapper = new BackpackWrapper(stack, this);
@@ -245,22 +267,10 @@ public class BlockBackpack extends BlockOK {
         }
 
         @Override
-        public void onCreated(ItemStack stack, World world, EntityPlayer player) {
-            super.onCreated(stack, world, player);
-            if (!world.isRemote && stack != null) {
-                if (!stack.hasTagCompound()) {
-                    BackpackWrapper cap = new BackpackWrapper(stack, this);
-                    cap.writeToItem();
-                    stack.setTagCompound(cap.getTagCompound());
-                }
-            }
-        }
-
-        @Override
         public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
             float hitX, float hitY, float hitZ) {
 
-            if (player.isSneaking() && stack != null) {
+            if (player.isSneaking() && stack != null && !(world.getBlock(x, y, z) instanceof BlockBackpack)) {
                 if (stack.getTagCompound() == null) {
                     new BackpackWrapper(stack, this).writeToItem();
                 }

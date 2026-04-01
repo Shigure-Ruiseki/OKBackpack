@@ -44,7 +44,9 @@ public class PacketBackpackNBT extends PacketCodec {
         if (type == null || nbt == null) return;
 
         // Try to find the backpack by UUID in client inventory
-        String uuid = nbt.getString("UUID");
+        NBTTagCompound bp = nbt.getCompoundTag(BackpackWrapper.BACKPACK_NBT);
+        if (bp == null) return;
+        String uuid = bp.getString(BackpackWrapper.UUID_TAG);
         if (uuid == null || uuid.isEmpty()) return;
 
         ItemStack stack = findStackByUUID(player, uuid);
@@ -80,7 +82,8 @@ public class PacketBackpackNBT extends PacketCodec {
     private boolean isMatch(ItemStack stack, String uuid) {
         if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack)) return false;
         NBTTagCompound tag = stack.getTagCompound();
-        return tag != null && uuid.equals(tag.getString(BackpackWrapper.UUID_TAG));
+        NBTTagCompound bp = tag.getCompoundTag(BackpackWrapper.BACKPACK_NBT);
+        return bp != null && uuid.equals(bp.getString(BackpackWrapper.UUID_TAG));
     }
 
     @Override
@@ -89,7 +92,9 @@ public class PacketBackpackNBT extends PacketCodec {
         if (type == null || nbt == null) return;
 
         // Use UUID tracking to find the correct backpack (not slot index!)
-        String uuid = nbt.getString("UUID");
+        NBTTagCompound bp = nbt.getCompoundTag(BackpackWrapper.BACKPACK_NBT);
+        if (bp == null) return;
+        String uuid = bp.getString(BackpackWrapper.UUID_TAG);
         if (uuid == null || uuid.isEmpty()) return;
 
         ItemStack stack = findStackByUUID(player, uuid);

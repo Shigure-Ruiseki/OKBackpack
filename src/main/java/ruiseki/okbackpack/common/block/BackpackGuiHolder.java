@@ -33,8 +33,8 @@ public abstract class BackpackGuiHolder {
 
         int width = 20 + rowSize * ItemSlot.SIZE;
 
-        if (backpackSlotIndex != null) wrapper.setSlotIndex(backpackSlotIndex);
-        if (type != null) wrapper.setType(type);
+        if (backpackSlotIndex != null) wrapper.slotIndex = backpackSlotIndex;
+        if (type != null) wrapper.type = type;
 
         return new BackpackPanel(player, tile, syncManager, settings, wrapper, width, backpackSlotIndex);
     }

@@ -32,12 +32,12 @@ public class AdvancedMagnetUpgradeWidget extends AdvancedExpandedTabWidget<Advan
     @Getter
     private final CyclicVariantButtonWidget expButton;
 
-    public AdvancedMagnetUpgradeWidget(int slotIndex, AdvancedMagnetUpgradeWrapper wrapper) {
+    public AdvancedMagnetUpgradeWidget(int slotIndex, AdvancedMagnetUpgradeWrapper wrapper, String titleKey) {
         super(
             slotIndex,
             wrapper,
             new ItemStack(ModItems.ADVANCED_MAGNET_UPGRADE.getItem()),
-            "gui.backpack.advanced_magnet_settings",
+            titleKey,
             "adv_common_filter",
             6,
             100);

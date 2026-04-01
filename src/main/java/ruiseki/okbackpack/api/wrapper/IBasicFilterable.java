@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.wrapper;
+package ruiseki.okbackpack.api.wrapper;
 
 import net.minecraft.item.ItemStack;
 
@@ -11,8 +11,6 @@ public interface IBasicFilterable {
     String FILTER_TYPE_TAG = "FilterType";
 
     UpgradeItemStackHandler getFilterItems();
-
-    void setFilterItems(UpgradeItemStackHandler handler);
 
     FilterType getFilterType();
 

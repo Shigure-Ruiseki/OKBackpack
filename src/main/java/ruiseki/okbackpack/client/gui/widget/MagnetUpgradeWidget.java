@@ -30,15 +30,8 @@ public class MagnetUpgradeWidget extends BasicExpandedTabWidget<MagnetUpgradeWra
     @Getter
     private final CyclicVariantButtonWidget expButton;
 
-    public MagnetUpgradeWidget(int slotIndex, MagnetUpgradeWrapper wrapper) {
-        super(
-            slotIndex,
-            wrapper,
-            ModItems.MAGNET_UPGRADE.newItemStack(),
-            "gui.backpack.magnet_settings",
-            "common_filter",
-            5,
-            75);
+    public MagnetUpgradeWidget(int slotIndex, MagnetUpgradeWrapper wrapper, String titleKey) {
+        super(slotIndex, wrapper, ModItems.MAGNET_UPGRADE.newItemStack(), titleKey, "common_filter", 5, 75);
 
         this.itemButton = new CyclicVariantButtonWidget(ITEM_VARIANTS, wrapper.isCollectItem() ? 0 : 1, index -> {
             this.wrapper.setCollectItem(index == 0);

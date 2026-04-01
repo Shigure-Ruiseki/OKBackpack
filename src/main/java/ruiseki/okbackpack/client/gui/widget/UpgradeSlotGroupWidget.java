@@ -21,10 +21,10 @@ import com.cleanroommc.modularui.widget.Widget;
 
 import lombok.Setter;
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.common.block.BackpackPanel;
-import ruiseki.okbackpack.common.item.wrapper.IToggleable;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapper;
+import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 
 public class UpgradeSlotGroupWidget extends ParentWidget<UpgradeSlotGroupWidget> {
@@ -129,10 +129,8 @@ public class UpgradeSlotGroupWidget extends ParentWidget<UpgradeSlotGroupWidget>
         }
 
         public IToggleable getWrapper() {
-            ItemStack stack = panel.getWrapper()
-                .getUpgradeHandler()
-                .getStackInSlot(slotIndex);
-            UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(stack);
+            ItemStack stack = panel.getWrapper().upgradeHandler.getStackInSlot(slotIndex);
+            UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(stack, panel.wrapper);
             if (wrapper instanceof IToggleable toggleableWrapper) {
                 return toggleableWrapper;
             } else {

@@ -6,12 +6,13 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.network.NetworkUtils;
 
+import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.common.init.ModItems;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedVoidUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.IVoidUpgrade;
 
 public class AdvancedVoidUpgradeWidget extends AdvancedExpandedTabWidget<AdvancedVoidUpgradeWrapper> {
 
@@ -25,12 +26,12 @@ public class AdvancedVoidUpgradeWidget extends AdvancedExpandedTabWidget<Advance
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.void_overflow"), OKBGuiTextures.VOID_OVERFLOW),
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.void_any"), OKBGuiTextures.VOID_ANY));
 
-    public AdvancedVoidUpgradeWidget(int slotIndex, AdvancedVoidUpgradeWrapper wrapper) {
+    public AdvancedVoidUpgradeWidget(int slotIndex, AdvancedVoidUpgradeWrapper wrapper, String titleKey) {
         super(
             slotIndex,
             wrapper,
             new ItemStack(ModItems.ADVANCED_VOID_UPGRADE.getItem()),
-            "gui.backpack.advanced_void_settings",
+            titleKey,
             "adv_common_filter",
             6,
             100);
@@ -64,12 +65,8 @@ public class AdvancedVoidUpgradeWidget extends AdvancedExpandedTabWidget<Advance
         if (this.filterWidget.getSlotSyncHandler() != null) {
             this.filterWidget.getSyncHandler()
                 .syncToServer(UpgradeSlotSH.UPDATE_VOID, buf -> {
-                    buf.writeInt(
-                        wrapper.getVoidType()
-                            .ordinal());
-                    buf.writeInt(
-                        wrapper.getVoidInput()
-                            .ordinal());
+                    NetworkUtils.writeEnumValue(buf, wrapper.getVoidType());
+                    NetworkUtils.writeEnumValue(buf, wrapper.getVoidInput());
                 });
         }
     }

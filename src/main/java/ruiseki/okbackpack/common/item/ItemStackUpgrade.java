@@ -12,11 +12,11 @@ import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.Reference;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapper;
+import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.helper.LangHelpers;
 
-public class ItemStackUpgrade extends ItemUpgrade<UpgradeWrapper> {
+public class ItemStackUpgrade extends ItemUpgrade<UpgradeWrapperBase> {
 
     @SideOnly(Side.CLIENT)
     protected IIcon tier1, tier2, tier3, tier4, tierOmega;

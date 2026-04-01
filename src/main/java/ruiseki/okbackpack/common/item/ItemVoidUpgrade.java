@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.wrapper.VoidUpgradeWrapper;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -28,7 +29,7 @@ public class ItemVoidUpgrade extends ItemUpgrade<VoidUpgradeWrapper> {
     }
 
     @Override
-    public VoidUpgradeWrapper createWrapper(ItemStack stack) {
-        return new VoidUpgradeWrapper(stack);
+    public VoidUpgradeWrapper createWrapper(ItemStack stack, IStorageWrapper storage) {
+        return new VoidUpgradeWrapper(stack, storage);
     }
 }

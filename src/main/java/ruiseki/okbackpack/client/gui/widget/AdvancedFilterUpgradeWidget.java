@@ -6,13 +6,14 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.network.NetworkUtils;
 
 import lombok.Getter;
+import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.common.init.ModItems;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedFilterUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.IFilterUpgrade;
 
 public class AdvancedFilterUpgradeWidget extends AdvancedExpandedTabWidget<AdvancedFilterUpgradeWrapper> {
 
@@ -24,12 +25,12 @@ public class AdvancedFilterUpgradeWidget extends AdvancedExpandedTabWidget<Advan
     @Getter
     private final CyclicVariantButtonWidget filterButton;
 
-    public AdvancedFilterUpgradeWidget(int slotIndex, AdvancedFilterUpgradeWrapper wrapper) {
+    public AdvancedFilterUpgradeWidget(int slotIndex, AdvancedFilterUpgradeWrapper wrapper, String titleKey) {
         super(
             slotIndex,
             wrapper,
             new ItemStack(ModItems.ADVANCED_FILTER_UPGRADE.getItem()),
-            "gui.backpack.advanced_filter_settings",
+            titleKey,
             "adv_common_filter",
             6,
             100);
@@ -44,11 +45,7 @@ public class AdvancedFilterUpgradeWidget extends AdvancedExpandedTabWidget<Advan
                     this.filterWidget.getSyncHandler()
                         .syncToServer(
                             UpgradeSlotSH.UPDATE_FILTER,
-                            buf -> {
-                                buf.writeInt(
-                                    wrapper.getfilterWay()
-                                        .ordinal());
-                            });
+                            buf -> { NetworkUtils.writeEnumValue(buf, wrapper.getfilterWay()); });
                 }
             });
 

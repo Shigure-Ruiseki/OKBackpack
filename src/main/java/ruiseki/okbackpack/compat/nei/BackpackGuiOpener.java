@@ -13,6 +13,7 @@ import com.cleanroommc.modularui.factory.GuiFactories;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.cleanroommc.modularui.utils.Platform;
 
+import baubles.common.container.InventoryBaubles;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerInputHandler;
 import ruiseki.okbackpack.OKBackpack;
@@ -54,16 +55,24 @@ public class BackpackGuiOpener implements IContainerInputHandler {
 
         EntityPlayer player = Platform.getClientPlayer();
         if (player.capabilities.isCreativeMode) return false;
-        if (!(slot.inventory instanceof InventoryPlayer)) return false;
 
         ItemStack stack = slot.getStack();
         if (!(stack.getItem() instanceof BlockBackpack.ItemBackpack)) return false;
-
         int slotIndex = slot.getSlotIndex();
-        GuiFactories.playerInventory()
-            .openFromPlayerInventoryClient(slotIndex);
 
-        return true;
+        if (slot.inventory instanceof InventoryPlayer) {
+            GuiFactories.playerInventory()
+                .openFromPlayerInventoryClient(slotIndex);
+            return true;
+        }
+
+        if (slot.inventory instanceof InventoryBaubles) {
+            GuiFactories.playerInventory()
+                .openFromBaublesClient(slotIndex);
+            return true;
+        }
+
+        return false;
     }
 
     @Override

@@ -9,18 +9,19 @@ import net.minecraft.network.PacketBuffer;
 import com.cleanroommc.modularui.utils.item.EmptyHandler;
 import com.cleanroommc.modularui.utils.item.IItemHandler;
 
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
+import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.IBasicFilterable;
-import ruiseki.okbackpack.common.item.wrapper.ICraftingUpgrade;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapper;
+import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 
 public class DelegatedCraftingStackHandlerSH extends DelegatedStackHandlerSH {
 
-    public static final int UPDATE_CRAFTING = 1;
+    public static final int UPDATE_CRAFTING = 2;
+    public static final int DETECT_CHANGES = 3;
 
     private final Supplier<BackPackContainer> containerProvider;
     private final BackpackWrapper wrapper;
@@ -60,10 +61,9 @@ public class DelegatedCraftingStackHandlerSH extends DelegatedStackHandlerSH {
                 .registerInventoryCrafting(slotIndex, inventoryCrafting);
         }
 
-        var stack = wrapper.getUpgradeHandler()
-            .getStackInSlot(slotIndex);
+        var stack = wrapper.upgradeHandler.getStackInSlot(slotIndex);
 
-        UpgradeWrapper upgradeWrapper = UpgradeWrapperFactory.createWrapper(stack);
+        UpgradeWrapperBase upgradeWrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
 
         if (!(upgradeWrapper instanceof ICraftingUpgrade craftingWrapper)) {
             return;
@@ -74,9 +74,10 @@ public class DelegatedCraftingStackHandlerSH extends DelegatedStackHandlerSH {
         inventoryCrafting.detectChanges();
 
         if (isValid() && !getSyncManager().isClient() && !(delegatedStackHandler.get() instanceof EmptyHandler)) {
+            int resultSlot = inventoryCrafting.getSizeInventory() - 1;
 
             ItemStack result = delegatedStackHandler.get()
-                .getStackInSlot(9);
+                .getStackInSlot(resultSlot);
 
             syncToClient(UPDATE_CRAFTING, buffer -> buffer.writeItemStackToBuffer(result));
         }
@@ -86,9 +87,8 @@ public class DelegatedCraftingStackHandlerSH extends DelegatedStackHandlerSH {
     public void readOnClient(int id, PacketBuffer buf) {
 
         if (id == UPDATE_CRAFTING) {
-            ItemStack stack = wrapper.getUpgradeHandler()
-                .getStackInSlot(slotIndex);
-            UpgradeWrapper upgradeWrapper = UpgradeWrapperFactory.createWrapper(stack);
+            ItemStack stack = wrapper.upgradeHandler.getStackInSlot(slotIndex);
+            UpgradeWrapperBase upgradeWrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
             if (!(upgradeWrapper instanceof CraftingUpgradeWrapper craftingWrapper)) return;
 
             try {
@@ -104,13 +104,12 @@ public class DelegatedCraftingStackHandlerSH extends DelegatedStackHandlerSH {
 
     @Override
     public void readOnServer(int id, PacketBuffer buf) {
-        ItemStack stack = wrapper.getUpgradeHandler()
-            .getStackInSlot(slotIndex);
+        ItemStack stack = wrapper.upgradeHandler.getStackInSlot(slotIndex);
+        UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
 
         switch (id) {
 
             case UPDATE_FILTERABLE: {
-                UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(stack);
                 if (wrapper instanceof IBasicFilterable upgrade) {
                     setDelegatedStackHandler(upgrade::getFilterItems);
                 }
@@ -118,10 +117,27 @@ public class DelegatedCraftingStackHandlerSH extends DelegatedStackHandlerSH {
             }
 
             case UPDATE_CRAFTING: {
-                UpgradeWrapper wrapper = UpgradeWrapperFactory.createWrapper(stack);
-                if (wrapper instanceof CraftingUpgradeWrapper upgrade) {
+                if (wrapper instanceof ICraftingUpgrade upgrade) {
                     setDelegatedStackHandler(upgrade::getStorage);
                 }
+                break;
+            }
+
+            case DETECT_CHANGES: {
+
+                if (inventoryCrafting != null) {
+                    inventoryCrafting.detectChanges();
+
+                    if (!(delegatedStackHandler.get() instanceof EmptyHandler)) {
+                        int resultSlot = inventoryCrafting.getSizeInventory() - 1;
+
+                        ItemStack result = delegatedStackHandler.get()
+                            .getStackInSlot(resultSlot);
+
+                        syncToClient(UPDATE_CRAFTING, buffer -> buffer.writeItemStackToBuffer(result));
+                    }
+                }
+
                 break;
             }
         }

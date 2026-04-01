@@ -6,10 +6,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.Reference;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapper;
+import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okcore.helper.LangHelpers;
 
-public class ItemInceptionUpgrade extends ItemUpgrade<UpgradeWrapper> {
+public class ItemInceptionUpgrade extends ItemUpgrade<UpgradeWrapperBase> {
 
     public ItemInceptionUpgrade() {
         super("inception_upgrade");

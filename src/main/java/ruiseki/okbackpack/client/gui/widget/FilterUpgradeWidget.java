@@ -4,13 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.network.NetworkUtils;
 
 import lombok.Getter;
+import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.common.init.ModItems;
 import ruiseki.okbackpack.common.item.wrapper.FilterUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.IFilterUpgrade;
 
 public class FilterUpgradeWidget extends BasicExpandedTabWidget<FilterUpgradeWrapper> {
 
@@ -22,15 +23,8 @@ public class FilterUpgradeWidget extends BasicExpandedTabWidget<FilterUpgradeWra
     @Getter
     private final CyclicVariantButtonWidget filterButton;
 
-    public FilterUpgradeWidget(int slotIndex, FilterUpgradeWrapper wrapper) {
-        super(
-            slotIndex,
-            wrapper,
-            ModItems.FILTER_UPGRADE.newItemStack(),
-            "gui.backpack.filter_settings",
-            "common_filter",
-            5,
-            75);
+    public FilterUpgradeWidget(int slotIndex, FilterUpgradeWrapper wrapper, String titleKey) {
+        super(slotIndex, wrapper, ModItems.FILTER_UPGRADE.newItemStack(), titleKey, "common_filter", 5, 75);
 
         this.filterButton = new CyclicVariantButtonWidget(
             FILTER_VARIANTS,
@@ -42,11 +36,7 @@ public class FilterUpgradeWidget extends BasicExpandedTabWidget<FilterUpgradeWra
                     this.filterWidget.getSyncHandler()
                         .syncToServer(
                             UpgradeSlotSH.UPDATE_FILTER,
-                            buf -> {
-                                buf.writeInt(
-                                    wrapper.getfilterWay()
-                                        .ordinal());
-                            });
+                            buf -> { NetworkUtils.writeEnumValue(buf, wrapper.getfilterWay()); });
                 }
             });
 

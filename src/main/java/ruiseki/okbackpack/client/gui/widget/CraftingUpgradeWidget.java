@@ -5,20 +5,21 @@ import java.util.List;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.Interactable;
+import com.cleanroommc.modularui.network.NetworkUtils;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.layout.Column;
 import com.cleanroommc.modularui.widgets.layout.Row;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
+import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.slot.BigItemSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
-import ruiseki.okbackpack.common.block.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.block.BackpackPanel;
+import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.init.ModItems;
 import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.ICraftingUpgrade;
 
 public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgradeWrapper> {
 
@@ -36,8 +37,8 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
     private ItemSlot[] craftingMatrix;
     private ItemSlot craftingResult;
 
-    public CraftingUpgradeWidget(int slotIndex, CraftingUpgradeWrapper wrapper, BackpackPanel panel) {
-        super(slotIndex, 5, ModItems.CRAFTING_UPGRADE.newItemStack(), "gui.backpack.crafting_settings", 90);
+    public CraftingUpgradeWidget(int slotIndex, CraftingUpgradeWrapper wrapper, BackpackPanel panel, String titleKey) {
+        super(slotIndex, 5, ModItems.CRAFTING_UPGRADE.newItemStack(), titleKey, 90);
         this.wrapper = wrapper;
 
         this.syncHandler("upgrades", slotIndex);
@@ -165,9 +166,7 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
     public void updateWrapper() {
         this.getSyncHandler()
             .syncToServer(UpgradeSlotSH.UPDATE_CRAFTING, buf -> {
-                buf.writeInt(
-                    wrapper.getCraftingDes()
-                        .ordinal());
+                NetworkUtils.writeEnumValue(buf, wrapper.getCraftingDes());
                 buf.writeBoolean(wrapper.isUseBackpack());
             });
     }

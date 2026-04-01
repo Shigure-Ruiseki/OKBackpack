@@ -9,9 +9,9 @@ import com.cleanroommc.modularui.drawable.ItemDrawable;
 
 import lombok.Getter;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapper;
+import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 
-public abstract class ExpandedUpgradeTabWidget<U extends UpgradeWrapper> extends ExpandedTabWidget {
+public abstract class ExpandedUpgradeTabWidget<U extends UpgradeWrapperBase> extends ExpandedTabWidget {
 
     protected abstract U getWrapper();
 
