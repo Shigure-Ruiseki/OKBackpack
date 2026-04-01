@@ -108,7 +108,9 @@ public class BackPackContainer extends ModularContainer {
             wrapper.writeToItem(player);
 
             // Send NBT update packet to client (only if backpack is valid)
-            if (wrapper.type != null && backpackSlotIndex != null && player instanceof EntityPlayerMP playerMP) {
+            if (wrapper.backpack != null && wrapper.type != null
+                && backpackSlotIndex != null
+                && player instanceof EntityPlayerMP playerMP) {
                 OKBackpack.instance.getPacketHandler()
                     .sendToPlayer(
                         new PacketBackpackNBT(backpackSlotIndex, wrapper.getTagCompound(), wrapper.type),

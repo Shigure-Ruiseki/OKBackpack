@@ -9,6 +9,7 @@ import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.network.NetworkUtils;
 
 import lombok.Getter;
+import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.common.init.ModItems;
@@ -53,8 +54,7 @@ public class AdvancedFeedingUpgradeWidget extends AdvancedExpandedTabWidget<Adva
             wrapper.getHungerFeedingStrategy()
                 .ordinal(),
             index -> {
-                this.wrapper
-                    .setHungerFeedingStrategy(AdvancedFeedingUpgradeWrapper.FeedingStrategy.Hunger.values()[index]);
+                this.wrapper.setHungerFeedingStrategy(IFeedingUpgrade.FeedingStrategy.Hunger.values()[index]);
                 updateWrapper();
             });
 
@@ -63,8 +63,7 @@ public class AdvancedFeedingUpgradeWidget extends AdvancedExpandedTabWidget<Adva
             wrapper.getHealthFeedingStrategy()
                 .ordinal(),
             index -> {
-                this.wrapper
-                    .setHealthFeedingStrategy(AdvancedFeedingUpgradeWrapper.FeedingStrategy.HEALTH.values()[index]);
+                this.wrapper.setHealthFeedingStrategy(IFeedingUpgrade.FeedingStrategy.HEALTH.values()[index]);
                 updateWrapper();
             });
 

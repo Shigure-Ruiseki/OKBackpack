@@ -13,6 +13,7 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
+import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
 import ruiseki.okbackpack.api.wrapper.IMagnetUpgrade;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
@@ -164,10 +165,10 @@ public class UpgradeSlotSH extends ItemSlotSH {
     private void updateAdvanceFeedingUpgrade(PacketBuffer buf) {
         UpgradeWrapperBase wrapper = getWrapper();
         if (!(wrapper instanceof AdvancedFeedingUpgradeWrapper upgradeWrapper)) return;
-        upgradeWrapper.setHungerFeedingStrategy(
-            NetworkUtils.readEnumValue(buf, AdvancedFeedingUpgradeWrapper.FeedingStrategy.Hunger.class));
-        upgradeWrapper.setHealthFeedingStrategy(
-            NetworkUtils.readEnumValue(buf, AdvancedFeedingUpgradeWrapper.FeedingStrategy.HEALTH.class));
+        upgradeWrapper
+            .setHungerFeedingStrategy(NetworkUtils.readEnumValue(buf, IFeedingUpgrade.FeedingStrategy.Hunger.class));
+        upgradeWrapper
+            .setHealthFeedingStrategy(NetworkUtils.readEnumValue(buf, IFeedingUpgrade.FeedingStrategy.HEALTH.class));
     }
 
     private void updateFilterUpgrade(PacketBuffer buf) {

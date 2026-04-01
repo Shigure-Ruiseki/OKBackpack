@@ -1,5 +1,6 @@
 package ruiseki.okbackpack.common.item.wrapper;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -98,17 +99,11 @@ public class AdvancedFeedingUpgradeWrapper extends AdvancedUpgradeWrapper implem
         markDirty();
     }
 
-    public static class FeedingStrategy {
-
-        public enum Hunger {
-            FULL,
-            HALF,
-            ALWAYS;
-        }
-
-        public enum HEALTH {
-            ALWAYS,
-            IGNORE;
-        }
+    @Override
+    public void tick(EntityPlayer player) {
+        if (player.capabilities.isCreativeMode) return;
+        if (player.ticksExisted % 20 != 0) return;
+        feed(player, storage);
+        markDirty();
     }
 }

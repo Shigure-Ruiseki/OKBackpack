@@ -1,5 +1,6 @@
 package ruiseki.okbackpack.common.item.wrapper;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -58,4 +59,8 @@ public class FeedingUpgradeWrapper extends BasicUpgradeWrapper implements IFeedi
         return check.getItem() instanceof ItemFood && super.checkFilter(check);
     }
 
+    @Override
+    public void tick(EntityPlayer player) {
+
+    }
 }

@@ -31,6 +31,7 @@ import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
 import ruiseki.okbackpack.api.wrapper.IMagnetUpgrade;
 import ruiseki.okbackpack.api.wrapper.IPickupUpgrade;
+import ruiseki.okbackpack.api.wrapper.ITickable;
 import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
@@ -170,7 +171,7 @@ public class BackpackWrapper implements IStorageWrapper {
 
     @Override
     public void setStackInSlot(int slot, @Nullable ItemStack stack) {
-
+        backpackHandler.setStackInSlot(slot, stack);
     }
 
     @Override
@@ -323,6 +324,14 @@ public class BackpackWrapper implements IStorageWrapper {
         }
         if (hasstackUpdateOmega) return ModConfig.stackUpgradeTierOmegaMul;
         else return result == 0 ? 1 : result;
+    }
+
+    public void tick(EntityPlayer player) {
+        Map<Integer, ITickable> gathered = gatherCapabilityUpgrades(ITickable.class);
+        if (gathered.isEmpty()) return;
+        for (ITickable wrapper : gathered.values()) {
+            wrapper.tick(player);
+        }
     }
 
     public int getStackMultiplierExcluding(int excludeSlot, ItemStack replacement) {
