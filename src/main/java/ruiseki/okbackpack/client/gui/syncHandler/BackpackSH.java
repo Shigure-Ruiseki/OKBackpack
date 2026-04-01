@@ -120,10 +120,10 @@ public class BackpackSH extends SyncHandler {
 
     public void updateBackpack(PacketBuffer buf) throws IOException {
         boolean lock = buf.readBoolean();
-        String uuid = buf.readStringFromBuffer(36);
+        String playerUuid = buf.readStringFromBuffer(36);
         boolean tab = buf.readBoolean();
         wrapper.setLockBackpack(lock);
-        wrapper.setUuid(uuid);
+        wrapper.setPlayerUuid(playerUuid);
         wrapper.setKeepTab(tab);
     }
 
