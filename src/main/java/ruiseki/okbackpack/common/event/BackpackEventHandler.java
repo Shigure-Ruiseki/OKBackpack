@@ -160,7 +160,9 @@ public class BackpackEventHandler {
 
             if (changed) {
                 wrapper.writeToItem();
-                if (player.openContainer instanceof BackPackContainer container && wrapper == container.wrapper) {
+                if (player.openContainer instanceof BackPackContainer container && wrapper == container.wrapper
+                    && type == container.wrapper.type
+                    && i == container.wrapper.slotIndex) {
                     container.detectAndSendChanges();
                 }
             }

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -370,10 +369,8 @@ public class BackpackInventoryHelpers {
 
     public static void clear(BackpackPanel panel, ItemStackHandler stackHandler, int ordinal) {
         ICraftingUpgrade.CraftingDestination type = ICraftingUpgrade.CraftingDestination.values()[ordinal];
-
-        EntityPlayer player = panel.getPlayer();
-        PlayerMainInvWrapper playerInv = new PlayerMainInvWrapper(player.inventory);
-        BackpackWrapper wrapper = panel.getWrapper();
+        PlayerMainInvWrapper playerInv = new PlayerMainInvWrapper(panel.player.inventory);
+        BackpackWrapper wrapper = panel.wrapper;
 
         switch (type) {
             case INVENTORY:

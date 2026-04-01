@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.client.gui.widget;
+package ruiseki.okbackpack.client.gui.widget.upgrade;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +10,8 @@ import com.cleanroommc.modularui.api.drawable.IKey;
 import lombok.Getter;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
-import ruiseki.okbackpack.common.init.ModItems;
+import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
+import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedMagnetUpgradeWrapper;
 
 public class AdvancedMagnetUpgradeWidget extends AdvancedExpandedTabWidget<AdvancedMagnetUpgradeWrapper> {
@@ -32,15 +33,9 @@ public class AdvancedMagnetUpgradeWidget extends AdvancedExpandedTabWidget<Advan
     @Getter
     private final CyclicVariantButtonWidget expButton;
 
-    public AdvancedMagnetUpgradeWidget(int slotIndex, AdvancedMagnetUpgradeWrapper wrapper, String titleKey) {
-        super(
-            slotIndex,
-            wrapper,
-            new ItemStack(ModItems.ADVANCED_MAGNET_UPGRADE.getItem()),
-            titleKey,
-            "adv_common_filter",
-            6,
-            100);
+    public AdvancedMagnetUpgradeWidget(int slotIndex, AdvancedMagnetUpgradeWrapper wrapper, ItemStack stack,
+        BackpackPanel panel, String titleKey) {
+        super(slotIndex, wrapper, stack, titleKey, "adv_common_filter", 6, 100);
 
         this.itemButton = new CyclicVariantButtonWidget(ITEM_VARIANTS, wrapper.isCollectItem() ? 0 : 1, index -> {
             this.wrapper.setCollectItem(index == 0);

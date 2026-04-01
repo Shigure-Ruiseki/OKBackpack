@@ -129,7 +129,7 @@ public class BackpackSH extends SyncHandler {
         EntityPlayer player = getSyncManager().getPlayer();
 
         World world = player.worldObj;
-        TileEntity tile = panel.getTile();
+        TileEntity tile = panel.tile;
         if (tile != null && world.getTileEntity(tile.xCoord, tile.yCoord, tile.zCoord) instanceof TEBackpack te) {
             if (!te.isSleepingBagDeployed()) {
                 int[] can = BlockSleepingBag

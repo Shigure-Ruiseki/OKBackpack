@@ -12,9 +12,9 @@ import com.cleanroommc.modularui.theme.WidgetTheme;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.widget.BackpackSettingWidget;
 import ruiseki.okbackpack.client.gui.widget.MemorySettingWidget;
-import ruiseki.okbackpack.client.gui.widget.SortingSettingWidget;
 import ruiseki.okbackpack.client.gui.widget.TabWidget;
 import ruiseki.okbackpack.client.gui.widget.TabWidget.ExpandDirection;
+import ruiseki.okbackpack.client.gui.widget.upgrade.SortingSettingWidget;
 
 public class BackpackSettingPanel extends ModularPanel {
 
@@ -97,8 +97,7 @@ public class BackpackSettingPanel extends ModularPanel {
         parent.isMemorySettingTabOpened = memoryTab.isShowExpanded();
         parent.shouldMemorizeRespectNBT = ((MemorySettingWidget) memoryTab.getExpandedWidget()).isRespectNBT();
         parent.isSortingSettingTabOpened = sortTab.isShowExpanded();
-        parent.getUpgradeSlotGroupWidget()
-            .setEnabled(false);
+        parent.upgradeSlotGroupWidget.setEnabled(false);
     }
 
     @Override
@@ -108,8 +107,7 @@ public class BackpackSettingPanel extends ModularPanel {
         parent.shouldMemorizeRespectNBT = false;
         parent.isSortingSettingTabOpened = false;
         parent.updateUpgradeWidgets();
-        parent.getUpgradeSlotGroupWidget()
-            .setEnabled(true);
+        parent.upgradeSlotGroupWidget.setEnabled(true);
     }
 
     @Override

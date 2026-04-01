@@ -13,10 +13,10 @@ import com.cleanroommc.modularui.utils.FloatSupplier;
 import com.cleanroommc.modularui.value.sync.ValueSyncHandler;
 
 import ruiseki.okbackpack.api.wrapper.IProgressable;
+import ruiseki.okbackpack.api.wrapper.UpgradeWrapperFactory;
 import ruiseki.okbackpack.client.gui.handler.DelegatedFloatSupplier;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 
 public class DelegatedFloatSH extends ValueSyncHandler<Float>
     implements IFloatSyncValue<Float>, IDoubleSyncValue<Float>, IStringSyncValue<Float> {

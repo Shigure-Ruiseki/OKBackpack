@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.client.gui.widget;
+package ruiseki.okbackpack.client.gui.widget.upgrade;
 
 import net.minecraft.item.ItemStack;
 

@@ -12,6 +12,7 @@ import com.cleanroommc.modularui.widget.SingleChildWidget;
 
 import lombok.Getter;
 import lombok.Setter;
+import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 
 public class TabWidget extends SingleChildWidget<TabWidget> implements Interactable {
 

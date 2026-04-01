@@ -25,8 +25,7 @@ public class SettingTabWidget extends Widget<SettingTabWidget> implements Intera
             .tooltipAutoUpdate(true)
             .tooltipDynamic(tooltip -> {
                 BackpackPanel panel = (BackpackPanel) getPanel();
-                if (panel.getSettingPanel()
-                    .isPanelOpen()) {
+                if (panel.settingPanel.isPanelOpen()) {
                     tooltip.addLine(IKey.lang("gui.backpack"))
                         .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
                 } else {
@@ -50,14 +49,11 @@ public class SettingTabWidget extends Widget<SettingTabWidget> implements Intera
             BackpackPanel panel = (BackpackPanel) getPanel();
 
             Interactable.playButtonClickSound();
-            if (panel.getSettingPanel()
-                .isPanelOpen()) {
-                panel.getSettingPanel()
-                    .closePanel();
+            if (panel.settingPanel.isPanelOpen()) {
+                panel.settingPanel.closePanel();
                 panel.updateUpgradeWidgets();
             } else {
-                panel.getSettingPanel()
-                    .openPanel();
+                panel.settingPanel.openPanel();
                 panel.disableAllTabWidgets();
             }
             return Result.SUCCESS;
@@ -70,8 +66,7 @@ public class SettingTabWidget extends Widget<SettingTabWidget> implements Intera
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         super.draw(context, widgetTheme);
         BackpackPanel panel = (BackpackPanel) getPanel();
-        if (panel.getSettingPanel()
-            .isPanelOpen()) {
+        if (panel.settingPanel.isPanelOpen()) {
             OKBGuiTextures.BACK_ICON.draw(context, 8, 6, 16, 16, widgetTheme.getTheme());
         } else {
             OKBGuiTextures.SETTING_ICON.draw(context, 8, 6, 16, 16, widgetTheme.getTheme());

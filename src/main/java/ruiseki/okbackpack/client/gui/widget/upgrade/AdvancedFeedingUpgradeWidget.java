@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.client.gui.widget;
+package ruiseki.okbackpack.client.gui.widget.upgrade;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +12,8 @@ import lombok.Getter;
 import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
-import ruiseki.okbackpack.common.init.ModItems;
+import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
+import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedFeedingUpgradeWrapper;
 
 public class AdvancedFeedingUpgradeWidget extends AdvancedExpandedTabWidget<AdvancedFeedingUpgradeWrapper> {
@@ -39,15 +40,9 @@ public class AdvancedFeedingUpgradeWidget extends AdvancedExpandedTabWidget<Adva
     @Getter
     private final CyclicVariantButtonWidget heartButton;
 
-    public AdvancedFeedingUpgradeWidget(int slotIndex, AdvancedFeedingUpgradeWrapper wrapper, String titleKey) {
-        super(
-            slotIndex,
-            wrapper,
-            new ItemStack(ModItems.ADVANCED_FEEDING_UPGRADE.getItem()),
-            titleKey,
-            "adv_feeding_filter",
-            6,
-            100);
+    public AdvancedFeedingUpgradeWidget(int slotIndex, AdvancedFeedingUpgradeWrapper wrapper, ItemStack stack,
+        BackpackPanel panel, String titleKey) {
+        super(slotIndex, wrapper, stack, titleKey, "adv_feeding_filter", 6, 100);
 
         this.hungerButton = new CyclicVariantButtonWidget(
             HUNGER_VARIANTS,

@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.client.gui.widget;
+package ruiseki.okbackpack.client.gui.widget.upgrade;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.screen.RichTooltip;
@@ -7,6 +7,7 @@ import com.cleanroommc.modularui.widgets.layout.Row;
 
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
+import ruiseki.okbackpack.client.gui.widget.TabWidget;
 import ruiseki.okbackpack.client.gui.widget.TabWidget.ExpandDirection;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.block.BackpackSettingPanel;
@@ -34,13 +35,13 @@ public class SortingSettingWidget extends ExpandedTabWidget {
             .overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
-                    BackpackWrapper wrapper = panel.getWrapper();
+                    BackpackWrapper wrapper = panel.wrapper;
 
                     for (int i = 0; i < wrapper.backpackSlots; i++) {
                         wrapper.setSlotLocked(i, true);
                     }
 
-                    for (BackpackSlotSH syncHandler : panel.getBackpackSlotSyncHandlers()) {
+                    for (BackpackSlotSH syncHandler : panel.backpackSlotSyncHandlers) {
                         syncHandler.syncToServer(BackpackSlotSH.UPDATE_SET_SLOT_LOCK);
                     }
 
@@ -56,13 +57,13 @@ public class SortingSettingWidget extends ExpandedTabWidget {
             .overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
-                    BackpackWrapper wrapper = panel.getWrapper();
+                    BackpackWrapper wrapper = panel.wrapper;
 
                     for (int i = 0; i < wrapper.backpackSlots; i++) {
                         wrapper.setSlotLocked(i, false);
                     }
 
-                    for (BackpackSlotSH syncHandler : panel.getBackpackSlotSyncHandlers()) {
+                    for (BackpackSlotSH syncHandler : panel.backpackSlotSyncHandlers) {
                         syncHandler.syncToServer(BackpackSlotSH.UPDATE_UNSET_SLOT_LOCK);
                     }
 
