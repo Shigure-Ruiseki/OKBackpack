@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import com.cleanroommc.modularui.widgets.layout.Column;
 import com.cleanroommc.modularui.widgets.layout.Row;
 
-import ruiseki.okbackpack.common.item.wrapper.IAdvancedFilterable;
+import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 
 public class AdvancedExpandedTabWidget<T extends UpgradeWrapperBase & IAdvancedFilterable>

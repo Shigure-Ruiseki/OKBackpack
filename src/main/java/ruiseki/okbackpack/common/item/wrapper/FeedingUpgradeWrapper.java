@@ -7,6 +7,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import com.cleanroommc.modularui.utils.item.IItemHandler;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
+import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 

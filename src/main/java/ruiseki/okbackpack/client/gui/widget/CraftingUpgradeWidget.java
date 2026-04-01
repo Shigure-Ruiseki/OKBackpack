@@ -19,7 +19,7 @@ import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.init.ModItems;
 import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.ICraftingUpgrade;
+import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 
 public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgradeWrapper> {
 

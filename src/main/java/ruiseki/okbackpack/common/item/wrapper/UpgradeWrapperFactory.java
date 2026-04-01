@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapperFactory;
 
 public class UpgradeWrapperFactory {
 
@@ -13,7 +14,7 @@ public class UpgradeWrapperFactory {
             return null;
         }
         Item item = stack.getItem();
-        if (!(item instanceof IUpgradeWrapperFactory<?>factory)) {
+        if (!(item instanceof IUpgradeWrapperFactory<?> factory)) {
             return null;
         }
         return (W) factory.createWrapper(stack, storage);

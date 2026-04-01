@@ -8,7 +8,7 @@ import com.cleanroommc.modularui.api.drawable.IKey;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.common.init.ModItems;
-import ruiseki.okbackpack.common.item.wrapper.IVoidUpgrade;
+import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.common.item.wrapper.VoidUpgradeWrapper;
 
 public class VoidUpgradeWidget extends BasicExpandedTabWidget<VoidUpgradeWrapper> {

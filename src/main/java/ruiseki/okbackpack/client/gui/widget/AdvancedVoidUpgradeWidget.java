@@ -12,7 +12,7 @@ import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.common.init.ModItems;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedVoidUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.IVoidUpgrade;
+import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 
 public class AdvancedVoidUpgradeWidget extends AdvancedExpandedTabWidget<AdvancedVoidUpgradeWrapper> {
 

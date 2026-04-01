@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
-import ruiseki.okbackpack.common.item.wrapper.IUpgradeWrapperFactory;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapperFactory;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemOK;

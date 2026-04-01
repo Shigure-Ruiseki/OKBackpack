@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.wrapper;
+package ruiseki.okbackpack.api.wrapper;
 
 import net.minecraft.item.ItemStack;
 

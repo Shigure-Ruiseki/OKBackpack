@@ -16,7 +16,7 @@ import lombok.Getter;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.slot.FilterSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
-import ruiseki.okbackpack.common.item.wrapper.IBasicFilterable;
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 
 public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
 

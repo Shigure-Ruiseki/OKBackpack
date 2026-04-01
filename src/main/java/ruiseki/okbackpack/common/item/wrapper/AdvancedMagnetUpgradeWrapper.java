@@ -3,6 +3,7 @@ package ruiseki.okbackpack.common.item.wrapper;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IMagnetUpgrade;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class AdvancedMagnetUpgradeWrapper extends AdvancedPickupUpgradeWrapper implements IMagnetUpgrade {

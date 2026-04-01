@@ -3,6 +3,8 @@ package ruiseki.okbackpack.common.item.wrapper;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IDirtable;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class UpgradeWrapperBase implements IUpgradeWrapper, IDirtable {

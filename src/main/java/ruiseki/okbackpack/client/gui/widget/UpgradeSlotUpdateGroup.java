@@ -16,9 +16,9 @@ import ruiseki.okbackpack.client.gui.syncHandler.FilterSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.FoodFilterSlotSH;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.item.wrapper.IAdvancedFilterable;
-import ruiseki.okbackpack.common.item.wrapper.IBasicFilterable;
-import ruiseki.okbackpack.common.item.wrapper.IStorageUpgrade;
+import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
+import ruiseki.okbackpack.api.wrapper.IStorageUpgrade;
 
 public class UpgradeSlotUpdateGroup {
 

@@ -3,6 +3,7 @@ package ruiseki.okbackpack.common.item.wrapper;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class AdvancedVoidUpgradeWrapper extends AdvancedUpgradeWrapper implements IVoidUpgrade {

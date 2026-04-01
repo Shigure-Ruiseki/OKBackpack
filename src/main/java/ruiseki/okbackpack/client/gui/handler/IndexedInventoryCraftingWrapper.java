@@ -4,7 +4,7 @@ import net.minecraft.inventory.Container;
 
 import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 
-import ruiseki.okbackpack.common.item.wrapper.ICraftingUpgrade.CraftingDestination;
+import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade.CraftingDestination;
 
 public class IndexedInventoryCraftingWrapper extends InventoryCraftingWrapper {
 

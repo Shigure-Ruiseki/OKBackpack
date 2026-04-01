@@ -16,7 +16,7 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.init.ModBlocks;
-import ruiseki.okbackpack.common.item.wrapper.IVoidUpgrade;
+import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileTicking;
 

@@ -23,7 +23,7 @@ import lombok.Setter;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.common.block.BackpackPanel;
-import ruiseki.okbackpack.common.item.wrapper.IToggleable;
+import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 

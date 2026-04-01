@@ -14,7 +14,7 @@ import com.cleanroommc.modularui.value.sync.ValueSyncHandler;
 
 import ruiseki.okbackpack.client.gui.handler.DelegatedFloatSupplier;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.item.wrapper.IProgressable;
+import ruiseki.okbackpack.api.wrapper.IProgressable;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 

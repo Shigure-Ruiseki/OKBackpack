@@ -78,7 +78,7 @@ import ruiseki.okbackpack.common.item.wrapper.BasicUpgradeWrapper;
 import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
 import ruiseki.okbackpack.common.item.wrapper.FeedingUpgradeWrapper;
 import ruiseki.okbackpack.common.item.wrapper.FilterUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.IToggleable;
+import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.common.item.wrapper.MagnetUpgradeWrapper;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
