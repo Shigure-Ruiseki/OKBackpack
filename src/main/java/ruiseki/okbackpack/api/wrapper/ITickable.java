@@ -4,5 +4,5 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public interface ITickable {
 
-    void tick(EntityPlayer player);
+    boolean tick(EntityPlayer player);
 }

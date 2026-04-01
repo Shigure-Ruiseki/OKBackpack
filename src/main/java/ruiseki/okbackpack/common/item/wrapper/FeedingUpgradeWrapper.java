@@ -60,7 +60,9 @@ public class FeedingUpgradeWrapper extends BasicUpgradeWrapper implements IFeedi
     }
 
     @Override
-    public void tick(EntityPlayer player) {
-
+    public boolean tick(EntityPlayer player) {
+        if (player.capabilities.isCreativeMode) return false;
+        if (player.ticksExisted % 20 != 0) return false;
+        return feed(player, storage);
     }
 }

@@ -111,14 +111,15 @@ public class BackPackContainer extends ModularContainer {
             if (wrapper.backpack != null && wrapper.type != null
                 && backpackSlotIndex != null
                 && player instanceof EntityPlayerMP playerMP) {
+
+                // Clear dirty flag
+                wrapper.clearDirty();
+
                 OKBackpack.instance.getPacketHandler()
                     .sendToPlayer(
                         new PacketBackpackNBT(backpackSlotIndex, wrapper.getTagCompound(), wrapper.type),
                         playerMP);
             }
-
-            // Clear dirty flag
-            wrapper.clearDirty();
         }
     }
 
@@ -129,10 +130,7 @@ public class BackPackContainer extends ModularContainer {
         // Final sync before closing - ensure all changes are saved
         if (!getGuiData().isClient()) {
             wrapper.writeToItem(player);
-            // Only clear dirty if write succeeded (backpack still valid)
-            if (wrapper.backpack != null) {
-                wrapper.clearDirty();
-            }
+            wrapper.clearDirty();
         }
     }
 

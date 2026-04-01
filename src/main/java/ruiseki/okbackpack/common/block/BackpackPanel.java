@@ -215,6 +215,14 @@ public class BackpackPanel extends ModularPanel {
 
         syncManager.bindPlayerInventory(player);
         this.bindPlayerInventory();
+
+        syncManager.onServerTick(() -> {
+            if (tile != null) return;
+            if (wrapper.tick(getPlayer())) {
+                syncManager.getContainer()
+                    .detectAndSendChanges();
+            }
+        });
     }
 
     @Override

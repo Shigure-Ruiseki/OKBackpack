@@ -100,10 +100,9 @@ public class AdvancedFeedingUpgradeWrapper extends AdvancedUpgradeWrapper implem
     }
 
     @Override
-    public void tick(EntityPlayer player) {
-        if (player.capabilities.isCreativeMode) return;
-        if (player.ticksExisted % 20 != 0) return;
-        feed(player, storage);
-        markDirty();
+    public boolean tick(EntityPlayer player) {
+        if (player.capabilities.isCreativeMode) return false;
+        if (player.ticksExisted % 20 != 0) return false;
+        return feed(player, storage);
     }
 }

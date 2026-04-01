@@ -327,12 +327,18 @@ public class BackpackWrapper implements IStorageWrapper {
         else return result == 0 ? 1 : result;
     }
 
-    public void tick(EntityPlayer player) {
+    public boolean tick(EntityPlayer player) {
+
         Map<Integer, ITickable> gathered = gatherCapabilityUpgrades(ITickable.class);
-        if (gathered.isEmpty()) return;
+        if (gathered.isEmpty()) return false;
+
+        boolean dirty = false;
+
         for (ITickable wrapper : gathered.values()) {
-            wrapper.tick(player);
+            dirty |= wrapper.tick(player);
         }
+
+        return dirty;
     }
 
     public int getStackMultiplierExcluding(int excludeSlot, ItemStack replacement) {

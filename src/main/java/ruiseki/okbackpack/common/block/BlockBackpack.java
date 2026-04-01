@@ -38,6 +38,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
 import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.client.renderer.player.IArmorRender;
@@ -238,11 +239,17 @@ public class BlockBackpack extends BlockOK {
         @Override
         public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isHeld) {
             super.onUpdate(stack, world, entity, slot, isHeld);
-            if (!world.isRemote && stack != null) {
+            if (!world.isRemote && stack != null && entity instanceof EntityPlayer player) {
+                BackpackWrapper wrapper = new BackpackWrapper(stack, this);
                 if (!stack.hasTagCompound()) {
-                    BackpackWrapper wrapper = new BackpackWrapper(stack, this);
                     wrapper.writeToItem();
                     stack.setTagCompound(wrapper.getTagCompound());
+                }
+
+                if (!(player.openContainer instanceof BackPackContainer)) {
+                    if (wrapper.tick(player)) {
+                        wrapper.writeToItem();
+                    }
                 }
             }
         }
@@ -252,9 +259,9 @@ public class BlockBackpack extends BlockOK {
             super.onCreated(stack, world, player);
             if (!world.isRemote && stack != null) {
                 if (!stack.hasTagCompound()) {
-                    BackpackWrapper cap = new BackpackWrapper(stack, this);
-                    cap.writeToItem();
-                    stack.setTagCompound(cap.getTagCompound());
+                    BackpackWrapper wrapper = new BackpackWrapper(stack, this);
+                    wrapper.writeToItem();
+                    stack.setTagCompound(wrapper.getTagCompound());
                 }
             }
         }
