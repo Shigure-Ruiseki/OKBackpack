@@ -12,6 +12,8 @@ import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.common.item.wrapper.StackUpgradeWrapper;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.helper.LangHelpers;
@@ -75,7 +77,12 @@ public class ItemStackUpgrade extends ItemUpgrade<UpgradeWrapperBase> {
 
     @Override
     public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
-        list.add(LangHelpers.localize("tooltip.backpack.stack_upgrade", multiplier(itemstack)));
+        list.add(LangHelpers.localize("tooltip.backpack.stack_upgrade", StackUpgradeWrapper.multiplier(itemstack)));
+    }
+
+    @Override
+    public UpgradeWrapperBase createWrapper(ItemStack stack, IStorageWrapper storage) {
+        return new StackUpgradeWrapper(stack, storage);
     }
 
     public int multiplier(ItemStack stack) {

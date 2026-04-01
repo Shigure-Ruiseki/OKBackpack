@@ -257,7 +257,7 @@ public class BlockBackpack extends BlockOK {
         @Override
         public void onEquippedOrLoadedIntoWorld(ItemStack stack, EntityLivingBase player) {
             super.onEquippedOrLoadedIntoWorld(stack, player);
-            onUpdate(stack, player.worldObj, player, 0, true);
+            onUpdate(stack, player.worldObj, player, -1, false);
         }
 
         @Override
