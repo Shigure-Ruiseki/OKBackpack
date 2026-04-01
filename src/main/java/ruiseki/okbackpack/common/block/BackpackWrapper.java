@@ -84,6 +84,10 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
 
     @Getter
     @Setter
+    private String playerUuid;
+
+    @Getter
+    @Setter
     private String customName;
 
     @Getter
@@ -105,6 +109,7 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
     public static final String LOCKED_SLOTS_TAG = "LockedSlots";
     public static final String LOCKED_BACKPACK_TAG = "LockedBackpack";
     public static final String UUID_TAG = "UUID";
+    public static final String PLAYER_UUID_TAG = "PlayerUUID";
     public static final String KEEP_TAB_TAG = "KeepTab";
     public static final String CUSTOM_NAME_TAG = "CustomName";
     public static final String SLEEPING_BAG_DEPLOYED_TAG = "SleepingBagDeloyed";
@@ -162,7 +167,8 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
         this.accentColor = 0xFF622E1A;
         this.sortType = SortType.BY_NAME;
         this.lockBackpack = false;
-        this.uuid = "";
+        this.uuid = UUID.randomUUID()
+            .toString();
         this.keepTab = true;
         this.sleepingBagDeployed = false;
 
@@ -541,7 +547,14 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
     }
 
     public boolean canPlayerAccess(UUID playerUUID) {
-        return !isLockBackpack() || playerUUID.equals(UUID.fromString(getUuid()));
+        if (!isLockBackpack()) return true;
+
+        var myPlayerUuid = getPlayerUuid();
+        if (myPlayerUuid != null && playerUUID.equals(UUID.fromString(myPlayerUuid))) {
+            return true;
+        }
+
+        return false;
     }
 
     public boolean hasCustomInventoryName() {
@@ -659,7 +672,12 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
 
         tag.setBoolean(KEEP_TAB_TAG, keepTab);
 
-        if (uuid != null) tag.setString(UUID_TAG, uuid);
+        tag.setString(UUID_TAG, uuid);
+
+        if (lockBackpack && playerUuid != null) {
+            tag.setString(PLAYER_UUID_TAG, playerUuid);
+        }
+
         if (hasCustomInventoryName() && this.customName != null) {
             tag.setString(CUSTOM_NAME_TAG, this.customName);
         }
@@ -730,7 +748,20 @@ public class BackpackWrapper implements IItemHandlerModifiable, INBTSerializable
 
         if (tag.hasKey(LOCKED_BACKPACK_TAG, 1)) this.lockBackpack = tag.getBoolean(LOCKED_BACKPACK_TAG);
         if (tag.hasKey(KEEP_TAB_TAG, 1)) this.keepTab = tag.getBoolean(KEEP_TAB_TAG);
-        if (tag.hasKey(UUID_TAG, 8)) this.uuid = tag.getString(UUID_TAG);
+
+        if (tag.hasKey(UUID_TAG, 8)) {
+            String tempUuid = tag.getString(UUID_TAG);
+            if (tempUuid.length() > 0) { // Backward compatibility - remove this check after some time
+                this.uuid = tempUuid;
+                if (lockBackpack) { // Backward compatibility - remove this whole block after some time
+                    this.playerUuid = tempUuid;
+                }
+            }
+        }
+
+        if (tag.hasKey(PLAYER_UUID_TAG, 8)) {
+            this.playerUuid = tag.getString(PLAYER_UUID_TAG);
+        }
 
         if (tag.hasKey("display", 10)) {
             NBTTagCompound display = tag.getCompoundTag("display");
