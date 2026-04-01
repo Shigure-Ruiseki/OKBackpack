@@ -694,8 +694,10 @@ public class BackpackPanel extends ModularPanel {
     public int getOpenCraftingUpgradeSlot() {
         for (int slotIndex = 0; slotIndex < wrapper.upgradeSlots; slotIndex++) {
             ItemSlot slot = upgradeSlotWidgets.get(slotIndex);
+            if (slot.getSlot() == null) continue;
             ItemStack stack = slot.getSlot()
                 .getStack();
+            if (stack == null) continue;
             Item item = stack.getItem();
 
             if (!(item instanceof ItemUpgrade<?> && ((ItemUpgrade<?>) item).hasTab())) {
@@ -718,6 +720,7 @@ public class BackpackPanel extends ModularPanel {
 
     private boolean isTabDirty(ItemStack stack, UpgradeSlotSH upgradeSlot) {
         UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
+        if (wrapper == null) return false;
         boolean isDirty = wrapper.isDirty();
         if (isDirty) {
             upgradeSlot.syncToServer(UpgradeSlotSH.UPDATE_DIRTY, buf -> { buf.writeBoolean(false); });

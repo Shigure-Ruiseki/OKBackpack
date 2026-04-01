@@ -18,17 +18,6 @@ public class OpenBackpackHandler implements IKeyHandler {
     public void onKeyPressed(KeyBinding keyBinding) {
         EntityPlayer player = Platform.getClientPlayer();
 
-        for (int armorIndex = 0; armorIndex < 4; armorIndex++) {
-            int slot = player.inventory.getSizeInventory() - 1 - armorIndex;
-            ItemStack stack = player.inventory.getStackInSlot(slot);
-            if (stack != null && stack.getItem() instanceof BlockBackpack.ItemBackpack) {
-
-                GuiFactories.playerInventory()
-                    .openFromPlayerInventoryClient(slot);
-                return;
-            }
-        }
-
         if (Mods.Baubles.isLoaded()) {
             InventoryTypes.BAUBLES.visitAll(player, (type, index, stack) -> {
                 if (stack != null && stack.getItem() instanceof BlockBackpack.ItemBackpack) {
@@ -38,6 +27,17 @@ public class OpenBackpackHandler implements IKeyHandler {
                 }
                 return false;
             });
+        }
+
+        for (int armorIndex = 0; armorIndex < 4; armorIndex++) {
+            int slot = player.inventory.getSizeInventory() - 1 - armorIndex;
+            ItemStack stack = player.inventory.getStackInSlot(slot);
+            if (stack != null && stack.getItem() instanceof BlockBackpack.ItemBackpack) {
+
+                GuiFactories.playerInventory()
+                    .openFromPlayerInventoryClient(slot);
+                return;
+            }
         }
     }
 }

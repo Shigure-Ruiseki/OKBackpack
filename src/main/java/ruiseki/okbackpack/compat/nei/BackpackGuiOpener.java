@@ -1,5 +1,6 @@
 package ruiseki.okbackpack.compat.nei;
 
+import baubles.common.container.InventoryBaubles;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
@@ -54,16 +55,24 @@ public class BackpackGuiOpener implements IContainerInputHandler {
 
         EntityPlayer player = Platform.getClientPlayer();
         if (player.capabilities.isCreativeMode) return false;
-        if (!(slot.inventory instanceof InventoryPlayer)) return false;
 
         ItemStack stack = slot.getStack();
         if (!(stack.getItem() instanceof BlockBackpack.ItemBackpack)) return false;
-
         int slotIndex = slot.getSlotIndex();
-        GuiFactories.playerInventory()
-            .openFromPlayerInventoryClient(slotIndex);
 
-        return true;
+        if (slot.inventory instanceof InventoryPlayer) {
+            GuiFactories.playerInventory()
+                .openFromPlayerInventoryClient(slotIndex);
+            return true;
+        }
+
+        if (slot.inventory instanceof InventoryBaubles) {
+            GuiFactories.playerInventory()
+                .openFromBaublesClient(slotIndex);
+            return true;
+        }
+
+        return false;
     }
 
     @Override

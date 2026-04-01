@@ -18,6 +18,7 @@ public class UpgradeWrapperBase implements IUpgradeWrapper, IDirtable {
     @Override
     public void setTabOpened(boolean opened) {
         ItemNBTHelpers.setBoolean(upgrade, TAB_STATE_TAG, opened);
+        markDirty();
     }
 
     @Override
