@@ -7,7 +7,6 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import ruiseki.okbackpack.api.widget.IUpgradeSlotGroupFactory;
 import ruiseki.okbackpack.api.widget.UpgradeSlotGroupRegistry;
-import ruiseki.okbackpack.client.gui.slot.CraftingSlotInfo;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 
@@ -17,8 +16,6 @@ public class UpgradeSlotUpdateGroup {
     public final BackpackWrapper wrapper;
     public final int slotIndex;
     public final PanelSyncManager syncManager;
-
-    public CraftingSlotInfo craftingInfo;
 
     final Map<String, Object> components = new HashMap<>();
 

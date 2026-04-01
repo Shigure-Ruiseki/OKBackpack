@@ -1,35 +1,25 @@
 package ruiseki.okbackpack.common.block;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
-import com.cleanroommc.modularui.utils.item.IItemHandler;
 import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 
 import baubles.api.BaublesApi;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IStorageWrapper;
-import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
-import ruiseki.okbackpack.api.wrapper.IMagnetUpgrade;
 import ruiseki.okbackpack.api.wrapper.IPickupUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITickable;
 import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
@@ -327,20 +317,6 @@ public class BackpackWrapper implements IStorageWrapper {
         else return result == 0 ? 1 : result;
     }
 
-    public boolean tick(EntityPlayer player) {
-
-        Map<Integer, ITickable> gathered = gatherCapabilityUpgrades(ITickable.class);
-        if (gathered.isEmpty()) return false;
-
-        boolean dirty = false;
-
-        for (ITickable wrapper : gathered.values()) {
-            dirty |= wrapper.tick(player);
-        }
-
-        return dirty;
-    }
-
     public int getStackMultiplierExcluding(int excludeSlot, ItemStack replacement) {
         List<ItemStack> stacks = upgradeHandler.getStacks();
 
@@ -427,35 +403,18 @@ public class BackpackWrapper implements IStorageWrapper {
         return inceptionCount > 1;
     }
 
-    public boolean feed(EntityPlayer player, IItemHandler handler) {
-        for (IFeedingUpgrade upgrade : gatherCapabilityUpgrades(IFeedingUpgrade.class).values()) {
-            if (upgrade.feed(player, handler)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    public boolean tick(EntityPlayer player) {
 
-    public List<Entity> getMagnetEntities(World world, AxisAlignedBB aabb) {
-        Set<Entity> result = new HashSet<>();
+        Map<Integer, ITickable> gathered = gatherCapabilityUpgrades(ITickable.class);
+        if (gathered.isEmpty()) return false;
 
-        List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, aabb);
-        List<EntityXPOrb> xps = world.getEntitiesWithinAABB(EntityXPOrb.class, aabb);
+        boolean dirty = false;
 
-        for (IMagnetUpgrade upgrade : gatherCapabilityUpgrades(IMagnetUpgrade.class).values()) {
-            if (upgrade.isCollectItem()) {
-                for (EntityItem item : items) {
-                    if (upgrade.canCollectItem(item.getEntityItem())) {
-                        result.add(item);
-                    }
-                }
-            }
-            if (upgrade.isCollectExp()) {
-                result.addAll(xps);
-            }
+        for (ITickable wrapper : gathered.values()) {
+            dirty |= wrapper.tick(player);
         }
 
-        return new ArrayList<>(result);
+        return dirty;
     }
 
     public boolean canInsert(ItemStack stack) {
