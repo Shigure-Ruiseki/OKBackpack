@@ -55,8 +55,7 @@ public class BackpackSlot extends ItemSlot {
     }
 
     private boolean isInSettingMode() {
-        return panel.getSettingPanel()
-            .isPanelOpen();
+        return panel.settingPanel.isPanelOpen();
     }
 
     private boolean isInMemorySettingMode() {

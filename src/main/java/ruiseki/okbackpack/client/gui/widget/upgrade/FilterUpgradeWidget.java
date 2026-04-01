@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.client.gui.widget;
+package ruiseki.okbackpack.client.gui.widget.upgrade;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,10 +12,11 @@ import lombok.Getter;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
-import ruiseki.okbackpack.common.init.ModItems;
-import ruiseki.okbackpack.common.item.wrapper.AdvancedFilterUpgradeWrapper;
+import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
+import ruiseki.okbackpack.common.block.BackpackPanel;
+import ruiseki.okbackpack.common.item.wrapper.FilterUpgradeWrapper;
 
-public class AdvancedFilterUpgradeWidget extends AdvancedExpandedTabWidget<AdvancedFilterUpgradeWrapper> {
+public class FilterUpgradeWidget extends BasicExpandedTabWidget<FilterUpgradeWrapper> {
 
     private static final List<CyclicVariantButtonWidget.Variant> FILTER_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.input_output"), OKBGuiTextures.IN_OUT_ICON),
@@ -25,15 +26,9 @@ public class AdvancedFilterUpgradeWidget extends AdvancedExpandedTabWidget<Advan
     @Getter
     private final CyclicVariantButtonWidget filterButton;
 
-    public AdvancedFilterUpgradeWidget(int slotIndex, AdvancedFilterUpgradeWrapper wrapper, String titleKey) {
-        super(
-            slotIndex,
-            wrapper,
-            new ItemStack(ModItems.ADVANCED_FILTER_UPGRADE.getItem()),
-            titleKey,
-            "adv_common_filter",
-            6,
-            100);
+    public FilterUpgradeWidget(int slotIndex, FilterUpgradeWrapper wrapper, ItemStack stack, BackpackPanel panel,
+        String titleKey) {
+        super(slotIndex, wrapper, stack, titleKey, "common_filter", 5, 75);
 
         this.filterButton = new CyclicVariantButtonWidget(
             FILTER_VARIANTS,
@@ -54,5 +49,4 @@ public class AdvancedFilterUpgradeWidget extends AdvancedExpandedTabWidget<Advan
             .childPadding(2)
             .child(this.filterButton);
     }
-
 }

@@ -1,17 +1,21 @@
-package ruiseki.okbackpack.client.gui.widget;
+package ruiseki.okbackpack.client.gui.widget.upgrade;
 
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.item.ItemStack;
+
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.network.NetworkUtils;
 
 import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
-import ruiseki.okbackpack.common.init.ModItems;
-import ruiseki.okbackpack.common.item.wrapper.VoidUpgradeWrapper;
+import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
+import ruiseki.okbackpack.common.block.BackpackPanel;
+import ruiseki.okbackpack.common.item.wrapper.AdvancedVoidUpgradeWrapper;
 
-public class VoidUpgradeWidget extends BasicExpandedTabWidget<VoidUpgradeWrapper> {
+public class AdvancedVoidUpgradeWidget extends AdvancedExpandedTabWidget<AdvancedVoidUpgradeWrapper> {
 
     private static final List<CyclicVariantButtonWidget.Variant> VOID_INPUT_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.void_all"), OKBGuiTextures.VOID_ALL),
@@ -23,8 +27,9 @@ public class VoidUpgradeWidget extends BasicExpandedTabWidget<VoidUpgradeWrapper
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.void_overflow"), OKBGuiTextures.VOID_OVERFLOW),
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.void_any"), OKBGuiTextures.VOID_ANY));
 
-    public VoidUpgradeWidget(int slotIndex, VoidUpgradeWrapper wrapper, String titleKey) {
-        super(slotIndex, wrapper, ModItems.VOID_UPGRADE.newItemStack(), titleKey, "common_filter", 5, 80);
+    public AdvancedVoidUpgradeWidget(int slotIndex, AdvancedVoidUpgradeWrapper wrapper, ItemStack stack,
+        BackpackPanel panel, String titleKey) {
+        super(slotIndex, wrapper, stack, titleKey, "adv_common_filter", 6, 100);
 
         CyclicVariantButtonWidget inputButton = new CyclicVariantButtonWidget(
             VOID_INPUT_VARIANTS,
@@ -43,6 +48,7 @@ public class VoidUpgradeWidget extends BasicExpandedTabWidget<VoidUpgradeWrapper
                 wrapper.setVoidType(IVoidUpgrade.VoidType.values()[index]);
                 updateWrapper();
             });
+
         this.startingRow.leftRel(0.5f)
             .height(20)
             .childPadding(2)
@@ -54,12 +60,8 @@ public class VoidUpgradeWidget extends BasicExpandedTabWidget<VoidUpgradeWrapper
         if (this.filterWidget.getSlotSyncHandler() != null) {
             this.filterWidget.getSyncHandler()
                 .syncToServer(UpgradeSlotSH.UPDATE_VOID, buf -> {
-                    buf.writeInt(
-                        wrapper.getVoidType()
-                            .ordinal());
-                    buf.writeInt(
-                        wrapper.getVoidInput()
-                            .ordinal());
+                    NetworkUtils.writeEnumValue(buf, wrapper.getVoidType());
+                    NetworkUtils.writeEnumValue(buf, wrapper.getVoidInput());
                 });
         }
     }

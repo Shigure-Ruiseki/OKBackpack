@@ -33,9 +33,9 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
-import lombok.Getter;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
+import ruiseki.okbackpack.api.wrapper.UpgradeWrapperFactory;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.gui.container.BackpackGuiContainer;
@@ -47,42 +47,21 @@ import ruiseki.okbackpack.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
-import ruiseki.okbackpack.client.gui.widget.AdvancedExpandedTabWidget;
-import ruiseki.okbackpack.client.gui.widget.AdvancedFeedingUpgradeWidget;
-import ruiseki.okbackpack.client.gui.widget.AdvancedFilterUpgradeWidget;
-import ruiseki.okbackpack.client.gui.widget.AdvancedMagnetUpgradeWidget;
-import ruiseki.okbackpack.client.gui.widget.AdvancedVoidUpgradeWidget;
 import ruiseki.okbackpack.client.gui.widget.BackpackList;
 import ruiseki.okbackpack.client.gui.widget.BackpackSearchBarWidget;
-import ruiseki.okbackpack.client.gui.widget.BasicExpandedTabWidget;
-import ruiseki.okbackpack.client.gui.widget.CraftingUpgradeWidget;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
-import ruiseki.okbackpack.client.gui.widget.FeedingUpgradeWidget;
-import ruiseki.okbackpack.client.gui.widget.FilterUpgradeWidget;
-import ruiseki.okbackpack.client.gui.widget.MagnetUpgradeWidget;
 import ruiseki.okbackpack.client.gui.widget.SettingTabWidget;
 import ruiseki.okbackpack.client.gui.widget.ShiftButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.TabWidget;
 import ruiseki.okbackpack.client.gui.widget.TileWidget;
-import ruiseki.okbackpack.client.gui.widget.UpgradeSlotGroupWidget;
-import ruiseki.okbackpack.client.gui.widget.UpgradeSlotUpdateGroup;
-import ruiseki.okbackpack.client.gui.widget.VoidUpgradeWidget;
+import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotGroupWidget;
+import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
+import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.SortType;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
-import ruiseki.okbackpack.common.item.wrapper.AdvancedFeedingUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.AdvancedFilterUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.AdvancedMagnetUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.AdvancedUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.AdvancedVoidUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.BasicUpgradeWrapper;
 import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.FeedingUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.FilterUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.MagnetUpgradeWrapper;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
-import ruiseki.okbackpack.common.item.wrapper.VoidUpgradeWrapper;
 import ruiseki.okcore.helper.ItemStackHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -104,41 +83,27 @@ public class BackpackPanel extends ModularPanel {
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.sort_by_count"), OKBGuiTextures.SMALL_1_ICON),
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.sort_by_ore_dict"), OKBGuiTextures.SMALL_O_ICON));
 
-    @Getter
-    private final EntityPlayer player;
-    @Getter
-    private final PanelSyncManager syncManager;
-    @Getter
-    private final UISettings settings;
-    @Getter
+    public final EntityPlayer player;
+    public final PanelSyncManager syncManager;
+    public final UISettings settings;
     public final BackpackWrapper wrapper;
-    @Getter
-    private final TileEntity tile;
+    public final TileEntity tile;
 
-    @Getter
-    private final UpgradeSlotGroupWidget upgradeSlotGroupWidget;
-    @Getter
-    private final List<TabWidget> tabWidgets;
-    private final List<ItemSlot> upgradeSlotWidgets = new ArrayList<>();
-
-    @Getter
-    private int rowSize;
-
-    @Getter
     public final BackpackSH backpackSyncHandler;
-    @Getter
-    private final BackpackSlotSH[] backpackSlotSyncHandlers;
-    private final UpgradeSlotSH[] upgradeSlotSyncHandlers;
-    private final UpgradeSlotUpdateGroup[] upgradeSlotGroups;
-    private final ItemStack[] lastUpgradeStacks;
+    public final BackpackSlotSH[] backpackSlotSyncHandlers;
+    public final UpgradeSlotSH[] upgradeSlotSyncHandlers;
+    public final UpgradeSlotUpdateGroup[] upgradeSlotGroups;
+    public final UpgradeSlotGroupWidget upgradeSlotGroupWidget;
+    public final List<ItemSlot> upgradeSlotWidgets = new ArrayList<>();
+    public final List<TabWidget> tabWidgets;
+    public final ItemStack[] lastUpgradeStacks;
 
-    @Getter
-    private final IPanelHandler settingPanel;
-    @Getter
-    private Column backpackInvCol;
-    @Getter
-    private BackpackList backpackList;
-    private BackpackSearchBarWidget searchBarWidget;
+    public int rowSize;
+    public Column backpackInvCol;
+    public BackpackList backpackList;
+    public BackpackSearchBarWidget searchBarWidget;
+
+    public final IPanelHandler settingPanel;
 
     public boolean isMemorySettingTabOpened = false;
     public boolean shouldMemorizeRespectNBT = false;
@@ -218,7 +183,7 @@ public class BackpackPanel extends ModularPanel {
 
         syncManager.onServerTick(() -> {
             if (tile != null) return;
-            if (wrapper.tick(getPlayer())) {
+            if (wrapper.tick(player)) {
                 syncManager.getContainer()
                     .detectAndSendChanges();
             }
@@ -541,67 +506,13 @@ public class BackpackPanel extends ModularPanel {
                     .addLine(IKey.str(item.getItemStackDisplayName(stack)))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
 
-            // spotless: off
+            UpgradeWrapperFactory.updateWidgetDelegates(stack, wrapper, upgradeSlotGroup);
+            ExpandedTabWidget widget = UpgradeWrapperFactory
+                .getExpandedTabWidget(stack, slotIndex, wrapper, this, wrapper.getSettingLangKey());
 
-            // Crafting
-            if (wrapper instanceof CraftingUpgradeWrapper upgrade) {
-                upgradeSlotGroup.updateCraftingDelegate(upgrade);
-                tabWidget.setExpandedWidget(
-                    new CraftingUpgradeWidget(slotIndex, upgrade, this, wrapper.getSettingLangKey()));
+            if (widget != null) {
+                tabWidget.setExpandedWidget(widget);
             }
-
-            // Feeding
-            else if (wrapper instanceof AdvancedFeedingUpgradeWrapper upgrade) {
-                upgradeSlotGroup.updateAdvancedFilterDelegate(upgrade);
-                tabWidget.setExpandedWidget(
-                    new AdvancedFeedingUpgradeWidget(slotIndex, upgrade, wrapper.getSettingLangKey()));
-            } else if (wrapper instanceof FeedingUpgradeWrapper upgrade) {
-                upgradeSlotGroup.updateFilterDelegate(upgrade);
-                tabWidget.setExpandedWidget(new FeedingUpgradeWidget(slotIndex, upgrade, wrapper.getSettingLangKey()));
-            }
-
-            // Magnet
-            else if (wrapper instanceof AdvancedMagnetUpgradeWrapper upgrade) {
-                upgradeSlotGroup.updateAdvancedFilterDelegate(upgrade);
-                tabWidget.setExpandedWidget(
-                    new AdvancedMagnetUpgradeWidget(slotIndex, upgrade, wrapper.getSettingLangKey()));
-            } else if (wrapper instanceof MagnetUpgradeWrapper upgrade) {
-                upgradeSlotGroup.updateFilterDelegate(upgrade);
-                tabWidget.setExpandedWidget(new MagnetUpgradeWidget(slotIndex, upgrade, wrapper.getSettingLangKey()));
-            }
-
-            // Filter
-            else if (wrapper instanceof AdvancedFilterUpgradeWrapper upgrade) {
-                upgradeSlotGroup.updateAdvancedFilterDelegate(upgrade);
-                tabWidget.setExpandedWidget(
-                    new AdvancedFilterUpgradeWidget(slotIndex, upgrade, wrapper.getSettingLangKey()));
-            } else if (wrapper instanceof FilterUpgradeWrapper upgrade) {
-                upgradeSlotGroup.updateFilterDelegate(upgrade);
-                tabWidget.setExpandedWidget(new FilterUpgradeWidget(slotIndex, upgrade, wrapper.getSettingLangKey()));
-            }
-
-            // Void
-            else if (wrapper instanceof AdvancedVoidUpgradeWrapper upgrade) {
-                upgradeSlotGroup.updateAdvancedFilterDelegate(upgrade);
-                tabWidget
-                    .setExpandedWidget(new AdvancedVoidUpgradeWidget(slotIndex, upgrade, wrapper.getSettingLangKey()));
-            } else if (wrapper instanceof VoidUpgradeWrapper upgrade) {
-                upgradeSlotGroup.updateFilterDelegate(upgrade);
-                tabWidget.setExpandedWidget(new VoidUpgradeWidget(slotIndex, upgrade, wrapper.getSettingLangKey()));
-            }
-
-            // Base
-            else if (wrapper instanceof AdvancedUpgradeWrapper upgrade) {
-                upgradeSlotGroup.updateAdvancedFilterDelegate(upgrade);
-                tabWidget.setExpandedWidget(
-                    new AdvancedExpandedTabWidget<>(slotIndex, upgrade, stack, upgrade.getSettingLangKey()));
-            } else if (wrapper instanceof BasicUpgradeWrapper upgrade) {
-                upgradeSlotGroup.updateFilterDelegate(upgrade);
-                tabWidget.setExpandedWidget(
-                    new BasicExpandedTabWidget<>(slotIndex, upgrade, stack, upgrade.getSettingLangKey()));
-            }
-
-            // spotless: on
 
             if (tabWidget.getExpandedWidget() != null) {
                 getContext().getUISettings()
@@ -723,7 +634,7 @@ public class BackpackPanel extends ModularPanel {
     }
 
     public CraftingSlotInfo getCraftingInfo(int slotIndex) {
-        return upgradeSlotGroups[slotIndex].craftingInfo;
+        return upgradeSlotGroups[slotIndex].get("crafting_info");
     }
 
     private boolean isTabDirty(ItemStack stack, UpgradeSlotSH upgradeSlot) {

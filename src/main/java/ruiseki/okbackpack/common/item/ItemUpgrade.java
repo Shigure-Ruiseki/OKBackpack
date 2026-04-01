@@ -9,6 +9,9 @@ import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapperFactory;
+import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
+import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
+import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemOK;
@@ -39,5 +42,16 @@ public class ItemUpgrade<T extends UpgradeWrapperBase> extends ItemOK implements
     @Override
     public T createWrapper(ItemStack stack, IStorageWrapper storage) {
         return (T) new UpgradeWrapperBase(stack, storage);
+    }
+
+    @Override
+    public void updateWidgetDelegates(T wrapper, UpgradeSlotUpdateGroup group) {
+
+    }
+
+    @Override
+    public ExpandedTabWidget getExpandedTabWidget(int slotIndex, T wrapper, ItemStack stack, BackpackPanel panel,
+        String titleKey) {
+        return null;
     }
 }
