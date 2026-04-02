@@ -14,11 +14,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.wrapper.StackUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.helper.LangHelpers;
 
-public class ItemStackUpgrade extends ItemUpgrade<UpgradeWrapperBase> {
+public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
 
     @SideOnly(Side.CLIENT)
     protected IIcon tier1, tier2, tier3, tier4, tierOmega;
@@ -77,26 +76,21 @@ public class ItemStackUpgrade extends ItemUpgrade<UpgradeWrapperBase> {
 
     @Override
     public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
-        list.add(LangHelpers.localize("tooltip.backpack.stack_upgrade", StackUpgradeWrapper.multiplier(itemstack)));
+        list.add(LangHelpers.localize("tooltip.backpack.stack_upgrade", multiplier(itemstack)));
     }
 
     @Override
-    public UpgradeWrapperBase createWrapper(ItemStack stack, IStorageWrapper storage) {
+    public StackUpgradeWrapper createWrapper(ItemStack stack, IStorageWrapper storage) {
         return new StackUpgradeWrapper(stack, storage);
     }
 
-    public int multiplier(ItemStack stack) {
-        switch (stack.getItemDamage()) {
-            case 1:
-                return ModConfig.stackUpgradeTier2Mul;
-            case 2:
-                return ModConfig.stackUpgradeTier3Mul;
-            case 3:
-                return ModConfig.stackUpgradeTier4Mul;
-            case 4:
-                return ModConfig.stackUpgradeTierOmegaMul;
-            default:
-                return ModConfig.stackUpgradeTier1Mul;
-        }
+    public static int multiplier(ItemStack stack) {
+        return switch (stack.getItemDamage()) {
+            case 1 -> ModConfig.stackUpgradeTier2Mul;
+            case 2 -> ModConfig.stackUpgradeTier3Mul;
+            case 3 -> ModConfig.stackUpgradeTier4Mul;
+            case 4 -> ModConfig.stackUpgradeTierOmegaMul;
+            default -> ModConfig.stackUpgradeTier1Mul;
+        };
     }
 }

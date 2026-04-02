@@ -2,7 +2,11 @@ package ruiseki.okbackpack.api.wrapper;
 
 import net.minecraft.item.ItemStack;
 
-public interface IVoidUpgrade {
+/**
+ * Upgrade that can void items according to rules.
+ * Extends IInventoryModifiable so it can directly modify insert/extract logic.
+ */
+public interface IVoidUpgrade extends IInventoryModifiable {
 
     String VOID_TYPE_TAG = "VoidType";
     String VOID_INPUT_TAG = "VoidInput";

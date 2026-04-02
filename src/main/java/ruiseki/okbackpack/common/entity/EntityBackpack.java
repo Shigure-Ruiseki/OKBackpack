@@ -11,6 +11,6 @@ public class EntityBackpack extends EntityImmortalItem {
 
     public EntityBackpack(World world, Entity original, ItemStack stack, BackpackWrapper wrapper) {
         super(world, original, stack);
-        setImmortal(wrapper.canImportant());
+        wrapper.applyContainerEntity(world, this);
     }
 }

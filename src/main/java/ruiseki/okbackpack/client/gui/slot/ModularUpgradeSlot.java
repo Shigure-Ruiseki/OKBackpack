@@ -9,60 +9,33 @@ import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
-import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.item.ItemInceptionUpgrade;
-import ruiseki.okbackpack.common.item.ItemStackUpgrade;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 
 public class ModularUpgradeSlot extends ModularSlot {
 
-    private final BackpackWrapper wrapper;
+    private final IStorageWrapper wrapper;
 
-    public ModularUpgradeSlot(BackpackWrapper wrapper, int index) {
-        super(wrapper.upgradeHandler, index);
+    public ModularUpgradeSlot(IStorageWrapper wrapper, int index) {
+        super(wrapper.getUpgradeHandler(), index);
         this.wrapper = wrapper;
     }
 
     @Override
     public boolean canTakeStack(EntityPlayer player) {
-        ItemStack originalStack = this.getStack();
-        if (originalStack == null) {
-            return true;
-        }
+        ItemStack current = this.getStack();
+        if (current == null) return true;
 
         ItemStack cursor = player.inventory.getItemStack();
-        boolean cursorEmpty = (cursor == null);
+        int slot = getSlotIndex();
 
-        Item originalItem = originalStack.getItem();
-
-        if (originalItem instanceof ItemStackUpgrade) {
-            int slotIndex = getSlotIndex();
-
-            if (cursorEmpty) {
-                return wrapper.canReplaceStackUpgrade(slotIndex, null);
-            }
-
-            if (cursor.getItem() instanceof ItemStackUpgrade) {
-                return wrapper.canReplaceStackUpgrade(slotIndex, cursor);
-            }
-
-            return wrapper.canReplaceStackUpgrade(slotIndex, null);
+        // cursor empty → remove
+        if (cursor == null) {
+            return wrapper.canRemoveUpgrade(slot);
         }
 
-        if (originalItem instanceof ItemInceptionUpgrade) {
-
-            if (cursorEmpty) {
-                return wrapper.canRemoveInceptionUpgrade();
-            }
-
-            if (!(cursor.getItem() instanceof ItemInceptionUpgrade)) {
-                return wrapper.canRemoveInceptionUpgrade();
-            }
-
-            return true;
-        }
-
-        return true;
+        // cursor not empty → replace
+        return wrapper.canReplaceUpgrade(slot, cursor);
     }
 
     @Override
@@ -72,17 +45,27 @@ public class ModularUpgradeSlot extends ModularSlot {
 
     @Override
     public boolean isItemValid(@Nullable ItemStack stack) {
-        if (stack == null) {
+        if (stack == null) return false;
+
+        Item item = stack.getItem();
+        int slot = getSlotIndex();
+
+        if (!(item instanceof ItemUpgrade<?>)) {
             return false;
         }
 
-        Item item = stack.getItem();
-
-        if (item instanceof ItemStackUpgrade upgrade) {
-            return wrapper.canAddStackUpgrade(upgrade.multiplier(stack));
+        // check global upgrade rules
+        if (!wrapper.canAddUpgrade(slot, stack)) {
+            return false;
         }
 
-        return item instanceof ItemUpgrade<?>;
-    }
+        // simulate replace (slot currently has something?)
+        ItemStack current = getStack();
 
+        if (current == null) {
+            return true;
+        }
+
+        return wrapper.canReplaceUpgrade(slot, stack);
+    }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -168,7 +167,7 @@ public class BlockBackpack extends BlockOK {
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
         TEBackpack backpack = new TEBackpack();
-        BackpackWrapper wrapper = new BackpackWrapper(null, backpackSlots, upgradeSlots);
+        BackpackWrapper wrapper = new BackpackWrapper(backpack, backpackSlots, upgradeSlots);
         backpack.setWrapper(wrapper);
         return backpack;
     }
@@ -191,10 +190,8 @@ public class BlockBackpack extends BlockOK {
     public static class ItemBackpack extends ItemBlockBauble
         implements IGuiHolder<PlayerInventoryGuiData>, IBaubleRender, IArmorRender {
 
-        @Getter
-        private int backpackSlots = 27;
-        @Getter
-        private int upgradeSlots = 1;
+        public int backpackSlots = 27;
+        public int upgradeSlots = 1;
 
         public ItemBackpack(Block block) {
             super(block);
@@ -315,10 +312,6 @@ public class BlockBackpack extends BlockOK {
         public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean flag) {
             list.add(LangHelpers.localize("tooltip.backpack.inventory_size", backpackSlots));
             list.add(LangHelpers.localize("tooltip.backpack.upgrade_slots_size", upgradeSlots));
-            if (GuiScreen.isShiftKeyDown()) {
-                BackpackWrapper cap = new BackpackWrapper(stack, this);
-                list.add(LangHelpers.localize("tooltip.backpack.stack_multiplier", cap.getTotalStackMultiplier(), "x"));
-            }
             super.addInformation(stack, player, list, flag);
         }
 

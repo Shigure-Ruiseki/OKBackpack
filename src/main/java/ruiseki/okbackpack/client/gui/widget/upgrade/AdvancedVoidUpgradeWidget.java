@@ -31,14 +31,14 @@ public class AdvancedVoidUpgradeWidget extends AdvancedExpandedTabWidget<Advance
         BackpackPanel panel, String titleKey) {
         super(slotIndex, wrapper, stack, titleKey, "adv_common_filter", 6, 100);
 
-        CyclicVariantButtonWidget inputButton = new CyclicVariantButtonWidget(
-            VOID_INPUT_VARIANTS,
-            wrapper.getVoidInput()
-                .ordinal(),
-            index -> {
-                wrapper.setVoidInput(IVoidUpgrade.VoidInput.values()[index]);
-                updateWrapper();
-            });
+        // CyclicVariantButtonWidget inputButton = new CyclicVariantButtonWidget(
+        // VOID_INPUT_VARIANTS,
+        // wrapper.getVoidInput()
+        // .ordinal(),
+        // index -> {
+        // wrapper.setVoidInput(IVoidUpgrade.VoidInput.values()[index]);
+        // updateWrapper();
+        // });
 
         CyclicVariantButtonWidget voidButton = new CyclicVariantButtonWidget(
             VOID_TYPE_VARIANTS,
@@ -52,7 +52,7 @@ public class AdvancedVoidUpgradeWidget extends AdvancedExpandedTabWidget<Advance
         this.startingRow.leftRel(0.5f)
             .height(20)
             .childPadding(2)
-            .child(inputButton)
+            // .child(inputButton)
             .child(voidButton);
     }
 

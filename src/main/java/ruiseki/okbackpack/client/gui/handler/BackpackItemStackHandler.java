@@ -37,7 +37,7 @@ public class BackpackItemStackHandler extends UpgradeItemStackHandler {
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
         if (memorizedSlotStack.get(slot) == null) {
-            return !(stack.getItem() instanceof BlockBackpack.ItemBackpack) || wrapper.canNestBackpack();
+            return !(stack.getItem() instanceof BlockBackpack.ItemBackpack) || wrapper.canAddStack(slot, stack);
         }
         if (memorizedSlotRespectNbtList.get(slot)) {
             return ItemStack.areItemStacksEqual(stack, memorizedSlotStack.get(slot));
@@ -47,12 +47,12 @@ public class BackpackItemStackHandler extends UpgradeItemStackHandler {
 
     @Override
     public int getStackLimit(int slot, ItemStack stack) {
-        return stack.getMaxStackSize() * wrapper.getTotalStackMultiplier();
+        return (stack == null ? 64 : stack.getMaxStackSize()) * wrapper.applyStackLimitModifiers(1, slot, stack);
     }
 
     @Override
     public int getSlotLimit(int slot) {
-        return 64 * wrapper.getTotalStackMultiplier();
+        return 64 * wrapper.applySlotLimitModifiers(1, slot);
     }
 
     @Override
@@ -70,13 +70,15 @@ public class BackpackItemStackHandler extends UpgradeItemStackHandler {
             || this.sortLockedSlots.size() != newSize;
     }
 
-    public ItemStack prioritizedInsertion(int slotIndex, ItemStack stack, boolean simulate) {
-        if (stack != null && !wrapper.canNestBackpack() && stack.getItem() instanceof BlockBackpack.ItemBackpack) {
+    public ItemStack prioritizedInsertion(int slot, ItemStack stack, boolean simulate) {
+        if (stack == null || stack.stackSize <= 0) return stack;
+
+        if (!wrapper.canAddStack(slot, stack)) {
             return stack;
         }
 
         stack = insertItemToMemorySlots(stack, simulate);
-        return insertItem(slotIndex, stack, simulate);
+        return insertItem(slot, stack, simulate);
     }
 
     public ItemStack insertItemToMemorySlots(ItemStack stack, boolean simulate) {
@@ -133,30 +135,31 @@ public class BackpackItemStackHandler extends UpgradeItemStackHandler {
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (amount == 0) {
-            return null;
-        }
-        ItemStack existing = getStackInSlot(slot);
-        if (existing == null) {
-            return null;
-        }
+        if (amount == 0) return null;
 
-        int slotMaxStackSize = existing.getMaxStackSize() * wrapper.getTotalStackMultiplier();
+        ItemStack existing = stacks.get(slot);
+        if (existing == null) return null;
+
+        int slotMaxStackSize = existing.getMaxStackSize() * wrapper.applyStackLimitModifiers(1, slot, existing);
         int toExtract = Math.min(amount, slotMaxStackSize);
 
+        ItemStack extracted;
+
         if (existing.stackSize <= toExtract) {
+            extracted = existing;
             if (!simulate) {
                 stacks.set(slot, null);
                 onContentsChanged(slot);
             }
-            return existing;
         } else {
+            extracted = ItemHandlerHelper.copyStackWithSize(existing, toExtract);
             if (!simulate) {
                 stacks.set(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.stackSize - toExtract));
                 onContentsChanged(slot);
             }
-            return ItemHandlerHelper.copyStackWithSize(existing, toExtract);
         }
+
+        return extracted;
     }
 
 }

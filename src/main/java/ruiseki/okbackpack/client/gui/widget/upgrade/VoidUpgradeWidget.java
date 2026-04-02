@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.network.NetworkUtils;
 
 import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
@@ -30,14 +31,14 @@ public class VoidUpgradeWidget extends BasicExpandedTabWidget<VoidUpgradeWrapper
         String titleKey) {
         super(slotIndex, wrapper, stack, titleKey, "common_filter", 5, 80);
 
-        CyclicVariantButtonWidget inputButton = new CyclicVariantButtonWidget(
-            VOID_INPUT_VARIANTS,
-            wrapper.getVoidInput()
-                .ordinal(),
-            index -> {
-                wrapper.setVoidInput(IVoidUpgrade.VoidInput.values()[index]);
-                updateWrapper();
-            });
+        // CyclicVariantButtonWidget inputButton = new CyclicVariantButtonWidget(
+        // VOID_INPUT_VARIANTS,
+        // wrapper.getVoidInput()
+        // .ordinal(),
+        // index -> {
+        // wrapper.setVoidInput(IVoidUpgrade.VoidInput.values()[index]);
+        // updateWrapper();
+        // });
 
         CyclicVariantButtonWidget voidButton = new CyclicVariantButtonWidget(
             VOID_TYPE_VARIANTS,
@@ -50,7 +51,7 @@ public class VoidUpgradeWidget extends BasicExpandedTabWidget<VoidUpgradeWrapper
         this.startingRow.leftRel(0.5f)
             .height(20)
             .childPadding(2)
-            .child(inputButton)
+            // .child(inputButton)
             .child(voidButton);
     }
 
@@ -58,12 +59,8 @@ public class VoidUpgradeWidget extends BasicExpandedTabWidget<VoidUpgradeWrapper
         if (this.filterWidget.getSlotSyncHandler() != null) {
             this.filterWidget.getSyncHandler()
                 .syncToServer(UpgradeSlotSH.UPDATE_VOID, buf -> {
-                    buf.writeInt(
-                        wrapper.getVoidType()
-                            .ordinal());
-                    buf.writeInt(
-                        wrapper.getVoidInput()
-                            .ordinal());
+                    NetworkUtils.writeEnumValue(buf, wrapper.getVoidType());
+                    NetworkUtils.writeEnumValue(buf, wrapper.getVoidInput());
                 });
         }
     }

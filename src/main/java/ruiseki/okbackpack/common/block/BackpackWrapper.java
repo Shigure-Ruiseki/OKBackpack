@@ -5,10 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import org.jetbrains.annotations.Nullable;
@@ -20,29 +23,27 @@ import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 import baubles.api.BaublesApi;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IEntityApplicable;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
+import ruiseki.okbackpack.api.wrapper.IInventoryModifiable;
 import ruiseki.okbackpack.api.wrapper.IPickupUpgrade;
+import ruiseki.okbackpack.api.wrapper.ISlotModifiable;
 import ruiseki.okbackpack.api.wrapper.ITickable;
-import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.api.wrapper.UpgradeWrapperFactory;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okbackpack.common.SortType;
 import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
 import ruiseki.okbackpack.common.init.ModBlocks;
-import ruiseki.okbackpack.common.init.ModItems;
-import ruiseki.okbackpack.common.item.ItemEverlastingUpgrade;
-import ruiseki.okbackpack.common.item.ItemInceptionUpgrade;
-import ruiseki.okbackpack.common.item.ItemStackUpgrade;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
-import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 
 public class BackpackWrapper implements IStorageWrapper {
 
     public ItemStack backpack;
+    public final TileEntity tile;
     public final BackpackItemStackHandler backpackHandler;
     public final UpgradeItemStackHandler upgradeHandler;
     public int backpackSlots;
@@ -86,23 +87,40 @@ public class BackpackWrapper implements IStorageWrapper {
     public static final String SLEEPING_BAG_Z = "SleepingBagZ";
 
     public BackpackWrapper() {
-        this(null, 120, 7);
+        this(null, null, 120, 7);
+    }
+
+    public BackpackWrapper(TileEntity tile) {
+        this(null, tile, 120, 7);
     }
 
     public BackpackWrapper(ItemStack backpack) {
-        this(backpack, 120, 7);
+        this(backpack, null, 120, 7);
     }
 
-    public BackpackWrapper(ItemStack backpack, BlockBackpack.ItemBackpack itemBackpack) {
-        this(backpack, itemBackpack.getBackpackSlots(), itemBackpack.getUpgradeSlots());
+    public BackpackWrapper(ItemStack backpack, TileEntity tile) {
+        this(backpack, tile, 120, 7);
     }
 
-    public BackpackWrapper(ItemStack backpack, BlockBackpack blockBackpack) {
-        this(backpack, blockBackpack.getBackpackSlots(), blockBackpack.getUpgradeSlots());
+    public BackpackWrapper(ItemStack backpack, BlockBackpack.ItemBackpack item) {
+        this(backpack, null, item.backpackSlots, item.upgradeSlots);
+    }
+
+    public BackpackWrapper(TileEntity tile, int backpackSlots, int upgradeSlots) {
+        this(null, tile, backpackSlots, upgradeSlots);
     }
 
     public BackpackWrapper(ItemStack backpack, int backpackSlots, int upgradeSlots) {
+        this(backpack, null, backpackSlots, upgradeSlots);
+    }
+
+    public BackpackWrapper(ItemStack backpack, BlockBackpack blockBackpack, TileEntity tile) {
+        this(backpack, tile, blockBackpack.getBackpackSlots(), blockBackpack.getUpgradeSlots());
+    }
+
+    public BackpackWrapper(ItemStack backpack, TileEntity tile, int backpackSlots, int upgradeSlots) {
         this.backpack = backpack;
+        this.tile = tile;
         this.backpackSlots = backpackSlots;
         this.upgradeSlots = upgradeSlots;
         this.mainColor = 0xFFCC613A;
@@ -136,6 +154,12 @@ public class BackpackWrapper implements IStorageWrapper {
         readFromItem();
     }
 
+    @Override
+    public UpgradeItemStackHandler getUpgradeHandler() {
+        return upgradeHandler;
+    }
+
+    @Override
     public String getDisplayName() {
         if (hasCustomInventoryName()) {
             return this.customName;
@@ -145,6 +169,14 @@ public class BackpackWrapper implements IStorageWrapper {
             return LangHelpers.localize(
                 backpack.getItem()
                     .getUnlocalizedName(backpack) + ".name");
+        }
+
+        if (tile != null && tile.getWorldObj() != null) {
+            Block block = tile.getWorldObj()
+                .getBlock(tile.xCoord, tile.yCoord, tile.zCoord);
+            if (block != null) {
+                return LangHelpers.localize(block.getUnlocalizedName() + ".name");
+            }
         }
 
         return LangHelpers.localize("container.inventory");
@@ -157,71 +189,68 @@ public class BackpackWrapper implements IStorageWrapper {
 
     @Override
     public ItemStack getStackInSlot(int slot) {
-        return backpackHandler.getStackInSlot(slot);
+        ItemStack stack = backpackHandler.getStackInSlot(slot);
+
+        Map<Integer, IInventoryModifiable> mods = gatherCapabilityUpgrades(IInventoryModifiable.class);
+        for (IInventoryModifiable mod : mods.values()) {
+            stack = mod.onGet(slot, stack);
+        }
+
+        return stack;
     }
 
     @Override
     public void setStackInSlot(int slot, @Nullable ItemStack stack) {
+        Map<Integer, IInventoryModifiable> mods = gatherCapabilityUpgrades(IInventoryModifiable.class);
+        for (IInventoryModifiable mod : mods.values()) {
+            stack = mod.onSet(slot, stack);
+        }
+
         backpackHandler.setStackInSlot(slot, stack);
     }
 
     @Override
     public @Nullable ItemStack insertItem(int slot, @Nullable ItemStack stack, boolean simulate) {
+
+        // Apply slot-level modifications
+        Map<Integer, IInventoryModifiable> mods = gatherCapabilityUpgrades(IInventoryModifiable.class);
+        for (IInventoryModifiable mod : mods.values()) {
+            stack = mod.onInsert(slot, stack, simulate);
+            if (stack == null) return null;
+        }
+
         return backpackHandler.prioritizedInsertion(slot, stack, simulate);
     }
 
+    @Override
+    public @Nullable ItemStack extractItem(int slot, int amount, boolean simulate) {
+        ItemStack extracted = backpackHandler.extractItem(slot, amount, simulate);
+        if (extracted == null) return null;
+
+        // Apply IInventoryModifiable wrappers
+        Map<Integer, IInventoryModifiable> mods = gatherCapabilityUpgrades(IInventoryModifiable.class);
+        for (IInventoryModifiable mod : mods.values()) {
+            extracted = mod.onExtract(slot, extracted, simulate);
+            if (extracted == null) return null; // cancel extraction
+        }
+
+        return extracted;
+    }
+
+    @Override
     public @Nullable ItemStack insertItem(@Nullable ItemStack stack, boolean simulate) {
         if (stack == null || stack.stackSize <= 0) return null;
 
-        // Void ANY
-        if (canVoid(stack, IVoidUpgrade.VoidType.ANY, IVoidUpgrade.VoidInput.ALL)) {
-            return simulate ? stack : null;
-        }
-
-        // Void Overflow early have max item
-        for (int i = 0; i < backpackHandler.getSlots(); i++) {
-            ItemStack slotStack = getStackInSlot(i);
-            if (slotStack != null && ItemHandlerHelper.canItemStacksStack(slotStack, stack)) {
-
-                int limit = getSlotLimit(i);
-                if (slotStack.stackSize >= limit
-                    && canVoid(stack, IVoidUpgrade.VoidType.OVERFLOW, IVoidUpgrade.VoidInput.ALL)) {
-                    return null;
-                }
-            }
-        }
-
-        ItemStack remaining = stack;
+        ItemStack remaining = ItemHandlerHelper.copyStackWithSize(stack, stack.stackSize);
 
         for (int i = 0; i < backpackHandler.getSlots() && remaining != null; i++) {
-
-            int before = remaining.stackSize;
             remaining = insertItem(i, remaining, simulate);
-
-            boolean changed = (remaining == null) || (remaining.stackSize != before);
-
-            // Void Overflow
-            if (changed && remaining != null && remaining.stackSize > 0) {
-                if (canVoid(remaining, IVoidUpgrade.VoidType.OVERFLOW, IVoidUpgrade.VoidInput.ALL)) {
-                    return simulate ? remaining : null;
-                }
-            }
-        }
-
-        if (remaining != null && remaining.stackSize > 0) {
-            if (simulate) {
-                return null;
-            }
         }
 
         return remaining;
     }
 
     @Override
-    public @Nullable ItemStack extractItem(int slot, int amount, boolean simulate) {
-        return backpackHandler.extractItem(slot, amount, simulate);
-    }
-
     public ItemStack extractItem(ItemStack wanted, int amount, boolean simulate) {
         if (wanted == null || amount <= 0) return null;
 
@@ -293,116 +322,95 @@ public class BackpackWrapper implements IStorageWrapper {
         backpackHandler.sortLockedSlots.set(slotIndex, locked);
     }
 
-    public int getTotalStackMultiplier() {
-        List<ItemStack> stacks = upgradeHandler.getStacks();
-        int result = 0;
-        boolean hasstackUpdateOmega = false;
+    @Override
+    public int applyStackLimitModifiers(int original, int slot, ItemStack stack) {
+        int result = original;
 
-        if (stacks.isEmpty()) {
-            return 1;
+        Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
+        if (gathered.isEmpty()) return result;
+
+        for (ISlotModifiable mod : gathered.values()) {
+            result = mod.modifyStackLimit(result, slot, stack);
         }
 
-        for (ItemStack stack : stacks) {
-            if (stack == null) {
-                continue;
-            }
-            if (stack.getItem() instanceof ItemStackUpgrade upgrade) {
-                result += upgrade.multiplier(stack);
-            }
-            if (stack.equals(ModItems.STACK_UPGRADE.newItemStack(1, 4))) {
-                hasstackUpdateOmega = true;
-            }
+        if (result != original) {
+            return result - original;
         }
-        if (hasstackUpdateOmega) return ModConfig.stackUpgradeTierOmegaMul;
-        else return result == 0 ? 1 : result;
+
+        return original;
     }
 
-    public int getStackMultiplierExcluding(int excludeSlot, ItemStack replacement) {
-        List<ItemStack> stacks = upgradeHandler.getStacks();
+    @Override
+    public int applySlotLimitModifiers(int original, int slot) {
+        int result = original;
 
-        int result = 0;
-        for (int i = 0; i < upgradeHandler.getSlots(); i++) {
-            ItemStack stack = stacks.get(i);
+        Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
+        if (gathered.isEmpty()) return result;
 
-            if (i == excludeSlot) {
-                if (replacement != null && replacement.getItem() instanceof ItemStackUpgrade up) {
-                    result += up.multiplier(replacement);
+        for (ISlotModifiable mod : gathered.values()) {
+            result = mod.modifySlotLimit(result, slot);
+        }
+
+        if (result != original) {
+            return result - original;
+        }
+
+        return original;
+    }
+
+    @Override
+    public boolean canAddUpgrade(int slot, ItemStack stack) {
+        Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
+        if (gathered.isEmpty()) return true;
+
+        for (ISlotModifiable mod : gathered.values()) {
+            if (!mod.canAddUpgrade(slot, stack)) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean canAddStack(int slot, ItemStack stack) {
+        Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
+        if (stack != null && stack.getItem() instanceof BlockBackpack.ItemBackpack) {
+
+            for (ISlotModifiable mod : gathered.values()) {
+                if (mod.canAddStack(slot, stack)) {
+                    return true;
                 }
-                continue;
             }
 
-            if (stack == null) {
-                continue;
-            }
-
-            if (stack.getItem() instanceof ItemStackUpgrade up) {
-                result += up.multiplier(stack);
-            }
-        }
-        return result == 0 ? 1 : result;
-    }
-
-    public boolean canAddStackUpgrade(int newMultiplier) {
-        long result = (long) getTotalStackMultiplier() * 64L * newMultiplier;
-        return result == (int) result;
-    }
-
-    public boolean canReplaceStackUpgrade(int slotIndex, ItemStack replacement) {
-        ItemStack old = upgradeHandler.getStacks()
-            .get(slotIndex);
-
-        if (old != null && replacement != null
-            && old.getItem() instanceof ItemStackUpgrade oldUp
-            && replacement.getItem() instanceof ItemStackUpgrade newUp
-            && oldUp.multiplier(old) == newUp.multiplier(replacement)) {
-            return true;
+            return false;
         }
 
-        int newStackMultiplier = getStackMultiplierExcluding(slotIndex, replacement);
-
-        for (ItemStack stack : backpackHandler.getStacks()) {
-            if (stack == null) continue;
-
-            if (stack.stackSize > stack.getMaxStackSize() * newStackMultiplier) {
-                return false;
-            }
+        for (ISlotModifiable mod : gathered.values()) {
+            if (!mod.canAddStack(slot, stack)) return false;
         }
 
         return true;
     }
 
-    public boolean canNestBackpack() {
-        for (ItemStack stack : upgradeHandler.getStacks()) {
-            if (stack != null && stack.getItem() instanceof ItemInceptionUpgrade) {
-                return true;
-            }
+    @Override
+    public boolean canRemoveUpgrade(int slot) {
+        Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
+        if (gathered.isEmpty()) return true;
+        for (ISlotModifiable mod : gathered.values()) {
+            if (!mod.canRemoveUpgrade(slot)) return false;
         }
-        return false;
+        return true;
     }
 
-    public boolean canRemoveInceptionUpgrade() {
-        boolean containsBackpack = false;
-        for (ItemStack stack : backpackHandler.getStacks()) {
-            if (stack != null && stack.getItem() instanceof BlockBackpack.ItemBackpack) {
-                containsBackpack = true;
-                break;
-            }
+    @Override
+    public boolean canReplaceUpgrade(int slot, ItemStack replacement) {
+        Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
+        if (gathered.isEmpty()) return true;
+        for (ISlotModifiable mod : gathered.values()) {
+            if (!mod.canReplaceUpgrade(slot, replacement)) return false;
         }
-
-        if (!containsBackpack) {
-            return true;
-        }
-
-        int inceptionCount = 0;
-        for (ItemStack stack : upgradeHandler.getStacks()) {
-            if (stack != null && stack.getItem() instanceof ItemInceptionUpgrade) {
-                inceptionCount++;
-            }
-        }
-
-        return inceptionCount > 1;
+        return true;
     }
 
+    @Override
     public boolean tick(EntityPlayer player) {
 
         Map<Integer, ITickable> gathered = gatherCapabilityUpgrades(ITickable.class);
@@ -417,33 +425,30 @@ public class BackpackWrapper implements IStorageWrapper {
         return dirty;
     }
 
-    public boolean canInsert(ItemStack stack) {
-        Map<Integer, IFilterUpgrade> upgrades = gatherCapabilityUpgrades(IFilterUpgrade.class);
-        if (upgrades.isEmpty()) return true;
-
-        for (IFilterUpgrade upgrade : upgrades.values()) {
-            if (upgrade.canInsert(stack)) {
-                return true;
-            }
+    @Override
+    public boolean canInsert(int slot, ItemStack stack) {
+        Map<Integer, IFilterUpgrade> gathered = gatherCapabilityUpgrades(IFilterUpgrade.class);
+        if (gathered.isEmpty()) return true;
+        for (IFilterUpgrade mod : gathered.values()) {
+            if (!mod.canInsert(slot, stack)) return false;
         }
-        return false;
+        return true;
     }
 
-    public boolean canExtract(ItemStack stack) {
-        Map<Integer, IFilterUpgrade> upgrades = gatherCapabilityUpgrades(IFilterUpgrade.class);
-        if (upgrades.isEmpty()) return true;
-
-        for (IFilterUpgrade upgrade : upgrades.values()) {
-            if (upgrade.canExtract(stack)) {
-                return true;
-            }
+    @Override
+    public boolean canExtract(int slot, ItemStack stack) {
+        Map<Integer, IFilterUpgrade> gathered = gatherCapabilityUpgrades(IFilterUpgrade.class);
+        if (gathered.isEmpty()) return true;
+        for (IFilterUpgrade mod : gathered.values()) {
+            if (!mod.canExtract(slot, stack)) return false;
         }
-        return false;
+        return true;
     }
 
     public boolean canPickupItem(ItemStack stack) {
-
-        for (IPickupUpgrade upgrade : gatherCapabilityUpgrades(IPickupUpgrade.class).values()) {
+        Map<Integer, IPickupUpgrade> gathered = gatherCapabilityUpgrades(IPickupUpgrade.class);
+        if (gathered.isEmpty()) return false;
+        for (IPickupUpgrade upgrade : gathered.values()) {
             if (upgrade.canPickup(stack)) {
                 return true;
             }
@@ -451,25 +456,13 @@ public class BackpackWrapper implements IStorageWrapper {
         return false;
     }
 
-    public boolean canVoid(ItemStack newStack, IVoidUpgrade.VoidType type, IVoidUpgrade.VoidInput input) {
-
-        for (IVoidUpgrade upgrade : gatherCapabilityUpgrades(IVoidUpgrade.class).values()) {
-            if (upgrade.canVoid(newStack) && upgrade.getVoidType() == type
-                && (upgrade.getVoidInput() == input || input == IVoidUpgrade.VoidInput.AUTOMATION)) {
-                return true;
-            }
+    @Override
+    public void applyContainerEntity(World world, Entity selfEntity) {
+        Map<Integer, IEntityApplicable> gathered = gatherCapabilityUpgrades(IEntityApplicable.class);
+        if (gathered.isEmpty()) return;
+        for (IEntityApplicable mod : gathered.values()) {
+            mod.applyContainerEntity(world, selfEntity);
         }
-        return false;
-    }
-
-    public boolean canImportant() {
-
-        for (ItemStack stack : upgradeHandler.getStacks()) {
-            if (stack != null && stack.getItem() instanceof ItemEverlastingUpgrade) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean canPlayerAccess(UUID playerUUID) {
@@ -694,6 +687,7 @@ public class BackpackWrapper implements IStorageWrapper {
         if (tag.hasKey(SLEEPING_BAG_Z, 3)) this.sleepingBagZ = tag.getInteger(SLEEPING_BAG_Z);
     }
 
+    @Override
     public <T> Map<Integer, T> gatherCapabilityUpgrades(Class<T> capabilityClass) {
         Map<Integer, T> result = new HashMap<>();
 
