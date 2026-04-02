@@ -35,7 +35,6 @@ import ruiseki.okbackpack.common.item.ItemInceptionUpgrade;
 import ruiseki.okbackpack.common.item.ItemStackUpgrade;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
-import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
@@ -504,13 +503,11 @@ public class BackpackWrapper implements IStorageWrapper {
         }
 
         // Check Baubles if loaded
-        if (Mods.Baubles.isLoaded()) {
-            IInventory baubles = BaublesApi.getBaubles(player);
-            if (baubles != null) {
-                for (int i = 0; i < baubles.getSizeInventory(); i++) {
-                    ItemStack stack = baubles.getStackInSlot(i);
-                    if (isSameBackpack(stack)) return stack;
-                }
+        IInventory baubles = BaublesApi.getBaubles(player);
+        if (baubles != null) {
+            for (int i = 0; i < baubles.getSizeInventory(); i++) {
+                ItemStack stack = baubles.getStackInSlot(i);
+                if (isSameBackpack(stack)) return stack;
             }
         }
         return backpack; // Fallback

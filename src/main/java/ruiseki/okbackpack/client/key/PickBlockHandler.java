@@ -15,7 +15,6 @@ import baubles.api.BaublesApi;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.network.PacketQuickDraw;
-import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.client.key.IKeyHandler;
 import ruiseki.okcore.helper.ItemStackHelpers;
 
@@ -45,16 +44,13 @@ public class PickBlockHandler implements IKeyHandler {
         boolean haveItem = false;
 
         // Bauble
-        if (Mods.Baubles.isLoaded()) {
-            IInventory baublesInventory = BaublesApi.getBaubles(player);
+        IInventory baublesInventory = BaublesApi.getBaubles(player);
+        for (int i = 0; i < baublesInventory.getSizeInventory(); i++) {
+            ItemStack stack = baublesInventory.getStackInSlot(i);
 
-            for (int i = 0; i < baublesInventory.getSizeInventory(); i++) {
-                ItemStack stack = baublesInventory.getStackInSlot(i);
-
-                if (stack != null && ItemStackHelpers.areStacksEqual(stack, wanted)) {
-                    haveItem = true;
-                    break;
-                }
+            if (stack != null && ItemStackHelpers.areStacksEqual(stack, wanted)) {
+                haveItem = true;
+                break;
             }
         }
 
@@ -81,11 +77,8 @@ public class PickBlockHandler implements IKeyHandler {
 
         if (haveItem) return;
 
-        ItemStack result = null;
-        if (Mods.Baubles.isLoaded()) {
-            IInventory baublesInventory = BaublesApi.getBaubles(player);
-            result = BackpackInventoryHelpers.getQuickDrawStack(baublesInventory, wanted, InventoryTypes.BAUBLES);
-        }
+        ItemStack result;
+        result = BackpackInventoryHelpers.getQuickDrawStack(baublesInventory, wanted, InventoryTypes.BAUBLES);
 
         if (result == null) {
             result = BackpackInventoryHelpers.getQuickDrawStack(player.inventory, wanted, InventoryTypes.PLAYER);
