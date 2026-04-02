@@ -1,6 +1,5 @@
 package ruiseki.okbackpack.common.network;
 
-import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -9,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
+import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 
 import baubles.api.BaublesApi;
 import ruiseki.okbackpack.common.block.BackpackWrapper;

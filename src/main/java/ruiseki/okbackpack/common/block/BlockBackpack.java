@@ -239,9 +239,10 @@ public class BlockBackpack extends BlockOK {
         @Override
         public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isHeld) {
             super.onUpdate(stack, world, entity, slot, isHeld);
-            if (!world.isRemote && stack != null ) {
+            if (!world.isRemote && stack != null) {
                 BackpackWrapper wrapper = new BackpackWrapper(stack, this);
-                if (!stack.getTagCompound().hasKey(BackpackWrapper.BACKPACK_NBT)) {
+                if (!stack.getTagCompound()
+                    .hasKey(BackpackWrapper.BACKPACK_NBT)) {
                     wrapper.writeToItem();
                     stack.setTagCompound(wrapper.getTagCompound());
                 }
@@ -264,7 +265,8 @@ public class BlockBackpack extends BlockOK {
         public void onCreated(ItemStack stack, World world, EntityPlayer player) {
             super.onCreated(stack, world, player);
             if (!world.isRemote && stack != null) {
-                if (!stack.getTagCompound().hasKey(BackpackWrapper.BACKPACK_NBT)) {
+                if (!stack.getTagCompound()
+                    .hasKey(BackpackWrapper.BACKPACK_NBT)) {
                     BackpackWrapper wrapper = new BackpackWrapper(stack, this);
                     wrapper.writeToItem();
                     stack.setTagCompound(wrapper.getTagCompound());

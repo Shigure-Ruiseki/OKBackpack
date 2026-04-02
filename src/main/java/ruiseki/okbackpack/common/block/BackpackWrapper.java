@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -15,6 +14,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
+import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 
 import baubles.api.BaublesApi;
@@ -506,15 +506,15 @@ public class BackpackWrapper implements IStorageWrapper {
         }
 
         // Check Baubles if loaded
-         if (type == InventoryTypes.BAUBLES) {
-             IInventory baubles = BaublesApi.getBaubles(player);
-             if (baubles != null) {
-                 for (int i = 0; i < baubles.getSizeInventory(); i++) {
-                     ItemStack stack = baubles.getStackInSlot(i);
-                     if (isSameBackpack(stack)) return stack;
-                 }
-             }
-         }
+        if (type == InventoryTypes.BAUBLES) {
+            IInventory baubles = BaublesApi.getBaubles(player);
+            if (baubles != null) {
+                for (int i = 0; i < baubles.getSizeInventory(); i++) {
+                    ItemStack stack = baubles.getStackInSlot(i);
+                    if (isSameBackpack(stack)) return stack;
+                }
+            }
+        }
         return backpack; // Fallback
     }
 
