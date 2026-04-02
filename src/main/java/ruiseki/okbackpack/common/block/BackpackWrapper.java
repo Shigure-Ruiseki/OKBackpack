@@ -535,6 +535,7 @@ public class BackpackWrapper implements IStorageWrapper {
         }
 
         root.setTag(BACKPACK_NBT, serializeNBT());
+        backpack.setTagCompound(root);
     }
 
     public void writeToItem(EntityPlayer player) {

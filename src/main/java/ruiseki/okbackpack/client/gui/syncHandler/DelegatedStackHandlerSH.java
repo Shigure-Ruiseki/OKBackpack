@@ -41,7 +41,7 @@ public class DelegatedStackHandlerSH extends SyncHandler {
 
     @Override
     public void readOnClient(int id, PacketBuffer buf) {
-        if (id == UPDATE_FILTERABLE) {
+        if (id == UPDATE_FILTERABLE || id == UPDATE_STORAGE) {
             wrapper.syncToServer();
         }
     }
@@ -62,7 +62,8 @@ public class DelegatedStackHandlerSH extends SyncHandler {
                     setDelegatedStackHandler(upgrade::getStorage);
                 }
                 break;
-
+            default:
+                return;
         }
 
     }

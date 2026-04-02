@@ -140,6 +140,8 @@ public class DelegatedCraftingStackHandlerSH extends DelegatedStackHandlerSH {
 
                 break;
             }
+            default:
+                return;
         }
     }
 }

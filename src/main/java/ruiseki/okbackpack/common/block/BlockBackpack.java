@@ -244,7 +244,6 @@ public class BlockBackpack extends BlockOK {
                 if (!stack.getTagCompound()
                     .hasKey(BackpackWrapper.BACKPACK_NBT)) {
                     wrapper.writeToItem();
-                    stack.setTagCompound(wrapper.getTagCompound());
                 }
 
                 if (entity instanceof EntityPlayer player && !(player.openContainer instanceof BackPackContainer)) {
@@ -269,7 +268,6 @@ public class BlockBackpack extends BlockOK {
                     .hasKey(BackpackWrapper.BACKPACK_NBT)) {
                     BackpackWrapper wrapper = new BackpackWrapper(stack, this);
                     wrapper.writeToItem();
-                    stack.setTagCompound(wrapper.getTagCompound());
                 }
             }
         }
