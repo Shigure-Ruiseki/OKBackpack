@@ -24,7 +24,6 @@ import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okbackpack.common.init.ModBlocks;
-import ruiseki.okbackpack.compat.Mods;
 
 public class BackpackEventHandler {
 
@@ -92,10 +91,8 @@ public class BackpackEventHandler {
         ItemStack stack = event.item.getEntityItem()
             .copy();
 
-        if (Mods.Baubles.isLoaded()) {
-            IInventory inventory = BaublesApi.getBaubles(player);
-            stack = attemptPickup(player, inventory, stack, InventoryTypes.BAUBLES);
-        }
+        IInventory baubles = BaublesApi.getBaubles(player);
+        stack = attemptPickup(player, baubles, stack, InventoryTypes.BAUBLES);
 
         if (stack != null) {
             IInventory inventory = player.inventory;

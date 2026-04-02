@@ -7,8 +7,6 @@ import cpw.mods.fml.common.Loader;
 public enum Mods {
 
     // spotless:off
-    Baubles("Baubles"),
-    BaublesExpanded("Baubles|Expanded"),
     NotEnoughItems("NotEnoughItems"),
     EtFuturum("etfuturum"),
     TConstruct("TConstruct"),

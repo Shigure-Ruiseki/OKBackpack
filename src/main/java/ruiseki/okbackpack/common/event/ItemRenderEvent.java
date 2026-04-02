@@ -14,7 +14,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.client.renderer.player.IPlayerItemRender;
 import ruiseki.okbackpack.client.renderer.player.PlayerRenderContext;
-import ruiseki.okbackpack.compat.Mods;
 
 public class ItemRenderEvent {
 
@@ -27,14 +26,12 @@ public class ItemRenderEvent {
 
         EntityPlayer player = event.entityPlayer;
         InventoryPlayer inv = player.inventory;
+        InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(player);
 
         // BODY render
         renderArmor(inv, event, RenderHelpers.RenderType.BODY);
 
-        if (Mods.BaublesExpanded.isLoaded() || Mods.Baubles.isLoaded()) {
-            InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(player);
-            renderBauble(baubles, event, RenderHelpers.RenderType.BODY);
-        }
+        renderBauble(baubles, event, RenderHelpers.RenderType.BODY);
 
         // HEAD render
         float yaw = player.prevRotationYawHead
@@ -54,10 +51,7 @@ public class ItemRenderEvent {
 
         renderArmor(inv, event, RenderHelpers.RenderType.HEAD);
 
-        if (Mods.BaublesExpanded.isLoaded() || Mods.Baubles.isLoaded()) {
-            InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(player);
-            renderBauble(baubles, event, RenderHelpers.RenderType.HEAD);
-        }
+        renderBauble(baubles, event, RenderHelpers.RenderType.HEAD);
 
         GL11.glPopMatrix();
     }
@@ -89,19 +83,16 @@ public class ItemRenderEvent {
         }
 
         // baubles
-        if (Mods.BaublesExpanded.isLoaded() || Mods.Baubles.isLoaded()) {
-            InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(player);
+        InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(player);
 
-            for (int i = 0; i < baubles.getSizeInventory(); i++) {
-                ItemStack stack = baubles.getStackInSlot(i);
-                if (stack == null) continue;
+        for (int i = 0; i < baubles.getSizeInventory(); i++) {
+            ItemStack stack = baubles.getStackInSlot(i);
+            if (stack == null) continue;
 
-                if (stack.getItem() instanceof IPlayerItemRender renderer) {
-                    renderer.collectContext(stack, player, context);
-                }
+            if (stack.getItem() instanceof IPlayerItemRender renderer) {
+                renderer.collectContext(stack, player, context);
             }
         }
-
         return context;
     }
 
