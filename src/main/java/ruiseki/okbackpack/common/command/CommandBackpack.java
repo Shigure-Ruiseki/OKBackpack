@@ -285,8 +285,8 @@ public class CommandBackpack extends CommandMod {
         mat.setAccentColor(BackpackMaterial.toHexColor(wrapper.getAccentColor()));
 
         // Inventory
-        for (int i = 0; i < wrapper.backpackHandler.getSlots(); i++) {
-            ItemStack stack = wrapper.backpackHandler.getStackInSlot(i);
+        for (int i = 0; i < wrapper.getSlots(); i++) {
+            ItemStack stack = wrapper.getStackInSlot(i);
             if (stack != null) {
                 mat.getInventory()
                     .add(BackpackMaterial.BackpackEntry.fromItemStack(i, stack));
@@ -309,13 +309,13 @@ public class CommandBackpack extends CommandMod {
         wrapper.setColors(mat.parseMainColor(), mat.parseAccentColor());
 
         // Clear existing
-        for (int i = 0; i < wrapper.backpackHandler.getSlots(); i++) wrapper.backpackHandler.setStackInSlot(i, null);
+        for (int i = 0; i < wrapper.getSlots(); i++) wrapper.setStackInSlot(i, null);
         for (int i = 0; i < wrapper.upgradeHandler.getSlots(); i++) wrapper.upgradeHandler.setStackInSlot(i, null);
 
         // Set new
         for (BackpackMaterial.BackpackEntry entry : mat.getInventory()) {
-            if (entry.slot < wrapper.backpackHandler.getSlots()) {
-                wrapper.backpackHandler.setStackInSlot(entry.slot, entry.toItemStack());
+            if (entry.slot < wrapper.getSlots()) {
+                wrapper.setStackInSlot(entry.slot, entry.toItemStack());
             }
         }
         for (BackpackMaterial.BackpackEntry entry : mat.getUpgrade()) {

@@ -11,7 +11,7 @@ public class ModularBackpackSlot extends ModularSlot {
     protected final BackpackWrapper wrapper;
 
     public ModularBackpackSlot(BackpackWrapper wrapper, int index) {
-        super(wrapper.backpackHandler, index);
+        super(wrapper, index);
         this.wrapper = wrapper;
     }
 

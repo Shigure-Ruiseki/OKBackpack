@@ -6,10 +6,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.Reference;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
+import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.common.item.wrapper.EverlastingUpgradeWrapper;
 import ruiseki.okcore.helper.LangHelpers;
 
-public class ItemEverlastingUpgrade extends ItemUpgrade<UpgradeWrapperBase> {
+public class ItemEverlastingUpgrade extends ItemUpgrade<EverlastingUpgradeWrapper> {
 
     public ItemEverlastingUpgrade() {
         super("everlasting_upgrade");
@@ -20,5 +21,10 @@ public class ItemEverlastingUpgrade extends ItemUpgrade<UpgradeWrapperBase> {
     @Override
     public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
         list.add(LangHelpers.localize("tooltip.backpack.everlasting_upgrade"));
+    }
+
+    @Override
+    public EverlastingUpgradeWrapper createWrapper(ItemStack stack, IStorageWrapper storage) {
+        return new EverlastingUpgradeWrapper(stack, storage);
     }
 }

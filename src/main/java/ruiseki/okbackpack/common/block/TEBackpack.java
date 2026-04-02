@@ -117,7 +117,7 @@ public class TEBackpack extends TileTicking implements ISidedInventory, IGuiHold
         if (slot < 0 || slot >= getSizeInventory()) {
             return false;
         }
-        if (!wrapper.canInsert(stack)) {
+        if (!wrapper.canInsert(slot, stack)) {
             return false;
         }
         return isItemValidForSlot(slot, stack);
@@ -132,7 +132,7 @@ public class TEBackpack extends TileTicking implements ISidedInventory, IGuiHold
         if (existing == null || existing.stackSize < stack.stackSize) {
             return false;
         }
-        if (!wrapper.canExtract(stack)) {
+        if (!wrapper.canExtract(slot, stack)) {
             return false;
         }
         return stack.getItem() == existing.getItem();

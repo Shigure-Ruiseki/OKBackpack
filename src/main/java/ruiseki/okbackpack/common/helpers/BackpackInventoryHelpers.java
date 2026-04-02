@@ -59,14 +59,14 @@ public class BackpackInventoryHelpers {
                 if (inSlot == null) {
                     inSlot = other.copy();
                     inSlot.stackSize = move;
-                    wrapper.backpackHandler.setStackInSlot(i, inSlot);
+                    wrapper.setStackInSlot(i, inSlot);
                 } else {
                     inSlot.stackSize += move;
                 }
 
                 other.stackSize -= move;
                 if (other.stackSize <= 0) {
-                    wrapper.backpackHandler.setStackInSlot(j, null);
+                    wrapper.setStackInSlot(j, null);
                 }
 
                 need -= move;
@@ -98,7 +98,7 @@ public class BackpackInventoryHelpers {
                     stack.stackSize -= diff;
 
                     if (stack.stackSize <= 0) {
-                        wrapper.backpackHandler.setStackInSlot(j, null);
+                        wrapper.setStackInSlot(j, null);
                     }
                 } else if (diff == 0) break;
             }
@@ -164,10 +164,8 @@ public class BackpackInventoryHelpers {
             sorted.set(entry.getValue(), entry.getKey());
         }
 
-        wrapper.backpackHandler.setSize(wrapper.backpackSlots);
-
         for (int i = 0; i < sorted.size(); i++) {
-            wrapper.backpackHandler.setStackInSlot(i, sorted.get(i)); // FIX
+            wrapper.setStackInSlot(i, sorted.get(i)); // FIX
         }
     }
 

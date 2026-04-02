@@ -2,7 +2,10 @@ package ruiseki.okbackpack.api;
 
 import java.util.Map;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -30,11 +33,19 @@ public interface IStorageWrapper extends IItemHandlerModifiable, IItemHandler, I
 
     boolean canAddUpgrade(int slot, ItemStack stack);
 
+    boolean canInsert(int slot, @Nullable ItemStack stack);
+
+    boolean canExtract(int slot, @Nullable ItemStack stack);
+
     boolean canAddStack(int slot, ItemStack stack);
 
     boolean canRemoveUpgrade(int slot);
 
     boolean canReplaceUpgrade(int slot, ItemStack replacement);
+
+    boolean tick(EntityPlayer player);
+
+    void applyContainerEntity(World world, Entity selfEntity);
 
     <T> Map<Integer, T> gatherCapabilityUpgrades(Class<T> capabilityClass);
 }
