@@ -22,6 +22,8 @@ import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 
 import baubles.api.BaublesApi;
 import ruiseki.okbackpack.OKBackpack;
+import ruiseki.okbackpack.api.ILockedItemHandler;
+import ruiseki.okbackpack.api.IMemoryItemHandler;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IEntityApplicable;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
@@ -29,13 +31,13 @@ import ruiseki.okbackpack.api.wrapper.IInventoryModifiable;
 import ruiseki.okbackpack.api.wrapper.IPickupUpgrade;
 import ruiseki.okbackpack.api.wrapper.ISlotModifiable;
 import ruiseki.okbackpack.api.wrapper.ITickable;
-import ruiseki.okbackpack.api.wrapper.UpgradeWrapperFactory;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okbackpack.common.SortType;
 import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
+import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
@@ -219,7 +221,7 @@ public class BackpackWrapper implements IStorageWrapper {
             if (stack == null) return null;
         }
 
-        return backpackHandler.prioritizedInsertion(slot, stack, simulate);
+        return getMemoryItemHandler().prioritizedInsertion(slot, stack, simulate);
     }
 
     @Override
@@ -283,43 +285,61 @@ public class BackpackWrapper implements IStorageWrapper {
     }
 
     // Setting
+    @Override
     public boolean isSlotMemorized(int slotIndex) {
-        return !(backpackHandler.memorizedSlotStack.get(slotIndex) == null);
+        return getMemoryItemHandler().isMemory(slotIndex);
     }
 
+    @Override
     public ItemStack getMemorizedStack(int slotIndex) {
-        return backpackHandler.memorizedSlotStack.get(slotIndex);
+        return getMemoryItemHandler().getMemoryStack(slotIndex);
     }
 
+    @Override
     public void setMemoryStack(int slotIndex, boolean respectNBT) {
         ItemStack currentStack = getStackInSlot(slotIndex);
         if (currentStack == null) return;
 
         ItemStack copiedStack = currentStack.copy();
         copiedStack.stackSize = 1;
-        backpackHandler.memorizedSlotStack.set(slotIndex, copiedStack);
-        backpackHandler.memorizedSlotRespectNbtList.set(slotIndex, respectNBT);
+        getMemoryItemHandler().setMemoryStack(slotIndex, copiedStack);
+        getMemoryItemHandler().setRespectNBT(slotIndex, respectNBT);
     }
 
+    @Override
     public void unsetMemoryStack(int slotIndex) {
-        backpackHandler.memorizedSlotStack.set(slotIndex, null);
-        backpackHandler.memorizedSlotRespectNbtList.set(slotIndex, false);
+        getMemoryItemHandler().setMemoryStack(slotIndex, null);
+        getMemoryItemHandler().setRespectNBT(slotIndex, false);
     }
 
+    @Override
     public boolean isMemoryStackRespectNBT(int slotIndex) {
-        return backpackHandler.memorizedSlotRespectNbtList.get(slotIndex);
+        return getMemoryItemHandler().isRespectNBT(slotIndex);
     }
 
+    @Override
     public void setMemoryStackRespectNBT(int slotIndex, boolean respect) {
-        backpackHandler.memorizedSlotRespectNbtList.set(slotIndex, respect);
+        getMemoryItemHandler().setRespectNBT(slotIndex, respect);
     }
 
+    @Override
+    public IMemoryItemHandler getMemoryItemHandler() {
+        return backpackHandler;
+    }
+
+    @Override
     public boolean isSlotLocked(int slotIndex) {
-        return backpackHandler.sortLockedSlots.get(slotIndex);
+        return getLockedItemHandler().isLocked(slotIndex);
     }
 
+    @Override
     public void setSlotLocked(int slotIndex, boolean locked) {
-        backpackHandler.sortLockedSlots.set(slotIndex, locked);
+        getLockedItemHandler().setLocked(slotIndex, locked);
+    }
+
+    @Override
+    public ILockedItemHandler getLockedItemHandler() {
+        return backpackHandler;
     }
 
     @Override
@@ -555,17 +575,17 @@ public class BackpackWrapper implements IStorageWrapper {
 
         tag.setInteger(BACKPACK_SLOTS, backpackSlots);
         tag.setInteger(UPGRADE_SLOTS, upgradeSlots);
-        tag.setInteger(MAIN_COLOR, getMainColor());
-        tag.setInteger(ACCENT_COLOR, getAccentColor());
+        tag.setInteger(MAIN_COLOR, mainColor);
+        tag.setInteger(ACCENT_COLOR, accentColor);
 
         tag.setTag(BACKPACK_INV, backpackHandler.serializeNBT());
         tag.setTag(UPGRADE_INV, upgradeHandler.serializeNBT());
 
         NBTTagCompound memoryTag = new NBTTagCompound();
-        BackpackItemStackHelpers.saveAllSlotsExtended(memoryTag, backpackHandler.memorizedSlotStack);
+        BackpackItemStackHelpers.saveAllSlotsExtended(memoryTag, getMemoryItemHandler().getMemorizedStacks());
         tag.setTag(MEMORY_STACK_ITEMS_TAG, memoryTag);
 
-        List<Boolean> respectList = backpackHandler.memorizedSlotRespectNbtList;
+        List<Boolean> respectList = getMemoryItemHandler().getRespectNBTList();
         byte[] respectBytes = new byte[backpackSlots];
         for (int i = 0; i < backpackSlots; i++) {
             boolean val = i < respectList.size() && respectList.get(i);
@@ -573,7 +593,7 @@ public class BackpackWrapper implements IStorageWrapper {
         }
         tag.setByteArray(MEMORY_STACK_RESPECT_NBT_TAG, respectBytes);
 
-        List<Boolean> locked = backpackHandler.sortLockedSlots;
+        List<Boolean> locked = getLockedItemHandler().getLockedList();
         byte[] lockedBytes = new byte[backpackSlots];
         for (int i = 0; i < backpackSlots; i++) {
             boolean val = i < locked.size() && locked.get(i);
@@ -630,8 +650,9 @@ public class BackpackWrapper implements IStorageWrapper {
         }
 
         if (tag.hasKey(MEMORY_STACK_ITEMS_TAG, 10)) {
-            BackpackItemStackHelpers
-                .loadAllItemsExtended(tag.getCompoundTag(MEMORY_STACK_ITEMS_TAG), backpackHandler.memorizedSlotStack);
+            BackpackItemStackHelpers.loadAllItemsExtended(
+                tag.getCompoundTag(MEMORY_STACK_ITEMS_TAG),
+                getMemoryItemHandler().getMemorizedStacks());
         }
 
         if (tag.hasKey(MEMORY_STACK_RESPECT_NBT_TAG, 7)) {

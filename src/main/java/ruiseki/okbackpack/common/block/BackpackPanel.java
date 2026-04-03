@@ -34,8 +34,9 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
-import ruiseki.okbackpack.api.wrapper.UpgradeWrapperFactory;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.gui.container.BackpackGuiContainer;
@@ -62,10 +63,11 @@ import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
+import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 import ruiseki.okcore.helper.ItemStackHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 
-public class BackpackPanel extends ModularPanel {
+public class BackpackPanel extends ModularPanel implements IStoragePanel {
 
     public static final AdaptableUITexture LAYERED_TAB_TEXTURE = (AdaptableUITexture) UITexture.builder()
         .location(Reference.MOD_ID, "gui/gui_controls")
@@ -126,8 +128,8 @@ public class BackpackPanel extends ModularPanel {
         this.backpackSyncHandler = new BackpackSH(new PlayerMainInvWrapper(player.inventory), this.wrapper, this);
         this.syncManager.syncValue("backpack_wrapper", this.backpackSyncHandler);
 
-        this.backpackSlotSyncHandlers = new BackpackSlotSH[this.wrapper.backpackSlots];
-        for (int i = 0; i < this.wrapper.backpackSlots; i++) {
+        this.backpackSlotSyncHandlers = new BackpackSlotSH[this.wrapper.getSlots()];
+        for (int i = 0; i < this.wrapper.getSlots(); i++) {
             ModularBackpackSlot slot = new ModularBackpackSlot(this.wrapper, i);
             slot.slotGroup("backpack_inventory");
             BackpackSlotSH syncHandler = new BackpackSlotSH(slot, this.wrapper, this);
@@ -140,14 +142,16 @@ public class BackpackPanel extends ModularPanel {
                 }
             });
         }
-        this.syncManager.registerSlotGroup(new SlotGroup("backpack_inventory", this.wrapper.backpackSlots, 100, true));
+        this.syncManager.registerSlotGroup(new SlotGroup("backpack_inventory", this.wrapper.getSlots(), 100, true));
 
         tabWidgets = new ArrayList<>();
-        this.upgradeSlotGroupWidget = new UpgradeSlotGroupWidget(this, this.wrapper.upgradeSlots);
-        this.upgradeSlotSyncHandlers = new UpgradeSlotSH[this.wrapper.upgradeSlots];
-        this.upgradeSlotGroups = new UpgradeSlotUpdateGroup[this.wrapper.upgradeSlots];
-        this.lastUpgradeStacks = new ItemStack[this.wrapper.upgradeSlots];
-        for (int i = 0; i < this.wrapper.upgradeSlots; i++) {
+        int upgradeSlots = wrapper.getUpgradeHandler()
+            .getSlots();
+        this.upgradeSlotGroupWidget = new UpgradeSlotGroupWidget(this, upgradeSlots);
+        this.upgradeSlotSyncHandlers = new UpgradeSlotSH[upgradeSlots];
+        this.upgradeSlotGroups = new UpgradeSlotUpdateGroup[upgradeSlots];
+        this.lastUpgradeStacks = new ItemStack[upgradeSlots];
+        for (int i = 0; i < upgradeSlots; i++) {
             int slotIndex = i;
 
             ModularUpgradeSlot slot = new ModularUpgradeSlot(this.wrapper, i);
@@ -203,7 +207,7 @@ public class BackpackPanel extends ModularPanel {
     }
 
     private void updateListHeight() {
-        int totalSlots = wrapper.backpackSlots;
+        int totalSlots = wrapper.getSlots();
         int rows = (totalSlots + rowSize - 1) / rowSize;
 
         int screenHeight = getScreen() != null ? getScreen().getScreenArea().height : 240;
@@ -248,7 +252,7 @@ public class BackpackPanel extends ModularPanel {
                         BackpackInventoryHelpers.sortInventory(wrapper, reverse);
 
                         backpackSyncHandler.syncToServer(BackpackSH.UPDATE_SORT_INV, buf -> {
-                            for (int i = 0; i < wrapper.backpackSlots; i++) {
+                            for (int i = 0; i < wrapper.getSlots(); i++) {
                                 buf.writeItemStackToBuffer(wrapper.getStackInSlot(i));
                             }
                         });
@@ -381,7 +385,7 @@ public class BackpackPanel extends ModularPanel {
 
         backpackInvCol = (Column) new Column().coverChildren();
 
-        for (int i = 0; i < wrapper.backpackSlots; i++) {
+        for (int i = 0; i < wrapper.getSlots(); i++) {
             int col = i % rowSize;
             int row = i / rowSize;
 
@@ -415,9 +419,13 @@ public class BackpackPanel extends ModularPanel {
     public void addUpgradeSlots() {
         upgradeSlotGroupWidget.name("upgrade_inventory");
         upgradeSlotGroupWidget.resizer()
-            .size(23, 10 + wrapper.upgradeSlots * ItemSlot.SIZE)
+            .size(
+                23,
+                10 + wrapper.getUpgradeHandler()
+                    .getSlots() * ItemSlot.SIZE)
             .left(-21);
-        for (int i = 0; i < wrapper.upgradeSlots; i++) {
+        for (int i = 0; i < wrapper.getUpgradeHandler()
+            .getSlots(); i++) {
             ItemSlot itemSlot = new ItemSlot().syncHandler("upgrades", i)
                 .pos(5, 5 + i * ItemSlot.SIZE)
                 .name("slot_" + i);
@@ -428,7 +436,8 @@ public class BackpackPanel extends ModularPanel {
     }
 
     public void addUpgradeTabs() {
-        for (int i = 0; i < wrapper.upgradeSlots; i++) {
+        for (int i = 0; i < wrapper.getUpgradeHandler()
+            .getSlots(); i++) {
             TabWidget tab = new TabWidget(i + 1).name("upgrade_tab_" + i);
             tab.setEnabled(false);
             tabWidgets.add(tab);
@@ -480,7 +489,8 @@ public class BackpackPanel extends ModularPanel {
             }
         }
 
-        for (int slotIndex = 0; slotIndex < wrapper.upgradeSlots; slotIndex++) {
+        for (int slotIndex = 0; slotIndex < wrapper.getUpgradeHandler()
+            .getSlots(); slotIndex++) {
             ItemSlot slotWidget = upgradeSlotWidgets.get(slotIndex);
             if (slotWidget.getSlot() == null) continue;
             ItemStack stack = slotWidget.getSlot()
@@ -553,7 +563,8 @@ public class BackpackPanel extends ModularPanel {
     }
 
     private void disableUnusedTabWidgets(int startTabIndex) {
-        for (int i = startTabIndex; i < wrapper.upgradeSlots; i++) {
+        for (int i = startTabIndex; i < wrapper.getUpgradeHandler()
+            .getSlots(); i++) {
             TabWidget tabWidget = tabWidgets.get(i);
             if (tabWidget != null) {
                 tabWidget.setEnabled(false);
@@ -563,7 +574,8 @@ public class BackpackPanel extends ModularPanel {
     }
 
     public void disableAllTabWidgets() {
-        for (int i = 0; i < wrapper.upgradeSlots; i++) {
+        for (int i = 0; i < wrapper.getUpgradeHandler()
+            .getSlots(); i++) {
             TabWidget tabWidget = tabWidgets.get(i);
             if (tabWidget != null) {
                 tabWidget.setEnabled(false);
@@ -574,7 +586,8 @@ public class BackpackPanel extends ModularPanel {
     }
 
     private void syncToggles() {
-        for (int i = 0; i < wrapper.upgradeSlots; i++) {
+        for (int i = 0; i < wrapper.getUpgradeHandler()
+            .getSlots(); i++) {
             UpgradeSlotGroupWidget.UpgradeToggleWidget toggleWidget = upgradeSlotGroupWidget.getToggleWidget(i);
             IToggleable wrapper = toggleWidget.getWrapper();
 
@@ -611,7 +624,8 @@ public class BackpackPanel extends ModularPanel {
     }
 
     public int getOpenCraftingUpgradeSlot() {
-        for (int slotIndex = 0; slotIndex < wrapper.upgradeSlots; slotIndex++) {
+        for (int slotIndex = 0; slotIndex < wrapper.getUpgradeHandler()
+            .getSlots(); slotIndex++) {
             ItemSlot slot = upgradeSlotWidgets.get(slotIndex);
             if (slot.getSlot() == null) continue;
             ItemStack stack = slot.getSlot()
@@ -658,5 +672,30 @@ public class BackpackPanel extends ModularPanel {
             resizer().getArea().height,
             WidgetTheme.getDefault()
                 .getTheme());
+    }
+
+    @Override
+    public EntityPlayer getPlayer() {
+        return player;
+    }
+
+    @Override
+    public TileEntity getTile() {
+        return tile;
+    }
+
+    @Override
+    public PanelSyncManager getSyncManager() {
+        return syncManager;
+    }
+
+    @Override
+    public UISettings getSettings() {
+        return settings;
+    }
+
+    @Override
+    public IStorageWrapper getWrapper() {
+        return wrapper;
     }
 }

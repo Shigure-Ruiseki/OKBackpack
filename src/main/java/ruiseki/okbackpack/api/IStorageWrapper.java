@@ -15,7 +15,8 @@ import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okcore.persist.nbt.INBTSerializable;
 
-public interface IStorageWrapper extends IItemHandlerModifiable, IItemHandler, ITintable, INBTSerializable {
+public interface IStorageWrapper
+    extends IItemHandlerModifiable, IItemHandler, ITintable, INBTSerializable, IMemoryStorage, ILockedStorage {
 
     UpgradeItemStackHandler getUpgradeHandler();
 

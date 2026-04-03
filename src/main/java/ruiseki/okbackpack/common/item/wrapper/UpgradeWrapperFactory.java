@@ -1,12 +1,12 @@
-package ruiseki.okbackpack.api.wrapper;
+package ruiseki.okbackpack.common.item.wrapper;
 
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapperFactory;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 
 public class UpgradeWrapperFactory {
 

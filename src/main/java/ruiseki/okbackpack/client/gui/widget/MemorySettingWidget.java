@@ -45,7 +45,7 @@ public class MemorySettingWidget extends ExpandedTabWidget {
                 if (button == 0) {
                     var wrapper = panel.wrapper;
 
-                    for (int i = 0; i < wrapper.backpackSlots; i++) {
+                    for (int i = 0; i < wrapper.getSlots(); i++) {
                         wrapper.setMemoryStack(i, panel.shouldMemorizeRespectNBT);
                     }
 
@@ -69,7 +69,7 @@ public class MemorySettingWidget extends ExpandedTabWidget {
                 if (button == 0) {
                     var wrapper = panel.wrapper;
 
-                    for (int i = 0; i < wrapper.backpackSlots; i++) {
+                    for (int i = 0; i < wrapper.getSlots(); i++) {
                         wrapper.unsetMemoryStack(i);
                     }
 

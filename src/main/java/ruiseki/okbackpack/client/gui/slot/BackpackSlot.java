@@ -203,7 +203,8 @@ public class BackpackSlot extends ItemSlot {
 
     private void drawSettingStack(ModularGuiContext context, WidgetTheme widgetTheme) {
         ItemStack slotStack = getSlot().getStack();
-        ItemStack memoryStack = wrapper.backpackHandler.memorizedSlotStack.get(getSlot().slotNumber);
+        ItemStack memoryStack = wrapper.getMemoryItemHandler()
+            .getMemoryStack(getSlot().slotNumber);
         ItemStack toRender = slotStack != null ? slotStack : memoryStack;
 
         if (toRender == null) return;

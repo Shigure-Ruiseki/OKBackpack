@@ -28,7 +28,7 @@ public class BackpackInventoryHelpers {
     public static void sortInventory(BackpackWrapper wrapper, boolean reverse) {
 
         // Phase 1: memory slot
-        for (int i = 0; i < wrapper.backpackSlots; i++) {
+        for (int i = 0; i < wrapper.getSlots(); i++) {
             if (!wrapper.isSlotMemorized(i) || wrapper.isSlotLocked(i)) continue;
 
             ItemStack mem = wrapper.getMemorizedStack(i);
@@ -43,7 +43,7 @@ public class BackpackInventoryHelpers {
 
             int need = limit - current;
 
-            for (int j = 0; j < wrapper.backpackSlots; j++) {
+            for (int j = 0; j < wrapper.getSlots(); j++) {
                 if (i == j || wrapper.isSlotLocked(j)) continue;
 
                 ItemStack other = wrapper.getStackInSlot(j);
@@ -75,7 +75,7 @@ public class BackpackInventoryHelpers {
         }
 
         // Phase 2: merge stack
-        for (int i = 0; i < wrapper.backpackSlots - 1; i++) {
+        for (int i = 0; i < wrapper.getSlots() - 1; i++) {
             if (wrapper.isSlotLocked(i)) continue;
 
             boolean isMem = wrapper.isSlotMemorized(i);
@@ -84,7 +84,7 @@ public class BackpackInventoryHelpers {
 
             int slotMaxSize = baseStack.getMaxStackSize() * wrapper.applyStackLimitModifiers(1, i, baseStack);
 
-            for (int j = i + 1; j < wrapper.backpackSlots; j++) {
+            for (int j = i + 1; j < wrapper.getSlots(); j++) {
                 if (isMem != wrapper.isSlotMemorized(j) || wrapper.isSlotLocked(j)) continue;
 
                 ItemStack stack = wrapper.getStackInSlot(j);
@@ -108,7 +108,7 @@ public class BackpackInventoryHelpers {
         List<ItemStack> sorted = new ArrayList<>();
         List<Map.Entry<ItemStack, Integer>> inPlace = new ArrayList<>();
 
-        for (int i = 0; i < wrapper.backpackSlots; i++) {
+        for (int i = 0; i < wrapper.getSlots(); i++) {
             ItemStack stack = wrapper.getStackInSlot(i);
 
             if (wrapper.isSlotMemorized(i) || wrapper.isSlotLocked(i)) {
@@ -156,7 +156,7 @@ public class BackpackInventoryHelpers {
         });
 
         // Phase 5: rebuild inventory
-        while (sorted.size() < wrapper.backpackSlots) {
+        while (sorted.size() < wrapper.getSlots()) {
             sorted.add(null);
         }
 
@@ -187,7 +187,7 @@ public class BackpackInventoryHelpers {
     }
 
     private static boolean hasMatchingSlot(BackpackWrapper wrapper, ItemStack stack) {
-        for (int i = 0; i < wrapper.backpackSlots; i++) {
+        for (int i = 0; i < wrapper.getSlots(); i++) {
             ItemStack inSlot = wrapper.getStackInSlot(i);
             if (ItemHandlerHelpers.canItemStacksStack(inSlot, stack)) {
                 return true;
@@ -220,7 +220,7 @@ public class BackpackInventoryHelpers {
 
     public static void transferBackpackToPlayerInventory(BackpackWrapper wrapper, PlayerMainInvWrapper playerInv,
         boolean transferMatched) {
-        for (int i = 0; i < wrapper.backpackSlots; i++) {
+        for (int i = 0; i < wrapper.getSlots(); i++) {
             ItemStack stack = wrapper.getStackInSlot(i);
 
             for (int j = 9; j < playerInv.getSlots(); j++) {
