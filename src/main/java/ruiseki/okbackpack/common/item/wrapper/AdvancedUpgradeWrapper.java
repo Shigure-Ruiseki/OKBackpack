@@ -16,7 +16,7 @@ import ruiseki.okcore.helper.ItemNBTHelpers;
 public class AdvancedUpgradeWrapper extends UpgradeWrapperBase implements IAdvancedFilterable, IToggleable {
 
     protected UpgradeItemStackHandler handler;
-    private boolean filterItemsCached = false;
+    protected UpgradeItemStackHandler oreDict;
 
     public AdvancedUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage) {
         super(upgrade, storage);
@@ -28,8 +28,19 @@ public class AdvancedUpgradeWrapper extends UpgradeWrapperBase implements IAdvan
                 tag.setTag(IBasicFilterable.FILTER_ITEMS_TAG, this.serializeNBT());
             }
         };
-        NBTTagCompound handlerTag = ItemNBTHelpers.getCompound(upgrade, FILTER_ITEMS_TAG, false);
-        if (handlerTag != null) handler.deserializeNBT(handlerTag);
+        NBTTagCompound filtersTag = ItemNBTHelpers.getCompound(upgrade, FILTER_ITEMS_TAG, false);
+        if (filtersTag != null) handler.deserializeNBT(filtersTag);
+
+        this.oreDict = new UpgradeItemStackHandler(1) {
+
+            @Override
+            protected void onContentsChanged(int slot) {
+                NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
+                tag.setTag(IAdvancedFilterable.ORE_DICT_ITEMS_TAG, this.serializeNBT());
+            }
+        };
+        NBTTagCompound oreDictTag = ItemNBTHelpers.getCompound(upgrade, ORE_DICT_ITEMS_TAG, false);
+        if (oreDictTag != null) oreDict.deserializeNBT(oreDictTag);
     }
 
     @Override
@@ -50,6 +61,11 @@ public class AdvancedUpgradeWrapper extends UpgradeWrapperBase implements IAdvan
     @Override
     public UpgradeItemStackHandler getFilterItems() {
         return handler;
+    }
+
+    @Override
+    public UpgradeItemStackHandler getOreDictItem() {
+        return oreDict;
     }
 
     @Override

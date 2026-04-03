@@ -28,6 +28,16 @@ public class AdvancedCommonFilterSlotGroupFactory implements IUpgradeSlotGroupFa
             group.syncManager.syncValue("adv_common_filter_" + group.slotIndex, i, new FilterSlotSH(slot));
         }
         group.put("adv_common_filter_slots", slots);
+
         group.syncManager.registerSlotGroup(new SlotGroup("adv_common_filters_" + group.slotIndex, 16, false));
+
+        DelegatedStackHandlerSH oreDictStackHandler = new DelegatedStackHandlerSH(group.wrapper, group.slotIndex, 1);
+
+        group.syncManager.syncValue("ore_dict_delegation_" + group.slotIndex, oreDictStackHandler);
+        group.put("ore_dict_handler", oreDictStackHandler);
+
+        ModularFilterSlot oreDictSlot = new ModularFilterSlot(oreDictStackHandler.delegatedStackHandler, 0);
+        group.syncManager.syncValue("ore_dict_" + group.slotIndex, 0, new FilterSlotSH(oreDictSlot));
+        group.put("ore_dict_", slots);
     }
 }

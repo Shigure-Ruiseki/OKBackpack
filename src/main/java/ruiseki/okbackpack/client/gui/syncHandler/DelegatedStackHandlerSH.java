@@ -9,6 +9,7 @@ import com.cleanroommc.modularui.utils.item.EmptyHandler;
 import com.cleanroommc.modularui.utils.item.IItemHandler;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 
+import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.IStorageUpgrade;
 import ruiseki.okbackpack.api.wrapper.UpgradeWrapperFactory;
@@ -19,7 +20,8 @@ import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 public class DelegatedStackHandlerSH extends SyncHandler {
 
     public static final int UPDATE_FILTERABLE = 0;
-    public static final int UPDATE_STORAGE = 1;
+    public static final int UPDATE_ORE_DICT = 1;
+    public static final int UPDATE_STORAGE = 2;
 
     private final BackpackWrapper wrapper;
     private final int slotIndex;
@@ -41,7 +43,7 @@ public class DelegatedStackHandlerSH extends SyncHandler {
 
     @Override
     public void readOnClient(int id, PacketBuffer buf) {
-        if (id == UPDATE_FILTERABLE || id == UPDATE_STORAGE) {
+        if (id == UPDATE_FILTERABLE || id == UPDATE_ORE_DICT || id == UPDATE_STORAGE) {
             wrapper.syncToServer();
         }
     }
@@ -55,6 +57,11 @@ public class DelegatedStackHandlerSH extends SyncHandler {
             case UPDATE_FILTERABLE:
                 if (wrapper instanceof IBasicFilterable upgrade) {
                     setDelegatedStackHandler(upgrade::getFilterItems);
+                }
+                break;
+            case UPDATE_ORE_DICT:
+                if (wrapper instanceof IAdvancedFilterable upgrade) {
+                    setDelegatedStackHandler(upgrade::getOreDictItem);
                 }
                 break;
             case UPDATE_STORAGE:

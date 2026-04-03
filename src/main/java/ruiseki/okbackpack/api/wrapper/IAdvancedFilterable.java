@@ -16,6 +16,9 @@ public interface IAdvancedFilterable extends IBasicFilterable {
     String IGNORE_DURABILITY_TAG = "IgnoreDurability";
     String IGNORE_NBT_TAG = "IgnoreNbt";
     String ORE_DICT_LIST_TAG = "OreDict";
+    String ORE_DICT_ITEMS_TAG = "OreDictItem";
+
+    UpgradeItemStackHandler getOreDictItem();
 
     MatchType getMatchType();
 

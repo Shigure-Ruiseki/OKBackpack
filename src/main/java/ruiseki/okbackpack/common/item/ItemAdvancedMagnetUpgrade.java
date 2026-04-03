@@ -44,6 +44,11 @@ public class ItemAdvancedMagnetUpgrade extends ItemUpgrade<AdvancedMagnetUpgrade
         if (handler == null) return;
         handler.setDelegatedStackHandler(wrapper::getFilterItems);
         handler.syncToServer(DelegatedStackHandlerSH.UPDATE_FILTERABLE);
+
+        DelegatedStackHandlerSH oreDictHandler = group.get("ore_dict_handler");
+        if (oreDictHandler == null) return;
+        oreDictHandler.setDelegatedStackHandler(wrapper::getOreDictItem);
+        oreDictHandler.syncToServer(DelegatedStackHandlerSH.UPDATE_ORE_DICT);
     }
 
     @Override

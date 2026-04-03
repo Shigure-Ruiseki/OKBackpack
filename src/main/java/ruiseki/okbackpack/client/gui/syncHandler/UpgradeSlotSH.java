@@ -1,6 +1,8 @@
 package ruiseki.okbackpack.client.gui.syncHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -148,18 +150,20 @@ public class UpgradeSlotSH extends ItemSlotSH {
         UpgradeWrapperBase wrapper = getWrapper();
         if (!(wrapper instanceof IAdvancedFilterable upgradeWrapper)) return;
 
-        // APPLY
+        // APPLY BASIC SETTINGS
         upgradeWrapper.setFilterType(NetworkUtils.readEnumValue(buf, IAdvancedFilterable.FilterType.class));
         upgradeWrapper.setMatchType(NetworkUtils.readEnumValue(buf, IAdvancedFilterable.MatchType.class));
         upgradeWrapper.setIgnoreDurability(buf.readBoolean());
         upgradeWrapper.setIgnoreNBT(buf.readBoolean());
 
-        upgradeWrapper.getOreDictEntries()
-            .clear();
-        for (int i = 0; i < buf.readInt(); i++) {
-            upgradeWrapper.getOreDictEntries()
-                .add(buf.readStringFromBuffer(100));
+        int size = buf.readInt();
+        List<String> list = new ArrayList<>(size);
+
+        for (int i = 0; i < size; i++) {
+            list.add(buf.readStringFromBuffer(100));
         }
+
+        upgradeWrapper.setOreDictEntries(list);
     }
 
     private void updateAdvanceFeedingUpgrade(PacketBuffer buf) {

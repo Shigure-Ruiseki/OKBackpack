@@ -29,7 +29,6 @@ import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.TextWidget;
 import com.cleanroommc.modularui.widgets.layout.Column;
 import com.cleanroommc.modularui.widgets.layout.Row;
-import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
 import lombok.Getter;
 import ruiseki.okbackpack.Reference;
@@ -81,7 +80,6 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
     @Getter
     private final List<FilterSlot> filterSlots;
 
-    private final TextFieldWidget oreDictTextField;
     private final OreDictRegexListWidget oreDictList;
     private OreDictEntryWidget focusedOreDictEntry = null;
 
@@ -148,57 +146,9 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
         itemBasedConfigButtonRow
             .setEnabledIf(flow -> filterableWrapper.getMatchType() == IAdvancedFilterable.MatchType.ITEM);
 
-        // OreDict widgets
-        this.oreDictTextField = new TextFieldWidget().size(88, 15)
-            .leftRel(0.5f)
-            .bottom(3);
-        this.oreDictList = new OreDictRegexListWidget();
-
-        // OreDict buttons
-        ButtonWidget<?> addOreDictEntryButton = new ButtonWidget<>();
-        addOreDictEntryButton.size(20, 20);
-        addOreDictEntryButton.overlay(OKBGuiTextures.ADD_ICON);
-        addOreDictEntryButton.onMousePressed(mouseButton -> {
-            String oreName = oreDictTextField.getText();
-            if (oreName.isEmpty()) {
-                return false;
-            }
-
-            filterableWrapper.getOreDictEntries()
-                .add(oreName);
-            this.oreDictList.child(new OreDictEntryWidget(this, oreName, 77));
-            this.oreDictTextField.setText("");
-            updateWrapper();
-            this.oreDictList.scheduleResize();
-            return true;
-        });
-
-        ButtonWidget<?> removeOreDictEntryButton = new ButtonWidget<>();
-        removeOreDictEntryButton.size(20, 20);
-        removeOreDictEntryButton.overlay(OKBGuiTextures.REMOVE_ICON);
-        removeOreDictEntryButton.onMousePressed(mouseButton -> {
-            if (this.focusedOreDictEntry == null) {
-                return false;
-            }
-            filterableWrapper.getOreDictEntries()
-                .remove(focusedOreDictEntry.getText());
-            this.oreDictList.removeChild(focusedOreDictEntry);
-            updateWrapper();
-            this.oreDictList.scheduleResize();
-            return true;
-        });
-
-        Row oreDictBasedConfigButtonRow = (Row) new Row().size(44, 20)
-            .childPadding(2)
-            .left(44)
-            .child(addOreDictEntryButton)
-            .child(removeOreDictEntryButton)
-            .setEnabledIf(flow -> filterableWrapper.getMatchType() == IAdvancedFilterable.MatchType.ORE_DICT);
-
         buttonRow.child(filterTypeButton)
             .child(matchTypeButton)
-            .child(itemBasedConfigButtonRow)
-            .child(oreDictBasedConfigButtonRow);
+            .child(itemBasedConfigButtonRow);
 
         // Slots
         SlotGroupWidget slotGroup = new SlotGroupWidget().coverChildren()
@@ -221,15 +171,84 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
             .child(slotGroup)
             .setEnabledIf(flow -> filterableWrapper.getMatchType() != IAdvancedFilterable.MatchType.ORE_DICT);
 
+        // OreDict widgets
+        this.oreDictList = new OreDictRegexListWidget(88, 63);
+
+        // OreDict Slot
+        FilterSlot oreDictSlot = new FilterSlot();
+        oreDictSlot.name(syncKey + "_" + slotIndex)
+            .syncHandler(syncKey + "_" + slotIndex, 0);
+
+        // OreDict buttons
+        ButtonWidget<?> addOreDictEntryButton = new ButtonWidget<>();
+        addOreDictEntryButton.size(20, 20);
+        addOreDictEntryButton.overlay(OKBGuiTextures.ADD_ICON);
+        addOreDictEntryButton.onMousePressed(mouseButton -> {
+            ItemStack stack = oreDictSlot.getSlot()
+                .getStack();
+            if (stack == null) return false;
+
+            int[] ids = OreDictionary.getOreIDs(stack);
+            if (ids.length == 0) return false;
+
+            List<String> list = new ArrayList<>(filterableWrapper.getOreDictEntries());
+
+            boolean changed = false;
+
+            for (int id : ids) {
+                String oreName = OreDictionary.getOreName(id);
+
+                if (!list.contains(oreName)) {
+                    list.add(oreName);
+                    oreDictList.child(new OreDictEntryWidget(this, oreName, 77));
+                    changed = true;
+                }
+            }
+
+            if (changed) {
+                filterableWrapper.setOreDictEntries(list);
+                updateWrapper();
+                oreDictList.scheduleResize();
+            }
+
+            return true;
+        });
+
+        ButtonWidget<?> removeOreDictEntryButton = new ButtonWidget<>();
+        removeOreDictEntryButton.size(20, 20);
+        removeOreDictEntryButton.overlay(OKBGuiTextures.REMOVE_ICON);
+        removeOreDictEntryButton.onMousePressed(mouseButton -> {
+            if (this.focusedOreDictEntry == null) return false;
+
+            List<String> list = new ArrayList<>(filterableWrapper.getOreDictEntries());
+            list.remove(focusedOreDictEntry.getText());
+
+            filterableWrapper.setOreDictEntries(list);
+
+            this.oreDictList.removeChild(focusedOreDictEntry);
+            updateWrapper();
+            this.oreDictList.scheduleResize();
+
+            return true;
+        });
         for (String entry : filterableWrapper.getOreDictEntries()) {
-            this.oreDictList.child(new OreDictEntryWidget(this, entry, 77));
+            this.oreDictList.child(new OreDictEntryWidget(this, entry, 88));
         }
 
-        this.oreDictBasedConfigurationGroup = (Column) new Column().size(88, 85)
+        Row oreDictBasedConfigButtonRow = (Row) new Row().bottom(0)
             .leftRel(0.5f)
+            .height(20)
+            .coverChildrenWidth()
+            .childPadding(2)
+            .child(oreDictSlot)
+            .child(addOreDictEntryButton)
+            .child(removeOreDictEntryButton)
+            .setEnabledIf(flow -> filterableWrapper.getMatchType() == IAdvancedFilterable.MatchType.ORE_DICT);
+
+        this.oreDictBasedConfigurationGroup = (Column) new Column().size(88, 85)
             .top(24)
             .child(oreDictList)
-            .child(oreDictTextField)
+            .child(oreDictBasedConfigButtonRow)
             .setEnabledIf(flow -> filterableWrapper.getMatchType() == IAdvancedFilterable.MatchType.ORE_DICT);
 
         // Add all children
@@ -272,8 +291,9 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
             .tiled()
             .build();
 
-        public OreDictRegexListWidget() {
+        public OreDictRegexListWidget(int width, int height) {
             background(BACKGROUND_TILE_TEXTURE);
+            size(width, height);
         }
 
         public void removeChild(OreDictEntryWidget widget) {

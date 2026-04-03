@@ -9,6 +9,7 @@ import net.minecraft.network.PacketBuffer;
 import com.cleanroommc.modularui.utils.item.EmptyHandler;
 import com.cleanroommc.modularui.utils.item.IItemHandler;
 
+import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.UpgradeWrapperFactory;
@@ -97,7 +98,7 @@ public class DelegatedCraftingStackHandlerSH extends DelegatedStackHandlerSH {
             } catch (IOException ignored) {}
         }
 
-        if (id == UPDATE_FILTERABLE || id == UPDATE_CRAFTING) {
+        if (id == UPDATE_FILTERABLE || id == UPDATE_ORE_DICT || id == UPDATE_CRAFTING) {
             wrapper.syncToServer();
         }
     }
@@ -115,6 +116,12 @@ public class DelegatedCraftingStackHandlerSH extends DelegatedStackHandlerSH {
                 }
                 break;
             }
+
+            case UPDATE_ORE_DICT:
+                if (wrapper instanceof IAdvancedFilterable upgrade) {
+                    setDelegatedStackHandler(upgrade::getOreDictItem);
+                }
+                break;
 
             case UPDATE_CRAFTING: {
                 if (wrapper instanceof ICraftingUpgrade upgrade) {
