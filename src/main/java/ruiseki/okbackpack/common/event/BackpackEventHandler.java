@@ -1,12 +1,14 @@
 package ruiseki.okbackpack.common.event;
 
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -16,7 +18,7 @@ import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
-import com.github.bsideup.jabel.Desugar;
+import com.gtnewhorizon.gtnhlib.concurrent.ThreadsafeCache;
 
 import baubles.api.BaublesApi;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -105,28 +107,17 @@ public class BackpackEventHandler {
             ItemStack stack = player.inventory.getStackInSlot(i);
             if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack item)) continue;
 
-            BackpackWrapper wrapper = getWrapper(stack, item);
             if (!stack.getTagCompound()
                 .hasKey(BackpackWrapper.BACKPACK_NBT)) {
+                BackpackWrapper wrapper = getWrapper(stack);
                 wrapper.writeToItem();
-                wrapperCache.put(
-                    stack,
-                    new CachedWrapper(
-                        wrapper,
-                        stack.getTagCompound()
-                            .hashCode()));
                 continue;
             }
 
             if (!(player.openContainer instanceof BackPackContainer)) {
+                BackpackWrapper wrapper = getWrapper(stack);
                 if (wrapper.tick(player)) {
                     wrapper.writeToItem();
-                    wrapperCache.put(
-                        stack,
-                        new CachedWrapper(
-                            wrapper,
-                            stack.getTagCompound()
-                                .hashCode()));
                 }
             }
         }
@@ -139,16 +130,10 @@ public class BackpackEventHandler {
         for (int i = 0; i < baubles.getSizeInventory(); i++) {
             ItemStack stack = baubles.getStackInSlot(i);
             if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack item)) continue;
-            BackpackWrapper wrapper = getWrapper(stack, item);
             if (!(player.openContainer instanceof BackPackContainer)) {
+                BackpackWrapper wrapper = getWrapper(stack);
                 if (wrapper.tick(player)) {
                     wrapper.writeToItem();
-                    wrapperCache.put(
-                        stack,
-                        new CachedWrapper(
-                            wrapper,
-                            stack.getTagCompound()
-                                .hashCode()));
                 }
             }
         }
@@ -213,7 +198,7 @@ public class BackpackEventHandler {
                 && i == container.wrapper.getSlotIndex()) {
                 wrapper = (BackpackWrapper) container.wrapper;
             } else {
-                wrapper = getWrapper(stack, backpack);
+                wrapper = getWrapper(stack);
             }
 
             if (!wrapper.canPickupItem(pickupStack)) continue;
@@ -243,25 +228,95 @@ public class BackpackEventHandler {
         return pickupStack;
     }
 
-    private static final Map<ItemStack, CachedWrapper> wrapperCache = new WeakHashMap<>();
+    private static final int MAX_CACHE_SIZE = 256;
 
-    @Desugar
-    private record CachedWrapper(BackpackWrapper wrapper, int nbtHash) {}
+    private static final ThreadsafeCache<BackpackKey, BackpackWrapper> WRAPPER_CACHE = new ThreadsafeCache<>(
+        MAX_CACHE_SIZE,
+        key -> {
+            BackpackKey k = (BackpackKey) key;
+            ItemStack stack = k.getStack();
+            if (stack == null) return null;
+            if (!(stack.getItem() instanceof BlockBackpack.ItemBackpack item)) return null;
 
-    private static BackpackWrapper getWrapper(ItemStack stack, BlockBackpack.ItemBackpack item) {
-        CachedWrapper cached = wrapperCache.get(stack);
-        int currentHash = stack.hasTagCompound() ? stack.getTagCompound()
-            .hashCode() : 0;
+            return new BackpackWrapper(stack, item);
+        },
+        false);
 
-        if (cached != null) {
-            if (cached.nbtHash == currentHash) {
-                return cached.wrapper;
+    private static BackpackWrapper getWrapper(ItemStack stack) {
+        if (stack == null) return null;
+        return WRAPPER_CACHE.get(new BackpackKey(stack));
+    }
+
+    private static final class BackpackKey {
+
+        private final ItemStack stack;
+        private final int nbtHash;
+
+        public BackpackKey(ItemStack stack) {
+            this.stack = stack;
+            this.nbtHash = computeNBTSignature(stack);
+        }
+
+        public ItemStack getStack() {
+            return stack;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof BackpackKey other)) return false;
+            return stack == other.stack && nbtHash == other.nbtHash;
+        }
+
+        @Override
+        public int hashCode() {
+            return System.identityHashCode(stack) * 31 + nbtHash;
+        }
+    }
+
+    private static int computeNBTSignature(ItemStack stack) {
+        if (stack == null || !stack.hasTagCompound()) return 0;
+
+        NBTTagCompound tag = stack.getTagCompound();
+
+        if (!tag.hasKey(BackpackWrapper.BACKPACK_NBT)) return 0;
+
+        NBTTagCompound bp = tag.getCompoundTag(BackpackWrapper.BACKPACK_NBT);
+
+        return deepHash(bp);
+    }
+
+    private static int deepHash(NBTTagCompound tag) {
+        int hash = 1;
+
+        List<String> keys = new ArrayList<>(tag.func_150296_c());
+        Collections.sort(keys);
+
+        for (String key : keys) {
+            hash = 31 * hash + key.hashCode();
+
+            switch (tag.func_150299_b(key)) {
+                case 3:
+                    hash = 31 * hash + tag.getInteger(key);
+                    break;
+                case 8:
+                    hash = 31 * hash + tag.getString(key)
+                        .hashCode();
+                    break;
+                case 10:
+                    hash = 31 * hash + deepHash(tag.getCompoundTag(key));
+                    break;
+                case 9:
+                    hash = 31 * hash + tag.getTagList(key, 10)
+                        .tagCount();
+                    break;
+                default:
+                    hash = 31 * hash + tag.getTag(key)
+                        .toString()
+                        .hashCode();
             }
         }
 
-        // tạo wrapper mới
-        BackpackWrapper wrapper = new BackpackWrapper(stack, item);
-        wrapperCache.put(stack, new CachedWrapper(wrapper, currentHash));
-        return wrapper;
+        return hash;
     }
 }
