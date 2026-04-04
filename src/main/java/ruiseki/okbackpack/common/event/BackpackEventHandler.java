@@ -1,5 +1,8 @@
 package ruiseki.okbackpack.common.event;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -13,6 +16,7 @@ import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
+import com.github.bsideup.jabel.Desugar;
 
 import baubles.api.BaublesApi;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -101,16 +105,28 @@ public class BackpackEventHandler {
             ItemStack stack = player.inventory.getStackInSlot(i);
             if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack item)) continue;
 
-            BackpackWrapper wrapper = new BackpackWrapper(stack, item);
+            BackpackWrapper wrapper = getWrapper(stack, item);
             if (!stack.getTagCompound()
                 .hasKey(BackpackWrapper.BACKPACK_NBT)) {
                 wrapper.writeToItem();
+                wrapperCache.put(
+                    stack,
+                    new CachedWrapper(
+                        wrapper,
+                        stack.getTagCompound()
+                            .hashCode()));
                 continue;
             }
 
             if (!(player.openContainer instanceof BackPackContainer)) {
                 if (wrapper.tick(player)) {
                     wrapper.writeToItem();
+                    wrapperCache.put(
+                        stack,
+                        new CachedWrapper(
+                            wrapper,
+                            stack.getTagCompound()
+                                .hashCode()));
                 }
             }
         }
@@ -123,10 +139,16 @@ public class BackpackEventHandler {
         for (int i = 0; i < baubles.getSizeInventory(); i++) {
             ItemStack stack = baubles.getStackInSlot(i);
             if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack item)) continue;
-            BackpackWrapper wrapper = new BackpackWrapper(stack, item);
+            BackpackWrapper wrapper = getWrapper(stack, item);
             if (!(player.openContainer instanceof BackPackContainer)) {
                 if (wrapper.tick(player)) {
                     wrapper.writeToItem();
+                    wrapperCache.put(
+                        stack,
+                        new CachedWrapper(
+                            wrapper,
+                            stack.getTagCompound()
+                                .hashCode()));
                 }
             }
         }
@@ -191,7 +213,7 @@ public class BackpackEventHandler {
                 && i == container.wrapper.getSlotIndex()) {
                 wrapper = (BackpackWrapper) container.wrapper;
             } else {
-                wrapper = new BackpackWrapper(stack, backpack);
+                wrapper = getWrapper(stack, backpack);
             }
 
             if (!wrapper.canPickupItem(pickupStack)) continue;
@@ -219,5 +241,27 @@ public class BackpackEventHandler {
         }
 
         return pickupStack;
+    }
+
+    private static final Map<ItemStack, CachedWrapper> wrapperCache = new WeakHashMap<>();
+
+    @Desugar
+    private record CachedWrapper(BackpackWrapper wrapper, int nbtHash) {}
+
+    private static BackpackWrapper getWrapper(ItemStack stack, BlockBackpack.ItemBackpack item) {
+        CachedWrapper cached = wrapperCache.get(stack);
+        int currentHash = stack.hasTagCompound() ? stack.getTagCompound()
+            .hashCode() : 0;
+
+        if (cached != null) {
+            if (cached.nbtHash == currentHash) {
+                return cached.wrapper;
+            }
+        }
+
+        // tạo wrapper mới
+        BackpackWrapper wrapper = new BackpackWrapper(stack, item);
+        wrapperCache.put(stack, new CachedWrapper(wrapper, currentHash));
+        return wrapper;
     }
 }
