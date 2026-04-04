@@ -24,13 +24,13 @@ public class AdvancedSmeltingUpgradeWidget<T extends AdvancedSmeltingUpgradeWrap
         super(slotIndex, 8, stack, titleKey, 100);
         this.wrapper = wrapper;
 
-        AdvancedFilterWidget filterWidget = new AdvancedFilterWidget(slotIndex, wrapper, "smelting_filter", 8).width(88)
+        AdvancedFilterWidget filterWidget = new AdvancedFilterWidget(slotIndex, wrapper, "smelting_filter", 16)
+            .width(88)
             .coverChildrenHeight()
-            .name("adv_filter_widget")
-            .pos(0, 0);
+            .name("adv_filter_widget");
 
         SlotGroupWidget furnaceGroup = new SlotGroupWidget().coverChildren()
-            .pos(8, 63);
+            .pos(8, 112);
 
         ItemSlot inputSlot = new ItemSlot().syncHandler("smelting_slot_" + slotIndex, 0)
             .pos(0, 0)
@@ -73,7 +73,7 @@ public class AdvancedSmeltingUpgradeWidget<T extends AdvancedSmeltingUpgradeWrap
 
         SlotGroupWidget fuelFilterGroup = new SlotGroupWidget().coverChildren()
             .leftRel(0.5f)
-            .pos(8, 120);
+            .pos(8, 169);
 
         for (int i = 0; i < 4; i++) {
             FilterSlot fuelFilterSlot = new FilterSlot();
@@ -91,7 +91,6 @@ public class AdvancedSmeltingUpgradeWidget<T extends AdvancedSmeltingUpgradeWrap
             .child(fuelFilterGroup);
 
         child(column);
-        height(170);
     }
 
     @Override

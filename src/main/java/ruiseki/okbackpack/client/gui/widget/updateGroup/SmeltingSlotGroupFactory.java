@@ -36,17 +36,17 @@ public class SmeltingSlotGroupFactory implements IUpgradeSlotGroupFactory {
 
         group.syncManager.registerSlotGroup(new SlotGroup("smelting_slots_" + group.slotIndex, 3, false));
 
-        // Material filter (8 phantom slots) for advanced smelting upgrades
-        DelegatedStackHandlerSH smeltingFilterHandler = new DelegatedStackHandlerSH(group.wrapper, group.slotIndex, 8);
+        // Material filter (16 phantom slots) for advanced smelting upgrades
+        DelegatedStackHandlerSH smeltingFilterHandler = new DelegatedStackHandlerSH(group.wrapper, group.slotIndex, 16);
         group.syncManager.syncValue("smelting_filter_delegation_" + group.slotIndex, smeltingFilterHandler);
         group.put("smelting_filter_handler", smeltingFilterHandler);
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 16; i++) {
             ModularFilterSlot filterSlot = new ModularFilterSlot(smeltingFilterHandler.delegatedStackHandler, i);
             filterSlot.slotGroup("smelting_filters_" + group.slotIndex);
             group.syncManager.syncValue("smelting_filter_" + group.slotIndex, i, new FilterSlotSH(filterSlot));
         }
-        group.syncManager.registerSlotGroup(new SlotGroup("smelting_filters_" + group.slotIndex, 8, false));
+        group.syncManager.registerSlotGroup(new SlotGroup("smelting_filters_" + group.slotIndex, 16, false));
 
         // Ore dict handler (1 phantom slot) for advanced smelting material filter
         DelegatedStackHandlerSH oreDictHandler = new DelegatedStackHandlerSH(group.wrapper, group.slotIndex, 1);

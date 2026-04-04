@@ -27,8 +27,8 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
     public AdvancedSmeltingUpgradeWrapperBase(ItemStack upgrade, IStorageWrapper storage) {
         super(upgrade, storage);
 
-        // Override filter size to 8 for advanced smelting upgrades
-        this.handler = new BaseItemStackHandler(8) {
+        // Restore filter size to 16 for advanced smelting upgrades
+        this.handler = new BaseItemStackHandler(16) {
 
             @Override
             protected void onContentsChanged(int slot) {
