@@ -1,5 +1,6 @@
 package ruiseki.okbackpack.api;
 
+import com.cleanroommc.modularui.api.IPanelHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 
@@ -18,4 +19,11 @@ public interface IStoragePanel {
 
     IStorageWrapper getWrapper();
 
+    IPanelHandler getSettingPanel();
+
+    boolean isMemorySettingTabOpened();
+
+    boolean shouldMemorizeRespectNBT();
+
+    boolean isSortingSettingTabOpened();
 }

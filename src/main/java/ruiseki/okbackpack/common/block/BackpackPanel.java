@@ -699,4 +699,24 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel {
     public IStorageWrapper getWrapper() {
         return wrapper;
     }
+
+    @Override
+    public IPanelHandler getSettingPanel() {
+        return settingPanel;
+    }
+
+    @Override
+    public boolean isMemorySettingTabOpened() {
+        return isMemorySettingTabOpened;
+    }
+
+    @Override
+    public boolean shouldMemorizeRespectNBT() {
+        return shouldMemorizeRespectNBT;
+    }
+
+    @Override
+    public boolean isSortingSettingTabOpened() {
+        return isSortingSettingTabOpened;
+    }
 }

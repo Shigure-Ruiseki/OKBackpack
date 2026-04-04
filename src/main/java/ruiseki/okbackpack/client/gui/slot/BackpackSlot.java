@@ -34,6 +34,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
 import lombok.Setter;
+import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
@@ -41,7 +42,7 @@ import ruiseki.okbackpack.common.block.BackpackPanel;
 
 public class BackpackSlot extends ItemSlot {
 
-    private final BackpackPanel panel;
+    private final IStoragePanel panel;
     private final IStorageWrapper wrapper;
 
     @Getter
@@ -55,15 +56,15 @@ public class BackpackSlot extends ItemSlot {
     }
 
     private boolean isInSettingMode() {
-        return panel.settingPanel.isPanelOpen();
+        return panel.getSettingPanel().isPanelOpen();
     }
 
     private boolean isInMemorySettingMode() {
-        return panel.isMemorySettingTabOpened;
+        return panel.isMemorySettingTabOpened();
     }
 
     private boolean isInSortSettingMode() {
-        return panel.isSortingSettingTabOpened;
+        return panel.isSortingSettingTabOpened();
     }
 
     @Override
@@ -138,10 +139,10 @@ public class BackpackSlot extends ItemSlot {
                 return Result.SUCCESS;
 
             } else if (!isMemorySet && mouseButton == 0) {
-                wrapper.setMemoryStack(index, panel.shouldMemorizeRespectNBT);
+                wrapper.setMemoryStack(index, panel.shouldMemorizeRespectNBT());
                 getSyncHandler().syncToServer(
                     BackpackSlotSH.UPDATE_SET_MEMORY_STACK,
-                    buf -> buf.writeBoolean(panel.shouldMemorizeRespectNBT));
+                    buf -> buf.writeBoolean(panel.shouldMemorizeRespectNBT()));
                 return Result.SUCCESS;
 
             } else return Result.STOP;
