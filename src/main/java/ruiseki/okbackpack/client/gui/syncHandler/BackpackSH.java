@@ -32,7 +32,7 @@ public class BackpackSH extends SyncHandler {
     public static final int DEPLOY_SLEEPING_BAG = 5;
 
     private final PlayerMainInvWrapper playerInv;
-    private final IStorageWrapper wrapper;
+    private final BackpackWrapper wrapper;
     private final IStoragePanel<?> panel;
 
     public BackpackSH(PlayerMainInvWrapper playerInv, BackpackWrapper wrapper, IStoragePanel<?> panel) {
