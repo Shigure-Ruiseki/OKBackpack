@@ -12,6 +12,7 @@ import lombok.Getter;
 import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedFeedingUpgradeWrapper;
@@ -72,7 +73,7 @@ public class AdvancedFeedingUpgradeWidget extends AdvancedExpandedTabWidget<Adva
     public void updateWrapper() {
         if (this.filterWidget.getSlotSyncHandler() != null) {
             this.filterWidget.getSyncHandler()
-                .syncToServer(UpgradeSlotSH.UPDATE_ADVANCED_FEEDING, writer -> {
+                .syncToServer(UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_ADVANCED_FEEDING), writer -> {
                     NetworkUtils.writeEnumValue(writer, wrapper.getHungerFeedingStrategy());
                     NetworkUtils.writeEnumValue(writer, wrapper.getHealthFeedingStrategy());
                 });

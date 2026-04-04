@@ -48,6 +48,7 @@ import ruiseki.okbackpack.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.BackpackList;
 import ruiseki.okbackpack.client.gui.widget.BackpackSearchBarWidget;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
@@ -482,8 +483,9 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel {
             if (wrapper.isTabOpened()) {
                 if (openedTabIndex != null) {
                     wrapper.setTabOpened(false);
-                    upgradeSlotSyncHandlers[slotIndex]
-                        .syncToServer(UpgradeSlotSH.UPDATE_UPGRADE_TAB_STATE, buf -> buf.writeBoolean(false));
+                    upgradeSlotSyncHandlers[slotIndex].syncToServer(
+                        UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_UPGRADE_TAB_STATE),
+                        buf -> { buf.writeBoolean(false); });
                     return;
                 }
                 openedTabIndex = slotIndex;
@@ -612,8 +614,9 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel {
                 UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
                 if (wrapper != null && wrapper.isTabOpened()) {
                     wrapper.setTabOpened(false);
-                    upgradeSlotSyncHandlers[i]
-                        .syncToServer(UpgradeSlotSH.UPDATE_UPGRADE_TAB_STATE, buf -> buf.writeBoolean(false));
+                    upgradeSlotSyncHandlers[i].syncToServer(
+                        UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_UPGRADE_TAB_STATE),
+                        buf -> { buf.writeBoolean(false); });
                 }
             }
             isResetOpenedTabs = true;
@@ -657,7 +660,9 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel {
         if (wrapper == null) return false;
         boolean isDirty = wrapper.isDirty();
         if (isDirty) {
-            upgradeSlot.syncToServer(UpgradeSlotSH.UPDATE_DIRTY, buf -> { buf.writeBoolean(false); });
+            upgradeSlot.syncToServer(
+                UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_DIRTY),
+                buf -> { buf.writeBoolean(false); });
         }
         return isDirty;
     }

@@ -12,6 +12,7 @@ import lombok.Getter;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.item.wrapper.FilterUpgradeWrapper;
@@ -39,7 +40,7 @@ public class FilterUpgradeWidget extends BasicExpandedTabWidget<FilterUpgradeWra
                 if (this.filterWidget.getSlotSyncHandler() != null) {
                     this.filterWidget.getSyncHandler()
                         .syncToServer(
-                            UpgradeSlotSH.UPDATE_FILTER,
+                            UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_FILTER),
                             buf -> { NetworkUtils.writeEnumValue(buf, wrapper.getfilterWay()); });
                 }
             });

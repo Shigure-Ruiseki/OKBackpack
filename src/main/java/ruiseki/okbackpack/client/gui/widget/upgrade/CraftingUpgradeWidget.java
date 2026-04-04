@@ -14,13 +14,14 @@ import com.cleanroommc.modularui.widgets.layout.Column;
 import com.cleanroommc.modularui.widgets.layout.Row;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
+import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.slot.BigItemSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.ShiftButtonWidget;
-import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
 
@@ -40,7 +41,7 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
     private ItemSlot[] craftingMatrix;
     private ItemSlot craftingResult;
 
-    public CraftingUpgradeWidget(int slotIndex, CraftingUpgradeWrapper wrapper, ItemStack stack, BackpackPanel panel,
+    public CraftingUpgradeWidget(int slotIndex, CraftingUpgradeWrapper wrapper, ItemStack stack, IStoragePanel panel,
         String titleKey) {
         super(slotIndex, 5, stack, titleKey, 90);
         this.wrapper = wrapper;
@@ -76,8 +77,9 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
                     boolean clockwise = !Interactable.hasShiftDown();
 
                     BackpackInventoryHelpers.rotated(wrapper.getStorage(), clockwise);
-                    getSlotSyncHandler()
-                        .syncToServer(UpgradeSlotSH.UPDATE_CRAFTING_R, buf -> { buf.writeBoolean(clockwise); });
+                    getSlotSyncHandler().syncToServer(
+                        UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_CRAFTING_R),
+                        buf -> { buf.writeBoolean(clockwise); });
                     return true;
                 }
                 return false;
@@ -94,8 +96,9 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
                     } else {
                         BackpackInventoryHelpers.spread(wrapper.getStorage());
                     }
-                    getSlotSyncHandler()
-                        .syncToServer(UpgradeSlotSH.UPDATE_CRAFTING_G, buf -> { buf.writeBoolean(balance); });
+                    getSlotSyncHandler().syncToServer(
+                        UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_CRAFTING_G),
+                        buf -> { buf.writeBoolean(balance); });
                     return true;
                 }
                 return false;
@@ -113,7 +116,7 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
                         wrapper.getCraftingDes()
                             .ordinal());
                     getSlotSyncHandler().syncToServer(
-                        UpgradeSlotSH.UPDATE_CRAFTING_C,
+                        UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_CRAFTING_C),
                         buf -> {
                             buf.writeInt(
                                 wrapper.getCraftingDes()
@@ -169,7 +172,7 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
 
     public void updateWrapper() {
         this.getSyncHandler()
-            .syncToServer(UpgradeSlotSH.UPDATE_CRAFTING, buf -> {
+            .syncToServer(UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_CRAFTING), buf -> {
                 NetworkUtils.writeEnumValue(buf, wrapper.getCraftingDes());
                 buf.writeBoolean(wrapper.isUseBackpack());
             });

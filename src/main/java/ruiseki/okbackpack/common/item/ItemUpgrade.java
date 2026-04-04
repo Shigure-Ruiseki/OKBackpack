@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapperFactory;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
@@ -16,7 +17,8 @@ import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemOK;
 
-public class ItemUpgrade<T extends UpgradeWrapperBase> extends ItemOK implements IUpgradeWrapperFactory<T> {
+public class ItemUpgrade<T extends UpgradeWrapperBase> extends ItemOK
+    implements IUpgradeWrapperFactory<T>, IUpgradeItem {
 
     public ItemUpgrade(String name) {
         super(name);

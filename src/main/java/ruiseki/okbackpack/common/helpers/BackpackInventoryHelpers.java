@@ -16,8 +16,9 @@ import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
 
 import ruiseki.okbackpack.OKBackpack;
+import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
-import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
@@ -365,10 +366,10 @@ public class BackpackInventoryHelpers {
         }
     }
 
-    public static void clear(BackpackPanel panel, ItemStackHandler stackHandler, int ordinal) {
+    public static void clear(IStoragePanel panel, ItemStackHandler stackHandler, int ordinal) {
         ICraftingUpgrade.CraftingDestination type = ICraftingUpgrade.CraftingDestination.values()[ordinal];
-        PlayerMainInvWrapper playerInv = new PlayerMainInvWrapper(panel.player.inventory);
-        BackpackWrapper wrapper = panel.wrapper;
+        PlayerMainInvWrapper playerInv = new PlayerMainInvWrapper(panel.getPlayer().inventory);
+        IStorageWrapper wrapper = panel.getWrapper();
 
         switch (type) {
             case INVENTORY:

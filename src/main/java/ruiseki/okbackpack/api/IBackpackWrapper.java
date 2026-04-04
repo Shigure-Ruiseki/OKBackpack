@@ -20,6 +20,8 @@ public interface IBackpackWrapper extends IStorageWrapper {
 
     void writeToItem(EntityPlayer player);
 
+    void syncToServer();
+
     boolean tick(EntityPlayer player);
 
     InventoryType getType();

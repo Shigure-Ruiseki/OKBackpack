@@ -11,6 +11,7 @@ import com.cleanroommc.modularui.network.NetworkUtils;
 import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.item.wrapper.VoidUpgradeWrapper;
@@ -58,7 +59,7 @@ public class VoidUpgradeWidget extends BasicExpandedTabWidget<VoidUpgradeWrapper
     private void updateWrapper() {
         if (this.filterWidget.getSlotSyncHandler() != null) {
             this.filterWidget.getSyncHandler()
-                .syncToServer(UpgradeSlotSH.UPDATE_VOID, buf -> {
+                .syncToServer(UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_VOID), buf -> {
                     NetworkUtils.writeEnumValue(buf, wrapper.getVoidType());
                     NetworkUtils.writeEnumValue(buf, wrapper.getVoidInput());
                 });

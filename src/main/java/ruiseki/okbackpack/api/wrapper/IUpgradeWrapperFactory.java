@@ -15,4 +15,5 @@ public interface IUpgradeWrapperFactory<W extends IUpgradeWrapper> {
 
     ExpandedTabWidget getExpandedTabWidget(int slotIndex, W wrapper, ItemStack stack, BackpackPanel panel,
         String titleKey);
+
 }

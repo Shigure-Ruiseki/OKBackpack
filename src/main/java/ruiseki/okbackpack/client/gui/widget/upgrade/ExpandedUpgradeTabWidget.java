@@ -9,6 +9,7 @@ import com.cleanroommc.modularui.drawable.ItemDrawable;
 
 import lombok.Getter;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 
 public abstract class ExpandedUpgradeTabWidget<U extends UpgradeWrapperBase> extends ExpandedTabWidget {
@@ -35,8 +36,9 @@ public abstract class ExpandedUpgradeTabWidget<U extends UpgradeWrapperBase> ext
             wrapper.setTabOpened(newState);
 
             if (slotSyncHandler != null) {
-                slotSyncHandler
-                    .syncToServer(UpgradeSlotSH.UPDATE_UPGRADE_TAB_STATE, buf -> { buf.writeBoolean(newState); });
+                slotSyncHandler.syncToServer(
+                    UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_UPGRADE_TAB_STATE),
+                    buf -> { buf.writeBoolean(newState); });
             }
         }
     }

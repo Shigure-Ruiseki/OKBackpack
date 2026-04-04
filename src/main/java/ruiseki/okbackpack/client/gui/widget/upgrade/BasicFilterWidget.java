@@ -17,6 +17,7 @@ import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.slot.FilterSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 
 public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
@@ -44,7 +45,7 @@ public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
                 filterableWrapper.setFilterType(IBasicFilterable.FilterType.values()[index]);
                 if (slotSyncHandler != null) {
                     slotSyncHandler.syncToServer(
-                        UpgradeSlotSH.UPDATE_BASIC_FILTERABLE,
+                        UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_BASIC_FILTERABLE),
                         buf -> { NetworkUtils.writeEnumValue(buf, filterableWrapper.getFilterType()); });
                 }
             }).size(20, 20);

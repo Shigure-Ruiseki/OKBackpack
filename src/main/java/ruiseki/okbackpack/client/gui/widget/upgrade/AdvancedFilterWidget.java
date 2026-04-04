@@ -37,6 +37,7 @@ import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.drawble.Outline;
 import ruiseki.okbackpack.client.gui.slot.FilterSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 
 public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
@@ -258,18 +259,19 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
 
     private void updateWrapper() {
         if (slotSyncHandler != null) {
-            slotSyncHandler.syncToServer(UpgradeSlotSH.UPDATE_ADVANCED_FILTERABLE, writer -> {
-                NetworkUtils.writeEnumValue(writer, filterableWrapper.getFilterType());
-                NetworkUtils.writeEnumValue(writer, filterableWrapper.getMatchType());
-                writer.writeBoolean(filterableWrapper.isIgnoreDurability());
-                writer.writeBoolean(filterableWrapper.isIgnoreNBT());
+            slotSyncHandler
+                .syncToServer(UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_ADVANCED_FILTERABLE), writer -> {
+                    NetworkUtils.writeEnumValue(writer, filterableWrapper.getFilterType());
+                    NetworkUtils.writeEnumValue(writer, filterableWrapper.getMatchType());
+                    writer.writeBoolean(filterableWrapper.isIgnoreDurability());
+                    writer.writeBoolean(filterableWrapper.isIgnoreNBT());
 
-                List<String> oreList = filterableWrapper.getOreDictEntries();
-                writer.writeInt(oreList.size());
-                for (String entry : oreList) {
-                    writer.writeStringToBuffer(entry);
-                }
-            });
+                    List<String> oreList = filterableWrapper.getOreDictEntries();
+                    writer.writeInt(oreList.size());
+                    for (String entry : oreList) {
+                        writer.writeStringToBuffer(entry);
+                    }
+                });
         }
     }
 

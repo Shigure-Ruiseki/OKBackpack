@@ -10,6 +10,7 @@ import com.cleanroommc.modularui.api.drawable.IKey;
 import lombok.Getter;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedMagnetUpgradeWrapper;
@@ -57,7 +58,7 @@ public class AdvancedMagnetUpgradeWidget extends AdvancedExpandedTabWidget<Advan
     public void updateWrapper() {
         if (this.filterWidget.getSlotSyncHandler() != null) {
             this.filterWidget.getSyncHandler()
-                .syncToServer(UpgradeSlotSH.UPDATE_MAGNET, buf -> {
+                .syncToServer(UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_MAGNET), buf -> {
                     buf.writeBoolean(wrapper.isCollectItem());
                     buf.writeBoolean(wrapper.isCollectExp());
                 });

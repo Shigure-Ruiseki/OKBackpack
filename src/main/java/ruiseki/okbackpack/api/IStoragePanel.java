@@ -1,9 +1,9 @@
 package ruiseki.okbackpack.api;
 
-import com.cleanroommc.modularui.api.IPanelHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 
+import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 

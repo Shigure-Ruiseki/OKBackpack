@@ -23,6 +23,7 @@ import lombok.Setter;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
@@ -147,7 +148,7 @@ public class UpgradeSlotGroupWidget extends ParentWidget<UpgradeSlotGroupWidget>
                 wrapper.toggle();
             }
             if (slotSyncHandler != null) {
-                slotSyncHandler.syncToServer(UpgradeSlotSH.UPDATE_UPGRADE_TOGGLE);
+                slotSyncHandler.syncToServer(UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_UPGRADE_TOGGLE));
             }
 
             Interactable.playButtonClickSound();
