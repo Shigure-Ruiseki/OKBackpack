@@ -813,7 +813,7 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public boolean isDirty() {
-        return false;
+        return isDirty;
     }
 
     @Override
