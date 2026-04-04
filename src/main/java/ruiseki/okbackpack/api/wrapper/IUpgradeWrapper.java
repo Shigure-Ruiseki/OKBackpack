@@ -13,16 +13,4 @@ public interface IUpgradeWrapper {
     String getSettingLangKey();
 
     ItemStack getUpgradeStack();
-
-    default boolean canBeDisabled() {
-        return true;
-    }
-
-    default void onBeforeRemoved() {
-        // noop
-    }
-
-    default void onAdded() {
-        // noop
-    }
 }

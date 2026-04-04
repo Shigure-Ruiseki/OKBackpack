@@ -13,9 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
@@ -40,7 +38,6 @@ import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
-import ruiseki.okcore.capabilities.Capability;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
@@ -862,26 +859,5 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public ItemStack getBackpack() {
         return backpack;
-    }
-
-    public boolean matches(ItemStack stack) {
-        if (stack == null || stack.getTagCompound() == null) return false;
-
-        NBTTagCompound tag = stack.getTagCompound()
-            .getCompoundTag(BACKPACK_NBT);
-
-        if (tag == null || !tag.hasKey(UUID_TAG)) return false;
-
-        return this.uuid.equals(tag.getString(UUID_TAG));
-    }
-
-    @Override
-    public boolean hasCapability(@NotNull Capability<?> capability, @Nullable ForgeDirection forgeDirection) {
-        return false;
-    }
-
-    @Override
-    public @Nullable <T> T getCapability(Capability<T> capability, ForgeDirection forgeDirection) {
-        return null;
     }
 }

@@ -88,7 +88,10 @@ public class TEBackpack extends TileSideCapability
     @Override
     protected void doUpdate() {
         super.doUpdate();
-        wrapper.tick(worldObj, getPos());
+
+        if (wrapper.tick(worldObj, getPos())) {
+            markDirty();
+        }
     }
 
     @Override

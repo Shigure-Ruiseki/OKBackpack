@@ -13,12 +13,11 @@ import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okbackpack.common.SortType;
-import ruiseki.okcore.capabilities.ICapabilityProvider;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.persist.nbt.INBTSerializable;
 
-public interface IStorageWrapper extends IItemHandlerModifiable, IItemHandler, ITintable, INBTSerializable,
-    IMemoryStorage, ILockedStorage, ICapabilityProvider {
+public interface IStorageWrapper
+    extends IItemHandlerModifiable, IItemHandler, ITintable, INBTSerializable, IMemoryStorage, ILockedStorage {
 
     UpgradeItemStackHandler getUpgradeHandler();
 
@@ -63,8 +62,4 @@ public interface IStorageWrapper extends IItemHandlerModifiable, IItemHandler, I
     void markClean();
 
     void setInventorySlotChangeHandler(Runnable contentsChangeHandler);
-
-    default void setUpgradeCachesInvalidatedHandler(Runnable handler) {
-        // noop
-    }
 }
