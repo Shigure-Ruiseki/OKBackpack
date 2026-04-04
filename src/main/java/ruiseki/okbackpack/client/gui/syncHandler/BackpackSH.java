@@ -14,7 +14,6 @@ import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 
 import ruiseki.okbackpack.api.IStoragePanel;
-import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.SortType;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
