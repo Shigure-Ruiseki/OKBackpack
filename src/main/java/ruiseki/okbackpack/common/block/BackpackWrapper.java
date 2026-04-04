@@ -388,11 +388,15 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public boolean canAddUpgrade(int slot, ItemStack stack) {
-        Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
-        if (gathered.isEmpty()) return true;
+        ItemStack upgradeStack = upgradeHandler.getStackInSlot(slot);
+        if (upgradeStack == null) return true;
 
-        for (ISlotModifiable mod : gathered.values()) {
-            if (!mod.canAddUpgrade(slot, stack)) return false;
+        UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(upgradeStack, this);
+        if (wrapper == null) return true;
+        if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) return true;
+
+        if (wrapper instanceof ISlotModifiable modifiable) {
+            return modifiable.canAddUpgrade(slot, stack);
         }
         return true;
     }
@@ -420,20 +424,31 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public boolean canRemoveUpgrade(int slot) {
-        Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
-        if (gathered.isEmpty()) return true;
-        for (ISlotModifiable mod : gathered.values()) {
-            if (!mod.canRemoveUpgrade(slot)) return false;
+        ItemStack upgradeStack = upgradeHandler.getStackInSlot(slot);
+        if (upgradeStack == null) return true;
+
+        UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(upgradeStack, this);
+        if (wrapper == null) return true;
+        if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) return true;
+
+        if (wrapper instanceof ISlotModifiable modifiable) {
+            return modifiable.canRemoveUpgrade(slot);
         }
+
         return true;
     }
 
     @Override
     public boolean canReplaceUpgrade(int slot, ItemStack replacement) {
-        Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
-        if (gathered.isEmpty()) return true;
-        for (ISlotModifiable mod : gathered.values()) {
-            if (!mod.canReplaceUpgrade(slot, replacement)) return false;
+        ItemStack upgradeStack = upgradeHandler.getStackInSlot(slot);
+        if (upgradeStack == null) return true;
+
+        UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(upgradeStack, this);
+        if (wrapper == null) return true;
+        if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) return true;
+
+        if (wrapper instanceof ISlotModifiable modifiable) {
+            return modifiable.canReplaceUpgrade(slot, replacement);
         }
         return true;
     }

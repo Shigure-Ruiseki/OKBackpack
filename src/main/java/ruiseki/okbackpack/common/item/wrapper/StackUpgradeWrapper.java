@@ -24,8 +24,7 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
 
     @Override
     public boolean canAddUpgrade(int slot, ItemStack stack) {
-        // NO OP
-        return true;
+        return true; // luôn có thể thêm
     }
 
     @Override
@@ -50,31 +49,22 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
     public boolean canReplaceUpgrade(int slotIndex, ItemStack replacement) {
         if (replacement == null) return true;
 
-        if (!(replacement.getItem() instanceof IStackSizeUpgrade)) return true;
+        int totalOtherMultiplier = calculateMultiplierExcluding(slotIndex);
 
-        int totalMultiplier = getMultiplier(replacement);
+        UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(replacement, storage);
 
-        for (var entry : storage.gatherCapabilityUpgrades(IStackSizeUpgrade.class)
-            .entrySet()) {
+        int totalMultiplier = totalOtherMultiplier;
 
-            if (entry.getKey() == slotIndex) continue;
-
-            IStackSizeUpgrade up = entry.getValue();
-
-            ItemStack stack = storage.getUpgradeHandler()
-                .getStackInSlot(entry.getKey());
-
-            if (stack == null) continue;
-
-            totalMultiplier += up.getMultiplier(stack);
+        if (wrapper instanceof IStackSizeUpgrade sizeUpgrade) {
+            totalMultiplier += sizeUpgrade.getMultiplier(replacement);
         }
 
         for (ItemStack stack : storage.getStacks()) {
             if (stack == null) continue;
 
-            int newLimit = stack.getMaxStackSize() + totalMultiplier;
+            int maxAllowed = stack.getMaxStackSize() * totalMultiplier;
 
-            if (stack.stackSize > newLimit) {
+            if (stack.stackSize > maxAllowed) {
                 return false;
             }
         }
@@ -87,7 +77,6 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
 
         for (var entry : storage.gatherCapabilityUpgrades(IStackSizeUpgrade.class)
             .entrySet()) {
-
             if (entry.getKey() == excludedSlot) continue;
 
             ItemStack stack = storage.getUpgradeHandler()
