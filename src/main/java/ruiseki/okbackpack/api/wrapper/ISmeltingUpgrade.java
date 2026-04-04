@@ -9,6 +9,7 @@ public interface ISmeltingUpgrade extends ITickable, IToggleable {
     String SMELTING_PROGRESS_TAG = "SmeltProgress";
     String SMELTING_FUEL_PROGRESS_TAG = "FuelProgress";
     String SMELTING_FUEL_TOTAL_TAG = "FuelTotal";
+    String FUEL_FILTER_TAG = "FuelFilter";
 
     BaseItemStackHandler getSmeltingInventory();
 
@@ -29,4 +30,12 @@ public interface ISmeltingUpgrade extends ITickable, IToggleable {
     void setFuelTotal(int total);
 
     boolean isBurning();
+
+    default BaseItemStackHandler getFuelFilterItems() {
+        return null;
+    }
+
+    default boolean checkFuelFilter(ItemStack stack) {
+        return true;
+    }
 }

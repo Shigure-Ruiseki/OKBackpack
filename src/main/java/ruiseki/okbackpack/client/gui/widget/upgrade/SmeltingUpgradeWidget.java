@@ -22,28 +22,25 @@ public class SmeltingUpgradeWidget<T extends SmeltingUpgradeWrapperBase> extends
 
         // Furnace layout using SlotGroupWidget with absolute positioning
         // Layout:
-        //   [Input]        (0, 0)
-        //   馃敟    鈫? [Output]
-        //   [Fuel]         (0, 36)
+        // [Input] (0, 0)
+        // 馃敟 鈫? [Output]
+        // [Fuel] (0, 36)
         SlotGroupWidget furnaceGroup = (SlotGroupWidget) new SlotGroupWidget().coverChildren();
 
         // Input slot (index 0)
-        ItemSlot inputSlot = (ItemSlot) new ItemSlot()
-            .syncHandler("smelting_slot_" + slotIndex, 0)
+        ItemSlot inputSlot = (ItemSlot) new ItemSlot().syncHandler("smelting_slot_" + slotIndex, 0)
             .pos(0, 0)
             .name("smelting_input_" + slotIndex);
         furnaceGroup.child(inputSlot);
 
         // Fuel slot (index 1)
-        ItemSlot fuelSlot = (ItemSlot) new ItemSlot()
-            .syncHandler("smelting_slot_" + slotIndex, 1)
+        ItemSlot fuelSlot = (ItemSlot) new ItemSlot().syncHandler("smelting_slot_" + slotIndex, 1)
             .pos(0, 36)
             .name("smelting_fuel_" + slotIndex);
         furnaceGroup.child(fuelSlot);
 
         // Flame progress (fuel burn time remaining)
-        ProgressWidget flameProgress = (ProgressWidget) new ProgressWidget()
-            .size(14, 14)
+        ProgressWidget flameProgress = (ProgressWidget) new ProgressWidget().size(14, 14)
             .texture(OKBGuiTextures.FURNACE_FLAME_BACKGROUND, OKBGuiTextures.FURNACE_FLAME_FOREGROUND, 14)
             .direction(ProgressWidget.Direction.UP)
             .progress(() -> {
@@ -55,8 +52,7 @@ public class SmeltingUpgradeWidget<T extends SmeltingUpgradeWrapperBase> extends
         furnaceGroup.child(flameProgress);
 
         // Arrow progress (smelting progress)
-        ProgressWidget arrowProgress = (ProgressWidget) new ProgressWidget()
-            .size(24, 17)
+        ProgressWidget arrowProgress = (ProgressWidget) new ProgressWidget().size(24, 17)
             .texture(OKBGuiTextures.FURNACE_ARROW_BACKGROUND, OKBGuiTextures.FURNACE_ARROW_FOREGROUND, 24)
             .direction(ProgressWidget.Direction.RIGHT)
             .progress(() -> {
@@ -68,8 +64,7 @@ public class SmeltingUpgradeWidget<T extends SmeltingUpgradeWrapperBase> extends
         furnaceGroup.child(arrowProgress);
 
         // Output slot (index 2)
-        BigItemSlot outputSlot = (BigItemSlot) new BigItemSlot()
-            .syncHandler("smelting_slot_" + slotIndex, 2)
+        BigItemSlot outputSlot = (BigItemSlot) new BigItemSlot().syncHandler("smelting_slot_" + slotIndex, 2)
             .pos(56, 14)
             .name("smelting_output_" + slotIndex);
         furnaceGroup.child(outputSlot);
@@ -87,4 +82,3 @@ public class SmeltingUpgradeWidget<T extends SmeltingUpgradeWrapperBase> extends
         return wrapper;
     }
 }
-

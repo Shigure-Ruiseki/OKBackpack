@@ -24,6 +24,7 @@ public class DelegatedStackHandlerSH extends SyncHandler {
     public static final int UPDATE_ORE_DICT = 1;
     public static final int UPDATE_STORAGE = 2;
     public static final int UPDATE_SMELTING = 3;
+    public static final int UPDATE_FUEL_FILTER = 4;
 
     private final BackpackWrapper wrapper;
     private final int slotIndex;
@@ -45,7 +46,10 @@ public class DelegatedStackHandlerSH extends SyncHandler {
 
     @Override
     public void readOnClient(int id, PacketBuffer buf) {
-        if (id == UPDATE_FILTERABLE || id == UPDATE_ORE_DICT || id == UPDATE_STORAGE || id == UPDATE_SMELTING) {
+        if (id == UPDATE_FILTERABLE || id == UPDATE_ORE_DICT
+            || id == UPDATE_STORAGE
+            || id == UPDATE_SMELTING
+            || id == UPDATE_FUEL_FILTER) {
             wrapper.syncToServer();
         }
     }
@@ -75,6 +79,11 @@ public class DelegatedStackHandlerSH extends SyncHandler {
             case UPDATE_SMELTING:
                 if (wrapper instanceof ISmeltingUpgrade upgrade) {
                     setDelegatedStackHandler(upgrade::getSmeltingInventory);
+                }
+                break;
+            case UPDATE_FUEL_FILTER:
+                if (wrapper instanceof ISmeltingUpgrade upgrade) {
+                    setDelegatedStackHandler(upgrade::getFuelFilterItems);
                 }
                 break;
             default:

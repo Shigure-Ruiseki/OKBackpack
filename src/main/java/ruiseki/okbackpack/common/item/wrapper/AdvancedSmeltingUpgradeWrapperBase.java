@@ -22,6 +22,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
     implements ISmeltingUpgrade, ISlotModifiable {
 
     protected BaseItemStackHandler smeltingInventory;
+    protected BaseItemStackHandler fuelFilterHandler;
 
     public AdvancedSmeltingUpgradeWrapperBase(ItemStack upgrade, IStorageWrapper storage) {
         super(upgrade, storage);
@@ -38,6 +39,18 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
         NBTTagCompound filtersTag = ItemNBTHelpers.getCompound(upgrade, FILTER_ITEMS_TAG, false);
         if (filtersTag != null) handler.deserializeNBT(filtersTag);
 
+        // Fuel filter (4 phantom slots)
+        this.fuelFilterHandler = new BaseItemStackHandler(4) {
+
+            @Override
+            protected void onContentsChanged(int slot) {
+                NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
+                tag.setTag(FUEL_FILTER_TAG, this.serializeNBT());
+            }
+        };
+        NBTTagCompound fuelFilterTag = ItemNBTHelpers.getCompound(upgrade, FUEL_FILTER_TAG, false);
+        if (fuelFilterTag != null) fuelFilterHandler.deserializeNBT(fuelFilterTag);
+
         this.smeltingInventory = new BaseItemStackHandler(3) {
 
             @Override
@@ -45,6 +58,15 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag("SmeltingInv", this.serializeNBT());
                 markDirty();
+            }
+
+            @Override
+            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+                if (stack == null) return null;
+                if (slot == 0 && !checkFilter(stack)) return stack;
+                if (slot == 1 && !checkFuelFilter(stack)) return stack;
+                if (slot == 2) return stack;
+                return super.insertItem(slot, stack, simulate);
             }
         };
         NBTTagCompound invTag = ItemNBTHelpers.getCompound(upgrade, "SmeltingInv", false);
@@ -102,6 +124,25 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
     @Override
     public boolean checkFilter(ItemStack check) {
         return super.checkFilter(check);
+    }
+
+    @Override
+    public BaseItemStackHandler getFuelFilterItems() {
+        return fuelFilterHandler;
+    }
+
+    @Override
+    public boolean checkFuelFilter(ItemStack stack) {
+        if (stack == null) return false;
+        boolean hasAnyFilter = false;
+        for (int i = 0; i < fuelFilterHandler.getSlots(); i++) {
+            ItemStack filterStack = fuelFilterHandler.getStackInSlot(i);
+            if (filterStack != null) {
+                hasAnyFilter = true;
+                if (filterStack.getItem() == stack.getItem()) return true;
+            }
+        }
+        return !hasAnyFilter;
     }
 
     @Override
@@ -192,6 +233,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
             for (int i = 0; i < invHandler.getSlots(); i++) {
                 ItemStack stack = invHandler.getStackInSlot(i);
                 if (stack == null || stack.stackSize <= 0) continue;
+                if (!checkFuelFilter(stack)) continue;
                 int burnTime = TileEntityFurnace.getItemBurnTime(stack);
                 if (burnTime <= 0) continue;
 

@@ -49,7 +49,8 @@ public class OKBGuiTextures {
         .build();
 
     // Furnace GUI textures (from vanilla furnace texture)
-    private static final ResourceLocation FURNACE_GUI = new ResourceLocation("minecraft",
+    private static final ResourceLocation FURNACE_GUI = new ResourceLocation(
+        "minecraft",
         "textures/gui/container/furnace.png");
 
     public static final UITexture FURNACE_FLAME_BACKGROUND = UITexture.builder()

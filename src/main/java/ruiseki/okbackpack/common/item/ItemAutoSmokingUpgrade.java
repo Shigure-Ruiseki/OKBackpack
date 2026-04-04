@@ -40,12 +40,12 @@ public class ItemAutoSmokingUpgrade extends ItemUpgrade<AutoSmokingUpgradeWrappe
 
     @Override
     public void updateWidgetDelegates(AutoSmokingUpgradeWrapper wrapper, UpgradeSlotUpdateGroup group) {
-        DelegatedStackHandlerSH handler = group.get("adv_common_filter_handler");
+        DelegatedStackHandlerSH handler = group.get("smelting_filter_handler");
         if (handler == null) return;
         handler.setDelegatedStackHandler(wrapper::getFilterItems);
         handler.syncToServer(DelegatedStackHandlerSH.UPDATE_FILTERABLE);
 
-        DelegatedStackHandlerSH oreDictHandler = group.get("ore_dict_handler");
+        DelegatedStackHandlerSH oreDictHandler = group.get("smelting_ore_dict_handler");
         if (oreDictHandler == null) return;
         oreDictHandler.setDelegatedStackHandler(wrapper::getOreDictItem);
         oreDictHandler.syncToServer(DelegatedStackHandlerSH.UPDATE_ORE_DICT);
@@ -54,6 +54,11 @@ public class ItemAutoSmokingUpgrade extends ItemUpgrade<AutoSmokingUpgradeWrappe
         if (smeltingHandler == null) return;
         smeltingHandler.setDelegatedStackHandler(wrapper::getSmeltingInventory);
         smeltingHandler.syncToServer(DelegatedStackHandlerSH.UPDATE_SMELTING);
+
+        DelegatedStackHandlerSH fuelFilterHandler = group.get("fuel_filter_handler");
+        if (fuelFilterHandler == null) return;
+        fuelFilterHandler.setDelegatedStackHandler(wrapper::getFuelFilterItems);
+        fuelFilterHandler.syncToServer(DelegatedStackHandlerSH.UPDATE_FUEL_FILTER);
     }
 
     @Override

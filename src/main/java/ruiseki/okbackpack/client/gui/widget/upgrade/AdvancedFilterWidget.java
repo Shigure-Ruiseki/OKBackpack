@@ -90,6 +90,11 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
     private final IAdvancedFilterable filterableWrapper;
 
     public AdvancedFilterWidget(int slotIndex, IAdvancedFilterable filterableWrapper, String syncKey) {
+        this(slotIndex, filterableWrapper, syncKey, 16);
+    }
+
+    public AdvancedFilterWidget(int slotIndex, IAdvancedFilterable filterableWrapper, String syncKey,
+        int filterSlotCount) {
         this.filterableWrapper = filterableWrapper;
 
         // init sync handler
@@ -156,7 +161,7 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
             .leftRel(0.5f);
 
         this.filterSlots = new ArrayList<>();
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < filterSlotCount; i++) {
             FilterSlot slot = new FilterSlot();
             slot.name(syncKey + "_" + slotIndex)
                 .syncHandler(syncKey + "_" + slotIndex, i)
@@ -166,7 +171,10 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
             slotGroup.child(slot);
         }
 
-        this.itemBasedConfigurationGroup = (Column) new Column().size(88, 85)
+        int filterSlotRows = (filterSlotCount + 3) / 4;
+        int itemGroupHeight = filterSlotRows * 18 + 13;
+
+        this.itemBasedConfigurationGroup = (Column) new Column().size(88, itemGroupHeight)
             .leftRel(0.5f)
             .top(24)
             .child(slotGroup)
