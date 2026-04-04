@@ -46,6 +46,10 @@ gui.backpack.sorting_settings=排序设置
 gui.backpack.crafting_settings=合成设置
 gui.backpack.void_settings=虚空设置
 gui.backpack.advanced_void_settings=高级虚空设置
+gui.backpack.compacting_settings=压制设置
+gui.backpack.advanced_compacting_settings=高级压制设置
+gui.backpack.only_reversible=仅可逆配方
+gui.backpack.all_recipes=所有配方
 
 
 # Tooltips
@@ -152,6 +156,8 @@ item.feeding_upgrade.name=喂食升级
 item.advanced_feeding_upgrade.name=高级喂食升级
 item.filter_upgrade.name=过滤升级
 item.advanced_filter_upgrade.name=高级过滤升级
+item.compacting_upgrade.name=压制升级
+item.advanced_compacting_upgrade.name=高级压制升级
 item.inception_upgrade.name=嵌套升级
 item.void_upgrade.name=虚空升级
 item.advanced_void_upgrade.name=高级虚空升级
@@ -177,6 +183,8 @@ tooltip.backpack.filter_upgrade=过滤放入世界时插入的物品
 tooltip.backpack.advanced_filter_upgrade=过滤放入世界时插入的物品（更多配置）
 tooltip.backpack.void_upgrade=销毁过滤器选定的物品
 tooltip.backpack.advanced_void_upgrade=销毁过滤器选定的物品（更多过滤选项）
+tooltip.backpack.compacting_upgrade=使用2x2合成配方压缩物品（例如：雪球→雪块）
+tooltip.backpack.advanced_compacting_upgrade=使用2x2和3x3合成配方压缩物品（例如：铁锭→铁块）
 
 #Messages
 messages.backpack.cant.bag=无法放置睡袋！检查周围区域。

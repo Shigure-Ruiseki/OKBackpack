@@ -30,6 +30,10 @@ gui.backpack.sorting_settings=ソートの設定
 gui.backpack.crafting_settings=クラフトアップグレードの設定
 gui.backpack.void_settings=自動廃棄アップグレードの設定
 gui.backpack.advanced_void_settings=詳細な自動廃棄アップグレードの設定
+gui.backpack.compacting_settings=圧縮設定
+gui.backpack.advanced_compacting_settings=詳細な圧縮設定
+gui.backpack.only_reversible=可逆レシピのみ
+gui.backpack.all_recipes=すべてのレシピ
 
 
 # Tooltips
@@ -134,6 +138,8 @@ item.feeding_upgrade.name=自動食事アップグレード
 item.advanced_feeding_upgrade.name=詳細な自動食事アップグレード
 item.filter_upgrade.name=フィルターアップグレード
 item.advanced_filter_upgrade.name=詳細なフィルターアップグレード
+item.compacting_upgrade.name=圧縮アップグレード
+item.advanced_compacting_upgrade.name=詳細な圧縮アップグレード
 item.inception_upgrade.name=インセプションアップグレード
 item.void_upgrade.name=廃棄アップグレード
 item.advanced_void_upgrade.name=詳細な廃棄アップグレード
@@ -158,3 +164,5 @@ tooltip.backpack.filter_upgrade=ワールドに設置する際に搬入アイテ
 tooltip.backpack.advanced_filter_upgrade=ワールドに設置する際に搬入アイテムをフィルタリングします（詳細設定可能）
 tooltip.backpack.void_upgrade=フィルターで選択されたアイテムを消去します
 tooltip.backpack.advanced_void_upgrade=フィルターで選択されたアイテムを消去します。より詳細なフィルタリングオプションがあります
+tooltip.backpack.compacting_upgrade=2x2クラフトレシピでアイテムを圧縮します（例：雪球→雪ブロック）
+tooltip.backpack.advanced_compacting_upgrade=2x2および3x3クラフトレシピでアイテムを圧縮します（例：鉄インゴット→鉄ブロック）

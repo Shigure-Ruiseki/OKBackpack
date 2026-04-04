@@ -4,6 +4,7 @@ import java.util.Map;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.server.MinecraftServer;
 
 import org.apache.logging.log4j.Level;
 
@@ -28,6 +29,7 @@ import ruiseki.okbackpack.common.command.CommandBackpack;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.init.ModItems;
 import ruiseki.okbackpack.common.init.ModOreDicts;
+import ruiseki.okbackpack.common.recipe.CompactingRecipeCache;
 import ruiseki.okbackpack.common.recipe.ModRecipes;
 import ruiseki.okbackpack.compat.bauble.BaubleCompat;
 import ruiseki.okbackpack.config.ModConfig;
@@ -110,6 +112,10 @@ public class OKBackpack extends ModBase {
     @Mod.EventHandler
     public void onServerStarted(FMLServerStartedEvent event) {
         super.onServerStarted(event);
+        CompactingRecipeCache.getInstance()
+            .initialize(
+                MinecraftServer.getServer()
+                    .getEntityWorld());
     }
 
     @Override
@@ -122,6 +128,8 @@ public class OKBackpack extends ModBase {
     @Mod.EventHandler
     public void onServerStopped(FMLServerStoppedEvent event) {
         super.onServerStopped(event);
+        CompactingRecipeCache.getInstance()
+            .invalidate();
     }
 
     @Override

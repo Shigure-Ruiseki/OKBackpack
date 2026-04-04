@@ -46,6 +46,10 @@ gui.backpack.sorting_settings=Sorting Settings
 gui.backpack.crafting_settings=Crafting Settings
 gui.backpack.void_settings=Void Settings
 gui.backpack.advanced_void_settings=Adv. Void Settings
+gui.backpack.compacting_settings=Compacting Settings
+gui.backpack.advanced_compacting_settings=Adv. Compacting Settings
+gui.backpack.only_reversible=Only Reversible
+gui.backpack.all_recipes=All Recipes
 
 
 # Tooltips
@@ -152,6 +156,8 @@ item.feeding_upgrade.name=Feeding Upgrade
 item.advanced_feeding_upgrade.name=Adv. Feeding Upgrade
 item.filter_upgrade.name=Filter Upgrade
 item.advanced_filter_upgrade.name=Adv. Filter Upgrade
+item.compacting_upgrade.name=Compacting Upgrade
+item.advanced_compacting_upgrade.name=Adv. Compacting Upgrade
 item.inception_upgrade.name=Inception Upgrade
 item.void_upgrade.name=Void Upgrade
 item.advanced_void_upgrade.name=Adv. Void Upgrade
@@ -177,6 +183,8 @@ tooltip.backpack.filter_upgrade=Filters inserted items when placing in world
 tooltip.backpack.advanced_filter_upgrade=Filters inserted items when placing in world with more configurations
 tooltip.backpack.void_upgrade=Voids items selected in filter
 tooltip.backpack.advanced_void_upgrade=Voids items selected in filter. Has more filtering options
+tooltip.backpack.compacting_upgrade=Compacts items with 2x2 crafting recipes (e.g. snowballs -> snow block)
+tooltip.backpack.advanced_compacting_upgrade=Compacts items with 2x2 and 3x3 crafting recipes (e.g. iron ingots -> iron block)
 
 #Messages
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.

@@ -450,6 +450,38 @@ public class ModRecipes implements IInitListener {
                 'U',
                 ModItems.BASE_UPGRADE.getItem()));
 
+        // Compacting Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.COMPACTING_UPGRADE.getItem(),
+                "IPI",
+                "PUP",
+                "RPR",
+                'P',
+                Blocks.piston,
+                'R',
+                "dustRedstone",
+                'I',
+                "ingotIron",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Advanced Compacting Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.ADVANCED_COMPACTING_UPGRADE.getItem(),
+                " D ",
+                "GUG",
+                "RRR",
+                'D',
+                "gemDiamond",
+                'R',
+                "dustRedstone",
+                'G',
+                "ingotGold",
+                'U',
+                ModItems.COMPACTING_UPGRADE.getItem()));
+
         // Everlasting Upgrade
         if (!Mods.EtFuturum.isLoaded()) {
             GameRegistry.addRecipe(

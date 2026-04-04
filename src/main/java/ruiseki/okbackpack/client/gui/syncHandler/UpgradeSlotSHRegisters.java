@@ -9,6 +9,7 @@ import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotSHRegistry;
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
+import ruiseki.okbackpack.api.wrapper.ICompactingUpgrade;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
@@ -35,6 +36,7 @@ public class UpgradeSlotSHRegisters implements IInitListener {
     public static final String UPDATE_CRAFTING_G = "update_crafting_g";
     public static final String UPDATE_CRAFTING_C = "update_crafting_c";
     public static final String UPDATE_DIRTY = "update_dirty";
+    public static final String UPDATE_COMPACTING = "update_compacting";
 
     @Override
     public void onInit(Step step) {
@@ -141,6 +143,12 @@ public class UpgradeSlotSHRegisters implements IInitListener {
                 UpgradeWrapperBase wrapper = slot.getWrapper();
                 if (wrapper == null) return;
                 wrapper.setDirty(buf.readBoolean());
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_COMPACTING, (slot, buf) -> {
+                UpgradeWrapperBase wrapper = slot.getWrapper();
+                if (!(wrapper instanceof ICompactingUpgrade upgradeWrapper)) return;
+                upgradeWrapper.setOnlyReversible(buf.readBoolean());
             });
 
         }

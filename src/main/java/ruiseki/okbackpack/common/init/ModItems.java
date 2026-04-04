@@ -6,11 +6,13 @@ import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.Level;
 
 import ruiseki.okbackpack.OKBackpack;
+import ruiseki.okbackpack.common.item.ItemAdvancedCompactingUpgrade;
 import ruiseki.okbackpack.common.item.ItemAdvancedFeedingUpgrade;
 import ruiseki.okbackpack.common.item.ItemAdvancedFilterUpgrade;
 import ruiseki.okbackpack.common.item.ItemAdvancedMagnetUpgrade;
 import ruiseki.okbackpack.common.item.ItemAdvancedPickupUpgrade;
 import ruiseki.okbackpack.common.item.ItemAdvancedVoidUpgrade;
+import ruiseki.okbackpack.common.item.ItemCompactingUpgrade;
 import ruiseki.okbackpack.common.item.ItemCraftingUpgrade;
 import ruiseki.okbackpack.common.item.ItemEverlastingUpgrade;
 import ruiseki.okbackpack.common.item.ItemFeedingUpgrade;
@@ -42,6 +44,8 @@ public enum ModItems {
     INCEPTION_UPGRADE(new ItemInceptionUpgrade()),
     FILTER_UPGRADE(new ItemFilterUpgrade()),
     ADVANCED_FILTER_UPGRADE(new ItemAdvancedFilterUpgrade()),
+    COMPACTING_UPGRADE(new ItemCompactingUpgrade()),
+    ADVANCED_COMPACTING_UPGRADE(new ItemAdvancedCompactingUpgrade()),
 
     //
     ;
