@@ -1,10 +1,16 @@
 package ruiseki.okbackpack.common.item.wrapper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
+import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.ICompactingUpgrade;
@@ -59,55 +65,71 @@ public class CompactingUpgradeWrapper extends BasicUpgradeWrapper implements ICo
         BackpackItemStackHandler invHandler = bw.backpackHandler;
         CompactingRecipeCache cache = CompactingRecipeCache.getInstance();
         boolean onlyReversible = isOnlyReversible();
-        boolean allow3x3 = allowsGrid3x3();
 
-        for (int slot = 0; slot < invHandler.getSlots(); slot++) {
-            ItemStack stack = invHandler.getStackInSlot(slot);
+        Map<ItemId, List<Integer>> stackSlots = new HashMap<>();
+
+        for (int i = 0; i < invHandler.getSlots(); i++) {
+            ItemStack stack = invHandler.getStackInSlot(i);
             if (stack == null || stack.stackSize <= 0) continue;
             if (!checkFilter(stack)) continue;
 
-            compactSlot(slot, stack, invHandler, cache, allow3x3, onlyReversible);
+            ItemId id = ItemId.create(stack);
+            stackSlots.computeIfAbsent(id, k -> new ArrayList<>())
+                .add(i);
         }
-    }
 
-    protected void compactSlot(int slot, ItemStack stack, BackpackItemStackHandler invHandler,
-        CompactingRecipeCache cache, boolean allow3x3, boolean onlyReversible) {
+        for (Map.Entry<ItemId, List<Integer>> entry : stackSlots.entrySet()) {
+            List<Integer> slots = entry.getValue();
+            if (slots.isEmpty()) continue;
 
-        CompactingResult result = cache.findCompactingRecipe(stack, allow3x3, onlyReversible);
-        if (result == null) return;
+            ItemStack template = invHandler.getStackInSlot(slots.get(0));
+            CompactingResult result = cache.findCompactingRecipe(template, true, onlyReversible);
+            if (result == null) continue;
 
-        int inputCount = result.inputCount();
+            int inputCount = result.inputCount();
 
-        if (stack.stackSize < inputCount) return;
+            // Sum total count of this item type across all slots
+            int totalCount = 0;
+            for (int idx : slots) {
+                ItemStack stack = invHandler.getStackInSlot(idx);
+                if (stack == null || stack.stackSize <= 0) continue;
+                if (!ItemHandlerHelper.canItemStacksStack(template, stack)) continue;
+                totalCount += stack.stackSize;
+            }
 
-        int compactableUnits = stack.stackSize / inputCount;
-        if (compactableUnits <= 0) return;
+            if (totalCount < inputCount) continue;
 
-        for (int units = compactableUnits; units > 0; units--) {
+            int compactableUnits = totalCount / inputCount;
+
             ItemStack outputCopy = result.output()
                 .copy();
-            outputCopy.stackSize = units;
+            outputCopy.stackSize = compactableUnits;
 
             ItemStack remaining = tryInsertOutput(outputCopy, invHandler);
 
-            if (remaining != null && remaining.stackSize == outputCopy.stackSize) {
-                continue;
-            }
-
-            int insertedUnits = units - (remaining == null ? 0 : remaining.stackSize);
+            int insertedUnits = compactableUnits - (remaining == null ? 0 : remaining.stackSize);
             if (insertedUnits <= 0) continue;
 
             int consumed = insertedUnits * inputCount;
-            ItemStack current = invHandler.getStackInSlot(slot);
-            if (current != null) {
-                current.stackSize -= consumed;
-                if (current.stackSize <= 0) {
-                    invHandler.setStackInSlot(slot, null);
-                } else {
-                    invHandler.setStackInSlot(slot, current);
-                }
+            consumeFromSlotsBySlots(invHandler, slots, consumed);
+        }
+    }
+
+    private void consumeFromSlotsBySlots(BackpackItemStackHandler invHandler, List<Integer> slots, int amount) {
+        for (int idx : slots) {
+            if (amount <= 0) break;
+            ItemStack stack = invHandler.getStackInSlot(idx);
+            if (stack == null || stack.stackSize <= 0) continue;
+
+            int take = Math.min(stack.stackSize, amount);
+            stack.stackSize -= take;
+            amount -= take;
+
+            if (stack.stackSize <= 0) {
+                invHandler.setStackInSlot(idx, null);
+            } else {
+                invHandler.setStackInSlot(idx, stack);
             }
-            break;
         }
     }
 
