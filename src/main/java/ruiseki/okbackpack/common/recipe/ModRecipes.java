@@ -482,6 +482,38 @@ public class ModRecipes implements IInitListener {
                 'U',
                 ModItems.COMPACTING_UPGRADE.getItem()));
 
+        // Jukebox Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.JUKEBOX_UPGRADE.getItem(),
+                " J ",
+                "IUI",
+                " R ",
+                'J',
+                Blocks.jukebox,
+                'R',
+                "dustRedstone",
+                'I',
+                "ingotIron",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Advanced Jukebox Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.ADVANCED_JUKEBOX_UPGRADE.getItem(),
+                " D ",
+                "GUG",
+                "RRR",
+                'D',
+                "gemDiamond",
+                'R',
+                "dustRedstone",
+                'G',
+                "ingotGold",
+                'U',
+                ModItems.JUKEBOX_UPGRADE.getItem()));
+
         // Smelting Upgrade
         GameRegistry.addRecipe(
             new ShapedOreRecipe(
@@ -529,7 +561,6 @@ public class ModRecipes implements IInitListener {
                     'R',
                     "itemNetherStar",
                     'U',
-
                     ModItems.BASE_UPGRADE.getItem()));
         } else {
 

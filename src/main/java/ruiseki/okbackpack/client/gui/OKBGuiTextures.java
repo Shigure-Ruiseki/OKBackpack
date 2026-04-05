@@ -182,6 +182,17 @@ public class OKBGuiTextures {
     public static final UITexture VOID_ALL = icon("void_all", 0, 48);
     public static final UITexture VOID_AUTOMATION = icon("void_automation", 16, 48);
 
+    public static final IDrawable JUKEBOX_STOP_ICON = icon("jukebox_stop", 0, 64);
+    public static final IDrawable JUKEBOX_PLAY_ICON = icon("jukebox_play", 16, 64);
+    public static final IDrawable JUKEBOX_NEXT_ICON = icon("jukebox_next", 32, 96);
+    public static final IDrawable JUKEBOX_PREV_ICON = icon("jukebox_prev", 48, 96);
+
+    public static final IDrawable SHUFFLE_OFF_ICON = icon("shuffle_off", 112, 80);
+    public static final IDrawable SHUFFLE_ON_ICON = icon("shuffle_on", 96, 80);
+    public static final IDrawable LOOP_ALL_ICON = icon("loop_all", 128, 80);
+    public static final IDrawable LOOP_SINGLE_ICON = icon("loop_single", 144, 80);
+    public static final IDrawable LOOP_OFF_ICON = icon("loop_off", 160, 80);
+
     public static final UITexture ROTATED_RIGHT = icon("rotated_right", 0, 170);
     public static final UITexture ROTATED_LEFT = icon("rotated_left", 48, 170);
     public static final UITexture BALANCE = icon("balance", 32, 170);

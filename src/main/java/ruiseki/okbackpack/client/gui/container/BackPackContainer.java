@@ -27,6 +27,7 @@ import ruiseki.okbackpack.api.IStorageContainer;
 import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
+import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.compat.Mods;
@@ -110,6 +111,11 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
         if (!getGuiData().isClient() && wrapper.isDirty()) {
             EntityPlayer player = getPlayer();
 
+            // Process any pending jukebox stops immediately
+            if (wrapper instanceof BackpackWrapper bw) {
+                bw.processPendingJukeboxStops(player);
+            }
+
             // Write changes to the actual ItemStack (using UUID tracking)
             wrapper.writeToItem(player);
 
@@ -135,6 +141,10 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
 
         // Final sync before closing - ensure all changes are saved
         if (!getGuiData().isClient()) {
+            // Process any pending jukebox stops before closing
+            if (wrapper instanceof BackpackWrapper bw) {
+                bw.processPendingJukeboxStops(player);
+            }
             wrapper.writeToItem(player);
             wrapper.markClean();
         }
@@ -260,7 +270,7 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                 return Platform.EMPTY_STACK;
             }
 
-        return slotClick(slotId, mouseButton, mode, player);
+        return superSlotClick(slotId, mouseButton, mode, player);
     }
 
     @Override

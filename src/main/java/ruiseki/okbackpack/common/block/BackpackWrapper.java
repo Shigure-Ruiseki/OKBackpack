@@ -1,13 +1,16 @@
 package ruiseki.okbackpack.common.block;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,10 +24,13 @@ import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 
 import baubles.api.BaublesApi;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.wrapper.IEntityApplicable;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
 import ruiseki.okbackpack.api.wrapper.IInventoryModifiable;
+import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade;
 import ruiseki.okbackpack.api.wrapper.IPickupUpgrade;
 import ruiseki.okbackpack.api.wrapper.ISlotModifiable;
 import ruiseki.okbackpack.api.wrapper.ISmeltingUpgrade;
@@ -37,6 +43,7 @@ import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
+import ruiseki.okbackpack.common.network.PacketJukeboxPlaybackState;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
@@ -72,6 +79,8 @@ public class BackpackWrapper implements IBackpackWrapper {
     public int sleepingBagX;
     public int sleepingBagY;
     public int sleepingBagZ;
+
+    private final Set<Integer> pendingJukeboxStops = new HashSet<>();
 
     public int slotIndex = -1;
     public InventoryType type = null;
@@ -164,6 +173,19 @@ public class BackpackWrapper implements IBackpackWrapper {
         this.upgradeHandler = new UpgradeItemStackHandler(upgradeSlots, this) {
 
             @Override
+            public void setStackInSlot(int slot, ItemStack stack) {
+                detectPlayingJukeboxRemoval(slot);
+                super.setStackInSlot(slot, stack);
+            }
+
+            private void detectPlayingJukeboxRemoval(int slot) {
+                ItemStack existing = getStackInSlot(slot);
+                if (existing != null && ItemNBTHelpers.getBoolean(existing, IJukeboxUpgrade.PLAYING_TAG, false)) {
+                    pendingJukeboxStops.add(slot);
+                }
+            }
+
+            @Override
             protected void onContentsChanged(int slot) {
                 super.onContentsChanged(slot);
                 markDirty();
@@ -172,6 +194,9 @@ public class BackpackWrapper implements IBackpackWrapper {
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
                 ItemStack extracted = super.extractItem(slot, amount, simulate);
+                if (!simulate) {
+                    detectPlayingJukeboxRemoval(slot);
+                }
                 if (!simulate && extracted != null) {
                     NBTTagCompound tag = extracted.getTagCompound();
                     if (tag != null && tag.hasKey(ISmeltingUpgrade.COOK_TIME_TAG)) {
@@ -471,7 +496,6 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public boolean tick(EntityPlayer player) {
         Map<Integer, ITickable> gathered = gatherCapabilityUpgrades(ITickable.class);
-        if (gathered.isEmpty()) return false;
 
         boolean dirty = false;
 
@@ -479,20 +503,80 @@ public class BackpackWrapper implements IBackpackWrapper {
             dirty |= wrapper.tick(player);
         }
 
+        // Process disabled jukebox upgrades that have a pending stop sync
+        for (int i = 0; i < upgradeSlots; i++) {
+            if (gathered.containsKey(i)) continue;
+            ItemStack stack = upgradeHandler.getStackInSlot(i);
+            if (stack == null) continue;
+            if (!ItemNBTHelpers.getBoolean(stack, IJukeboxUpgrade.PENDING_STOP_SYNC_TAG, false)) continue;
+            UpgradeWrapperBase wrapper2 = UpgradeWrapperFactory.createWrapper(stack, this);
+            if (wrapper2 instanceof ITickable tickable) {
+                dirty |= tickable.tick(player);
+            }
+        }
+
+        // Process removed jukebox upgrades that were playing
+        processPendingJukeboxStops(player);
+
         return dirty;
     }
 
     @Override
     public boolean tick(World world, BlockPos pos) {
         Map<Integer, ITickable> gathered = gatherCapabilityUpgrades(ITickable.class);
-        if (gathered.isEmpty()) return false;
 
         boolean dirty = false;
 
         for (ITickable wrapper : gathered.values()) {
             dirty |= wrapper.tick(world, pos);
         }
+
+        // Process disabled jukebox upgrades that have a pending stop sync
+        for (int i = 0; i < upgradeSlots; i++) {
+            if (gathered.containsKey(i)) continue;
+            ItemStack stack = upgradeHandler.getStackInSlot(i);
+            if (stack == null) continue;
+            if (!ItemNBTHelpers.getBoolean(stack, IJukeboxUpgrade.PENDING_STOP_SYNC_TAG, false)) continue;
+            UpgradeWrapperBase wrapper2 = UpgradeWrapperFactory.createWrapper(stack, this);
+            if (wrapper2 instanceof ITickable tickable) {
+                dirty |= tickable.tick(world, pos);
+            }
+        }
+
+        // Process removed jukebox upgrades that were playing
+        processPendingJukeboxStops(world, pos);
+
         return dirty;
+    }
+
+    public void processPendingJukeboxStops(EntityPlayer player) {
+        if (pendingJukeboxStops.isEmpty()) return;
+        if (!(player instanceof EntityPlayerMP playerMP)) return;
+        float x = (float) player.posX;
+        float y = (float) player.posY;
+        float z = (float) player.posZ;
+        int carrierEntityId = player.getEntityId();
+        var targetPoint = new NetworkRegistry.TargetPoint(player.worldObj.provider.dimensionId, x, y, z, 64);
+        for (int slot : pendingJukeboxStops) {
+            var packet = new PacketJukeboxPlaybackState(uuid, slot, false, 0, 0, x, y, z, "", carrierEntityId);
+            OKBackpack.instance.getPacketHandler()
+                .sendToAllAround(packet, targetPoint);
+        }
+        pendingJukeboxStops.clear();
+    }
+
+    public void processPendingJukeboxStops(World world, BlockPos pos) {
+        if (pendingJukeboxStops.isEmpty()) return;
+        float x = pos.x + 0.5f;
+        float y = pos.y + 0.5f;
+        float z = pos.z + 0.5f;
+        var targetPoint = new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 64);
+        for (int slot : pendingJukeboxStops) {
+            var packet = new PacketJukeboxPlaybackState(uuid, slot, false, 0, 0, x, y, z, "", -1);
+            OKBackpack.instance.getPacketHandler()
+                .sendToAllAround(packet, targetPoint);
+        }
+        pendingJukeboxStops.clear();
     }
 
     @Override

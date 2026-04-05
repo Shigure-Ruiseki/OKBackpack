@@ -5,6 +5,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 
+import ruiseki.okbackpack.client.audio.BackpackJukeboxSoundManager;
 import ruiseki.okbackpack.client.key.OpenBackpackHandler;
 import ruiseki.okbackpack.client.key.PickBlockHandler;
 import ruiseki.okbackpack.common.event.ItemRenderEvent;
@@ -48,5 +49,6 @@ public class ClientProxy extends ClientProxyComponent {
     public void registerEventHooks() {
         super.registerEventHooks();;
         MinecraftForge.EVENT_BUS.register(new ItemRenderEvent());
+        MinecraftForge.EVENT_BUS.register(BackpackJukeboxSoundManager.getInstance());
     }
 }

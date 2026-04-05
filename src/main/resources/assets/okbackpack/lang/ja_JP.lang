@@ -32,6 +32,8 @@ gui.backpack.void_settings=自動廃棄アップグレードの設定
 gui.backpack.advanced_void_settings=詳細な自動廃棄アップグレードの設定
 gui.backpack.compacting_settings=圧縮設定
 gui.backpack.advanced_compacting_settings=詳細な圧縮設定
+gui.backpack.jukebox_settings=ジュークボックス設定
+gui.backpack.advanced_jukebox_settings=詳細なジュークボックス設定
 gui.backpack.smelting_settings=精錬設定
 gui.backpack.auto_smelting_settings=自動精錬設定
 gui.backpack.smoking_settings=燻製設定
@@ -122,6 +124,15 @@ gui.backpack.void_overflow=あふれた分を廃棄
 gui.backpack.void_all=GUI内でも機能する
 gui.backpack.void_automation=他のアップグレード/自動化でのみ機能する
 
+gui.backpack.jukebox_play=再生
+gui.backpack.jukebox_stop=停止
+gui.backpack.jukebox_prev=前の曲
+gui.backpack.jukebox_next=次の曲
+gui.backpack.jukebox_shuffle_off=シャッフル: オフ
+gui.backpack.jukebox_shuffle_on=シャッフル: オン
+gui.backpack.jukebox_loop_off=ループ: オフ
+gui.backpack.jukebox_loop_all=ループ: 全曲
+gui.backpack.jukebox_loop_single=ループ: 一曲
 
 # Items
 tile.leather_backpack.name=革のバックパック
@@ -157,6 +168,8 @@ item.auto_blasting_upgrade.name=自動溶鉱炉アップグレード
 item.inception_upgrade.name=インセプションアップグレード
 item.void_upgrade.name=廃棄アップグレード
 item.advanced_void_upgrade.name=詳細な廃棄アップグレード
+item.jukebox_upgrade.name=ジュークボックスアップグレード
+item.advanced_jukebox_upgrade.name=詳細なジュークボックスアップグレード
 
 # Tooltips
 tooltip.backpack.inventory_size=インベントリサイズ: %d
@@ -178,6 +191,11 @@ tooltip.backpack.filter_upgrade=ワールドに設置する際に搬入アイテ
 tooltip.backpack.advanced_filter_upgrade=ワールドに設置する際に搬入アイテムをフィルタリングします（詳細設定可能）
 tooltip.backpack.void_upgrade=フィルターで選択されたアイテムを消去します
 tooltip.backpack.advanced_void_upgrade=フィルターで選択されたアイテムを消去します。より詳細なフィルタリングオプションがあります
+tooltip.backpack.compacting_upgrade=2x2クラフトレシピでアイテムを圧縮します（例：雪球→雪ブロック）
+tooltip.backpack.advanced_compacting_upgrade=2x2および3x3クラフトレシピでアイテムを圧縮します（例：鉄インゴット→鉄ブロック）
+tooltip.backpack.jukebox_upgrade=ポータブルジュークボックス
+tooltip.backpack.advanced_jukebox_upgrade=より多くのレコードスロットを持つポータブルジュークボックス
+tooltip.backpack.advanced_jukebox_upgrade.1=より多くの再生オプションも利用可能
 tooltip.backpack.compacting_upgrade=アイテムを対応する圧縮バリアントに圧縮します
 tooltip.backpack.compacting_upgrade.1=2x2レシピのみ
 tooltip.backpack.advanced_compacting_upgrade=アイテムを対応する圧縮バリアントに圧縮します

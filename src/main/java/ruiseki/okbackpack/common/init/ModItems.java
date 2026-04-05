@@ -9,6 +9,7 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.common.item.ItemAdvancedCompactingUpgrade;
 import ruiseki.okbackpack.common.item.ItemAdvancedFeedingUpgrade;
 import ruiseki.okbackpack.common.item.ItemAdvancedFilterUpgrade;
+import ruiseki.okbackpack.common.item.ItemAdvancedJukeboxUpgrade;
 import ruiseki.okbackpack.common.item.ItemAdvancedMagnetUpgrade;
 import ruiseki.okbackpack.common.item.ItemAdvancedPickupUpgrade;
 import ruiseki.okbackpack.common.item.ItemAdvancedVoidUpgrade;
@@ -22,6 +23,7 @@ import ruiseki.okbackpack.common.item.ItemEverlastingUpgrade;
 import ruiseki.okbackpack.common.item.ItemFeedingUpgrade;
 import ruiseki.okbackpack.common.item.ItemFilterUpgrade;
 import ruiseki.okbackpack.common.item.ItemInceptionUpgrade;
+import ruiseki.okbackpack.common.item.ItemJukeboxUpgrade;
 import ruiseki.okbackpack.common.item.ItemMagnetUpgrade;
 import ruiseki.okbackpack.common.item.ItemPickupUpgrade;
 import ruiseki.okbackpack.common.item.ItemSmeltingUpgrade;
@@ -53,6 +55,8 @@ public enum ModItems {
     ADVANCED_FILTER_UPGRADE(new ItemAdvancedFilterUpgrade()),
     COMPACTING_UPGRADE(new ItemCompactingUpgrade()),
     ADVANCED_COMPACTING_UPGRADE(new ItemAdvancedCompactingUpgrade()),
+    JUKEBOX_UPGRADE(new ItemJukeboxUpgrade()),
+    ADVANCED_JUKEBOX_UPGRADE(new ItemAdvancedJukeboxUpgrade()),
     SMELTING_UPGRADE(new ItemSmeltingUpgrade()),
     AUTO_SMELTING_UPGRADE(new ItemAutoSmeltingUpgrade()),
     SMOKING_UPGRADE(new ItemSmokingUpgrade(), Mods.EtFuturum),

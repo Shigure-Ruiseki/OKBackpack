@@ -13,11 +13,14 @@ import ruiseki.okbackpack.api.wrapper.ICompactingUpgrade;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
+import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade;
+import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade.JukeboxLoopMode;
 import ruiseki.okbackpack.api.wrapper.IMagnetUpgrade;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.item.wrapper.AdvancedFeedingUpgradeWrapper;
+import ruiseki.okbackpack.common.item.wrapper.AdvancedJukeboxUpgradeWrapper;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okcore.init.IInitListener;
 
@@ -37,6 +40,12 @@ public class UpgradeSlotSHRegisters implements IInitListener {
     public static final String UPDATE_CRAFTING_C = "update_crafting_c";
     public static final String UPDATE_DIRTY = "update_dirty";
     public static final String UPDATE_COMPACTING = "update_compacting";
+    public static final String UPDATE_JUKEBOX_PLAY = "update_jukebox_play";
+    public static final String UPDATE_JUKEBOX_STOP = "update_jukebox_stop";
+    public static final String UPDATE_JUKEBOX_PREV = "update_jukebox_prev";
+    public static final String UPDATE_JUKEBOX_NEXT = "update_jukebox_next";
+    public static final String UPDATE_JUKEBOX_SHUFFLE = "update_jukebox_shuffle";
+    public static final String UPDATE_JUKEBOX_LOOP = "update_jukebox_loop";
 
     @Override
     public void onInit(Step step) {
@@ -149,6 +158,46 @@ public class UpgradeSlotSHRegisters implements IInitListener {
                 UpgradeWrapperBase wrapper = slot.getWrapper();
                 if (!(wrapper instanceof ICompactingUpgrade upgradeWrapper)) return;
                 upgradeWrapper.setOnlyReversible(buf.readBoolean());
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_PLAY, (slot, buf) -> {
+                UpgradeWrapperBase wrapper = slot.getWrapper();
+                if (!(wrapper instanceof IJukeboxUpgrade jukebox)) return;
+                jukebox.play();
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_STOP, (slot, buf) -> {
+                UpgradeWrapperBase wrapper = slot.getWrapper();
+                if (!(wrapper instanceof IJukeboxUpgrade jukebox)) return;
+                jukebox.stop();
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_PREV, (slot, buf) -> {
+                UpgradeWrapperBase wrapper = slot.getWrapper();
+                if (!(wrapper instanceof AdvancedJukeboxUpgradeWrapper jukebox)) return;
+                jukebox.previous();
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_NEXT, (slot, buf) -> {
+                UpgradeWrapperBase wrapper = slot.getWrapper();
+                if (!(wrapper instanceof AdvancedJukeboxUpgradeWrapper jukebox)) return;
+                jukebox.next();
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_SHUFFLE, (slot, buf) -> {
+                UpgradeWrapperBase wrapper = slot.getWrapper();
+                if (!(wrapper instanceof AdvancedJukeboxUpgradeWrapper jukebox)) return;
+                jukebox.setShuffleEnabled(buf.readBoolean());
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_LOOP, (slot, buf) -> {
+                UpgradeWrapperBase wrapper = slot.getWrapper();
+                if (!(wrapper instanceof AdvancedJukeboxUpgradeWrapper jukebox)) return;
+                int ordinal = buf.readInt();
+                JukeboxLoopMode[] modes = JukeboxLoopMode.values();
+                if (ordinal >= 0 && ordinal < modes.length) {
+                    jukebox.setLoopMode(modes[ordinal]);
+                }
             });
 
         }
