@@ -30,7 +30,8 @@
 - [X] Everlasting upgrade — make backpack immortal
 - [X] Void upgrade — filter item to remove
 - [X] Crafting upgrade — crafting table
-- [X] Compacting upgrade — compact item 
+- [X] Compacting upgrade — compact item
+- [X] Smelting upgrade — smelt item
 
 ## License
 

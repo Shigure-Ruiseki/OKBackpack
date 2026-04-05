@@ -2,8 +2,8 @@
 creativetab.okBackpack=OK Backpack
 
 # Key binding
-category.omoshiroikamo=Omoshiroi Kamo
-keybind.backpackOpenToggle=バックパックを開く
+key.categories.okbackpack=Omoshiroi Kamo
+key.okbackpack.open_backpack=バックパックを開く
 
 # Config
 config.backpackConfig=バックパックの設定
@@ -32,6 +32,14 @@ gui.backpack.void_settings=自動廃棄アップグレードの設定
 gui.backpack.advanced_void_settings=詳細な自動廃棄アップグレードの設定
 gui.backpack.compacting_settings=圧縮設定
 gui.backpack.advanced_compacting_settings=詳細な圧縮設定
+gui.backpack.smelting_settings=精錬設定
+gui.backpack.auto_smelting_settings=自動精錬設定
+gui.backpack.smoking_settings=燻製設定
+gui.backpack.auto_smoking_settings=自動燻製設定
+gui.backpack.blasting_settings=溶鉱炉設定
+gui.backpack.auto_blasting_settings=自動溶鉱炉設定
+gui.backpack.smelting_input=入力
+gui.backpack.fuel_filter=燃料フィルター
 gui.backpack.only_reversible=可逆レシピのみ
 gui.backpack.all_recipes=すべてのレシピ
 
@@ -62,7 +70,7 @@ gui.backpack.add_ore_dict_entry=鉱石辞書を追加
 gui.backpack.remove_ore_dict_entry=鉱石辞書を削除
 gui.backpack.ore_dict_input_help=鉱石辞書名を入力（正規表現OK）
 
-gui.complete_hunger=お腹が空いていて、食料の満腹度を\n全く無駄にしない時のみ食べる
+gui.backpack.complete_hunger=お腹が空いていて、食料の満腹度を\n全く無駄にしない時のみ食べる
 gui.backpack.half_hunger=お腹が空いていて、食料の満腹度を\n最大半分まで無駄にする場合でも食べる
 gui.backpack.immediate_hunger=少しでもお腹が空いたらすぐに食べる\n食料の満腹度をかなり無駄にする可能性アリ
 gui.backpack.ignore_health=体力を考慮しない\nプレイヤーの体力を無視し、満腹度設定に基づいてのみ食べる
@@ -140,6 +148,12 @@ item.filter_upgrade.name=フィルターアップグレード
 item.advanced_filter_upgrade.name=詳細なフィルターアップグレード
 item.compacting_upgrade.name=圧縮アップグレード
 item.advanced_compacting_upgrade.name=詳細な圧縮アップグレード
+item.smelting_upgrade.name=精錬アップグレード
+item.auto_smelting_upgrade.name=自動精錬アップグレード
+item.smoking_upgrade.name=燻製アップグレード
+item.auto_smoking_upgrade.name=自動燻製アップグレード
+item.blasting_upgrade.name=溶鉱炉アップグレード
+item.auto_blasting_upgrade.name=自動溶鉱炉アップグレード
 item.inception_upgrade.name=インセプションアップグレード
 item.void_upgrade.name=廃棄アップグレード
 item.advanced_void_upgrade.name=詳細な廃棄アップグレード
@@ -164,5 +178,16 @@ tooltip.backpack.filter_upgrade=ワールドに設置する際に搬入アイテ
 tooltip.backpack.advanced_filter_upgrade=ワールドに設置する際に搬入アイテムをフィルタリングします（詳細設定可能）
 tooltip.backpack.void_upgrade=フィルターで選択されたアイテムを消去します
 tooltip.backpack.advanced_void_upgrade=フィルターで選択されたアイテムを消去します。より詳細なフィルタリングオプションがあります
-tooltip.backpack.compacting_upgrade=2x2クラフトレシピでアイテムを圧縮します（例：雪球→雪ブロック）
-tooltip.backpack.advanced_compacting_upgrade=2x2および3x3クラフトレシピでアイテムを圧縮します（例：鉄インゴット→鉄ブロック）
+tooltip.backpack.compacting_upgrade=アイテムを対応する圧縮バリアントに圧縮します
+tooltip.backpack.compacting_upgrade.1=2x2レシピのみ
+tooltip.backpack.advanced_compacting_upgrade=アイテムを対応する圧縮バリアントに圧縮します
+tooltip.backpack.advanced_compacting_upgrade.1=2x2、3x3レシピおよびより多くのフィルターオプションを含む
+tooltip.backpack.smelting_upgrade=アップグレードタブでアイテムを精錬します
+tooltip.backpack.auto_smelting_upgrade=アップグレードタブでアイテムを精錬します
+tooltip.backpack.auto_smelting_upgrade.1=アイテムを自動搬入/搬出します
+tooltip.backpack.smoking_upgrade=アップグレードタブで食べ物を燻製にします
+tooltip.backpack.auto_smoking_upgrade=アップグレードタブで食べ物を燻製にします
+tooltip.backpack.auto_smoking_upgrade.1=アイテムを自動搬入/搬出します
+tooltip.backpack.blasting_upgrade=アップグレードタブで鉱石や金属を高速精錬します
+tooltip.backpack.auto_blasting_upgrade=アップグレードタブで鉱石や金属を高速精錬します
+tooltip.backpack.auto_blasting_upgrade.1=アイテムを自動搬入/搬出します

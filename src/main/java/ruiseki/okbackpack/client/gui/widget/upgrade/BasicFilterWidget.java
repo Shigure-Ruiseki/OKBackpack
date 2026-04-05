@@ -11,11 +11,11 @@ import com.cleanroommc.modularui.api.value.ISyncOrValue;
 import com.cleanroommc.modularui.network.NetworkUtils;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
+import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import lombok.Getter;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
-import ruiseki.okbackpack.client.gui.slot.FilterSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
@@ -29,7 +29,7 @@ public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
     @Getter
     private final CyclicVariantButtonWidget filterTypeButton;
     @Getter
-    private final List<FilterSlot> filterSlots;
+    private final List<ItemSlot> filterSlots;
     @Getter
     private UpgradeSlotSH slotSyncHandler = null;
 
@@ -56,7 +56,7 @@ public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
 
         this.filterSlots = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
-            FilterSlot slot = new FilterSlot();
+            ItemSlot slot = ItemSlot.create(true);
             slot.name(syncKey + "_" + slotIndex)
                 .syncHandler(syncKey + "_" + slotIndex, i)
                 .pos(i % 3 * 18, i / 3 * 18);

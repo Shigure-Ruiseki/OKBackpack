@@ -6,29 +6,52 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import com.cleanroommc.modularui.network.NetworkUtils;
-import com.cleanroommc.modularui.value.sync.ItemSlotSH;
+import com.cleanroommc.modularui.utils.MouseData;
+import com.cleanroommc.modularui.value.sync.PhantomItemSlotSH;
+import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
-import ruiseki.okbackpack.client.gui.slot.ModularFilterSlot;
+import cpw.mods.fml.relauncher.Side;
 
-public class FilterSlotSH extends ItemSlotSH {
+public class FilterSlotSH extends PhantomItemSlotSH {
 
-    public static final int SYNC_ITEM_SIMPLE = 102;
-
-    public FilterSlotSH(ModularFilterSlot slot) {
+    public FilterSlotSH(ModularSlot slot) {
         super(slot);
     }
 
     @Override
-    public void readOnServer(int id, PacketBuffer buf) throws IOException {
-        if (id == SYNC_ITEM_SIMPLE) {
-            ItemStack itemStack = NetworkUtils.readItemStack(buf);
-            this.getSlot()
-                .putStack(itemStack);
+    protected void phantomClick(MouseData mouseData, ItemStack cursorStack) {
+        if (mouseData.shift) {
+            getSlot().putStack(null);
+            return;
         }
-        super.readOnServer(id, buf);
+
+        if (cursorStack != null) {
+            if (!isItemValid(cursorStack)) return;
+
+            ItemStack copy = cursorStack.copy();
+            copy.stackSize = 1;
+            getSlot().putStack(copy);
+            return;
+        }
+
+        getSlot().putStack(null);
     }
 
-    public void updateFromClient(ItemStack stack) {
-        syncToServer(SYNC_ITEM_SIMPLE, buf -> { NetworkUtils.writeItemStack(buf, stack); });
+    @Override
+    protected void phantomScroll(MouseData mouseData) {
+
+    }
+
+    @Override
+    public void readOnServer(int id, PacketBuffer buf) throws IOException {
+        super.readOnServer(id, buf);
+        if (id == SYNC_CLICK) {
+            phantomClick(MouseData.readPacket(buf));
+        } else if (id == SYNC_ITEM_SIMPLE) {
+            if (!isPhantom()) return;
+            ItemStack itemStack = NetworkUtils.readItemStack(buf);
+            int button = buf.readVarIntFromBuffer(); // TODO whats this 1.12
+            phantomClick(new MouseData(Side.SERVER, button, false, false, false), itemStack);
+        }
     }
 }

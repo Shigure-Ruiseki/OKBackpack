@@ -7,8 +7,8 @@ import net.minecraft.network.PacketBuffer;
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
+import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.IStoragePanel;
-import ruiseki.okbackpack.api.IStorageWrapper;
 
 public class BackpackSlotSH extends ItemSlotSH {
 
@@ -17,10 +17,10 @@ public class BackpackSlotSH extends ItemSlotSH {
     public static final int UPDATE_SET_SLOT_LOCK = 8;
     public static final int UPDATE_UNSET_SLOT_LOCK = 9;
 
-    public final IStorageWrapper wrapper;
+    public final IBackpackWrapper wrapper;
     public final IStoragePanel<?> panel;
 
-    public BackpackSlotSH(ModularSlot slot, IStorageWrapper wrapper, IStoragePanel<?> panel) {
+    public BackpackSlotSH(ModularSlot slot, IBackpackWrapper wrapper, IStoragePanel<?> panel) {
         super(slot);
         this.wrapper = wrapper;
         this.panel = panel;

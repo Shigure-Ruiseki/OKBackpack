@@ -29,7 +29,6 @@ public class AdvancedFilterUpgradeWrapper extends AdvancedUpgradeWrapper impleme
     public void setFilterWay(FilterWayType filterWay) {
         if (filterWay == null) filterWay = FilterWayType.IN_OUT;
         ItemNBTHelpers.setInt(upgrade, FILTER_WAY_TAG, filterWay.ordinal());
-        markDirty();
     }
 
     @Override

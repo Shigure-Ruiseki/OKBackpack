@@ -21,6 +21,7 @@ public class CraftingUpgradeWrapper extends UpgradeWrapperBase implements ICraft
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag(ICraftingUpgrade.STORAGE_TAG, this.serializeNBT());
+                storage.markDirty();
             }
         };
         NBTTagCompound handlerTag = ItemNBTHelpers.getCompound(upgrade, STORAGE_TAG, false);
@@ -50,7 +51,6 @@ public class CraftingUpgradeWrapper extends UpgradeWrapperBase implements ICraft
     public void setCraftingDes(CraftingDestination type) {
         if (type == null) type = CraftingDestination.BACKPACK;
         ItemNBTHelpers.setInt(upgrade, CRAFTING_DEST_TAG, type.ordinal());
-        markDirty();
     }
 
     @Override
@@ -61,7 +61,6 @@ public class CraftingUpgradeWrapper extends UpgradeWrapperBase implements ICraft
     @Override
     public void setUseBackpack(boolean used) {
         ItemNBTHelpers.setBoolean(upgrade, USE_BACKPACK_TAG, used);
-        markDirty();
     }
 
 }

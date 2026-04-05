@@ -12,6 +12,10 @@ import ruiseki.okbackpack.common.item.ItemAdvancedFilterUpgrade;
 import ruiseki.okbackpack.common.item.ItemAdvancedMagnetUpgrade;
 import ruiseki.okbackpack.common.item.ItemAdvancedPickupUpgrade;
 import ruiseki.okbackpack.common.item.ItemAdvancedVoidUpgrade;
+import ruiseki.okbackpack.common.item.ItemAutoBlastingUpgrade;
+import ruiseki.okbackpack.common.item.ItemAutoSmeltingUpgrade;
+import ruiseki.okbackpack.common.item.ItemAutoSmokingUpgrade;
+import ruiseki.okbackpack.common.item.ItemBlastingUpgrade;
 import ruiseki.okbackpack.common.item.ItemCompactingUpgrade;
 import ruiseki.okbackpack.common.item.ItemCraftingUpgrade;
 import ruiseki.okbackpack.common.item.ItemEverlastingUpgrade;
@@ -20,9 +24,12 @@ import ruiseki.okbackpack.common.item.ItemFilterUpgrade;
 import ruiseki.okbackpack.common.item.ItemInceptionUpgrade;
 import ruiseki.okbackpack.common.item.ItemMagnetUpgrade;
 import ruiseki.okbackpack.common.item.ItemPickupUpgrade;
+import ruiseki.okbackpack.common.item.ItemSmeltingUpgrade;
+import ruiseki.okbackpack.common.item.ItemSmokingUpgrade;
 import ruiseki.okbackpack.common.item.ItemStackUpgrade;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.common.item.ItemVoidUpgrade;
+import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.item.IItem;
 
 public enum ModItems {
@@ -46,6 +53,12 @@ public enum ModItems {
     ADVANCED_FILTER_UPGRADE(new ItemAdvancedFilterUpgrade()),
     COMPACTING_UPGRADE(new ItemCompactingUpgrade()),
     ADVANCED_COMPACTING_UPGRADE(new ItemAdvancedCompactingUpgrade()),
+    SMELTING_UPGRADE(new ItemSmeltingUpgrade()),
+    AUTO_SMELTING_UPGRADE(new ItemAutoSmeltingUpgrade()),
+    SMOKING_UPGRADE(new ItemSmokingUpgrade(), Mods.EtFuturum),
+    AUTO_SMOKING_UPGRADE(new ItemAutoSmokingUpgrade(), Mods.EtFuturum),
+    BLASTING_UPGRADE(new ItemBlastingUpgrade(), Mods.EtFuturum),
+    AUTO_BLASTING_UPGRADE(new ItemAutoBlastingUpgrade(), Mods.EtFuturum),
 
     //
     ;
@@ -56,6 +69,11 @@ public enum ModItems {
     public static void preInit() {
         for (ModItems item : VALUES) {
             try {
+                if (item.requiredMod != null && !item.requiredMod.isLoaded()) {
+                    OKBackpack
+                        .okLog(Level.INFO, "Skipping " + item.name() + " (requires " + item.requiredMod.modid + ")");
+                    continue;
+                }
                 item.item.init();
                 OKBackpack.okLog(Level.INFO, "Successfully initialized " + item.name());
             } catch (Exception e) {
@@ -65,9 +83,15 @@ public enum ModItems {
     }
 
     private final IItem item;
+    private final Mods requiredMod;
 
     ModItems(IItem item) {
+        this(item, null);
+    }
+
+    ModItems(IItem item, Mods requiredMod) {
         this.item = item;
+        this.requiredMod = requiredMod;
     }
 
     public Item getItem() {
