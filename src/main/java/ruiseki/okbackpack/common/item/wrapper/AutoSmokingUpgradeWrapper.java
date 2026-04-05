@@ -17,7 +17,7 @@ public class AutoSmokingUpgradeWrapper extends AdvancedSmeltingUpgradeWrapperBas
     }
 
     @Override
-    public int getSmeltTime() {
+    public int getTotalCookTime() {
         return 100;
     }
 

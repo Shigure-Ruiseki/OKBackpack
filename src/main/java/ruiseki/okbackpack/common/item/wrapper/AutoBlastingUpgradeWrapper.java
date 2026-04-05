@@ -17,7 +17,7 @@ public class AutoBlastingUpgradeWrapper extends AdvancedSmeltingUpgradeWrapperBa
     }
 
     @Override
-    public int getSmeltTime() {
+    public int getTotalCookTime() {
         return 100;
     }
 

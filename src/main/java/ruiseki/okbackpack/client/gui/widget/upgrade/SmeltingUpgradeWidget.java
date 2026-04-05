@@ -2,7 +2,6 @@ package ruiseki.okbackpack.client.gui.widget.upgrade;
 
 import net.minecraft.item.ItemStack;
 
-import com.cleanroommc.modularui.value.DoubleValue;
 import com.cleanroommc.modularui.widgets.ProgressWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.layout.Column;
@@ -21,6 +20,8 @@ public class SmeltingUpgradeWidget<T extends SmeltingUpgradeWrapperBase> extends
         super(slotIndex, 4, stack, titleKey, 95);
         this.wrapper = wrapper;
 
+        this.syncHandler("upgrades", slotIndex);
+
         SlotGroupWidget furnaceGroup = new SlotGroupWidget().coverChildren();
 
         ItemSlot inputSlot = new ItemSlot().syncHandler("smelting_slot_" + slotIndex, 0)
@@ -36,24 +37,14 @@ public class SmeltingUpgradeWidget<T extends SmeltingUpgradeWrapperBase> extends
         ProgressWidget flameProgress = new ProgressWidget().size(14, 14)
             .texture(OKBGuiTextures.FURNACE_FLAME_BACKGROUND, OKBGuiTextures.FURNACE_FLAME_FOREGROUND, 14)
             .direction(ProgressWidget.Direction.UP)
-            .value(new DoubleValue.Dynamic(() -> {
-                if (!wrapper.isEnabled()) return 0.0;
-                int total = wrapper.getFuelTotal();
-                int current = wrapper.getFuelProgress();
-                return total > 0 ? (double) current / total : 0.0;
-            }, null))
+            .syncHandler("smelting_fuel_handler_" + slotIndex)
             .pos(2, 20);
         furnaceGroup.child(flameProgress);
 
         ProgressWidget arrowProgress = new ProgressWidget().size(24, 17)
             .texture(OKBGuiTextures.FURNACE_ARROW_BACKGROUND, OKBGuiTextures.FURNACE_ARROW_FOREGROUND, 24)
             .direction(ProgressWidget.Direction.RIGHT)
-            .value(new DoubleValue.Dynamic(() -> {
-                if (!wrapper.isEnabled()) return 0.0;
-                int total = wrapper.getSmeltTime();
-                int current = wrapper.getSmeltProgress();
-                return total > 0 ? (double) current / total : 0.0;
-            }, null))
+            .syncHandler("smelting_progress_handler_" + slotIndex)
             .pos(24, 18);
         furnaceGroup.child(arrowProgress);
 

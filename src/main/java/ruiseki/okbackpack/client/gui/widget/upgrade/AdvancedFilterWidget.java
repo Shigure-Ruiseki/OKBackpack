@@ -29,13 +29,13 @@ import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.TextWidget;
 import com.cleanroommc.modularui.widgets.layout.Column;
 import com.cleanroommc.modularui.widgets.layout.Row;
+import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import lombok.Getter;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.drawble.Outline;
-import ruiseki.okbackpack.client.gui.slot.FilterSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
@@ -79,7 +79,7 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
     @Getter
     private final Column oreDictBasedConfigurationGroup;
     @Getter
-    private final List<FilterSlot> filterSlots;
+    private final List<ItemSlot> filterSlots;
 
     private final OreDictRegexListWidget oreDictList;
     private OreDictEntryWidget focusedOreDictEntry = null;
@@ -162,7 +162,7 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
 
         this.filterSlots = new ArrayList<>();
         for (int i = 0; i < filterSlotCount; i++) {
-            FilterSlot slot = new FilterSlot();
+            ItemSlot slot = ItemSlot.create(true);
             slot.name(syncKey + "_" + slotIndex)
                 .syncHandler(syncKey + "_" + slotIndex, i)
                 .pos(i % 4 * 18, i / 4 * 18);
@@ -184,7 +184,7 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
         this.oreDictList = new OreDictRegexListWidget(88, 63);
 
         // OreDict Slot
-        FilterSlot oreDictSlot = new FilterSlot();
+        ItemSlot oreDictSlot = ItemSlot.create(true);
         oreDictSlot.name(syncKey + "_" + slotIndex)
             .syncHandler(syncKey + "_" + slotIndex, 0);
 

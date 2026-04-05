@@ -14,6 +14,7 @@ import com.cleanroommc.modularui.value.sync.ValueSyncHandler;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IProgressable;
+import ruiseki.okbackpack.api.wrapper.ISmeltingUpgrade;
 import ruiseki.okbackpack.client.gui.handler.DelegatedFloatSupplier;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
@@ -22,6 +23,7 @@ public class DelegatedFloatSH extends ValueSyncHandler<Float>
     implements IFloatSyncValue<Float>, IDoubleSyncValue<Float>, IStringSyncValue<Float> {
 
     public static final int UPDATE_PROGRESS = 1;
+    public static final int UPDATE_FUEL = 2;
 
     public final IStorageWrapper wrapper;
     public final int slotIndex;
@@ -59,6 +61,12 @@ public class DelegatedFloatSH extends ValueSyncHandler<Float>
             case UPDATE_PROGRESS:
                 if (upgradeWrapper instanceof IProgressable upgrade) {
                     setDelegatedSupplier(() -> upgrade::getProgress);
+                }
+                break;
+
+            case UPDATE_FUEL:
+                if (upgradeWrapper instanceof ISmeltingUpgrade upgrade) {
+                    setDelegatedSupplier(() -> upgrade::getBurnProgress);
                 }
                 break;
 

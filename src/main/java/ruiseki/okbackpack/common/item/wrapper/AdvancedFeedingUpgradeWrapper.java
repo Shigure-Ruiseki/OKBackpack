@@ -36,6 +36,7 @@ public class AdvancedFeedingUpgradeWrapper extends AdvancedUpgradeWrapper implem
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag(IBasicFilterable.FILTER_ITEMS_TAG, this.serializeNBT());
+                storage.markDirty();
             }
         };
         NBTTagCompound handlerTag = ItemNBTHelpers.getCompound(upgrade, FILTER_ITEMS_TAG, false);
@@ -89,7 +90,6 @@ public class AdvancedFeedingUpgradeWrapper extends AdvancedUpgradeWrapper implem
     public void setHungerFeedingStrategy(FeedingStrategy.Hunger strategy) {
         if (strategy == null) strategy = FeedingStrategy.Hunger.FULL;
         ItemNBTHelpers.setInt(upgrade, HUNGER_FEEDING_STRATEGY_TAG, strategy.ordinal());
-        markDirty();
     }
 
     public FeedingStrategy.HEALTH getHealthFeedingStrategy() {
@@ -101,7 +101,6 @@ public class AdvancedFeedingUpgradeWrapper extends AdvancedUpgradeWrapper implem
     public void setHealthFeedingStrategy(FeedingStrategy.HEALTH strategy) {
         if (strategy == null) strategy = FeedingStrategy.HEALTH.ALWAYS;
         ItemNBTHelpers.setInt(upgrade, HURT_FEEDING_STRATEGY_TAG, strategy.ordinal());
-        markDirty();
     }
 
     @Override

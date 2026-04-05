@@ -12,9 +12,7 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.ISlotModifiable;
 import ruiseki.okbackpack.api.wrapper.ISmeltingUpgrade;
-import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
-import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
@@ -34,6 +32,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag(IBasicFilterable.FILTER_ITEMS_TAG, this.serializeNBT());
+                storage.markDirty();
             }
         };
         NBTTagCompound filtersTag = ItemNBTHelpers.getCompound(upgrade, FILTER_ITEMS_TAG, false);
@@ -46,6 +45,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag(FUEL_FILTER_TAG, this.serializeNBT());
+                storage.markDirty();
             }
         };
         NBTTagCompound fuelFilterTag = ItemNBTHelpers.getCompound(upgrade, FUEL_FILTER_TAG, false);
@@ -54,77 +54,59 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
         this.smeltingInventory = new BaseItemStackHandler(3) {
 
             @Override
-            public boolean isItemValid(int slot, ItemStack stack) {
-                if (stack == null) return false;
-                if (slot == 0) return checkFilter(stack);
-                if (slot == 1) return checkFuelFilter(stack);
-                return false;
-            }
-
-            @Override
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
-                tag.setTag("SmeltingInv", this.serializeNBT());
-                markDirty();
-            }
-
-            @Override
-            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-                if (stack == null) return null;
-                if (!isItemValid(slot, stack)) return stack;
-                return super.insertItem(slot, stack, simulate);
+                tag.setTag(STORAGE_TAG, this.serializeNBT());
+                storage.markDirty();
             }
         };
-        NBTTagCompound invTag = ItemNBTHelpers.getCompound(upgrade, "SmeltingInv", false);
+        NBTTagCompound invTag = ItemNBTHelpers.getCompound(upgrade, STORAGE_TAG, false);
         if (invTag != null) smeltingInventory.deserializeNBT(invTag);
     }
 
     @Override
-    public BaseItemStackHandler getSmeltingInventory() {
+    public BaseItemStackHandler getStorage() {
         return smeltingInventory;
     }
 
     @Override
-    public int getSmeltTime() {
+    public int getTotalCookTime() {
         return 200;
     }
 
     @Override
-    public int getSmeltProgress() {
-        return ItemNBTHelpers.getInt(upgrade, SMELTING_PROGRESS_TAG, 0);
+    public int getCookTime() {
+        return ItemNBTHelpers.getInt(upgrade, COOK_TIME_TAG, 0);
     }
 
     @Override
-    public void setSmeltProgress(int progress) {
-        ItemNBTHelpers.setInt(upgrade, SMELTING_PROGRESS_TAG, progress);
-        markDirty();
+    public void setCookTime(int progress) {
+        ItemNBTHelpers.setInt(upgrade, COOK_TIME_TAG, progress);
     }
 
     @Override
-    public int getFuelProgress() {
-        return ItemNBTHelpers.getInt(upgrade, SMELTING_FUEL_PROGRESS_TAG, 0);
+    public int getBurnTime() {
+        return ItemNBTHelpers.getInt(upgrade, BURN_TIME_TAG, 0);
     }
 
     @Override
-    public void setFuelProgress(int progress) {
-        ItemNBTHelpers.setInt(upgrade, SMELTING_FUEL_PROGRESS_TAG, progress);
-        markDirty();
+    public void setBurnTime(int progress) {
+        ItemNBTHelpers.setInt(upgrade, BURN_TIME_TAG, progress);
     }
 
     @Override
-    public int getFuelTotal() {
-        return ItemNBTHelpers.getInt(upgrade, SMELTING_FUEL_TOTAL_TAG, 0);
+    public int getTotalBurnTime() {
+        return ItemNBTHelpers.getInt(upgrade, BURN_TIME_TOTAL_TAG, 0);
     }
 
     @Override
-    public void setFuelTotal(int total) {
-        ItemNBTHelpers.setInt(upgrade, SMELTING_FUEL_TOTAL_TAG, total);
-        markDirty();
+    public void setTotalBurnTime(int total) {
+        ItemNBTHelpers.setInt(upgrade, BURN_TIME_TOTAL_TAG, total);
     }
 
     @Override
     public boolean isBurning() {
-        return getFuelProgress() > 0;
+        return getBurnTime() > 0;
     }
 
     @Override
@@ -189,16 +171,13 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
 
     protected boolean doAutoSmeltTick() {
         if (!isEnabled()) return false;
-        if (!(storage instanceof BackpackWrapper bw)) return false;
-
-        BackpackItemStackHandler invHandler = bw.backpackHandler;
         boolean changed = false;
 
         // Auto-pull input from backpack
         ItemStack input = getInput();
         if (input == null || input.stackSize < input.getMaxStackSize()) {
-            for (int i = 0; i < invHandler.getSlots(); i++) {
-                ItemStack stack = invHandler.getStackInSlot(i);
+            for (int i = 0; i < storage.getSlots(); i++) {
+                ItemStack stack = storage.getStackInSlot(i);
                 if (stack == null || stack.stackSize <= 0) continue;
                 if (!checkFilter(stack)) continue;
                 ItemStack result = getSmeltingResult(stack);
@@ -211,11 +190,12 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                     stack.stackSize--;
                     changed = true;
                     if (stack.stackSize <= 0) {
-                        invHandler.setStackInSlot(i, null);
+                        storage.setStackInSlot(i, null);
                     } else {
-                        invHandler.setStackInSlot(i, stack);
+                        storage.setStackInSlot(i, stack);
                     }
                     input = getInput();
+                    markDirty();
                     break;
                 } else if (ItemHandlerHelper.canItemStacksStack(input, stack)) {
                     int space = input.getMaxStackSize() - input.stackSize;
@@ -226,10 +206,11 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                         stack.stackSize -= take;
                         changed = true;
                         if (stack.stackSize <= 0) {
-                            invHandler.setStackInSlot(i, null);
+                            storage.setStackInSlot(i, null);
                         } else {
-                            invHandler.setStackInSlot(i, stack);
+                            storage.setStackInSlot(i, stack);
                         }
+                        markDirty();
                         break;
                     }
                 }
@@ -239,8 +220,8 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
         // Auto-pull fuel from backpack
         ItemStack fuel = getFuel();
         if (fuel == null || fuel.stackSize < fuel.getMaxStackSize()) {
-            for (int i = 0; i < invHandler.getSlots(); i++) {
-                ItemStack stack = invHandler.getStackInSlot(i);
+            for (int i = 0; i < storage.getSlots(); i++) {
+                ItemStack stack = storage.getStackInSlot(i);
                 if (stack == null || stack.stackSize <= 0) continue;
                 if (!checkFuelFilter(stack)) continue;
                 int burnTime = TileEntityFurnace.getItemBurnTime(stack);
@@ -253,11 +234,12 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                     stack.stackSize--;
                     changed = true;
                     if (stack.stackSize <= 0) {
-                        invHandler.setStackInSlot(i, null);
+                        storage.setStackInSlot(i, null);
                     } else {
-                        invHandler.setStackInSlot(i, stack);
+                        storage.setStackInSlot(i, stack);
                     }
                     fuel = getFuel();
+                    markDirty();
                     break;
                 } else if (ItemHandlerHelper.canItemStacksStack(fuel, stack)) {
                     int space = fuel.getMaxStackSize() - fuel.stackSize;
@@ -268,10 +250,11 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                         stack.stackSize -= take;
                         changed = true;
                         if (stack.stackSize <= 0) {
-                            invHandler.setStackInSlot(i, null);
+                            storage.setStackInSlot(i, null);
                         } else {
-                            invHandler.setStackInSlot(i, stack);
+                            storage.setStackInSlot(i, stack);
                         }
+                        markDirty();
                         break;
                     }
                 }
@@ -281,7 +264,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
         // Auto-push output to backpack
         ItemStack output = getOutput();
         if (output != null && output.stackSize > 0) {
-            ItemStack remaining = tryInsertToBackpack(output, bw);
+            ItemStack remaining = tryInsertToBackpack(output);
             int remainingSize = remaining == null ? 0 : remaining.stackSize;
             if (remainingSize != output.stackSize) {
                 setOutput(remaining);
@@ -295,14 +278,13 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
 
     protected boolean doSmeltTick() {
         boolean dirty = false;
-        int fuelProgress = getFuelProgress();
-        int smeltProgress = getSmeltProgress();
-        int fuelTotal = getFuelTotal();
+        int fuelProgress = getBurnTime();
+        int smeltProgress = getCookTime();
+        int fuelTotal = getTotalBurnTime();
 
         if (fuelProgress > 0) {
             fuelProgress--;
-            setFuelProgress(fuelProgress);
-            dirty = true;
+            setBurnTime(fuelProgress);
         }
 
         ItemStack input = getInput();
@@ -321,11 +303,11 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                             if (burnTime > 0) {
                                 fuelProgress = burnTime;
                                 fuelTotal = burnTime;
-                                setFuelProgress(fuelProgress);
-                                setFuelTotal(fuelTotal);
+                                setBurnTime(fuelProgress);
+                                setTotalBurnTime(fuelTotal);
 
                                 fuel.stackSize--;
-                                if (fuel.stackSize <= 0) {
+                                if (fuel.stackSize <= 0 && fuel.getItem() != null) {
                                     ItemStack containerItem = fuel.getItem()
                                         .getContainerItem(fuel);
                                     setFuel(containerItem);
@@ -339,7 +321,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
 
                     if (fuelProgress > 0) {
                         smeltProgress++;
-                        if (smeltProgress >= getSmeltTime()) {
+                        if (smeltProgress >= getTotalCookTime()) {
                             smeltProgress = 0;
                             if (output == null) {
                                 setOutput(result.copy());
@@ -353,24 +335,21 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                             } else {
                                 setInput(input);
                             }
+                            dirty = true;
                         }
-                        setSmeltProgress(smeltProgress);
-                        dirty = true;
+                        setCookTime(smeltProgress);
                     } else if (smeltProgress > 0) {
                         smeltProgress = Math.max(smeltProgress - 2, 0);
-                        setSmeltProgress(smeltProgress);
-                        dirty = true;
+                        setCookTime(smeltProgress);
                     }
                 }
             } else if (smeltProgress > 0) {
                 smeltProgress = Math.max(smeltProgress - 2, 0);
-                setSmeltProgress(smeltProgress);
-                dirty = true;
+                setCookTime(smeltProgress);
             }
         } else if (smeltProgress > 0) {
             smeltProgress = Math.max(smeltProgress - 2, 0);
-            setSmeltProgress(smeltProgress);
-            dirty = true;
+            setCookTime(smeltProgress);
         }
 
         if (dirty) {
@@ -379,9 +358,23 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
         return dirty;
     }
 
-    protected ItemStack tryInsertToBackpack(ItemStack output, BackpackWrapper wrapper) {
+    protected ItemStack tryInsertToBackpack(ItemStack output) {
         if (output == null) return null;
-        return wrapper.insertItem(output.copy(), false);
+        return storage.insertItem(output.copy(), false);
+    }
+
+    @Override
+    public float getProgress() {
+        int total = getTotalCookTime();
+        int current = getCookTime();
+        return total > 0 ? (float) current / total : 0.0f;
+    }
+
+    @Override
+    public float getBurnProgress() {
+        int total = getTotalBurnTime();
+        int current = getBurnTime();
+        return total > 0 ? (float) current / total : 0.0f;
     }
 
     @Override

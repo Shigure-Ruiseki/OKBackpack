@@ -32,7 +32,7 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag("SmeltingInv", this.serializeNBT());
-                markDirty();
+                storage.markDirty();
             }
         };
         NBTTagCompound invTag = ItemNBTHelpers.getCompound(upgrade, "SmeltingInv", false);
@@ -42,51 +42,48 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
     }
 
     @Override
-    public BaseItemStackHandler getSmeltingInventory() {
+    public BaseItemStackHandler getStorage() {
         return smeltingInventory;
     }
 
     @Override
-    public int getSmeltTime() {
+    public int getTotalCookTime() {
         return 200;
     }
 
     @Override
-    public int getSmeltProgress() {
-        return ItemNBTHelpers.getInt(upgrade, SMELTING_PROGRESS_TAG, 0);
+    public int getCookTime() {
+        return ItemNBTHelpers.getInt(upgrade, COOK_TIME_TAG, 0);
     }
 
     @Override
-    public void setSmeltProgress(int progress) {
-        ItemNBTHelpers.setInt(upgrade, SMELTING_PROGRESS_TAG, progress);
-        markDirty();
+    public void setCookTime(int progress) {
+        ItemNBTHelpers.setInt(upgrade, COOK_TIME_TAG, progress);
     }
 
     @Override
-    public int getFuelProgress() {
-        return ItemNBTHelpers.getInt(upgrade, SMELTING_FUEL_PROGRESS_TAG, 0);
+    public int getBurnTime() {
+        return ItemNBTHelpers.getInt(upgrade, BURN_TIME_TAG, 0);
     }
 
     @Override
-    public void setFuelProgress(int progress) {
-        ItemNBTHelpers.setInt(upgrade, SMELTING_FUEL_PROGRESS_TAG, progress);
-        markDirty();
+    public void setBurnTime(int progress) {
+        ItemNBTHelpers.setInt(upgrade, BURN_TIME_TAG, progress);
     }
 
     @Override
-    public int getFuelTotal() {
-        return ItemNBTHelpers.getInt(upgrade, SMELTING_FUEL_TOTAL_TAG, 0);
+    public int getTotalBurnTime() {
+        return ItemNBTHelpers.getInt(upgrade, BURN_TIME_TOTAL_TAG, 0);
     }
 
     @Override
-    public void setFuelTotal(int total) {
-        ItemNBTHelpers.setInt(upgrade, SMELTING_FUEL_TOTAL_TAG, total);
-        markDirty();
+    public void setTotalBurnTime(int total) {
+        ItemNBTHelpers.setInt(upgrade, BURN_TIME_TOTAL_TAG, total);
     }
 
     @Override
     public boolean isBurning() {
-        return getFuelProgress() > 0;
+        return getBurnTime() > 0;
     }
 
     @Override
@@ -98,7 +95,6 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         ItemNBTHelpers.setBoolean(upgrade, ENABLED_TAG, enabled);
-        markDirty();
     }
 
     @Override
@@ -146,14 +142,13 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
         if (!isEnabled()) return;
 
         boolean dirty = false;
-        int fuelProgress = getFuelProgress();
-        int smeltProgress = getSmeltProgress();
-        int fuelTotal = getFuelTotal();
+        int fuelProgress = getBurnTime();
+        int smeltProgress = getCookTime();
+        int fuelTotal = getTotalBurnTime();
 
         if (fuelProgress > 0) {
             fuelProgress--;
-            setFuelProgress(fuelProgress);
-            dirty = true;
+            setBurnTime(fuelProgress);
         }
 
         ItemStack input = getInput();
@@ -172,11 +167,11 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
                             if (burnTime > 0) {
                                 fuelProgress = burnTime;
                                 fuelTotal = burnTime;
-                                setFuelProgress(fuelProgress);
-                                setFuelTotal(fuelTotal);
+                                setBurnTime(fuelProgress);
+                                setTotalBurnTime(fuelTotal);
 
                                 fuel.stackSize--;
-                                if (fuel.stackSize <= 0) {
+                                if (fuel.stackSize <= 0 && fuel.getItem() != null) {
                                     ItemStack containerItem = fuel.getItem()
                                         .getContainerItem(fuel);
                                     setFuel(containerItem);
@@ -190,7 +185,7 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
 
                     if (fuelProgress > 0) {
                         smeltProgress++;
-                        if (smeltProgress >= getSmeltTime()) {
+                        if (smeltProgress >= getTotalCookTime()) {
                             smeltProgress = 0;
                             if (output == null) {
                                 setOutput(result.copy());
@@ -204,29 +199,40 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
                             } else {
                                 setInput(input);
                             }
+                            dirty = true;
                         }
-                        setSmeltProgress(smeltProgress);
-                        dirty = true;
+                        setCookTime(smeltProgress);
                     } else if (smeltProgress > 0) {
                         smeltProgress = Math.max(smeltProgress - 2, 0);
-                        setSmeltProgress(smeltProgress);
-                        dirty = true;
+                        setCookTime(smeltProgress);
                     }
                 }
             } else if (smeltProgress > 0) {
                 smeltProgress = Math.max(smeltProgress - 2, 0);
-                setSmeltProgress(smeltProgress);
-                dirty = true;
+                setCookTime(smeltProgress);
             }
         } else if (smeltProgress > 0) {
             smeltProgress = Math.max(smeltProgress - 2, 0);
-            setSmeltProgress(smeltProgress);
-            dirty = true;
+            setCookTime(smeltProgress);
         }
 
         if (dirty) {
             markDirty();
         }
+    }
+
+    @Override
+    public float getProgress() {
+        int total = getTotalCookTime();
+        int current = getCookTime();
+        return total > 0 ? (float) current / total : 0.0f;
+    }
+
+    @Override
+    public float getBurnProgress() {
+        int total = getTotalBurnTime();
+        int current = getBurnTime();
+        return total > 0 ? (float) current / total : 0.0f;
     }
 
     @Override

@@ -44,7 +44,6 @@ public class UpgradeSlotSH extends ItemSlotSH {
         if (!UpgradeSlotSHRegistry.isClientEmpty()) {
             try {
                 UpgradeSlotSHRegistry.handleClient(this, id, buf);
-                // wrapper.syncToServer();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

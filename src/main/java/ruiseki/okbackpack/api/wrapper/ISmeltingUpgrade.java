@@ -4,30 +4,30 @@ import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 
-public interface ISmeltingUpgrade extends ITickable, IToggleable {
+public interface ISmeltingUpgrade extends ITickable, IToggleable, IProgressable, IStorageUpgrade {
 
-    String SMELTING_PROGRESS_TAG = "SmeltProgress";
-    String SMELTING_FUEL_PROGRESS_TAG = "FuelProgress";
-    String SMELTING_FUEL_TOTAL_TAG = "FuelTotal";
+    String COOK_TIME_TAG = "CookTime";
+    String BURN_TIME_TAG = "BurnTime";
+    String BURN_TIME_TOTAL_TAG = "BurnTimeTotal";
     String FUEL_FILTER_TAG = "FuelFilter";
-
-    BaseItemStackHandler getSmeltingInventory();
 
     ItemStack getSmeltingResult(ItemStack input);
 
-    int getSmeltTime();
+    int getTotalCookTime();
 
-    int getSmeltProgress();
+    int getCookTime();
 
-    void setSmeltProgress(int progress);
+    void setCookTime(int progress);
 
-    int getFuelProgress();
+    int getBurnTime();
 
-    void setFuelProgress(int progress);
+    void setBurnTime(int progress);
 
-    int getFuelTotal();
+    int getTotalBurnTime();
 
-    void setFuelTotal(int total);
+    void setTotalBurnTime(int total);
+
+    float getBurnProgress();
 
     boolean isBurning();
 

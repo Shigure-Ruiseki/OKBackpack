@@ -21,7 +21,6 @@ import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 
 import baubles.api.BaublesApi;
-import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.wrapper.IEntityApplicable;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
@@ -38,7 +37,6 @@ import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
-import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
@@ -176,10 +174,10 @@ public class BackpackWrapper implements IBackpackWrapper {
                 ItemStack extracted = super.extractItem(slot, amount, simulate);
                 if (!simulate && extracted != null) {
                     NBTTagCompound tag = extracted.getTagCompound();
-                    if (tag != null && tag.hasKey(ISmeltingUpgrade.SMELTING_PROGRESS_TAG)) {
-                        tag.removeTag(ISmeltingUpgrade.SMELTING_PROGRESS_TAG);
-                        tag.removeTag(ISmeltingUpgrade.SMELTING_FUEL_PROGRESS_TAG);
-                        tag.removeTag(ISmeltingUpgrade.SMELTING_FUEL_TOTAL_TAG);
+                    if (tag != null && tag.hasKey(ISmeltingUpgrade.COOK_TIME_TAG)) {
+                        tag.removeTag(ISmeltingUpgrade.COOK_TIME_TAG);
+                        tag.removeTag(ISmeltingUpgrade.BURN_TIME_TAG);
+                        tag.removeTag(ISmeltingUpgrade.BURN_TIME_TOTAL_TAG);
                     }
                 }
                 return extracted;
@@ -615,14 +613,6 @@ public class BackpackWrapper implements IBackpackWrapper {
     public void writeToItem(EntityPlayer player) {
         this.backpack = findStackByUUID(player);
         writeToItem();
-    }
-
-    public void syncToServer() {
-        writeToItem();
-        if (type != null) {
-            OKBackpack.instance.getPacketHandler()
-                .sendToServer(new PacketBackpackNBT(slotIndex, getBackpackNBT(), type));
-        }
     }
 
     @Override

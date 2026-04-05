@@ -45,7 +45,6 @@ public class AdvancedCompactingUpgradeWrapper extends AdvancedUpgradeWrapper imp
     @Override
     public void setOnlyReversible(boolean onlyReversible) {
         ItemNBTHelpers.setBoolean(upgrade, ONLY_REVERSIBLE_TAG, onlyReversible);
-        markDirty();
     }
 
     @Override
