@@ -171,13 +171,8 @@ public class BackpackWrapper implements IBackpackWrapper {
 
         this.upgradeHandler = new UpgradeItemStackHandler(upgradeSlots, this) {
 
-            @Override
-            public void setStackInSlot(int slot, ItemStack stack) {
-                detectPlayingJukeboxRemoval(slot);
-                super.setStackInSlot(slot, stack);
-            }
-
             private void detectPlayingJukeboxRemoval(int slot) {
+                if (justSavingNbtChange) return;
                 ItemStack existing = getStackInSlot(slot);
                 if (existing != null && ItemNBTHelpers.getBoolean(existing, IJukeboxUpgrade.PLAYING_TAG, false)) {
                     pendingJukeboxStops.add(slot);
@@ -192,10 +187,10 @@ public class BackpackWrapper implements IBackpackWrapper {
 
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                ItemStack extracted = super.extractItem(slot, amount, simulate);
                 if (!simulate) {
                     detectPlayingJukeboxRemoval(slot);
                 }
+                ItemStack extracted = super.extractItem(slot, amount, simulate);
                 if (!simulate && extracted != null) {
                     NBTTagCompound tag = extracted.getTagCompound();
                     if (tag != null && tag.hasKey(ISmeltingUpgrade.COOK_TIME_TAG)) {
