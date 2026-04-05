@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
-import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
+import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemInceptionUpgrade extends ItemUpgrade<InceptionUpgradeWrapper> {

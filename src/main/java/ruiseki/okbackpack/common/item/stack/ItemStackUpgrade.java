@@ -14,9 +14,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
-import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
+import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.helper.LangHelpers;
 

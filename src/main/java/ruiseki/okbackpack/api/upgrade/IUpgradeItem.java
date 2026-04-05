@@ -32,7 +32,7 @@ public interface IUpgradeItem<W extends IUpgradeWrapper> {
      * @return result indicating success or failure with an error lang key
      */
     default UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper storageWrapper, ItemStack upgradeStack,
-                                                    int targetSlot) {
+        int targetSlot) {
         return UpgradeSlotChangeResult.success();
     }
 
