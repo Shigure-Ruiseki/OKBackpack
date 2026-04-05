@@ -270,7 +270,7 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                 return Platform.EMPTY_STACK;
             }
 
-        return slotClick(slotId, mouseButton, mode, player);
+        return superSlotClick(slotId, mouseButton, mode, player);
     }
 
     @Override
