@@ -21,6 +21,11 @@ public class OKBGuiTextures {
         .name("vanilla_search")
         .build();
 
+    public static final UITexture EMPTY_UPGRADE = UITexture.builder()
+        .location(Reference.MOD_ID, "items/empty_upgrade_slot")
+        .imageSize(16, 16)
+        .build();
+
     public static final UITexture BREEDER_PROGRESS = UITexture.builder()
         .location(Reference.MOD_ID, "gui/widgets/progress_breeder")
         .imageSize(36, 36)

@@ -4,17 +4,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.AdaptableUITexture;
+import com.cleanroommc.modularui.drawable.GuiDraw;
 import com.cleanroommc.modularui.drawable.ItemDrawable;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
@@ -25,6 +29,7 @@ import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetTheme;
+import com.cleanroommc.modularui.utils.GlStateManager;
 import com.cleanroommc.modularui.utils.item.PlayerInvWrapper;
 import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
@@ -39,6 +44,7 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageContainer;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
@@ -48,6 +54,7 @@ import ruiseki.okbackpack.client.gui.slot.CraftingSlotInfo;
 import ruiseki.okbackpack.client.gui.slot.LockedPlayerSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularUpgradeSlot;
+import ruiseki.okbackpack.client.gui.slot.UpgradeSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
@@ -431,7 +438,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             .left(-21);
         for (int i = 0; i < wrapper.getUpgradeHandler()
             .getSlots(); i++) {
-            ItemSlot itemSlot = new ItemSlot().syncHandler("upgrades", i)
+            UpgradeSlot itemSlot = (UpgradeSlot) new UpgradeSlot().syncHandler("upgrades", i)
                 .pos(5, 5 + i * ItemSlot.SIZE)
                 .name("slot_" + i);
             upgradeSlotWidgets.add(itemSlot);
@@ -687,6 +694,82 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             resizer().getArea().height,
             WidgetTheme.getDefault()
                 .getTheme());
+        renderErrorOverlay();
+    }
+
+    private static final int ERROR_BACKGROUND_COLOR = 0xF0100010;
+    private static final int ERROR_BORDER_COLOR = 0xFFB02E26;
+    private static final int ERROR_TEXT_COLOR = 0xB02E26;
+    private static final int ERROR_DISPLAY_TICKS = 60;
+
+    @Nullable
+    private UpgradeSlotChangeResult activeError;
+    private long activeErrorSetTick;
+
+    public boolean isSlotInConflict(int slotIndex) {
+        updateActiveError();
+        if (activeError == null) return false;
+        for (int s : activeError.getConflictSlots()) {
+            if (s == slotIndex) return true;
+        }
+        return false;
+    }
+
+    private void updateActiveError() {
+        // pick up new error from any upgrade slot
+        for (var widget : upgradeSlotWidgets) {
+            if (widget instanceof UpgradeSlot upgradeSlot
+                && upgradeSlot.getSlot() instanceof ModularUpgradeSlot modularSlot) {
+                UpgradeSlotChangeResult result = modularSlot.getLastChangeResult();
+                if (result != null && !result.isSuccessful()) {
+                    if (result != activeError) {
+                        activeError = result;
+                        activeErrorSetTick = getCurrentTick();
+                    }
+                    modularSlot.setLastChangeResult(null);
+                    return;
+                }
+            }
+        }
+        // check expiry
+        if (activeError != null && getCurrentTick() - activeErrorSetTick >= ERROR_DISPLAY_TICKS) {
+            activeError = null;
+        }
+    }
+
+    private void renderErrorOverlay() {
+        updateActiveError();
+        if (activeError == null || activeError.getErrorLangKey() == null) return;
+
+        String errorText = LangHelpers.localize(activeError.getErrorLangKey(), activeError.getErrorArgs());
+        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        int textWidth = font.getStringWidth(errorText);
+
+        int panelWidth = resizer().getArea().width;
+        int panelHeight = resizer().getArea().height;
+
+        int padding = 4;
+        int boxWidth = textWidth + padding * 2;
+        int boxHeight = font.FONT_HEIGHT + padding * 2;
+        int boxX = (panelWidth - boxWidth) / 2;
+        int boxY = panelHeight - 90;
+
+        GlStateManager.disableDepth();
+        // border
+        GuiDraw.drawRect(boxX, boxY, boxWidth, boxHeight, ERROR_BORDER_COLOR);
+        // background
+        GuiDraw.drawRect(boxX + 1, boxY + 1, boxWidth - 2, boxHeight - 2, ERROR_BACKGROUND_COLOR);
+        // re-enable textures after drawRect for font rendering
+        GlStateManager.enableTexture2D();
+        GlStateManager.color(1f, 1f, 1f, 1f);
+        // text
+        font.drawStringWithShadow(errorText, boxX + padding, boxY + padding, ERROR_TEXT_COLOR);
+        GlStateManager.enableDepth();
+    }
+
+    private long getCurrentTick() {
+        var mc = Minecraft.getMinecraft();
+        return mc.theWorld != null ? mc.theWorld.getTotalWorldTime() : 0;
     }
 
     @Override
