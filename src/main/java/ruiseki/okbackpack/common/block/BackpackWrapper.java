@@ -36,13 +36,12 @@ import ruiseki.okbackpack.api.wrapper.ISlotModifiable;
 import ruiseki.okbackpack.api.wrapper.ISmeltingUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITickable;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okbackpack.common.SortType;
 import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
 import ruiseki.okbackpack.common.init.ModBlocks;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 import ruiseki.okbackpack.common.network.PacketJukeboxPlaybackState;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
@@ -430,7 +429,8 @@ public class BackpackWrapper implements IBackpackWrapper {
             ItemStack upgradeStack = upgradeHandler.getStackInSlot(i);
             if (upgradeStack == null) continue;
 
-            UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(upgradeStack, this);
+            IUpgradeWrapper wrapper = this.getUpgradeHandler()
+                .getWrapperInSlot(slotIndex);
             if (wrapper == null) continue;
             if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) continue;
 
@@ -467,7 +467,8 @@ public class BackpackWrapper implements IBackpackWrapper {
         ItemStack upgradeStack = upgradeHandler.getStackInSlot(slot);
         if (upgradeStack == null) return true;
 
-        UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(upgradeStack, this);
+        IUpgradeWrapper wrapper = this.getUpgradeHandler()
+            .getWrapperInSlot(slotIndex);
         if (wrapper == null) return true;
         if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) return true;
 
@@ -483,7 +484,8 @@ public class BackpackWrapper implements IBackpackWrapper {
         ItemStack upgradeStack = upgradeHandler.getStackInSlot(slot);
         if (upgradeStack == null) return true;
 
-        UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(upgradeStack, this);
+        IUpgradeWrapper wrapper = this.getUpgradeHandler()
+            .getWrapperInSlot(slotIndex);
         if (wrapper == null) return true;
         if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) return true;
 
@@ -509,7 +511,8 @@ public class BackpackWrapper implements IBackpackWrapper {
             ItemStack stack = upgradeHandler.getStackInSlot(i);
             if (stack == null) continue;
             if (!ItemNBTHelpers.getBoolean(stack, IJukeboxUpgrade.PENDING_STOP_SYNC_TAG, false)) continue;
-            UpgradeWrapperBase wrapper2 = UpgradeWrapperFactory.createWrapper(stack, this);
+            IUpgradeWrapper wrapper2 = this.getUpgradeHandler()
+                .getWrapperInSlot(slotIndex);
             if (wrapper2 instanceof ITickable tickable) {
                 dirty |= tickable.tick(player);
             }
@@ -537,7 +540,8 @@ public class BackpackWrapper implements IBackpackWrapper {
             ItemStack stack = upgradeHandler.getStackInSlot(i);
             if (stack == null) continue;
             if (!ItemNBTHelpers.getBoolean(stack, IJukeboxUpgrade.PENDING_STOP_SYNC_TAG, false)) continue;
-            UpgradeWrapperBase wrapper2 = UpgradeWrapperFactory.createWrapper(stack, this);
+            IUpgradeWrapper wrapper2 = this.getUpgradeHandler()
+                .getWrapperInSlot(slotIndex);
             if (wrapper2 instanceof ITickable tickable) {
                 dirty |= tickable.tick(world, pos);
             }
@@ -872,9 +876,9 @@ public class BackpackWrapper implements IBackpackWrapper {
             ItemStack stack = upgradeHandler.getStackInSlot(i);
             if (stack == null) continue;
 
-            UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(stack, this);
+            IUpgradeWrapper wrapper = this.getUpgradeHandler()
+                .getWrapperInSlot(i);
             if (wrapper == null) continue;
-            if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) continue;
             if (capabilityClass.isAssignableFrom(wrapper.getClass())) {
                 result.put(i, capabilityClass.cast(wrapper));
             }

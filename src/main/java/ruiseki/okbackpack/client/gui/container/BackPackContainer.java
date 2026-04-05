@@ -28,7 +28,7 @@ import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
+import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
@@ -62,26 +62,37 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
 
     @Override
     public void onCraftMatrixChanged(IInventory inventoryIn) {
+        if (inventoryIn instanceof IndexedInventoryCraftingWrapper inventoryCrafting) {
 
-        if (!getGuiData().isClient() && inventoryIn instanceof IndexedInventoryCraftingWrapper inventoryCrafting) {
-
-            EntityPlayerMP playerMP = (EntityPlayerMP) getPlayer();
-
+            EntityPlayer player = getPlayer();
             ItemStack result;
-            if (Mods.TConstruct.isLoaded()) {
-                result = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
+
+            // server-side compute recipe
+            if (!getGuiData().isClient()) {
+                if (Mods.TConstruct.isLoaded()) {
+                    result = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
+                } else {
+                    result = CraftingManager.getInstance()
+                        .findMatchingRecipe(inventoryCrafting, player.worldObj);
+                }
+
+                // update result slot
+                IndexedModularCraftingSlot slot = craftingSlotInstances.get(inventoryCrafting.getUpgradeSlotIndex());
+                if (slot != null) {
+                    slot.updateResult(result);
+                }
+
+                // set crafting slot server-side
+                inventoryCrafting.setSlot(9, result, false);
+
+                detectAndSendChanges();
             } else {
-                result = CraftingManager.getInstance()
-                    .findMatchingRecipe(inventoryCrafting, playerMP.worldObj);
+                // client: just display current result
+                IndexedModularCraftingSlot slot = craftingSlotInstances.get(inventoryCrafting.getUpgradeSlotIndex());
+                if (slot != null) {
+                    slot.updateResult(inventoryCrafting.getStackInSlot(9));
+                }
             }
-
-            IndexedModularCraftingSlot slot = craftingSlotInstances.get(inventoryCrafting.getUpgradeSlotIndex());
-
-            if (slot != null) {
-                slot.updateResult(result);
-            }
-
-            inventoryCrafting.setSlot(9, result, false);
         }
     }
 
@@ -225,7 +236,6 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                             if (pass != 0 || stackInSlot.stackSize != maxStackSize) {
                                 int take = Math.min(maxStackSize - heldStack.stackSize, stackInSlot.stackSize);
 
-                                // ⚠️ dùng decrStackSize chuẩn
                                 ItemStack removed = slot1.decrStackSize(take);
 
                                 if (removed != null) {

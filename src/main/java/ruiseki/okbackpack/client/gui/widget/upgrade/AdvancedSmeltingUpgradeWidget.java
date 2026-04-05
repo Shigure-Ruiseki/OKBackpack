@@ -10,7 +10,7 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.slot.BigItemSlot;
-import ruiseki.okbackpack.common.item.wrapper.AdvancedSmeltingUpgradeWrapperBase;
+import ruiseki.okbackpack.common.item.smelter.AdvancedSmeltingUpgradeWrapperBase;
 
 public class AdvancedSmeltingUpgradeWidget<T extends AdvancedSmeltingUpgradeWrapperBase>
     extends ExpandedUpgradeTabWidget<T> {

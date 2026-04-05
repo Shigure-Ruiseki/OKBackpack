@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.common.item.wrapper.jukebox.RecordDurationCache;
+import ruiseki.okbackpack.common.item.jukebox.RecordDurationCache;
 import ruiseki.okbackpack.common.network.PacketRecordDuration;
 
 /**

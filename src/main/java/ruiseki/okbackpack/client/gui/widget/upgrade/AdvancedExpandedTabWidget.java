@@ -6,7 +6,7 @@ import com.cleanroommc.modularui.widgets.layout.Column;
 import com.cleanroommc.modularui.widgets.layout.Row;
 
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
+import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 
 public class AdvancedExpandedTabWidget<T extends UpgradeWrapperBase & IAdvancedFilterable>
     extends ExpandedUpgradeTabWidget<T> {

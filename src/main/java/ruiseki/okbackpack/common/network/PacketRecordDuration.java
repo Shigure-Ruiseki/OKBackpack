@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ruiseki.okbackpack.common.item.wrapper.jukebox.RecordDurationCache;
+import ruiseki.okbackpack.common.item.jukebox.RecordDurationCache;
 import ruiseki.okcore.network.CodecField;
 import ruiseki.okcore.network.PacketCodec;
 

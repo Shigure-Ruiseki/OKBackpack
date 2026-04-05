@@ -3,7 +3,6 @@ package ruiseki.okbackpack.client.gui.syncHandler;
 import java.io.IOException;
 import java.util.function.Supplier;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import com.cleanroommc.modularui.api.value.sync.IDoubleSyncValue;
@@ -15,9 +14,8 @@ import com.cleanroommc.modularui.value.sync.ValueSyncHandler;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IProgressable;
 import ruiseki.okbackpack.api.wrapper.ISmeltingUpgrade;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.DelegatedFloatSupplier;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 
 public class DelegatedFloatSH extends ValueSyncHandler<Float>
     implements IFloatSyncValue<Float>, IDoubleSyncValue<Float>, IStringSyncValue<Float> {
@@ -51,21 +49,19 @@ public class DelegatedFloatSH extends ValueSyncHandler<Float>
     @Override
     public void readOnServer(int id, PacketBuffer buf) throws IOException {
 
-        ItemStack stack = wrapper.getUpgradeHandler()
-            .getStackInSlot(slotIndex);
-
-        UpgradeWrapperBase upgradeWrapper = UpgradeWrapperFactory.createWrapper(stack, wrapper);
+        IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
+            .getWrapperInSlot(slotIndex);
 
         switch (id) {
 
             case UPDATE_PROGRESS:
-                if (upgradeWrapper instanceof IProgressable upgrade) {
+                if (wrapper instanceof IProgressable upgrade) {
                     setDelegatedSupplier(() -> upgrade::getProgress);
                 }
                 break;
 
             case UPDATE_FUEL:
-                if (upgradeWrapper instanceof ISmeltingUpgrade upgrade) {
+                if (wrapper instanceof ISmeltingUpgrade upgrade) {
                     setDelegatedSupplier(() -> upgrade::getBurnProgress);
                 }
                 break;

@@ -11,17 +11,18 @@ import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.ICompactingUpgrade;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
+import ruiseki.okbackpack.api.wrapper.IDirtable;
 import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
 import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade;
 import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade.JukeboxLoopMode;
 import ruiseki.okbackpack.api.wrapper.IMagnetUpgrade;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
-import ruiseki.okbackpack.common.item.wrapper.AdvancedFeedingUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.AdvancedJukeboxUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
+import ruiseki.okbackpack.common.item.feeding.AdvancedFeedingUpgradeWrapper;
+import ruiseki.okbackpack.common.item.jukebox.AdvancedJukeboxUpgradeWrapper;
 import ruiseki.okcore.init.IInitListener;
 
 public class UpgradeSlotSHRegisters implements IInitListener {
@@ -52,25 +53,25 @@ public class UpgradeSlotSHRegisters implements IInitListener {
         if (step == Step.POSTINIT) {
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_UPGRADE_TAB_STATE, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (wrapper == null) return;
                 wrapper.setTabOpened(buf.readBoolean());
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_UPGRADE_TOGGLE, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof IToggleable toggle)) return;
                 toggle.toggle();
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_BASIC_FILTERABLE, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof IBasicFilterable upgrade)) return;
                 upgrade.setFilterType(NetworkUtils.readEnumValue(buf, IBasicFilterable.FilterType.class));
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_ADVANCED_FILTERABLE, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof IAdvancedFilterable upgrade)) return;
 
                 upgrade.setFilterType(NetworkUtils.readEnumValue(buf, IAdvancedFilterable.FilterType.class));
@@ -85,7 +86,7 @@ public class UpgradeSlotSHRegisters implements IInitListener {
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_ADVANCED_FEEDING, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof AdvancedFeedingUpgradeWrapper upgrade)) return;
                 upgrade.setHungerFeedingStrategy(
                     NetworkUtils.readEnumValue(buf, IFeedingUpgrade.FeedingStrategy.Hunger.class));
@@ -94,104 +95,101 @@ public class UpgradeSlotSHRegisters implements IInitListener {
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_FILTER, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof IFilterUpgrade upgrade)) return;
                 upgrade.setFilterWay(NetworkUtils.readEnumValue(buf, IFilterUpgrade.FilterWayType.class));
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_MAGNET, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof IMagnetUpgrade upgrade)) return;
                 upgrade.setCollectItem(buf.readBoolean());
                 upgrade.setCollectExp(buf.readBoolean());
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_CRAFTING, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof ICraftingUpgrade upgrade)) return;
                 upgrade.setCraftingDes(NetworkUtils.readEnumValue(buf, ICraftingUpgrade.CraftingDestination.class));
                 upgrade.setUseBackpack(buf.readBoolean());
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_VOID, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof IVoidUpgrade upgrade)) return;
                 upgrade.setVoidType(NetworkUtils.readEnumValue(buf, IVoidUpgrade.VoidType.class));
                 upgrade.setVoidInput(NetworkUtils.readEnumValue(buf, IVoidUpgrade.VoidInput.class));
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_CRAFTING_R, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof ICraftingUpgrade upgrade)) return;
                 boolean clockwise = buf.readBoolean();
                 ItemStackHandler storage = upgrade.getStorage();
                 BackpackInventoryHelpers.rotated(storage, clockwise);
-                wrapper.markDirty();
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_CRAFTING_G, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof ICraftingUpgrade upgrade)) return;
                 boolean balance = buf.readBoolean();
                 ItemStackHandler storage = upgrade.getStorage();
                 if (balance) BackpackInventoryHelpers.balance(storage);
                 else BackpackInventoryHelpers.spread(storage);
-                wrapper.markDirty();
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_CRAFTING_C, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof ICraftingUpgrade upgrade)) return;
                 int ordinal = buf.readInt();
                 BackpackInventoryHelpers.clear(slot.panel, upgrade.getStorage(), ordinal);
                 slot.panel.getPlayer().inventory.markDirty();
-                wrapper.markDirty();
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_DIRTY, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
-                if (wrapper == null) return;
-                wrapper.setDirty(buf.readBoolean());
+                IUpgradeWrapper wrapper = slot.getWrapper();
+                if (!(wrapper instanceof IDirtable dirtable)) return;
+                dirtable.setDirty(buf.readBoolean());
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_COMPACTING, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof ICompactingUpgrade upgradeWrapper)) return;
                 upgradeWrapper.setOnlyReversible(buf.readBoolean());
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_PLAY, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof IJukeboxUpgrade jukebox)) return;
                 jukebox.play();
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_STOP, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof IJukeboxUpgrade jukebox)) return;
                 jukebox.stop();
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_PREV, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof AdvancedJukeboxUpgradeWrapper jukebox)) return;
                 jukebox.previous();
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_NEXT, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof AdvancedJukeboxUpgradeWrapper jukebox)) return;
                 jukebox.next();
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_SHUFFLE, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof AdvancedJukeboxUpgradeWrapper jukebox)) return;
                 jukebox.setShuffleEnabled(buf.readBoolean());
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_LOOP, (slot, buf) -> {
-                UpgradeWrapperBase wrapper = slot.getWrapper();
+                IUpgradeWrapper wrapper = slot.getWrapper();
                 if (!(wrapper instanceof AdvancedJukeboxUpgradeWrapper jukebox)) return;
                 int ordinal = buf.readInt();
                 JukeboxLoopMode[] modes = JukeboxLoopMode.values();

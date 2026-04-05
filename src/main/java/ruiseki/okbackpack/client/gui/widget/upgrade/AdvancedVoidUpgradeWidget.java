@@ -14,7 +14,7 @@ import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
-import ruiseki.okbackpack.common.item.wrapper.AdvancedVoidUpgradeWrapper;
+import ruiseki.okbackpack.common.item.voiding.AdvancedVoidUpgradeWrapper;
 
 public class AdvancedVoidUpgradeWidget extends AdvancedExpandedTabWidget<AdvancedVoidUpgradeWrapper> {
 

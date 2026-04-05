@@ -2,7 +2,6 @@ package ruiseki.okbackpack.client.gui.syncHandler;
 
 import java.util.function.Supplier;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import com.cleanroommc.modularui.utils.item.EmptyHandler;
@@ -13,10 +12,9 @@ import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.ISmeltingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IStorageUpgrade;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.DelegatedItemHandler;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
 
 public class DelegatedStackHandlerSH extends SyncHandler {
 
@@ -50,10 +48,8 @@ public class DelegatedStackHandlerSH extends SyncHandler {
 
     @Override
     public void readOnServer(int id, PacketBuffer buf) {
-        ItemStack stack = wrapper.getUpgradeHandler()
-            .getStackInSlot(slotIndex);
-        UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
-
+        IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
+            .getWrapperInSlot(slotIndex);
         switch (id) {
             case UPDATE_FILTERABLE:
                 if (wrapper instanceof IBasicFilterable upgrade) {

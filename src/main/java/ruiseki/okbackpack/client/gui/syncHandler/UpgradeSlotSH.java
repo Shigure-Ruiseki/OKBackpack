@@ -11,8 +11,7 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotSHRegistry;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 
 public class UpgradeSlotSH extends ItemSlotSH {
 
@@ -51,10 +50,11 @@ public class UpgradeSlotSH extends ItemSlotSH {
         super.readOnClient(id, buf);
     }
 
-    public UpgradeWrapperBase getWrapper() {
+    public IUpgradeWrapper getWrapper() {
         ItemStack stack = getSlot().getStack();
         if (stack == null) return null;
-        return UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
+        return this.wrapper.getUpgradeHandler()
+            .getWrapperInSlot(getSlot().getSlotIndex());
     }
 
     public static int getId(String name) {

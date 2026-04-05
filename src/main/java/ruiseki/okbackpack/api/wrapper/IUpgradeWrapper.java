@@ -13,4 +13,8 @@ public interface IUpgradeWrapper {
     String getSettingLangKey();
 
     ItemStack getUpgradeStack();
+
+    void onAdded();
+
+    void onBeforeRemoved();
 }

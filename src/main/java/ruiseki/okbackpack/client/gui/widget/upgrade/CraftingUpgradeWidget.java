@@ -23,7 +23,7 @@ import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.ShiftButtonWidget;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
-import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
+import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 
 public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgradeWrapper> {
 

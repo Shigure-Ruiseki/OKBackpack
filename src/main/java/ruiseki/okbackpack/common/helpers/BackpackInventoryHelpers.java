@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -12,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
+import com.cleanroommc.modularui.utils.item.IItemHandler;
 import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
 
@@ -418,4 +421,25 @@ public class BackpackInventoryHelpers {
         }
         return null;
     }
+
+    public static void iterate(IItemHandler handler, BiConsumer<Integer, ItemStack> actOn) {
+        iterate(handler, actOn, () -> false);
+    }
+
+    public static void iterate(IItemHandler handler, BiConsumer<Integer, ItemStack> actOn, BooleanSupplier shouldExit) {
+        iterate(handler, actOn, shouldExit, true);
+    }
+
+    public static void iterate(IItemHandler handler, BiConsumer<Integer, ItemStack> actOn, BooleanSupplier shouldExit,
+        boolean getVirtualCounts) {
+        int slots = handler.getSlots();
+        for (int slot = 0; slot < slots; slot++) {
+            ItemStack stack = handler.getStackInSlot(slot);
+            actOn.accept(slot, stack);
+            if (shouldExit.getAsBoolean()) {
+                break;
+            }
+        }
+    }
+
 }

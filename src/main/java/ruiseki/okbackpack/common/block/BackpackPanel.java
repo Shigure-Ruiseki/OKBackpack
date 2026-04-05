@@ -39,7 +39,9 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageContainer;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IDirtable;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.gui.container.BackpackGuiContainer;
@@ -65,9 +67,7 @@ import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.SortType;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
-import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
+import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 import ruiseki.okcore.helper.ItemStackHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -170,7 +170,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 ItemStack last = lastUpgradeStacks[slotIndex];
 
                 boolean itemChanged = !ItemStackHelpers.areStacksEqual(last, stack, true);
-                boolean tabDirty = isTabDirty(stack, syncHandler);
+                boolean tabDirty = isTabDirty(slotIndex, syncHandler);
 
                 if (!itemChanged && !tabDirty) return;
                 lastUpgradeStacks[slotIndex] = stack == null ? null : stack.copy();
@@ -466,6 +466,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 .bottom(85));
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void updateUpgradeWidgets() {
         int tabIndex = 0;
         Integer openedTabIndex = null;
@@ -480,7 +481,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             if (!(stack != null && stack.getItem() instanceof ItemUpgrade<?>item)) continue;
             if (!item.hasTab()) continue;
 
-            UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
+            IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
+                .getWrapperInSlot(slotIndex);
             if (wrapper == null) continue;
 
             if (wrapper.isTabOpened()) {
@@ -504,12 +506,12 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             if (stack == null) continue;
 
             Item item = stack.getItem();
-            if (!(item instanceof ItemUpgrade) || !((ItemUpgrade<?>) item).hasTab()) continue;
+            if (!(item instanceof ItemUpgrade upgrade) || !upgrade.hasTab()) continue;
 
             TabWidget tabWidget = tabWidgets.get(tabIndex);
             UpgradeSlotUpdateGroup upgradeSlotGroup = upgradeSlotGroups[slotIndex];
 
-            UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
+            IUpgradeWrapper wrapper = this.wrapper.upgradeHandler.getWrapperInSlot(slotIndex);
             if (wrapper == null) continue;
 
             tabWidget.setShowExpanded(wrapper.isTabOpened());
@@ -522,9 +524,9 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                     .addLine(IKey.str(item.getItemStackDisplayName(stack)))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
 
-            UpgradeWrapperFactory.updateWidgetDelegates(stack, wrapper, upgradeSlotGroup);
-            ExpandedTabWidget widget = UpgradeWrapperFactory
-                .getExpandedTabWidget(stack, slotIndex, wrapper, this, wrapper.getSettingLangKey());
+            upgrade.updateWidgetDelegates(wrapper, upgradeSlotGroup);
+            ExpandedTabWidget widget = upgrade
+                .getExpandedTabWidget(slotIndex, wrapper, stack, this, wrapper.getSettingLangKey());
 
             if (widget != null) {
                 tabWidget.setExpandedWidget(widget);
@@ -614,7 +616,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                     .getStack();
                 if (stack == null || !(stack.getItem() instanceof ItemUpgrade<?>item) || !item.hasTab()) continue;
 
-                UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
+                IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
+                    .getWrapperInSlot(i);
                 if (wrapper != null && wrapper.isTabOpened()) {
                     wrapper.setTabOpened(false);
                     upgradeSlotSyncHandlers[i].syncToServer(
@@ -650,7 +653,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 continue;
             }
 
-            UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
+            IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
+                .getWrapperInSlot(slotIndex);
             if (wrapper == null) continue;
 
             if (wrapper instanceof CraftingUpgradeWrapper && wrapper.isTabOpened()) {
@@ -664,10 +668,11 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         return upgradeSlotGroups[slotIndex].get("crafting_info");
     }
 
-    private boolean isTabDirty(ItemStack stack, UpgradeSlotSH upgradeSlot) {
-        UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
-        if (wrapper == null) return false;
-        boolean isDirty = wrapper.isDirty();
+    private boolean isTabDirty(int slotIndex, UpgradeSlotSH upgradeSlot) {
+        IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
+            .getWrapperInSlot(slotIndex);
+        if (!(wrapper instanceof IDirtable dirtable)) return false;
+        boolean isDirty = dirtable.isDirty();
         if (isDirty) {
             upgradeSlot.syncToServer(
                 UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_DIRTY),

@@ -18,7 +18,7 @@ import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
-import ruiseki.okbackpack.common.item.wrapper.JukeboxUpgradeWrapper;
+import ruiseki.okbackpack.common.item.jukebox.JukeboxUpgradeWrapper;
 
 public class JukeboxUpgradeWidget extends ExpandedUpgradeTabWidget<JukeboxUpgradeWrapper> {
 

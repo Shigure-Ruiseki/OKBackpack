@@ -1,6 +1,7 @@
 package ruiseki.okbackpack.common.item;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -10,15 +11,13 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
-import ruiseki.okbackpack.api.wrapper.IUpgradeWrapperFactory;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemOK;
 
-public class ItemUpgrade<T extends UpgradeWrapperBase> extends ItemOK
-    implements IUpgradeWrapperFactory<T>, IUpgradeItem {
+public class ItemUpgrade<T extends IUpgradeWrapper> extends ItemOK implements IUpgradeItem<T> {
 
     public ItemUpgrade(String name) {
         super(name);
@@ -42,8 +41,8 @@ public class ItemUpgrade<T extends UpgradeWrapperBase> extends ItemOK
 
     @SuppressWarnings("unchecked")
     @Override
-    public T createWrapper(ItemStack stack, IStorageWrapper storage) {
-        return (T) new UpgradeWrapperBase(stack, storage);
+    public T createWrapper(ItemStack stack, IStorageWrapper storage, Consumer<ItemStack> upgradeConsumer) {
+        return (T) new UpgradeWrapperBase(stack, storage, upgradeConsumer);
     }
 
     @Override

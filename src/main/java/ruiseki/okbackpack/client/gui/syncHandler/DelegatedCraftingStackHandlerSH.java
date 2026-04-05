@@ -13,11 +13,10 @@ import ruiseki.okbackpack.api.IStorageContainer;
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.item.wrapper.CraftingUpgradeWrapper;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperBase;
-import ruiseki.okbackpack.common.item.wrapper.UpgradeWrapperFactory;
+import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 
 public class DelegatedCraftingStackHandlerSH extends DelegatedStackHandlerSH {
 
@@ -63,12 +62,9 @@ public class DelegatedCraftingStackHandlerSH extends DelegatedStackHandlerSH {
                 .registerInventoryCrafting(slotIndex, inventoryCrafting);
         }
 
-        var stack = wrapper.getUpgradeHandler()
-            .getStackInSlot(slotIndex);
-
-        UpgradeWrapperBase upgradeWrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
-
-        if (!(upgradeWrapper instanceof ICraftingUpgrade craftingWrapper)) {
+        IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
+            .getWrapperInSlot(slotIndex);
+        if (!(wrapper instanceof ICraftingUpgrade craftingWrapper)) {
             return;
         }
 
@@ -90,10 +86,9 @@ public class DelegatedCraftingStackHandlerSH extends DelegatedStackHandlerSH {
     public void readOnClient(int id, PacketBuffer buf) {
 
         if (id == UPDATE_CRAFTING) {
-            ItemStack stack = wrapper.getUpgradeHandler()
-                .getStackInSlot(slotIndex);
-            UpgradeWrapperBase upgradeWrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
-            if (!(upgradeWrapper instanceof CraftingUpgradeWrapper craftingWrapper)) return;
+            IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
+                .getWrapperInSlot(slotIndex);
+            if (!(wrapper instanceof CraftingUpgradeWrapper craftingWrapper)) return;
 
             try {
                 craftingWrapper.getStorage()
@@ -104,10 +99,8 @@ public class DelegatedCraftingStackHandlerSH extends DelegatedStackHandlerSH {
 
     @Override
     public void readOnServer(int id, PacketBuffer buf) {
-        ItemStack stack = wrapper.getUpgradeHandler()
-            .getStackInSlot(slotIndex);
-        UpgradeWrapperBase wrapper = UpgradeWrapperFactory.createWrapper(stack, this.wrapper);
-
+        IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
+            .getWrapperInSlot(slotIndex);
         switch (id) {
 
             case UPDATE_FILTERABLE: {
