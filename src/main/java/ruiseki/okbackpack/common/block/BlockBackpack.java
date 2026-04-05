@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
@@ -236,6 +237,10 @@ public class BlockBackpack extends BlockOK {
         public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isHeld) {
             super.onUpdate(stack, world, entity, slot, isHeld);
             if (!world.isRemote && stack != null) {
+                if (!stack.hasTagCompound()) {
+                    stack.setTagCompound(new NBTTagCompound());
+                }
+
                 if (!stack.getTagCompound()
                     .hasKey(BackpackWrapper.BACKPACK_NBT)) {
                     BackpackWrapper wrapper = new BackpackWrapper(stack, this);
@@ -248,6 +253,10 @@ public class BlockBackpack extends BlockOK {
         public void onCreated(ItemStack stack, World world, EntityPlayer player) {
             super.onCreated(stack, world, player);
             if (!world.isRemote && stack != null) {
+                if (!stack.hasTagCompound()) {
+                    stack.setTagCompound(new NBTTagCompound());
+                }
+
                 if (!stack.getTagCompound()
                     .hasKey(BackpackWrapper.BACKPACK_NBT)) {
                     BackpackWrapper wrapper = new BackpackWrapper(stack, this);

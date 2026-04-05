@@ -73,7 +73,9 @@ public class BackpackSH extends SyncHandler {
     }
 
     @Override
-    public void readOnClient(int id, PacketBuffer buf) throws IOException {}
+    public void readOnClient(int id, PacketBuffer buf) throws IOException {
+
+    }
 
     public void setSortType(PacketBuffer buf) {
         SortType sortType = NetworkUtils.readEnumValue(buf, SortType.class);

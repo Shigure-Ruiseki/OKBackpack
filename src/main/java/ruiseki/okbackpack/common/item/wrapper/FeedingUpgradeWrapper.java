@@ -33,6 +33,7 @@ public class FeedingUpgradeWrapper extends BasicUpgradeWrapper implements IFeedi
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag(IBasicFilterable.FILTER_ITEMS_TAG, this.serializeNBT());
+                storage.markDirty();
             }
         };
 

@@ -32,7 +32,7 @@
 - [X] Crafting upgrade — crafting table
 - [X] Compacting upgrade — compact item
 - [X] JukeBox upgrade — play music disc
-- [X] Furnace upgrade — just cook
+- [X] Smelting upgrade — smelt item
 
 ## License
 

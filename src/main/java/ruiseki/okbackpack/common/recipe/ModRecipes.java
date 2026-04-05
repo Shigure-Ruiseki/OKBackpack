@@ -514,6 +514,40 @@ public class ModRecipes implements IInitListener {
                 'U',
                 ModItems.JUKEBOX_UPGRADE.getItem()));
 
+        // Smelting Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.SMELTING_UPGRADE.getItem(),
+                "RIR",
+                "IUI",
+                "RFR",
+                'F',
+                Blocks.furnace,
+                'R',
+                "dustRedstone",
+                'I',
+                "ingotIron",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Auto Smelting Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.AUTO_SMELTING_UPGRADE.getItem(),
+                "DHD",
+                "RUH",
+                "GHG",
+                'H',
+                Blocks.hopper,
+                'D',
+                "gemDiamond",
+                'R',
+                "dustRedstone",
+                'G',
+                "ingotGold",
+                'U',
+                ModItems.SMELTING_UPGRADE.getItem()));
+
         // Everlasting Upgrade
         if (!Mods.EtFuturum.isLoaded()) {
             GameRegistry.addRecipe(
@@ -527,7 +561,6 @@ public class ModRecipes implements IInitListener {
                     'R',
                     "itemNetherStar",
                     'U',
-
                     ModItems.BASE_UPGRADE.getItem()));
         } else {
 
@@ -543,8 +576,69 @@ public class ModRecipes implements IInitListener {
                     'R',
                     "itemNetherStar",
                     'U',
-
                     ModItems.BASE_UPGRADE.getItem()));
+
+            // Blasting Upgrade
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.BLASTING_UPGRADE.getItem(),
+                    "III",
+                    "IUI",
+                    "SSS",
+                    'S',
+                    ganymedes01.etfuturum.ModBlocks.SMOOTH_STONE.get(),
+                    'I',
+                    "ingotIron",
+                    'U',
+                    ModItems.SMELTING_UPGRADE.getItem()));
+
+            // Auto Blasting Upgrade
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.AUTO_BLASTING_UPGRADE.getItem(),
+                    "DHD",
+                    "RUH",
+                    "GHG",
+                    'H',
+                    Blocks.hopper,
+                    'D',
+                    "gemDiamond",
+                    'R',
+                    "dustRedstone",
+                    'G',
+                    "ingotGold",
+                    'U',
+                    ModItems.BLASTING_UPGRADE.getItem()));
+
+            // Smoking Upgrade
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.SMOKING_UPGRADE.getItem(),
+                    " L ",
+                    "LUL",
+                    " L ",
+                    'L',
+                    "logWood",
+                    'U',
+                    ModItems.SMELTING_UPGRADE.getItem()));
+
+            // Auto Smoking Upgrade
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.AUTO_SMOKING_UPGRADE.getItem(),
+                    "DHD",
+                    "RUH",
+                    "GHG",
+                    'H',
+                    Blocks.hopper,
+                    'D',
+                    "gemDiamond",
+                    'R',
+                    "dustRedstone",
+                    'G',
+                    "ingotGold",
+                    'U',
+                    ModItems.SMOKING_UPGRADE.getItem()));
 
         }
     }
