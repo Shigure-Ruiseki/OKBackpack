@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
+import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedFloatSH;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
@@ -34,6 +36,27 @@ public class ItemAutoSmokingUpgrade extends ItemUpgrade<AutoSmokingUpgradeWrappe
     public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
         list.add(LangHelpers.localize("tooltip.backpack.auto_smoking_upgrade"));
         list.add(LangHelpers.localize("tooltip.backpack.auto_smoking_upgrade.1"));
+    }
+
+    @Override
+    public UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper wrapper, ItemStack upgradeStack, int targetSlot) {
+        int[] conflicts = IUpgradeItem.findConflictSlots(
+            wrapper,
+            targetSlot,
+            ItemSmeltingUpgrade.class,
+            ItemAutoSmeltingUpgrade.class,
+            ItemSmokingUpgrade.class,
+            ItemAutoSmokingUpgrade.class,
+            ItemBlastingUpgrade.class,
+            ItemAutoBlastingUpgrade.class);
+        if (conflicts.length >= 1) {
+            return UpgradeSlotChangeResult.fail(
+                "gui.backpack.error.add.only_single_upgrade_allowed",
+                conflicts,
+                LangHelpers.localize("item.smelting_upgrade.name"),
+                wrapper.getDisplayName());
+        }
+        return UpgradeSlotChangeResult.success();
     }
 
     @Override

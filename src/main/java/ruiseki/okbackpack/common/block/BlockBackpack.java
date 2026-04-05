@@ -111,6 +111,10 @@ public class BlockBackpack extends BlockOK {
         TileEntity te = world.getTileEntity(x, y, z);
         if (te instanceof TEBackpack backpack) {
             backpack.setFacing(facing);
+            if (!world.isRemote) {
+                backpack.getWrapper()
+                    .forceStopAllJukeboxes(world, x + 0.5f, y + 0.5f, z + 0.5f);
+            }
         }
     }
 
@@ -178,6 +182,18 @@ public class BlockBackpack extends BlockOK {
     }
 
     @Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
+        if (!world.isRemote) {
+            TileEntity te = world.getTileEntity(x, y, z);
+            if (te instanceof TEBackpack backpack) {
+                backpack.getWrapper()
+                    .forceStopAllJukeboxes(world, x + 0.5f, y + 0.5f, z + 0.5f);
+            }
+        }
+        super.breakBlock(world, x, y, z, block, meta);
+    }
+
+    @Override
     public boolean onBlockActivated(World worldIn, int x, int y, int z, EntityPlayer player, int side, float subX,
         float subY, float subZ) {
         TileEntity te = worldIn.getTileEntity(x, y, z);
@@ -230,6 +246,11 @@ public class BlockBackpack extends BlockOK {
         @Override
         public Entity createEntity(World world, Entity location, ItemStack stack) {
             BackpackWrapper wrapper = new BackpackWrapper(stack, this);
+            if (!world.isRemote) {
+                wrapper
+                    .forceStopAllJukeboxes(world, (float) location.posX, (float) location.posY, (float) location.posZ);
+                wrapper.writeToItem();
+            }
             return new EntityBackpack(world, location, stack, wrapper);
         }
 

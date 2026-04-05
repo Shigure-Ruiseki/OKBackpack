@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
+import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.AdvancedJukeboxUpgradeWidget;
@@ -33,6 +35,20 @@ public class ItemAdvancedJukeboxUpgrade extends ItemUpgrade<AdvancedJukeboxUpgra
     public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
         list.add(LangHelpers.localize("tooltip.backpack.advanced_jukebox_upgrade"));
         list.add(LangHelpers.localize("tooltip.backpack.advanced_jukebox_upgrade.1"));
+    }
+
+    @Override
+    public UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper wrapper, ItemStack upgradeStack, int targetSlot) {
+        int[] conflicts = IUpgradeItem
+            .findConflictSlots(wrapper, targetSlot, ItemJukeboxUpgrade.class, ItemAdvancedJukeboxUpgrade.class);
+        if (conflicts.length >= 1) {
+            return UpgradeSlotChangeResult.fail(
+                "gui.backpack.error.add.only_single_upgrade_allowed",
+                conflicts,
+                LangHelpers.localize("item.jukebox_upgrade.name"),
+                wrapper.getDisplayName());
+        }
+        return UpgradeSlotChangeResult.success();
     }
 
     @Override

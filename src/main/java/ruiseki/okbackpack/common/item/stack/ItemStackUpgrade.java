@@ -14,6 +14,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
+import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.helper.LangHelpers;
@@ -26,6 +28,20 @@ public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
     public ItemStackUpgrade() {
         super("stack_upgrade");
         setMaxStackSize(1);
+    }
+
+    @Override
+    public UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper wrapper, ItemStack upgradeStack, int targetSlot) {
+        int[] conflicts = IUpgradeItem.findConflictSlots(wrapper, targetSlot, ItemStackUpgrade.class);
+        if (conflicts.length >= 3) {
+            return UpgradeSlotChangeResult.fail(
+                "gui.backpack.error.add.only_x_upgrades_allowed",
+                conflicts,
+                3,
+                upgradeStack.getDisplayName(),
+                wrapper.getDisplayName());
+        }
+        return UpgradeSlotChangeResult.success();
     }
 
     @Override

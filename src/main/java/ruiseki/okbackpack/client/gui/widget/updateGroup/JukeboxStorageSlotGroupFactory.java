@@ -5,6 +5,8 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import ruiseki.okbackpack.api.widget.IUpgradeSlotGroupFactory;
+import ruiseki.okbackpack.api.wrapper.IStorageUpgrade;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 
 public class JukeboxStorageSlotGroupFactory implements IUpgradeSlotGroupFactory {
@@ -13,6 +15,13 @@ public class JukeboxStorageSlotGroupFactory implements IUpgradeSlotGroupFactory 
     public void build(UpgradeSlotUpdateGroup group) {
 
         DelegatedStackHandlerSH handler = new DelegatedStackHandlerSH(group.wrapper, group.slotIndex, 1);
+
+        IUpgradeWrapper upgradeWrapper = group.wrapper.getUpgradeHandler()
+            .getWrapperInSlot(group.slotIndex);
+        if (upgradeWrapper instanceof IStorageUpgrade storageUpgrade && storageUpgrade.getStorage()
+            .getSlots() == 1) {
+            handler.setDelegatedStackHandler(storageUpgrade::getStorage);
+        }
 
         group.syncManager.syncValue("jukebox_delegation_" + group.slotIndex, handler);
 

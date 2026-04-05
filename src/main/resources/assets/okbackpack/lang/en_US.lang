@@ -210,8 +210,6 @@ tooltip.backpack.filter_upgrade=Filters inserted items when placing in world
 tooltip.backpack.advanced_filter_upgrade=Filters inserted items when placing in world with more configurations
 tooltip.backpack.void_upgrade=Voids items selected in filter
 tooltip.backpack.advanced_void_upgrade=Voids items selected in filter. Has more filtering options
-tooltip.backpack.compacting_upgrade=Compacts items with 2x2 crafting recipes (e.g. snowballs -> snow block)
-tooltip.backpack.advanced_compacting_upgrade=Compacts items with 2x2 and 3x3 crafting recipes (e.g. iron ingots -> iron block)
 tooltip.backpack.jukebox_upgrade=Portable jukebox
 tooltip.backpack.advanced_jukebox_upgrade=Portable jukebox with more record slots
 tooltip.backpack.advanced_jukebox_upgrade.1=And more playback options
@@ -229,6 +227,10 @@ tooltip.backpack.blasting_upgrade=Blast-smelts ores and metals at high speed in 
 tooltip.backpack.auto_blasting_upgrade=Blast-smelts ores and metals at high speed in the upgrade tab
 tooltip.backpack.auto_blasting_upgrade.1=Automatically pulls in/pushes out items
 
+#Upgrade Errors
+gui.backpack.error.add.upgrade_not_allowed=%s cannot be installed on %s
+gui.backpack.error.add.only_single_upgrade_allowed=Only a single %s can be installed on %s
+gui.backpack.error.add.only_x_upgrades_allowed=Only %d %s can be installed on %s
 
 #Messages
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.

@@ -74,6 +74,10 @@ public class TEBackpack extends TileSideCapability
         }
     }
 
+    public BackpackWrapper getWrapper() {
+        return wrapper;
+    }
+
     public boolean onBlockActivated(World world, EntityPlayer player, ForgeDirection side, float hitX, float hitY,
         float hitZ) {
         if (wrapper.canPlayerAccess(player.getUniqueID())) {
