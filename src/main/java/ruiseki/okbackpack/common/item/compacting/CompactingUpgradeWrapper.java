@@ -47,6 +47,7 @@ public class CompactingUpgradeWrapper extends BasicUpgradeWrapper implements ICo
     @Override
     public void setOnlyReversible(boolean onlyReversible) {
         ItemNBTHelpers.setBoolean(upgrade, ONLY_REVERSIBLE_TAG, onlyReversible);
+        save();
     }
 
     @Override

@@ -27,6 +27,7 @@ public class AdvancedUpgradeWrapper extends UpgradeWrapperBase implements IAdvan
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag(IBasicFilterable.FILTER_ITEMS_TAG, this.serializeNBT());
+                save();
             }
         };
         NBTTagCompound filtersTag = ItemNBTHelpers.getCompound(upgrade, FILTER_ITEMS_TAG, false);
@@ -38,6 +39,7 @@ public class AdvancedUpgradeWrapper extends UpgradeWrapperBase implements IAdvan
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag(IAdvancedFilterable.ORE_DICT_ITEMS_TAG, this.serializeNBT());
+                save();
             }
         };
         NBTTagCompound oreDictTag = ItemNBTHelpers.getCompound(upgrade, ORE_DICT_ITEMS_TAG, false);

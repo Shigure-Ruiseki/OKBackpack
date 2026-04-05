@@ -38,6 +38,7 @@ public class MagnetUpgradeWrapper extends PickupUpgradeWrapper implements IMagne
     @Override
     public void setCollectItem(boolean enabled) {
         ItemNBTHelpers.setBoolean(upgrade, MAG_ITEM_TAG, enabled);
+        save();
     }
 
     @Override
@@ -48,6 +49,7 @@ public class MagnetUpgradeWrapper extends PickupUpgradeWrapper implements IMagne
     @Override
     public void setCollectExp(boolean enabled) {
         ItemNBTHelpers.setBoolean(upgrade, MAG_EXP_TAG, enabled);
+        save();
     }
 
     @Override

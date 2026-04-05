@@ -18,8 +18,6 @@ import ruiseki.okbackpack.api.wrapper.ISmeltingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.item.AdvancedUpgradeWrapper;
-import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
-import ruiseki.okbackpack.common.item.UpgradeWrapperFactory;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
@@ -40,7 +38,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag(IBasicFilterable.FILTER_ITEMS_TAG, this.serializeNBT());
-                storage.markDirty();
+                save();
             }
         };
         NBTTagCompound filtersTag = ItemNBTHelpers.getCompound(upgrade, FILTER_ITEMS_TAG, false);
@@ -53,7 +51,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag(FUEL_FILTER_TAG, this.serializeNBT());
-                storage.markDirty();
+                save();
             }
         };
         NBTTagCompound fuelFilterTag = ItemNBTHelpers.getCompound(upgrade, FUEL_FILTER_TAG, false);
@@ -65,7 +63,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag(STORAGE_TAG, this.serializeNBT());
-                storage.markDirty();
+                save();
             }
         };
         NBTTagCompound invTag = ItemNBTHelpers.getCompound(upgrade, STORAGE_TAG, false);
@@ -90,6 +88,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
     @Override
     public void setCookTime(int progress) {
         ItemNBTHelpers.setInt(upgrade, COOK_TIME_TAG, progress);
+        save();
     }
 
     @Override
@@ -100,6 +99,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
     @Override
     public void setBurnTime(int progress) {
         ItemNBTHelpers.setInt(upgrade, BURN_TIME_TAG, progress);
+        save();
     }
 
     @Override
@@ -110,6 +110,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
     @Override
     public void setTotalBurnTime(int total) {
         ItemNBTHelpers.setInt(upgrade, BURN_TIME_TOTAL_TAG, total);
+        save();
     }
 
     @Override
@@ -143,7 +144,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
 
     @Override
     public boolean canAddUpgrade(int slot, ItemStack stack) {
-        if (stack == null || !(stack.getItem() instanceof IUpgradeItem<?> item)) return true;
+        if (stack == null || !(stack.getItem() instanceof IUpgradeItem<?>item)) return true;
 
         IUpgradeWrapper candidate = item.createWrapper(stack, storage, null);
         return !(candidate instanceof ISmeltingUpgrade);

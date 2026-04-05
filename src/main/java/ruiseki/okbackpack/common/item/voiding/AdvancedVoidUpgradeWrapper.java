@@ -39,6 +39,7 @@ public class AdvancedVoidUpgradeWrapper extends AdvancedUpgradeWrapper implement
     public void setVoidType(VoidType type) {
         if (type == null) type = VoidType.OVERFLOW;
         ItemNBTHelpers.setInt(upgrade, VOID_TYPE_TAG, type.ordinal());
+        save();
     }
 
     @Override
@@ -53,6 +54,7 @@ public class AdvancedVoidUpgradeWrapper extends AdvancedUpgradeWrapper implement
     public void setVoidInput(VoidInput type) {
         if (type == null) type = VoidInput.ALL;
         ItemNBTHelpers.setInt(upgrade, VOID_INPUT_TAG, type.ordinal());
+        save();
     }
 
     @Override

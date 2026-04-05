@@ -32,6 +32,7 @@ public class FilterUpgradeWrapper extends BasicUpgradeWrapper implements IFilter
     public void setFilterWay(FilterWayType filterWay) {
         if (filterWay == null) filterWay = FilterWayType.IN_OUT;
         ItemNBTHelpers.setInt(upgrade, FILTER_WAY_TAG, filterWay.ordinal());
+        save();
     }
 
     @Override

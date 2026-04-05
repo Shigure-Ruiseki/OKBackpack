@@ -49,7 +49,7 @@ public class AdvancedJukeboxUpgradeWrapper extends UpgradeWrapperBase implements
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag(STORAGE_TAG, this.serializeNBT());
                 onRecordSlotChanged(slot);
-                storage.markDirty();
+                save();
             }
         };
 
@@ -80,6 +80,7 @@ public class AdvancedJukeboxUpgradeWrapper extends UpgradeWrapperBase implements
     @Override
     public void setPlaying(boolean playing) {
         ItemNBTHelpers.setBoolean(upgrade, PLAYING_TAG, playing);
+        save();
     }
 
     @Override
@@ -90,6 +91,7 @@ public class AdvancedJukeboxUpgradeWrapper extends UpgradeWrapperBase implements
     @Override
     public void setCurrentSlotIndex(int index) {
         ItemNBTHelpers.setInt(upgrade, CURRENT_SLOT_INDEX_TAG, index);
+        save();
     }
 
     @Override
@@ -100,6 +102,7 @@ public class AdvancedJukeboxUpgradeWrapper extends UpgradeWrapperBase implements
     @Override
     public void setProgressTicks(int ticks) {
         ItemNBTHelpers.setInt(upgrade, PROGRESS_TICKS_TAG, ticks);
+        save();
     }
 
     public boolean isShuffleEnabled() {

@@ -1,7 +1,5 @@
 package ruiseki.okbackpack.api.wrapper;
 
-import net.minecraft.item.ItemStack;
-
 public interface ICompactingUpgrade extends ITickable, IToggleable {
 
     String ONLY_REVERSIBLE_TAG = "OnlyReversible";
@@ -13,6 +11,4 @@ public interface ICompactingUpgrade extends ITickable, IToggleable {
     void setOnlyReversible(boolean onlyReversible);
 
     void compactInventory();
-
-    boolean checkFilter(ItemStack stack);
 }

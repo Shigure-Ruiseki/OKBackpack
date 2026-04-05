@@ -17,7 +17,7 @@ public class CraftingUpgradeWrapper extends UpgradeWrapperBase implements ICraft
     protected BaseItemStackHandler handler;
 
     public CraftingUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage, Consumer<ItemStack> upgradeConsumer) {
-        super(upgrade, storage,  upgradeConsumer);
+        super(upgrade, storage, upgradeConsumer);
         handler = new BaseItemStackHandler(10) {
 
             @Override

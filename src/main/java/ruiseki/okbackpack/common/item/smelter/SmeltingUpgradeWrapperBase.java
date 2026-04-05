@@ -17,7 +17,6 @@ import ruiseki.okbackpack.api.wrapper.ISmeltingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
-import ruiseki.okbackpack.common.item.UpgradeWrapperFactory;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
@@ -38,7 +37,7 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag("SmeltingInv", this.serializeNBT());
-                storage.markDirty();
+                save();
             }
         };
         NBTTagCompound invTag = ItemNBTHelpers.getCompound(upgrade, "SmeltingInv", false);
@@ -65,6 +64,7 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
     @Override
     public void setCookTime(int progress) {
         ItemNBTHelpers.setInt(upgrade, COOK_TIME_TAG, progress);
+        save();
     }
 
     @Override
@@ -75,6 +75,7 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
     @Override
     public void setBurnTime(int progress) {
         ItemNBTHelpers.setInt(upgrade, BURN_TIME_TAG, progress);
+        save();
     }
 
     @Override
@@ -85,6 +86,7 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
     @Override
     public void setTotalBurnTime(int total) {
         ItemNBTHelpers.setInt(upgrade, BURN_TIME_TOTAL_TAG, total);
+        save();
     }
 
     @Override
@@ -110,7 +112,7 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
 
     @Override
     public boolean canAddUpgrade(int slot, ItemStack stack) {
-        if (stack == null || !(stack.getItem() instanceof IUpgradeItem<?> item)) return true;
+        if (stack == null || !(stack.getItem() instanceof IUpgradeItem<?>item)) return true;
 
         IUpgradeWrapper candidate = item.createWrapper(stack, storage, null);
         return !(candidate instanceof ISmeltingUpgrade);
