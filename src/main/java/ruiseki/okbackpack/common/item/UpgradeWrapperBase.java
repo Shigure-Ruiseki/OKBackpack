@@ -54,6 +54,7 @@ public class UpgradeWrapperBase implements IUpgradeWrapper, IDirtable {
 
     public void save() {
         upgradeConsumer.accept(upgrade);
+        storage.markDirty();
     }
 
     @Override
