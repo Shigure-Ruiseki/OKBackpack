@@ -191,8 +191,6 @@ tooltip.backpack.filter_upgrade=ワールドに設置する際に搬入アイテ
 tooltip.backpack.advanced_filter_upgrade=ワールドに設置する際に搬入アイテムをフィルタリングします（詳細設定可能）
 tooltip.backpack.void_upgrade=フィルターで選択されたアイテムを消去します
 tooltip.backpack.advanced_void_upgrade=フィルターで選択されたアイテムを消去します。より詳細なフィルタリングオプションがあります
-tooltip.backpack.compacting_upgrade=2x2クラフトレシピでアイテムを圧縮します（例：雪球→雪ブロック）
-tooltip.backpack.advanced_compacting_upgrade=2x2および3x3クラフトレシピでアイテムを圧縮します（例：鉄インゴット→鉄ブロック）
 tooltip.backpack.jukebox_upgrade=ポータブルジュークボックス
 tooltip.backpack.advanced_jukebox_upgrade=より多くのレコードスロットを持つポータブルジュークボックス
 tooltip.backpack.advanced_jukebox_upgrade.1=より多くの再生オプションも利用可能
@@ -209,3 +207,12 @@ tooltip.backpack.auto_smoking_upgrade.1=アイテムを自動搬入/搬出しま
 tooltip.backpack.blasting_upgrade=アップグレードタブで鉱石や金属を高速精錬します
 tooltip.backpack.auto_blasting_upgrade=アップグレードタブで鉱石や金属を高速精錬します
 tooltip.backpack.auto_blasting_upgrade.1=アイテムを自動搬入/搬出します
+
+#アップグレードエラー
+gui.backpack.error.add.upgrade_not_allowed=%1$sは%2$sに装着できません
+gui.backpack.error.add.only_single_upgrade_allowed=%1$sは%2$sに1つだけ装着可能です
+gui.backpack.error.add.only_x_upgrades_allowed=%2$sは%3$sに%1$d個まで装着可能です
+
+#メッセージ
+messages.backpack.cant.bag=寝袋を配置できません！周囲を確認してください。
+messages.cant.sleep.here=古の力がここでの睡眠を歓迎していません。

@@ -111,6 +111,10 @@ public class BlockBackpack extends BlockOK {
         TileEntity te = world.getTileEntity(x, y, z);
         if (te instanceof TEBackpack backpack) {
             backpack.setFacing(facing);
+            if (!world.isRemote) {
+                backpack.getWrapper()
+                    .forceStopAllJukeboxes(world, x + 0.5f, y + 0.5f, z + 0.5f);
+            }
         }
     }
 
@@ -230,6 +234,9 @@ public class BlockBackpack extends BlockOK {
         @Override
         public Entity createEntity(World world, Entity location, ItemStack stack) {
             BackpackWrapper wrapper = new BackpackWrapper(stack, this);
+            if (!world.isRemote) {
+                wrapper.writeAdditionalInfo(world, (float) location.posX, (float) location.posY, (float) location.posZ);
+            }
             return new EntityBackpack(world, location, stack, wrapper);
         }
 

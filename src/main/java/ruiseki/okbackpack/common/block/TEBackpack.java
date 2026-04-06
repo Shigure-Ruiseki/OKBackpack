@@ -74,6 +74,10 @@ public class TEBackpack extends TileSideCapability
         }
     }
 
+    public BackpackWrapper getWrapper() {
+        return wrapper;
+    }
+
     public boolean onBlockActivated(World world, EntityPlayer player, ForgeDirection side, float hitX, float hitY,
         float hitZ) {
         if (wrapper.canPlayerAccess(player.getUniqueID())) {
@@ -112,6 +116,14 @@ public class TEBackpack extends TileSideCapability
         this.facing = facing;
         markDirty();
         onSendUpdate();
+    }
+
+    @Override
+    public void invalidate() {
+        if (worldObj != null && !worldObj.isRemote) {
+            wrapper.forceStopAllJukeboxes(worldObj, xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f);
+        }
+        super.invalidate();
     }
 
     @Override

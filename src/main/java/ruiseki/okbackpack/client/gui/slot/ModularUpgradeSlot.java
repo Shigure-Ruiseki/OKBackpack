@@ -9,12 +9,20 @@ import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
+import lombok.Getter;
+import lombok.Setter;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 
 public class ModularUpgradeSlot extends ModularSlot {
 
     private final IStorageWrapper wrapper;
+
+    @Getter
+    @Setter
+    @Nullable
+    private UpgradeSlotChangeResult lastChangeResult;
 
     public ModularUpgradeSlot(IStorageWrapper wrapper, int index) {
         super(wrapper.getUpgradeHandler(), index);
@@ -50,7 +58,14 @@ public class ModularUpgradeSlot extends ModularSlot {
         Item item = stack.getItem();
         int slot = getSlotIndex();
 
-        if (!(item instanceof ItemUpgrade<?>)) {
+        if (!(item instanceof ItemUpgrade<?>upgradeItem)) {
+            return false;
+        }
+
+        // check IUpgradeItem.canAddUpgradeTo
+        UpgradeSlotChangeResult result = upgradeItem.canAddUpgradeTo(wrapper, stack, slot);
+        lastChangeResult = result;
+        if (!result.isSuccessful()) {
             return false;
         }
 
@@ -63,9 +78,14 @@ public class ModularUpgradeSlot extends ModularSlot {
         ItemStack current = getStack();
 
         if (current == null) {
+            lastChangeResult = UpgradeSlotChangeResult.success();
             return true;
         }
 
-        return wrapper.canReplaceUpgrade(slot, stack);
+        boolean canReplace = wrapper.canReplaceUpgrade(slot, stack);
+        if (!canReplace) {
+            lastChangeResult = null;
+        }
+        return canReplace;
     }
 }

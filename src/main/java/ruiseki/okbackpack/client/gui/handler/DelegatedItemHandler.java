@@ -76,6 +76,11 @@ public class DelegatedItemHandler implements IItemHandlerModifiable {
     }
 
     @Override
+    public boolean isItemValid(int slot, ItemStack stack) {
+        return get().isItemValid(slot, stack);
+    }
+
+    @Override
     public void setStackInSlot(int slot, ItemStack stack) {
         IItemHandler handler = get();
 

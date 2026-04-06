@@ -25,7 +25,7 @@ public class UpgradeItemStackHandler extends BaseItemStackHandler {
     @Nullable
     private Runnable refreshCallBack = null;
     private final Map<Integer, IUpgradeWrapper> slotWrappers = new LinkedHashMap<>();
-    private boolean justSavingNbtChange = false;
+    protected boolean justSavingNbtChange = false;
     private boolean wrappersInitialized = false;
 
     public UpgradeItemStackHandler(int size, IStorageWrapper storage) {
