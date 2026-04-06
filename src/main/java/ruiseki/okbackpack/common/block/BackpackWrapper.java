@@ -34,6 +34,7 @@ import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade;
 import ruiseki.okbackpack.api.wrapper.IPickupUpgrade;
 import ruiseki.okbackpack.api.wrapper.ISlotModifiable;
 import ruiseki.okbackpack.api.wrapper.ISmeltingUpgrade;
+import ruiseki.okbackpack.api.wrapper.IStackSizeUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITickable;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
@@ -390,39 +391,30 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     @Override
-    public int applyStackLimitModifiers(int original, int slot, ItemStack stack) {
-        int result = original;
+    public int applyStackLimitModifiers() {
 
-        Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
-        if (gathered.isEmpty()) return result;
+        Map<Integer, IStackSizeUpgrade> gathered = gatherCapabilityUpgrades(IStackSizeUpgrade.class);
+        if (gathered.isEmpty()) return 1;
 
-        for (ISlotModifiable mod : gathered.values()) {
-            result = mod.modifyStackLimit(result, slot, stack);
+        int total = 0;
+        for (IStackSizeUpgrade mod : gathered.values()) {
+            total += mod.getMultiplier();
         }
 
-        if (result != original) {
-            return result - original;
-        }
-
-        return original;
+        return total == 0 ? 1 : total;
     }
 
     @Override
-    public int applySlotLimitModifiers(int original, int slot) {
-        int result = original;
+    public int applySlotLimitModifiers() {
+        Map<Integer, IStackSizeUpgrade> gathered = gatherCapabilityUpgrades(IStackSizeUpgrade.class);
+        if (gathered.isEmpty()) return 1;
 
-        Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
-        if (gathered.isEmpty()) return result;
-
-        for (ISlotModifiable mod : gathered.values()) {
-            result = mod.modifySlotLimit(result, slot);
+        int total = 0;
+        for (IStackSizeUpgrade mod : gathered.values()) {
+            total += mod.getMultiplier();
         }
 
-        if (result != original) {
-            return result - original;
-        }
-
-        return original;
+        return total == 0 ? 1 : total;
     }
 
     @Override

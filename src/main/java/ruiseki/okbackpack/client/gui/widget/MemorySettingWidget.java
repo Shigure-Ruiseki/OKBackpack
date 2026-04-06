@@ -10,6 +10,7 @@ import com.cleanroommc.modularui.widgets.layout.Row;
 
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.TabWidget.ExpandDirection;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
@@ -51,7 +52,7 @@ public class MemorySettingWidget extends ExpandedTabWidget {
 
                     for (BackpackSlotSH syncHandler : panel.backpackSlotSyncHandlers) {
                         syncHandler.syncToServer(
-                            BackpackSlotSH.UPDATE_SET_MEMORY_STACK,
+                            BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_MEMORY_STACK),
                             buf -> buf.writeBoolean(panel.isMemorySettingTabOpened));
                     }
 
@@ -74,7 +75,8 @@ public class MemorySettingWidget extends ExpandedTabWidget {
                     }
 
                     for (BackpackSlotSH syncHandler : panel.backpackSlotSyncHandlers) {
-                        syncHandler.syncToServer(BackpackSlotSH.UPDATE_UNSET_MEMORY_STACK);
+                        syncHandler
+                            .syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_MEMORY_STACK));
                     }
 
                     return true;

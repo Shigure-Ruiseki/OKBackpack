@@ -21,11 +21,11 @@ public class ModularBackpackSlot extends ModularSlot {
 
     @Override
     public int getItemStackLimit(ItemStack stack) {
-        return stack.getMaxStackSize() * wrapper.applyStackLimitModifiers(1, getSlotIndex(), stack);
+        return stack.getMaxStackSize() * wrapper.applyStackLimitModifiers();
     }
 
     @Override
     public int getSlotStackLimit() {
-        return 64 * wrapper.applySlotLimitModifiers(1, getSlotIndex());
+        return 64 * wrapper.applySlotLimitModifiers();
     }
 }

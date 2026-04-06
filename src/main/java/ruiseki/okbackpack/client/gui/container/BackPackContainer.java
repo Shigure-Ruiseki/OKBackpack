@@ -24,7 +24,10 @@ import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.IStorageContainer;
+import ruiseki.okbackpack.api.wrapper.IToggleable;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
+import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingMatrixSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
@@ -130,13 +133,13 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
             // Write changes to the actual ItemStack (using UUID tracking)
             wrapper.writeToItem(player);
 
+            // Clear dirty flag
+            wrapper.markClean();
+
             // Send NBT update packet to client (only if backpack is valid)
             if (wrapper.getBackpack() != null && wrapper.getType() != null
                 && backpackSlotIndex != null
                 && player instanceof EntityPlayerMP playerMP) {
-
-                // Clear dirty flag
-                wrapper.markClean();
 
                 OKBackpack.instance.getPacketHandler()
                     .sendToPlayer(
@@ -169,63 +172,29 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
         ItemStack heldStack = playerInventory.getItemStack();
         ItemStack returnable = null;
 
-        // PICKUP
-        if (clickTypeIn == ClickType.PICKUP && (mouseButton == LEFT_MOUSE || mouseButton == RIGHT_MOUSE)
-            && slotId != DROP_TO_WORLD
-            && slotId >= 0) {
+        if (clickTypeIn == ClickType.PICKUP_ALL) {
 
-            Slot clickedSlot = getSlot(slotId);
-            if (clickedSlot == null) return Platform.EMPTY_STACK;
-
-            ItemStack slotStack = clickedSlot.getStack();
-
-            if (clickedSlot instanceof ModularBackpackSlot && slotStack != null && heldStack == null) {
-
-                int limit = stackLimit(clickedSlot, slotStack);
-                int s = Math.min(slotStack.stackSize, limit);
-
-                int toRemove = (mouseButton == LEFT_MOUSE) ? s : (s + 1) / 2;
-
-                ItemStack extracted = clickedSlot.decrStackSize(toRemove);
-
-                if (extracted != null) {
-                    playerInventory.setItemStack(extracted);
-                    clickedSlot.onPickupFromSlot(player, extracted);
-                }
-
-                if (clickedSlot.getStack() == null || clickedSlot.getStack().stackSize <= 0) {
-                    clickedSlot.putStack(null);
-                }
-
-                clickedSlot.onSlotChanged();
-                detectAndSendChanges();
-
-                return Platform.EMPTY_STACK;
-            }
-        }
-
-        // PICKUP_ALL
-        else if (clickTypeIn == ClickType.PICKUP_ALL && slotId >= 0) {
-            Slot clickedSlot = getSlot(slotId);
-            if (clickedSlot == null) return Platform.EMPTY_STACK;
-
-            ItemStack slotStack = clickedSlot.getStack();
-            int maxStackSize = stackLimit(clickedSlot, slotStack);
-
-            if (heldStack != null && (!clickedSlot.getHasStack() || !clickedSlot.canTakeStack(player))) {
+            if (heldStack != null) {
 
                 int start = mouseButton == 0 ? 0 : inventorySlots.size() - 1;
                 int step = mouseButton == 0 ? 1 : -1;
 
                 for (int pass = 0; pass < 2; pass++) {
                     for (int i = start; i >= 0 && i < inventorySlots.size()
-                        && heldStack.stackSize < maxStackSize; i += step) {
+                        && heldStack.stackSize < heldStack.getMaxStackSize(); i += step) {
 
                         Slot slot1 = inventorySlots.get(i);
 
                         if (!(slot1 instanceof Slot)) continue;
 
                         if (slot1 instanceof ModularSlot && ((ModularSlot) slot1).isPhantom()) continue;
+                        if (slot1 instanceof IndexedModularCraftingSlot) continue;
+                        if (slot1 instanceof IndexedModularCraftingMatrixSlot slot) {
+                            IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
+                                .getSlotWrappers()
+                                .get(slot.getSlotIndex());
+                            if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) continue;
+                        }
 
                         if (slot1.getHasStack() && func_94527_a(slot1, heldStack, true)
                             && slot1.canTakeStack(player)
@@ -233,8 +202,9 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
 
                             ItemStack stackInSlot = slot1.getStack();
 
-                            if (pass != 0 || stackInSlot.stackSize != maxStackSize) {
-                                int take = Math.min(maxStackSize - heldStack.stackSize, stackInSlot.stackSize);
+                            if (pass != 0 || stackInSlot.stackSize != heldStack.getMaxStackSize()) {
+                                int take = Math
+                                    .min(heldStack.getMaxStackSize() - heldStack.stackSize, stackInSlot.stackSize);
 
                                 ItemStack removed = slot1.decrStackSize(take);
 
@@ -280,13 +250,12 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                 return Platform.EMPTY_STACK;
             }
 
-        return superSlotClick(slotId, mouseButton, mode, player);
+        return super.slotClick(slotId, mouseButton, mode, player);
     }
 
     @Override
     public ItemStack transferItem(ModularSlot fromSlot, ItemStack fromStack) {
         if (fromStack == null || fromStack.stackSize <= 0) return null;
-
         int originalSize = fromStack.stackSize;
 
         if (fromSlot instanceof IndexedModularCraftingSlot craftingSlot) {

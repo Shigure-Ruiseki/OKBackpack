@@ -25,7 +25,6 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
 
     protected final IStorageWrapper storage;
     protected BaseItemStackHandler smeltingInventory;
-    private boolean enabled;
 
     public SmeltingUpgradeWrapperBase(ItemStack upgrade, IStorageWrapper storage, Consumer<ItemStack> upgradeConsumer) {
         super(upgrade, storage, upgradeConsumer);
@@ -42,8 +41,6 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
         };
         NBTTagCompound invTag = ItemNBTHelpers.getCompound(upgrade, "SmeltingInv", false);
         if (invTag != null) smeltingInventory.deserializeNBT(invTag);
-
-        this.enabled = ItemNBTHelpers.getBoolean(upgrade, ENABLED_TAG, true);
     }
 
     @Override
@@ -96,13 +93,13 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return ItemNBTHelpers.getBoolean(upgrade, ENABLED_TAG, true);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
         ItemNBTHelpers.setBoolean(upgrade, ENABLED_TAG, enabled);
+        save();
     }
 
     @Override

@@ -58,6 +58,7 @@ import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okbackpack.client.gui.slot.UpgradeSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSH;
+import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
@@ -108,6 +109,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
     public final TileEntity tile;
 
     public final BackpackSH backpackSyncHandler;
+    public final PlayerMainInvWrapper playerInv;
     public final BackpackSlotSH[] backpackSlotSyncHandlers;
     public final UpgradeSlotSH[] upgradeSlotSyncHandlers;
     public final UpgradeSlotUpdateGroup[] upgradeSlotGroups;
@@ -145,7 +147,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         int calculated = (width - 14) / ItemSlot.SIZE;
         this.rowSize = Math.max(9, Math.min(12, calculated));
 
-        this.backpackSyncHandler = new BackpackSH(new PlayerMainInvWrapper(player.inventory), this.wrapper, this);
+        this.playerInv = new PlayerMainInvWrapper(player.inventory);
+        this.backpackSyncHandler = new BackpackSH(this.playerInv, this.wrapper, this);
         this.syncManager.syncValue("backpack_wrapper", this.backpackSyncHandler);
 
         this.backpackSlotSyncHandlers = new BackpackSlotSH[this.wrapper.getSlots()];
@@ -271,7 +274,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
 
                         BackpackInventoryHelpers.sortInventory(wrapper, reverse);
 
-                        backpackSyncHandler.syncToServer(BackpackSH.UPDATE_SORT_INV, buf -> {
+                        backpackSyncHandler.syncToServer(BackpackSH.getId(BackpackSHRegisters.UPDATE_SORT_INV), buf -> {
                             for (int i = 0; i < wrapper.getSlots(); i++) {
                                 buf.writeItemStackToBuffer(wrapper.getStackInSlot(i));
                             }
@@ -294,10 +297,10 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
 
                 SortType nextSortType = SortType.values()[index];
 
-                backpackSyncHandler.setSortType(nextSortType);
+                wrapper.setSortType(nextSortType);
 
                 backpackSyncHandler.syncToServer(
-                    BackpackSH.UPDATE_SET_SORT_TYPE,
+                    BackpackSH.getId(BackpackSHRegisters.UPDATE_SET_SORT_TYPE),
                     buf -> NetworkUtils.writeEnumValue(buf, nextSortType));
 
             }).setEnabledIf(cyclicVariantButtonWidget -> !settingPanel.isPanelOpen())
@@ -319,9 +322,9 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                         boolean transferMatched = !Interactable.hasShiftDown();
 
                         Interactable.playButtonClickSound();
-                        backpackSyncHandler.transferToPlayerInventory(transferMatched);
+                        BackpackInventoryHelpers.transferBackpackToPlayerInventory(wrapper, playerInv, transferMatched);
                         backpackSyncHandler.syncToServer(
-                            BackpackSH.UPDATE_TRANSFER_TO_PLAYER_INV,
+                            BackpackSH.getId(BackpackSHRegisters.UPDATE_TRANSFER_TO_PLAYER_INV),
                             buf -> buf.writeBoolean(transferMatched));
                         return true;
                     }
@@ -352,9 +355,9 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                         boolean transferMatched = !Interactable.hasShiftDown();
 
                         Interactable.playButtonClickSound();
-                        backpackSyncHandler.transferToBackpack(transferMatched);
+                        BackpackInventoryHelpers.transferPlayerInventoryToBackpack(wrapper, playerInv, transferMatched);
                         backpackSyncHandler.syncToServer(
-                            BackpackSH.UPDATE_TRANSFER_TO_BACKPACK_INV,
+                            BackpackSH.getId(BackpackSHRegisters.UPDATE_TRANSFER_TO_BACKPACK_INV),
                             buf -> buf.writeBoolean(transferMatched));
                         return true;
                     }
@@ -381,7 +384,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             .setEnabledIf(shiftButtonWidget -> !settingPanel.isPanelOpen())
             .onMousePressed(mouseButton -> {
                 if (mouseButton == 0) {
-                    backpackSyncHandler.syncToServer(BackpackSH.DEPLOY_SLEEPING_BAG);
+                    backpackSyncHandler.syncToServer(BackpackSH.getId(BackpackSHRegisters.DEPLOY_SLEEPING_BAG));
                     return true;
                 }
                 return false;

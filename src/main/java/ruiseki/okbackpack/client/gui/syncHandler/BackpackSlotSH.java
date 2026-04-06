@@ -9,13 +9,10 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.upgrade.BackpackSlotSHRegistry;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 
 public class BackpackSlotSH extends ItemSlotSH {
-
-    public static final int UPDATE_SET_MEMORY_STACK = 6;
-    public static final int UPDATE_UNSET_MEMORY_STACK = 7;
-    public static final int UPDATE_SET_SLOT_LOCK = 8;
-    public static final int UPDATE_UNSET_SLOT_LOCK = 9;
 
     public final IBackpackWrapper wrapper;
     public final IStoragePanel<?> panel;
@@ -28,34 +25,36 @@ public class BackpackSlotSH extends ItemSlotSH {
 
     @Override
     public void readOnServer(int id, PacketBuffer buf) throws IOException {
-
-        switch (id) {
-            case UPDATE_SET_MEMORY_STACK: {
-                wrapper.setMemoryStack(getSlot().getSlotIndex(), buf.readBoolean());
-                break;
+        if (!BackpackSlotSHRegistry.isServerEmpty()) {
+            try {
+                BackpackSlotSHRegistry.handleServer(this, id, buf);
+                wrapper.markDirty();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-
-            case UPDATE_UNSET_MEMORY_STACK:
-                wrapper.unsetMemoryStack(getSlot().getSlotIndex());
-                break;
-
-            case UPDATE_SET_SLOT_LOCK:
-                wrapper.setSlotLocked(getSlot().getSlotIndex(), true);
-                break;
-
-            case UPDATE_UNSET_SLOT_LOCK:
-                wrapper.setSlotLocked(getSlot().getSlotIndex(), false);
-                break;
-
-            default:
-                super.readOnServer(id, buf);
-                return;
         }
-        wrapper.markDirty();
+        super.readOnServer(id, buf);
     }
 
     @Override
     public void readOnClient(int id, PacketBuffer buf) {
+        if (!BackpackSlotSHRegistry.isClientEmpty()) {
+            try {
+                BackpackSlotSHRegistry.handleClient(this, id, buf);
+                wrapper.markDirty();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         super.readOnClient(id, buf);
+    }
+
+    public IUpgradeWrapper getWrapper() {
+        return this.wrapper.getUpgradeHandler()
+            .getWrapperInSlot(getSlot().getSlotIndex());
+    }
+
+    public static int getId(String name) {
+        return BackpackSlotSHRegistry.getId(name);
     }
 }

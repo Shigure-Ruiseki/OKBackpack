@@ -6,9 +6,9 @@ import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import ruiseki.okbackpack.api.widget.IUpgradeSlotGroupFactory;
 import ruiseki.okbackpack.client.gui.slot.ModularFilterSlot;
-import ruiseki.okbackpack.client.gui.syncHandler.DelegatedFloatSH;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.syncHandler.FilterSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedFloatSH;
 
 public class SmeltingSlotGroupFactory implements IUpgradeSlotGroupFactory {
 

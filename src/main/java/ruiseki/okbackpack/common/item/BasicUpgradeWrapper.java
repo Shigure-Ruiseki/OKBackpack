@@ -42,6 +42,7 @@ public class BasicUpgradeWrapper extends UpgradeWrapperBase implements IBasicFil
     public void setFilterType(FilterType type) {
         if (type == null) type = FilterType.BLACKLIST;
         ItemNBTHelpers.setInt(upgrade, FILTER_TYPE_TAG, type.ordinal());
+        save();
     }
 
     @Override
@@ -62,6 +63,7 @@ public class BasicUpgradeWrapper extends UpgradeWrapperBase implements IBasicFil
     @Override
     public void setEnabled(boolean enabled) {
         ItemNBTHelpers.setBoolean(upgrade, ENABLED_TAG, enabled);
+        save();
     }
 
     @Override

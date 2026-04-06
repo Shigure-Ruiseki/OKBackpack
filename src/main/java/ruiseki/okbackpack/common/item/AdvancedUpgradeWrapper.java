@@ -58,6 +58,7 @@ public class AdvancedUpgradeWrapper extends UpgradeWrapperBase implements IAdvan
     public void setFilterType(FilterType type) {
         if (type == null) type = FilterType.BLACKLIST;
         ItemNBTHelpers.setInt(upgrade, FILTER_TYPE_TAG, type.ordinal());
+        save();
     }
 
     @Override
@@ -82,6 +83,7 @@ public class AdvancedUpgradeWrapper extends UpgradeWrapperBase implements IAdvan
     public void setMatchType(MatchType matchType) {
         if (matchType == null) matchType = MatchType.ITEM;
         ItemNBTHelpers.setInt(upgrade, MATCH_TYPE_TAG, matchType.ordinal());
+        save();
     }
 
     @Override
@@ -104,6 +106,7 @@ public class AdvancedUpgradeWrapper extends UpgradeWrapperBase implements IAdvan
             listTag.setString("e" + i, entries.get(i));
         }
         ItemNBTHelpers.setCompound(upgrade, ORE_DICT_LIST_TAG, listTag);
+        save();
     }
 
     @Override
@@ -114,6 +117,7 @@ public class AdvancedUpgradeWrapper extends UpgradeWrapperBase implements IAdvan
     @Override
     public void setIgnoreDurability(boolean ignore) {
         ItemNBTHelpers.setBoolean(upgrade, IGNORE_DURABILITY_TAG, ignore);
+        save();
     }
 
     @Override
@@ -124,6 +128,7 @@ public class AdvancedUpgradeWrapper extends UpgradeWrapperBase implements IAdvan
     @Override
     public void setIgnoreNBT(boolean ignore) {
         ItemNBTHelpers.setBoolean(upgrade, IGNORE_NBT_TAG, ignore);
+        save();
     }
 
     @Override

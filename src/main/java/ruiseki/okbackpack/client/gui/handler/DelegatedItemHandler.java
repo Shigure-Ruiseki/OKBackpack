@@ -2,7 +2,10 @@ package ruiseki.okbackpack.client.gui.handler;
 
 import java.util.function.Supplier;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.utils.item.EmptyHandler;
 import com.cleanroommc.modularui.utils.item.IItemHandler;
@@ -58,13 +61,18 @@ public class DelegatedItemHandler implements IItemHandlerModifiable {
     }
 
     @Override
-    public int getSlotLimit(int slot) {
-        return get().getSlotLimit(slot);
+    public boolean isItemValid(int slot, @Nullable ItemStack stack) {
+        return get().isItemValid(slot, stack);
     }
 
     @Override
-    public boolean isItemValid(int slot, ItemStack stack) {
-        return get().isItemValid(slot, stack);
+    public boolean isSlotFromInventory(int index, IInventory inventory, int invIndex) {
+        return get().isSlotFromInventory(index, inventory, invIndex);
+    }
+
+    @Override
+    public int getSlotLimit(int slot) {
+        return get().getSlotLimit(slot);
     }
 
     @Override

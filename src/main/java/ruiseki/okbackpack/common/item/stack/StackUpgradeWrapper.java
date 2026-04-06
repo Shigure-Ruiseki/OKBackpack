@@ -16,16 +16,6 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
     }
 
     @Override
-    public int modifySlotLimit(int original, int slot) {
-        return original + getMultiplier(upgrade);
-    }
-
-    @Override
-    public int modifyStackLimit(int original, int slot, ItemStack stack) {
-        return original + getMultiplier(upgrade);
-    }
-
-    @Override
     public boolean canAddUpgrade(int slot, ItemStack stack) {
         return true; // luôn có thể thêm
     }
@@ -60,7 +50,7 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
         int totalMultiplier = totalOtherMultiplier;
 
         if (wrapper instanceof IStackSizeUpgrade sizeUpgrade) {
-            totalMultiplier += sizeUpgrade.getMultiplier(replacement);
+            totalMultiplier += sizeUpgrade.getMultiplier();
         }
 
         for (ItemStack stack : storage.getStacks()) {
@@ -88,14 +78,14 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
             if (stack == null) continue;
 
             total += entry.getValue()
-                .getMultiplier(stack);
+                .getMultiplier();
         }
 
         return total;
     }
 
     @Override
-    public int getMultiplier(ItemStack stack) {
-        return ItemStackUpgrade.multiplier(stack);
+    public int getMultiplier() {
+        return ItemStackUpgrade.multiplier(upgrade);
     }
 }

@@ -49,12 +49,12 @@ public class BackpackItemStackHandler extends BaseItemStackHandler implements IM
 
     @Override
     public int getStackLimit(int slot, ItemStack stack) {
-        return (stack == null ? 64 : stack.getMaxStackSize()) * wrapper.applyStackLimitModifiers(1, slot, stack);
+        return (stack == null ? 64 : stack.getMaxStackSize()) * wrapper.applyStackLimitModifiers();
     }
 
     @Override
     public int getSlotLimit(int slot) {
-        return 64 * wrapper.applySlotLimitModifiers(1, slot);
+        return 64 * wrapper.applySlotLimitModifiers();
     }
 
     @Override
@@ -113,7 +113,7 @@ public class BackpackItemStackHandler extends BaseItemStackHandler implements IM
         ItemStack existing = stacks.get(slot);
         if (existing == null) return null;
 
-        int slotMaxStackSize = existing.getMaxStackSize() * wrapper.applyStackLimitModifiers(1, slot, existing);
+        int slotMaxStackSize = existing.getMaxStackSize() * wrapper.applyStackLimitModifiers();
         int toExtract = Math.min(amount, slotMaxStackSize);
 
         ItemStack extracted;

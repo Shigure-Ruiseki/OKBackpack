@@ -8,6 +8,7 @@ import com.cleanroommc.modularui.widgets.layout.Row;
 
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSH;
+import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.block.BackpackSettingPanel;
@@ -84,7 +85,7 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
     }
 
     private void updateWrapper() {
-        this.panel.backpackSyncHandler.syncToServer(BackpackSH.UPDATE_SETTING, buffer -> {
+        this.panel.backpackSyncHandler.syncToServer(BackpackSH.getId(BackpackSHRegisters.UPDATE_SETTING), buffer -> {
             buffer.writeBoolean(wrapper.lockBackpack);
             buffer.writeStringToBuffer(
                 panel.player.getUniqueID()

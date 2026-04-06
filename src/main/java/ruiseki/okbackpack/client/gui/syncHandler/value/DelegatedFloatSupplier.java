@@ -1,18 +1,16 @@
-package ruiseki.okbackpack.client.gui.handler;
-
-import java.util.function.Supplier;
+package ruiseki.okbackpack.client.gui.syncHandler.value;
 
 import com.cleanroommc.modularui.utils.FloatSupplier;
 
 public class DelegatedFloatSupplier implements FloatSupplier {
 
-    private Supplier<FloatSupplier> delegated;
+    private FloatSupplier delegated;
 
-    public DelegatedFloatSupplier(Supplier<FloatSupplier> delegated) {
+    public DelegatedFloatSupplier(FloatSupplier delegated) {
         this.delegated = delegated;
     }
 
-    public void setDelegated(Supplier<FloatSupplier> delegated) {
+    public void setDelegated(FloatSupplier delegated) {
         this.delegated = delegated;
     }
 
@@ -22,6 +20,6 @@ public class DelegatedFloatSupplier implements FloatSupplier {
     }
 
     public FloatSupplier get() {
-        return delegated.get();
+        return delegated;
     }
 }

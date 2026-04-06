@@ -29,9 +29,9 @@ public interface IStorageWrapper
     @Nullable
     ItemStack extractItem(ItemStack wanted, int amount, boolean simulate);
 
-    int applySlotLimitModifiers(int original, int slot);
+    int applySlotLimitModifiers();
 
-    int applyStackLimitModifiers(int original, int slot, ItemStack stack);
+    int applyStackLimitModifiers();
 
     boolean canAddUpgrade(int slot, ItemStack stack);
 

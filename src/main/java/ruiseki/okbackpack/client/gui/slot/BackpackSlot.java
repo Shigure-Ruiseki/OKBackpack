@@ -38,6 +38,7 @@ import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 
 public class BackpackSlot extends ItemSlot {
 
@@ -135,13 +136,13 @@ public class BackpackSlot extends ItemSlot {
 
             if (isMemorySet && mouseButton == 1) {
                 wrapper.unsetMemoryStack(index);
-                getSyncHandler().syncToServer(BackpackSlotSH.UPDATE_UNSET_MEMORY_STACK);
+                getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_MEMORY_STACK));
                 return Result.SUCCESS;
 
             } else if (!isMemorySet && mouseButton == 0) {
                 wrapper.setMemoryStack(index, panel.shouldMemorizeRespectNBT());
                 getSyncHandler().syncToServer(
-                    BackpackSlotSH.UPDATE_SET_MEMORY_STACK,
+                    BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_MEMORY_STACK),
                     buf -> buf.writeBoolean(panel.shouldMemorizeRespectNBT()));
                 return Result.SUCCESS;
 
@@ -153,11 +154,11 @@ public class BackpackSlot extends ItemSlot {
 
             if (locked && mouseButton == 1) {
                 wrapper.setSlotLocked(index, false);
-                getSyncHandler().syncToServer(BackpackSlotSH.UPDATE_UNSET_SLOT_LOCK);
+                getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_SLOT_LOCK));
                 return Result.SUCCESS;
             } else if (!locked && mouseButton == 0) {
                 wrapper.setSlotLocked(index, true);
-                getSyncHandler().syncToServer(BackpackSlotSH.UPDATE_SET_SLOT_LOCK);
+                getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_SLOT_LOCK));
                 return Result.SUCCESS;
             } else return Result.STOP;
         }
