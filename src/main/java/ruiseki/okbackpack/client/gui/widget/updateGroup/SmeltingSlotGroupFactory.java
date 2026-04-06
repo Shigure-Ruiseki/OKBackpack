@@ -15,7 +15,11 @@ public class SmeltingSlotGroupFactory implements IUpgradeSlotGroupFactory {
     @Override
     public void build(UpgradeSlotUpdateGroup group) {
         // Smelting inventory handler (3 slots: input, fuel, output)
-        DelegatedStackHandlerSH smeltingInvHandler = new DelegatedStackHandlerSH(group.wrapper, group.slotIndex, 3);
+        DelegatedStackHandlerSH smeltingInvHandler = new DelegatedStackHandlerSH(
+            group.panel::getContainer,
+            group.wrapper,
+            group.slotIndex,
+            3);
         group.syncManager.syncValue("smelting_inv_delegation_" + group.slotIndex, smeltingInvHandler);
         group.put("smelting_inv_handler", smeltingInvHandler);
 
@@ -41,7 +45,11 @@ public class SmeltingSlotGroupFactory implements IUpgradeSlotGroupFactory {
         group.syncManager.registerSlotGroup(new SlotGroup("smelting_slots_" + group.slotIndex, 3, false));
 
         // Fuel filter (4 phantom slots) for advanced smelting upgrades
-        DelegatedStackHandlerSH fuelFilterHandler = new DelegatedStackHandlerSH(group.wrapper, group.slotIndex, 4);
+        DelegatedStackHandlerSH fuelFilterHandler = new DelegatedStackHandlerSH(
+            group.panel::getContainer,
+            group.wrapper,
+            group.slotIndex,
+            4);
         group.syncManager.syncValue("fuel_filter_delegation_" + group.slotIndex, fuelFilterHandler);
         group.put("fuel_filter_handler", fuelFilterHandler);
 

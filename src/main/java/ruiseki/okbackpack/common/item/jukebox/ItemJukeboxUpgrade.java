@@ -12,6 +12,7 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
+import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.client.gui.widget.upgrade.JukeboxUpgradeWidget;
@@ -61,7 +62,7 @@ public class ItemJukeboxUpgrade extends ItemUpgrade<JukeboxUpgradeWrapper> {
         DelegatedStackHandlerSH handler = group.get("jukebox_handler");
         if (handler == null) return;
         handler.setDelegatedStackHandler(wrapper::getStorage);
-        handler.syncToServer(DelegatedStackHandlerSH.UPDATE_STORAGE);
+        handler.syncToServer(DelegatedStackHandlerSH.getId(DelegatedStackHandlerSHRegisters.UPDATE_STORAGE));
     }
 
     @Override

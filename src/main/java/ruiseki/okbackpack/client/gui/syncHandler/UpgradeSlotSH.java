@@ -2,23 +2,22 @@ package ruiseki.okbackpack.client.gui.syncHandler;
 
 import java.io.IOException;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
-import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotSHRegistry;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 
 public class UpgradeSlotSH extends ItemSlotSH {
 
-    public final IBackpackWrapper wrapper;
-    public final IStoragePanel panel;
+    public final IStorageWrapper wrapper;
+    public final IStoragePanel<?> panel;
 
-    public UpgradeSlotSH(ModularSlot slot, IBackpackWrapper wrapper, IStoragePanel panel) {
+    public UpgradeSlotSH(ModularSlot slot, IStorageWrapper wrapper, IStoragePanel<?> panel) {
         super(slot);
         this.wrapper = wrapper;
         this.panel = panel;
@@ -51,8 +50,6 @@ public class UpgradeSlotSH extends ItemSlotSH {
     }
 
     public IUpgradeWrapper getWrapper() {
-        ItemStack stack = getSlot().getStack();
-        if (stack == null) return null;
         return this.wrapper.getUpgradeHandler()
             .getWrapperInSlot(getSlot().getSlotIndex());
     }

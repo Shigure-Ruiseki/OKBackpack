@@ -12,7 +12,11 @@ public class CommonFilterSlotGroupFactory implements IUpgradeSlotGroupFactory {
     @Override
     public void build(UpgradeSlotUpdateGroup group) {
 
-        DelegatedStackHandlerSH handler = new DelegatedStackHandlerSH(group.wrapper, group.slotIndex, 9);
+        DelegatedStackHandlerSH handler = new DelegatedStackHandlerSH(
+            group.panel::getContainer,
+            group.wrapper,
+            group.slotIndex,
+            9);
 
         group.syncManager.syncValue("common_filter_delegation_" + group.slotIndex, handler);
 

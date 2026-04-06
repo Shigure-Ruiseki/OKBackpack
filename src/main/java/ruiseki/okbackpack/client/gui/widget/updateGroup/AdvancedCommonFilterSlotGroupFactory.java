@@ -13,6 +13,7 @@ public class AdvancedCommonFilterSlotGroupFactory implements IUpgradeSlotGroupFa
     public void build(UpgradeSlotUpdateGroup group) {
 
         DelegatedStackHandlerSH advancedCommonFilterStackHandler = new DelegatedStackHandlerSH(
+            group.panel::getContainer,
             group.wrapper,
             group.slotIndex,
             16);
@@ -31,7 +32,11 @@ public class AdvancedCommonFilterSlotGroupFactory implements IUpgradeSlotGroupFa
 
         group.syncManager.registerSlotGroup(new SlotGroup("adv_common_filters_" + group.slotIndex, 16, false));
 
-        DelegatedStackHandlerSH oreDictStackHandler = new DelegatedStackHandlerSH(group.wrapper, group.slotIndex, 1);
+        DelegatedStackHandlerSH oreDictStackHandler = new DelegatedStackHandlerSH(
+            group.panel::getContainer,
+            group.wrapper,
+            group.slotIndex,
+            1);
 
         group.syncManager.syncValue("ore_dict_delegation_" + group.slotIndex, oreDictStackHandler);
         group.put("ore_dict_handler", oreDictStackHandler);

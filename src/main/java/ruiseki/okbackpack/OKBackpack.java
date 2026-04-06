@@ -22,6 +22,7 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotGroupRegisters;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
@@ -68,6 +69,7 @@ public class OKBackpack extends ModBase {
         addInitListeners(new ModOreDicts());
         addInitListeners(new UpgradeSlotGroupRegisters());
         addInitListeners(new UpgradeSlotSHRegisters());
+        addInitListeners(new DelegatedStackHandlerSHRegisters());
     }
 
     @Override

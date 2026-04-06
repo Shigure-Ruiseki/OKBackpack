@@ -12,7 +12,11 @@ public class AdvancedJukeboxStorageSlotGroupFactory implements IUpgradeSlotGroup
     @Override
     public void build(UpgradeSlotUpdateGroup group) {
 
-        DelegatedStackHandlerSH handler = new DelegatedStackHandlerSH(group.wrapper, group.slotIndex, 16);
+        DelegatedStackHandlerSH handler = new DelegatedStackHandlerSH(
+            group.panel::getContainer,
+            group.wrapper,
+            group.slotIndex,
+            16);
 
         group.syncManager.syncValue("adv_jukebox_delegation_" + group.slotIndex, handler);
 

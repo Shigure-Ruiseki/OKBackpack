@@ -10,6 +10,7 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
+import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.CompactingUpgradeWidget;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
@@ -46,7 +47,7 @@ public class ItemCompactingUpgrade extends ItemUpgrade<CompactingUpgradeWrapper>
         DelegatedStackHandlerSH handler = group.get("common_filter_handler");
         if (handler == null) return;
         handler.setDelegatedStackHandler(wrapper::getFilterItems);
-        handler.syncToServer(DelegatedStackHandlerSH.UPDATE_FILTERABLE);
+        handler.syncToServer(DelegatedStackHandlerSH.getId(DelegatedStackHandlerSHRegisters.UPDATE_FILTERABLE));
     }
 
     @Override

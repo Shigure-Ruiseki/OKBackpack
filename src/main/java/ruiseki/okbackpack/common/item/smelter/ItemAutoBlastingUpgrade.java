@@ -13,6 +13,7 @@ import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedFloatSH;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
+import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.AdvancedSmeltingUpgradeWidget;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
@@ -70,22 +71,23 @@ public class ItemAutoBlastingUpgrade extends ItemUpgrade<AutoBlastingUpgradeWrap
         DelegatedStackHandlerSH handler = group.get("adv_common_filter_handler");
         if (handler == null) return;
         handler.setDelegatedStackHandler(wrapper::getFilterItems);
-        handler.syncToServer(DelegatedStackHandlerSH.UPDATE_FILTERABLE);
+        handler.syncToServer(DelegatedStackHandlerSH.getId(DelegatedStackHandlerSHRegisters.UPDATE_FILTERABLE));
 
         DelegatedStackHandlerSH oreDictHandler = group.get("ore_dict_handler");
         if (oreDictHandler == null) return;
         oreDictHandler.setDelegatedStackHandler(wrapper::getOreDictItem);
-        oreDictHandler.syncToServer(DelegatedStackHandlerSH.UPDATE_ORE_DICT);
+        oreDictHandler.syncToServer(DelegatedStackHandlerSH.getId(DelegatedStackHandlerSHRegisters.UPDATE_ORE_DICT));
 
         DelegatedStackHandlerSH smeltingHandler = group.get("smelting_inv_handler");
         if (smeltingHandler == null) return;
         smeltingHandler.setDelegatedStackHandler(wrapper::getStorage);
-        smeltingHandler.syncToServer(DelegatedStackHandlerSH.UPDATE_STORAGE);
+        smeltingHandler.syncToServer(DelegatedStackHandlerSH.getId(DelegatedStackHandlerSHRegisters.UPDATE_STORAGE));
 
         DelegatedStackHandlerSH fuelFilterHandler = group.get("fuel_filter_handler");
         if (fuelFilterHandler == null) return;
         fuelFilterHandler.setDelegatedStackHandler(wrapper::getFuelFilterItems);
-        fuelFilterHandler.syncToServer(DelegatedStackHandlerSH.UPDATE_FUEL_FILTER);
+        fuelFilterHandler
+            .syncToServer(DelegatedStackHandlerSH.getId(DelegatedStackHandlerSHRegisters.UPDATE_FUEL_FILTER));
 
         DelegatedFloatSH progressHandler = group.get("smelting_progress_handler");
         if (progressHandler == null) return;
