@@ -1,6 +1,7 @@
 package ruiseki.okbackpack.client.gui.slot;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -39,6 +40,7 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
+import ruiseki.okbackpack.common.block.BackpackPanel;
 
 public class BackpackSlot extends ItemSlot {
 
@@ -197,6 +199,19 @@ public class BackpackSlot extends ItemSlot {
         if (!focus && !isInSettingMode()) {
             drawDimmedSlot(context);
         }
+
+        if (shouldHighlightConflict()) {
+            GlStateManager.disableDepth();
+            GuiDraw.drawRect(1, 1, 16, 16, UpgradeSlot.ERROR_SLOT_COLOR);
+            GlStateManager.enableDepth();
+        }
+    }
+
+    private boolean shouldHighlightConflict() {
+        if (panel instanceof BackpackPanel backpackPanel) {
+            return backpackPanel.isInventorySlotInConflict(getSlot().slotNumber);
+        }
+        return false;
     }
 
     private void drawDimmedSlot(ModularGuiContext context) {
@@ -405,7 +420,15 @@ public class BackpackSlot extends ItemSlot {
                 if (amount < 0) {
                     amount = itemstack.stackSize;
                 }
-                GuiDraw.drawStandardSlotAmountText(amount, format, getArea());
+                if (amount >= Integer.MAX_VALUE) {
+                    FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+                    String infinityText = "\u221E";
+                    int x = getArea().width - font.getStringWidth(infinityText) - 1;
+                    int y = getArea().height - font.FONT_HEIGHT;
+                    font.drawStringWithShadow(infinityText, x, y, 0xFFFFFF);
+                } else {
+                    GuiDraw.drawStandardSlotAmountText(amount, format, getArea());
+                }
 
                 int cachedCount = itemstack.stackSize;
                 itemstack.stackSize = 1; // required to not render the amount overlay

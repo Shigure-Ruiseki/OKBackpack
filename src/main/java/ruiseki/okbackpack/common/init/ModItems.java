@@ -16,6 +16,8 @@ import ruiseki.okbackpack.common.item.feeding.ItemFeedingUpgrade;
 import ruiseki.okbackpack.common.item.filter.ItemAdvancedFilterUpgrade;
 import ruiseki.okbackpack.common.item.filter.ItemFilterUpgrade;
 import ruiseki.okbackpack.common.item.inception.ItemInceptionUpgrade;
+import ruiseki.okbackpack.common.item.infinity.ItemInfinityUpgrade;
+import ruiseki.okbackpack.common.item.infinity.ItemSurvivalInfinityUpgrade;
 import ruiseki.okbackpack.common.item.jukebox.ItemAdvancedJukeboxUpgrade;
 import ruiseki.okbackpack.common.item.jukebox.ItemJukeboxUpgrade;
 import ruiseki.okbackpack.common.item.magnet.ItemAdvancedMagnetUpgrade;
@@ -63,6 +65,8 @@ public enum ModItems {
     AUTO_SMOKING_UPGRADE(new ItemAutoSmokingUpgrade(), Mods.EtFuturum),
     BLASTING_UPGRADE(new ItemBlastingUpgrade(), Mods.EtFuturum),
     AUTO_BLASTING_UPGRADE(new ItemAutoBlastingUpgrade(), Mods.EtFuturum),
+    INFINITY_UPGRADE(new ItemInfinityUpgrade()),
+    SURVIVAL_INFINITY_UPGRADE(new ItemSurvivalInfinityUpgrade()),
 
     //
     ;

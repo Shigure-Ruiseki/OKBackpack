@@ -13,6 +13,8 @@ import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
+import ruiseki.okbackpack.common.item.infinity.ItemInfinityUpgrade;
+import ruiseki.okbackpack.common.item.infinity.ItemSurvivalInfinityUpgrade;
 
 public interface IUpgradeItem<W extends IUpgradeWrapper> {
 
@@ -33,6 +35,22 @@ public interface IUpgradeItem<W extends IUpgradeWrapper> {
      */
     default UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper storageWrapper, ItemStack upgradeStack,
         int targetSlot) {
+        return checkInfinityConflict(storageWrapper, upgradeStack, targetSlot);
+    }
+
+    /**
+     * Default check: if an infinity upgrade is already installed, no other upgrades can be added.
+     */
+    default UpgradeSlotChangeResult checkInfinityConflict(IStorageWrapper wrapper, ItemStack upgradeStack,
+        int targetSlot) {
+        int[] infinitySlots = findConflictSlots(
+            wrapper,
+            targetSlot,
+            ItemInfinityUpgrade.class,
+            ItemSurvivalInfinityUpgrade.class);
+        if (infinitySlots.length > 0) {
+            return UpgradeSlotChangeResult.fail("gui.backpack.error.add.no_upgrade_can_be_added", infinitySlots);
+        }
         return UpgradeSlotChangeResult.success();
     }
 

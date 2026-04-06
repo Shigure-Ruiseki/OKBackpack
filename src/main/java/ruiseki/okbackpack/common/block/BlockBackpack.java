@@ -38,6 +38,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
 import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.wrapper.IInfinityUpgrade;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.client.renderer.player.IArmorRender;
@@ -101,6 +102,21 @@ public class BlockBackpack extends BlockOK {
         this.backpackSlots = backpackSlots;
         this.upgradeSlots = upgradeSlots;
         this.isFullSize = this.isOpaque = false;
+    }
+
+    @Override
+    public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, int x, int y, int z) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof TEBackpack backpack) {
+            for (var entry : backpack.getWrapper()
+                .gatherCapabilityUpgrades(IInfinityUpgrade.class)
+                .values()) {
+                if (entry.isAdmin() && !player.capabilities.isCreativeMode) {
+                    return -1.0f;
+                }
+            }
+        }
+        return super.getPlayerRelativeBlockHardness(player, world, x, y, z);
     }
 
     @Override

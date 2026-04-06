@@ -57,7 +57,7 @@ public class ItemBlastingUpgrade extends ItemUpgrade<BlastingUpgradeWrapper> {
                 LangHelpers.localize("item.smelting_upgrade.name"),
                 wrapper.getDisplayName());
         }
-        return UpgradeSlotChangeResult.success();
+        return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
     }
 
     @Override

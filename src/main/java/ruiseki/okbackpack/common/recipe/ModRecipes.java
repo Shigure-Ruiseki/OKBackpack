@@ -226,6 +226,18 @@ public class ModRecipes implements IInitListener {
                     "blockNetherite",
                     'U',
                     ModItems.STACK_UPGRADE.newItemStack(1, 2)));
+
+            // Stack Upgrade Starter Tier
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.STACK_UPGRADE.newItemStack(1, 5),
+                    "BBB",
+                    "BUB",
+                    "BBB",
+                    'B',
+                    "blockCopper",
+                    'U',
+                    ModItems.BASE_UPGRADE.getItem()));
         }
 
         // Stack Upgrade Tier Omega

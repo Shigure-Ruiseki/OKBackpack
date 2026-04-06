@@ -48,7 +48,7 @@ public class ItemJukeboxUpgrade extends ItemUpgrade<JukeboxUpgradeWrapper> {
                 LangHelpers.localize("item.jukebox_upgrade.name"),
                 wrapper.getDisplayName());
         }
-        return UpgradeSlotChangeResult.success();
+        return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
     }
 
     @Override

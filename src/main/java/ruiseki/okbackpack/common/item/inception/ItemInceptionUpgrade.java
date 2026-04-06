@@ -36,7 +36,7 @@ public class ItemInceptionUpgrade extends ItemUpgrade<InceptionUpgradeWrapper> {
                 upgradeStack.getDisplayName(),
                 wrapper.getDisplayName());
         }
-        return UpgradeSlotChangeResult.success();
+        return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
     }
 
     @Override

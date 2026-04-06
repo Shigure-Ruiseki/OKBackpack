@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import com.cleanroommc.modularui.utils.item.IItemHandler;
 import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 
+import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okbackpack.common.SortType;
 import ruiseki.okcore.datastructure.BlockPos;
@@ -29,9 +30,9 @@ public interface IStorageWrapper
     @Nullable
     ItemStack extractItem(ItemStack wanted, int amount, boolean simulate);
 
-    int applySlotLimitModifiers();
+    double applySlotLimitModifiers();
 
-    int applyStackLimitModifiers();
+    double applyStackLimitModifiers();
 
     boolean canAddUpgrade(int slot, ItemStack stack);
 
@@ -43,7 +44,11 @@ public interface IStorageWrapper
 
     boolean canRemoveUpgrade(int slot);
 
+    UpgradeSlotChangeResult getRemoveUpgradeResult(int slot);
+
     boolean canReplaceUpgrade(int slot, ItemStack replacement);
+
+    UpgradeSlotChangeResult getReplaceUpgradeResult(int slot, ItemStack replacement);
 
     boolean tick(World world, BlockPos pos);
 

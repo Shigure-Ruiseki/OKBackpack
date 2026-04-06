@@ -194,6 +194,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 if (!itemChanged && !tabDirty) return;
                 lastUpgradeStacks[slotIndex] = stack == null ? null : stack.copy();
 
+                activeError = null;
+
                 updateUpgradeWidgets();
             });
         }
@@ -509,7 +511,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                     wrapper.setTabOpened(false);
                     upgradeSlotSyncHandlers[slotIndex].syncToServer(
                         UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_UPGRADE_TAB_STATE),
-                        buf -> { buf.writeBoolean(false); });
+                        buf -> buf.writeBoolean(false));
                     return;
                 }
                 openedTabIndex = slotIndex;
@@ -641,7 +643,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                     wrapper.setTabOpened(false);
                     upgradeSlotSyncHandlers[i].syncToServer(
                         UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_UPGRADE_TAB_STATE),
-                        buf -> { buf.writeBoolean(false); });
+                        buf -> buf.writeBoolean(false));
                 }
             }
             isResetOpenedTabs = true;
@@ -693,9 +695,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         if (!(wrapper instanceof IDirtable dirtable)) return false;
         boolean isDirty = dirtable.isDirty();
         if (isDirty) {
-            upgradeSlot.syncToServer(
-                UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_DIRTY),
-                buf -> { buf.writeBoolean(false); });
+            upgradeSlot
+                .syncToServer(UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_DIRTY), buf -> buf.writeBoolean(false));
         }
         return isDirty;
     }
@@ -718,6 +719,15 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         updateActiveError(0f);
         if (activeError == null) return false;
         for (int s : activeError.getConflictSlots()) {
+            if (s == slotIndex) return true;
+        }
+        return false;
+    }
+
+    public boolean isInventorySlotInConflict(int slotIndex) {
+        updateActiveError(0f);
+        if (activeError == null) return false;
+        for (int s : activeError.getInventoryConflictSlots()) {
             if (s == slotIndex) return true;
         }
         return false;
