@@ -31,6 +31,8 @@ import ruiseki.okbackpack.common.item.smelter.ItemBlastingUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemSmeltingUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemSmokingUpgrade;
 import ruiseki.okbackpack.common.item.stack.ItemStackUpgrade;
+import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgrade;
+import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgrade;
 import ruiseki.okbackpack.common.item.voiding.ItemAdvancedVoidUpgrade;
 import ruiseki.okbackpack.common.item.voiding.ItemVoidUpgrade;
 import ruiseki.okbackpack.compat.Mods;
@@ -65,6 +67,8 @@ public enum ModItems {
     AUTO_SMOKING_UPGRADE(new ItemAutoSmokingUpgrade(), Mods.EtFuturum),
     BLASTING_UPGRADE(new ItemBlastingUpgrade(), Mods.EtFuturum),
     AUTO_BLASTING_UPGRADE(new ItemAutoBlastingUpgrade(), Mods.EtFuturum),
+    TOOL_SWAPPER_UPGRADE(new ItemToolSwapperUpgrade()),
+    ADVANCED_TOOL_SWAPPER_UPGRADE(new ItemAdvancedToolSwapperUpgrade()),
     INFINITY_UPGRADE(new ItemInfinityUpgrade()),
     SURVIVAL_INFINITY_UPGRADE(new ItemSurvivalInfinityUpgrade()),
 

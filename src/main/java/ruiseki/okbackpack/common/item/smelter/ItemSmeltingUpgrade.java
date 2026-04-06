@@ -51,8 +51,7 @@ public class ItemSmeltingUpgrade extends ItemUpgrade<SmeltingUpgradeWrapper> {
             ItemBlastingUpgrade.class,
             ItemAutoBlastingUpgrade.class);
         if (conflicts.length >= 1) {
-            return UpgradeSlotChangeResult.fail(
-                "gui.backpack.error.add.only_single_upgrade_allowed",
+            return UpgradeSlotChangeResult.failOnlySingleAllowed(
                 conflicts,
                 LangHelpers.localize("item.smelting_upgrade.name"),
                 wrapper.getDisplayName());

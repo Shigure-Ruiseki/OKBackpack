@@ -8,6 +8,7 @@ config.generalConfig=General Settings
 key.categories.okbackpack=OK Backpack
 key.okbackpack.open_backpack=Open Backpack
 key.okbackpack.pick_block=Pick Block
+key.okbackpack.tool_swap=Swap Tool Based on Targeted Block/Entity
 
 # Sort
 gui.sort_type.by_mod_id=Mod ID
@@ -151,6 +152,14 @@ gui.backpack.jukebox_loop_all=Loop: All
 gui.backpack.jukebox_loop_single=Loop: Single
 gui.backpack.sleeping_bag=Use Sleeping Bag
 
+gui.backpack.swap_weapon=Swap Weapon\nWhen holding a tool and left-clicking an entity,\nswaps a weapon into hand
+gui.backpack.no_swap_weapon=Do Not Swap Weapon\nNever swaps a weapon into hand
+gui.backpack.swap_tool=Swap Tool\nWhen holding a weapon or tool,\nswaps the appropriate tool into hand
+gui.backpack.only_tool_swap_tool=Only Tool Swaps Tool\nOnly swaps when holding a tool,\nnot when holding a weapon
+gui.backpack.no_swap_tool=Do Not Swap Tool\nNever swaps a tool into hand
+
+gui.backpack.advanced_tool_swapper_settings=Tool Swapper
+
 gui.backpack.error.add.upgrade_not_allowed=%s cannot be installed on %s
 gui.backpack.error.add.only_single_upgrade_allowed=Only a single %s can be installed on %s
 gui.backpack.error.add.only_x_upgrades_allowed=Only %d %s can be installed on %s
@@ -199,6 +208,8 @@ item.void_upgrade.name=Void Upgrade
 item.advanced_void_upgrade.name=Adv. Void Upgrade
 item.jukebox_upgrade.name=Jukebox Upgrade
 item.advanced_jukebox_upgrade.name=Adv. Jukebox Upgrade
+item.tool_swapper_upgrade.name=Tool Swapper Upgrade
+item.advanced_tool_swapper_upgrade.name=Adv. Tool Swapper Upgrade
 item.infinity_upgrade.name=Infinity Upgrade (Admin)
 item.survival_infinity_upgrade.name=Survival Infinity Upgrade
 
@@ -243,6 +254,9 @@ tooltip.backpack.auto_smoking_upgrade.1=Automatically pulls in/pushes out items
 tooltip.backpack.blasting_upgrade=Blast-smelts ores and metals at high speed in the upgrade tab
 tooltip.backpack.auto_blasting_upgrade=Blast-smelts ores and metals at high speed in the upgrade tab
 tooltip.backpack.auto_blasting_upgrade.1=Automatically pulls in/pushes out items
+tooltip.backpack.tool_swapper_upgrade=Automatically swaps held item to the matching mining/attack tool for the target block/entity on left click
+tooltip.backpack.advanced_tool_swapper_upgrade=Automatically swaps held item to the matching mining/attack tool for the target block/entity on left click
+tooltip.backpack.advanced_tool_swapper_upgrade.1=Has filter options and manual tool swap by [%s]
 
 #Messages
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.

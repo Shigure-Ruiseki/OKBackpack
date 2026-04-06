@@ -43,8 +43,7 @@ public class ItemAdvancedJukeboxUpgrade extends ItemUpgrade<AdvancedJukeboxUpgra
         int[] conflicts = IUpgradeItem
             .findConflictSlots(wrapper, targetSlot, ItemJukeboxUpgrade.class, ItemAdvancedJukeboxUpgrade.class);
         if (conflicts.length >= 1) {
-            return UpgradeSlotChangeResult.fail(
-                "gui.backpack.error.add.only_single_upgrade_allowed",
+            return UpgradeSlotChangeResult.failOnlySingleAllowed(
                 conflicts,
                 LangHelpers.localize("item.jukebox_upgrade.name"),
                 wrapper.getDisplayName());

@@ -8,6 +8,7 @@ config.generalConfig=通用设置
 key.categories.okbackpack=OK背包
 key.okbackpack.open_backpack=打开背包
 key.okbackpack.pick_block=选取方块
+key.okbackpack.tool_swap=基于所指方块/实体替换工具
 
 # Sort
 gui.sort_type.by_mod_id=按模组ID
@@ -142,6 +143,14 @@ gui.backpack.void_automation=仅在自动化/其他升级中生效
 
 gui.backpack.sleeping_bag=使用睡袋
 
+gui.backpack.swap_weapon=替换武器\n当手持工具左击实体时，将武器替换到手上
+gui.backpack.no_swap_weapon=不替换武器\n永远不会将武器替换到手上
+gui.backpack.swap_tool=替换工具\n手持武器或工具时，将合适的工具替换到手上
+gui.backpack.only_tool_swap_tool=只由工具替换工具\n仅在手持工具时替换，手持武器不替换
+gui.backpack.no_swap_tool=不替换工具\n永远不会将工具替换到手上
+
+gui.backpack.advanced_tool_swapper_settings=工具替换
+
 gui.backpack.jukebox_play=播放
 gui.backpack.jukebox_stop=停止
 gui.backpack.jukebox_prev=上一首
@@ -200,6 +209,8 @@ item.void_upgrade.name=虚空升级
 item.advanced_void_upgrade.name=高级虚空升级
 item.jukebox_upgrade.name=唱片机升级
 item.advanced_jukebox_upgrade.name=高级唱片机升级
+item.tool_swapper_upgrade.name=工具替换升级
+item.advanced_tool_swapper_upgrade.name=高级工具替换升级
 item.infinity_upgrade.name=无限升级（管理员）
 item.survival_infinity_upgrade.name=生存模式无限升级
 
@@ -244,6 +255,9 @@ tooltip.backpack.auto_smoking_upgrade.1=自动抽入/排出物品
 tooltip.backpack.blasting_upgrade=在升级标签页中高速熔炼矿物和金属材料
 tooltip.backpack.auto_blasting_upgrade=在升级标签页中高速熔炼矿物和金属材料
 tooltip.backpack.auto_blasting_upgrade.1=自动抽入/排出物品
+tooltip.backpack.tool_swapper_upgrade=左击时自动将玩家手持物品替换为对应方块/实体的挖掘或攻击工具
+tooltip.backpack.advanced_tool_swapper_upgrade=左击时自动将玩家手持物品替换为对应方块/实体的挖掘或攻击工具
+tooltip.backpack.advanced_tool_swapper_upgrade.1=具有过滤选项，并可按[%s]手动替换工具
 
 #Messages
 messages.backpack.cant.bag=无法放置睡袋！检查周围区域。

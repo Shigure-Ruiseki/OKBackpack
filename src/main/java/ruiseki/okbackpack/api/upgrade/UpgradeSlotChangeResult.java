@@ -50,4 +50,44 @@ public class UpgradeSlotChangeResult {
         Object... args) {
         return new UpgradeSlotChangeResult(false, errorLangKey, EMPTY_SLOTS, inventoryConflictSlots, args);
     }
+
+    /**
+     * %s cannot be installed on %s
+     */
+    public static UpgradeSlotChangeResult failUpgradeNotAllowed(int[] conflictSlots, String upgradeName,
+        String storageName) {
+        return fail("gui.backpack.error.add.upgrade_not_allowed", conflictSlots, upgradeName, storageName);
+    }
+
+    /**
+     * Only a single %s can be installed on %s
+     */
+    public static UpgradeSlotChangeResult failOnlySingleAllowed(int[] conflictSlots, String upgradeName,
+        String storageName) {
+        return fail("gui.backpack.error.add.only_single_upgrade_allowed", conflictSlots, upgradeName, storageName);
+    }
+
+    /**
+     * Only %d %s can be installed on %s
+     */
+    public static UpgradeSlotChangeResult failOnlyXAllowed(int[] conflictSlots, int maxCount, String upgradeName,
+        String storageName) {
+        return fail(
+            "gui.backpack.error.add.only_x_upgrades_allowed",
+            conflictSlots,
+            maxCount,
+            upgradeName,
+            storageName);
+    }
+
+    /**
+     * Stack multiplier must be greater than %s
+     */
+    public static UpgradeSlotChangeResult failStackLowMultiplier(int[] inventoryConflictSlots,
+        String formattedMultiplier) {
+        return failWithInventoryConflicts(
+            "gui.backpack.error.remove.stack_low_multiplier",
+            inventoryConflictSlots,
+            formattedMultiplier);
+    }
 }

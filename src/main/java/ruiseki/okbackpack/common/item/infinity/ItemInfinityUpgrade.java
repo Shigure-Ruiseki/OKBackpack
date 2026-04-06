@@ -34,11 +34,8 @@ public class ItemInfinityUpgrade extends ItemUpgrade<InfinityUpgradeWrapper> {
         int[] conflicts = IUpgradeItem
             .findConflictSlots(wrapper, targetSlot, ItemInfinityUpgrade.class, ItemSurvivalInfinityUpgrade.class);
         if (conflicts.length >= 1) {
-            return UpgradeSlotChangeResult.fail(
-                "gui.backpack.error.add.only_single_upgrade_allowed",
-                conflicts,
-                upgradeStack.getDisplayName(),
-                wrapper.getDisplayName());
+            return UpgradeSlotChangeResult
+                .failOnlySingleAllowed(conflicts, upgradeStack.getDisplayName(), wrapper.getDisplayName());
         }
 
         // All other upgrade slots must be empty

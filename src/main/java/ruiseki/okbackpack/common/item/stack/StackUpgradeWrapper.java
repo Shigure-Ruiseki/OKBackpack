@@ -52,8 +52,7 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
         }
 
         if (!conflictSlots.isEmpty()) {
-            return UpgradeSlotChangeResult.failWithInventoryConflicts(
-                "gui.backpack.error.remove.stack_low_multiplier",
+            return UpgradeSlotChangeResult.failStackLowMultiplier(
                 conflictSlots.stream()
                     .mapToInt(Integer::intValue)
                     .toArray(),
@@ -100,8 +99,7 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
         }
 
         if (!conflictSlots.isEmpty()) {
-            return UpgradeSlotChangeResult.failWithInventoryConflicts(
-                "gui.backpack.error.remove.stack_low_multiplier",
+            return UpgradeSlotChangeResult.failStackLowMultiplier(
                 conflictSlots.stream()
                     .mapToInt(Integer::intValue)
                     .toArray(),

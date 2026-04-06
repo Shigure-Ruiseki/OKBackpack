@@ -182,6 +182,12 @@ public class OKBGuiTextures {
     public static final UITexture VOID_ALL = icon("void_all", 0, 48);
     public static final UITexture VOID_AUTOMATION = icon("void_automation", 16, 48);
 
+    public static final IDrawable SWAP_WEAPON_ICON = icon("swap_weapon", 32, 64);
+    public static final IDrawable NO_SWAP_WEAPON_ICON = icon("no_swap_weapon", 48, 64);
+    public static final IDrawable SWAP_TOOL_ICON = icon("swap_tool", 64, 64);
+    public static final IDrawable ONLY_TOOL_SWAP_TOOL_ICON = icon("only_tool_swap_tool", 80, 64);
+    public static final IDrawable NO_SWAP_TOOL_ICON = icon("no_swap_tool", 96, 64);
+
     public static final IDrawable JUKEBOX_STOP_ICON = icon("jukebox_stop", 0, 64);
     public static final IDrawable JUKEBOX_PLAY_ICON = icon("jukebox_play", 16, 64);
     public static final IDrawable JUKEBOX_NEXT_ICON = icon("jukebox_next", 32, 96);

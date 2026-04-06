@@ -18,6 +18,7 @@ import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade;
 import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade.JukeboxLoopMode;
 import ruiseki.okbackpack.api.wrapper.IMagnetUpgrade;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
+import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
@@ -47,6 +48,7 @@ public class UpgradeSlotSHRegisters implements IInitListener {
     public static final String UPDATE_JUKEBOX_NEXT = "update_jukebox_next";
     public static final String UPDATE_JUKEBOX_SHUFFLE = "update_jukebox_shuffle";
     public static final String UPDATE_JUKEBOX_LOOP = "update_jukebox_loop";
+    public static final String UPDATE_TOOL_SWAPPER = "update_tool_swapper";
 
     @Override
     public void onInit(Step step) {
@@ -196,6 +198,13 @@ public class UpgradeSlotSHRegisters implements IInitListener {
                 if (ordinal >= 0 && ordinal < modes.length) {
                     jukebox.setLoopMode(modes[ordinal]);
                 }
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_TOOL_SWAPPER, (slot, buf) -> {
+                IUpgradeWrapper wrapper = slot.getWrapper();
+                if (!(wrapper instanceof IToolSwapperUpgrade upgrade)) return;
+                upgrade.setWeaponSwapMode(NetworkUtils.readEnumValue(buf, IToolSwapperUpgrade.WeaponSwapMode.class));
+                upgrade.setToolSwapMode(NetworkUtils.readEnumValue(buf, IToolSwapperUpgrade.ToolSwapMode.class));
             });
 
         }

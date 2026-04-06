@@ -4,6 +4,7 @@ creativetab.okBackpack=OK Backpack
 # Key binding
 key.categories.okbackpack=Omoshiroi Kamo
 key.okbackpack.open_backpack=バックパックを開く
+key.okbackpack.tool_swap=対象ブロック/エンティティに基づいてツールを交換
 
 # Config
 config.backpackConfig=バックパックの設定
@@ -134,6 +135,14 @@ gui.backpack.jukebox_loop_off=ループ: オフ
 gui.backpack.jukebox_loop_all=ループ: 全曲
 gui.backpack.jukebox_loop_single=ループ: 一曲
 
+gui.backpack.swap_weapon=武器に交換\nツールを持ってエンティティを左クリックした時、\n武器を手に交換します
+gui.backpack.no_swap_weapon=武器に交換しない\n武器を手に交換しません
+gui.backpack.swap_tool=ツールに交換\n武器またはツールを持っている時、\n適切なツールを手に交換します
+gui.backpack.only_tool_swap_tool=ツールのみツールに交換\nツールを持っている時のみ交換し、\n武器を持っている時は交換しません
+gui.backpack.no_swap_tool=ツールに交換しない\nツールを手に交換しません
+
+gui.backpack.advanced_tool_swapper_settings=ツール交換
+
 gui.backpack.error.add.upgrade_not_allowed=%1$sは%2$sに装着できません
 gui.backpack.error.add.only_single_upgrade_allowed=%1$sは%2$sに1つだけ装着可能です
 gui.backpack.error.add.only_x_upgrades_allowed=%2$sは%3$sに%1$d個まで装着可能です
@@ -181,6 +190,8 @@ item.void_upgrade.name=廃棄アップグレード
 item.advanced_void_upgrade.name=詳細な廃棄アップグレード
 item.jukebox_upgrade.name=ジュークボックスアップグレード
 item.advanced_jukebox_upgrade.name=詳細なジュークボックスアップグレード
+item.tool_swapper_upgrade.name=ツール交換アップグレード
+item.advanced_tool_swapper_upgrade.name=詳細なツール交換アップグレード
 item.infinity_upgrade.name=無限アップグレード（管理者）
 item.survival_infinity_upgrade.name=サバイバル無限アップグレード
 
@@ -224,6 +235,9 @@ tooltip.backpack.auto_smoking_upgrade.1=アイテムを自動搬入/搬出しま
 tooltip.backpack.blasting_upgrade=アップグレードタブで鉱石や金属を高速精錬します
 tooltip.backpack.auto_blasting_upgrade=アップグレードタブで鉱石や金属を高速精錬します
 tooltip.backpack.auto_blasting_upgrade.1=アイテムを自動搬入/搬出します
+tooltip.backpack.tool_swapper_upgrade=左クリック時にプレイヤーの手持ちアイテムを対象ブロック/エンティティに適した採掘・攻撃ツールに自動交換します
+tooltip.backpack.advanced_tool_swapper_upgrade=左クリック時にプレイヤーの手持ちアイテムを対象ブロック/エンティティに適した採掘・攻撃ツールに自動交換します
+tooltip.backpack.advanced_tool_swapper_upgrade.1=フィルターオプション付き、キーバインド[%s]で手動ツール交換可能
 
 #メッセージ
 messages.backpack.cant.bag=寝袋を配置できません！周囲を確認してください。

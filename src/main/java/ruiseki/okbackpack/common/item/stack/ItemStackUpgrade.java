@@ -34,8 +34,7 @@ public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
     public UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper wrapper, ItemStack upgradeStack, int targetSlot) {
         int[] conflicts = IUpgradeItem.findConflictSlots(wrapper, targetSlot, ItemStackUpgrade.class);
         if (conflicts.length >= 3) {
-            return UpgradeSlotChangeResult.fail(
-                "gui.backpack.error.add.only_x_upgrades_allowed",
+            return UpgradeSlotChangeResult.failOnlyXAllowed(
                 conflicts,
                 3,
                 LangHelpers.localize("item.stack_upgrade.name"),
