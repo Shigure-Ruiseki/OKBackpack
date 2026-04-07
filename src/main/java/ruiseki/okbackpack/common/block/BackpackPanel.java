@@ -33,6 +33,7 @@ import com.cleanroommc.modularui.utils.GlStateManager;
 import com.cleanroommc.modularui.utils.item.PlayerInvWrapper;
 import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Column;
 import com.cleanroommc.modularui.widgets.layout.Row;
@@ -44,6 +45,7 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageContainer;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.api.wrapper.IDirtable;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
@@ -74,7 +76,6 @@ import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.SortType;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
-import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 import ruiseki.okcore.helper.ItemStackHelpers;
 import ruiseki.okcore.helper.LangHelpers;
@@ -119,8 +120,11 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
     public final ItemStack[] lastUpgradeStacks;
 
     public int rowSize;
-    public Column backpackInvCol;
+    public int slotsHeight;
+    public Row slotRow;
     public BackpackList backpackList;
+    public Column backpackInvCol;
+    public List<Column> slotWidgets;
     public BackpackSearchBarWidget searchBarWidget;
 
     public final IPanelHandler settingPanel;
@@ -246,8 +250,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         height(visibleRows * slotSize + 118);
 
         // set list height
-        int backpackSlotsHeight = visibleRows * slotSize;
-        backpackList.maxSize(backpackSlotsHeight);
+        slotsHeight = visibleRows * slotSize;
+        backpackList.maxSize(slotsHeight);
         backpackList.scheduleResize();
 
         this.scheduleResize();
@@ -401,19 +405,44 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             .child(sleepButton);
     }
 
-    public void addBackpackInventorySlots() {
-        Row backpackInvRow = (Row) new Row().coverChildren()
-            .alignX(0.5f)
+    public void addMainWidget() {
+        slotRow = (Row) new Row().coverChildren()
             .top(18)
-            .childPadding(4);
+            .left(5);
+
+        rebuildInventorySlots();
+        this.child(slotRow);
+    }
+
+    public void rebuildInventorySlots() {
+        slotRow.removeAll();
 
         backpackList = new BackpackList(this).name("backpack_slots");
+        addInventorySlots();
+        slotRow.child(backpackList);
 
+        slotWidgets = new ArrayList<>();
+        for (int i = 0; i < wrapper.getUpgradeHandler()
+            .getSlots(); i++) {
+            Column colWidget = new Column();
+            colWidget.name("slot_widget_colum_" + i)
+                .size(0);
+            slotWidgets.add(colWidget);
+            slotRow.child(colWidget);
+        }
+        if (searchBarWidget != null) {
+            searchBarWidget.cacheOriginalOrder();
+            searchBarWidget.research();
+        }
+    }
+
+    public void addInventorySlots() {
+        int usableRowSize = getUsableRowSize();
         backpackInvCol = (Column) new Column().coverChildren();
 
         for (int i = 0; i < wrapper.getSlots(); i++) {
-            int col = i % rowSize;
-            int row = i / rowSize;
+            int col = i % usableRowSize;
+            int row = i / usableRowSize;
 
             BackpackSlot slot = (BackpackSlot) new BackpackSlot(this, wrapper).syncHandler("backpack", i)
                 .size(ItemSlot.SIZE)
@@ -424,11 +453,36 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             backpackInvCol.child(slot);
         }
 
-        backpackList.maxSizeRel(1f)
-            .child(backpackInvCol);
-        backpackInvRow.child(backpackList);
+        backpackList.child(backpackInvCol);
+    }
 
-        this.child(backpackInvRow);
+    public int getActiveOverlayCount() {
+        int count = 0;
+        int maxOverlayColumns = Math.max(rowSize - 4, 0);
+
+        for (int i = 0; i < wrapper.getUpgradeHandler()
+            .getSlots(); i++) {
+            ItemStack stack = wrapper.getUpgradeHandler()
+                .getStackInSlot(i);
+            if (stack == null) continue;
+
+            Item item = stack.getItem();
+            if (!(item instanceof IUpgradeItem upgrade)) continue;
+
+            if (upgrade.hasSlotWidget()) {
+                count++;
+                if (count * 2 >= maxOverlayColumns) {
+                    break;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    public int getUsableRowSize() {
+        int overlayColumns = getActiveOverlayCount() * 2;
+        return rowSize - overlayColumns;
     }
 
     public void addSearchBar() {
@@ -493,13 +547,14 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         Integer openedTabIndex = null;
 
         resetTabState();
+        rebuildInventorySlots();
 
         for (int slotIndex = 0; slotIndex < upgradeSlotWidgets.size(); slotIndex++) {
             ItemSlot slotWidget = upgradeSlotWidgets.get(slotIndex);
             if (slotWidget.getSlot() == null) continue;
             ItemStack stack = slotWidget.getSlot()
                 .getStack();
-            if (!(stack != null && stack.getItem() instanceof ItemUpgrade<?>item)) continue;
+            if (!(stack != null && stack.getItem() instanceof IUpgradeItem<?>item)) continue;
             if (!item.hasTab()) continue;
 
             IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
@@ -527,38 +582,59 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             if (stack == null) continue;
 
             Item item = stack.getItem();
-            if (!(item instanceof ItemUpgrade upgrade) || !upgrade.hasTab()) continue;
+            if (!(item instanceof IUpgradeItem upgrade)) continue;
+            if (upgrade.hasTab()) {
 
-            TabWidget tabWidget = tabWidgets.get(tabIndex);
-            UpgradeSlotUpdateGroup upgradeSlotGroup = upgradeSlotGroups[slotIndex];
+                TabWidget tabWidget = tabWidgets.get(tabIndex);
+                UpgradeSlotUpdateGroup upgradeSlotGroup = upgradeSlotGroups[slotIndex];
 
-            IUpgradeWrapper wrapper = this.wrapper.upgradeHandler.getWrapperInSlot(slotIndex);
-            if (wrapper == null) continue;
+                IUpgradeWrapper wrapper = this.wrapper.upgradeHandler.getWrapperInSlot(slotIndex);
+                if (wrapper == null) continue;
 
-            tabWidget.setShowExpanded(wrapper.isTabOpened());
-            tabWidget.setEnabled(true);
-            tabWidget.setTabIcon(
-                new ItemDrawable(stack).asIcon()
-                    .size(18));
-            tabWidget.tooltip(
-                tooltip -> tooltip.clearText()
-                    .addLine(IKey.str(item.getItemStackDisplayName(stack)))
-                    .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+                tabWidget.setShowExpanded(wrapper.isTabOpened());
+                tabWidget.setEnabled(true);
+                tabWidget.setTabIcon(
+                    new ItemDrawable(stack).asIcon()
+                        .size(18));
+                tabWidget.tooltip(
+                    tooltip -> tooltip.clearText()
+                        .addLine(IKey.str(item.getItemStackDisplayName(stack)))
+                        .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
 
-            upgrade.updateWidgetDelegates(wrapper, upgradeSlotGroup);
-            ExpandedTabWidget widget = upgrade
-                .getExpandedTabWidget(slotIndex, wrapper, stack, this, wrapper.getSettingLangKey());
+                upgrade.updateWidgetDelegates(wrapper, upgradeSlotGroup);
+                ExpandedTabWidget widget = upgrade
+                    .getExpandedTabWidget(slotIndex, wrapper, stack, this, wrapper.getSettingLangKey());
 
-            if (widget != null) {
-                tabWidget.setExpandedWidget(widget);
+                if (widget != null) {
+                    tabWidget.setExpandedWidget(widget);
+                }
+
+                if (tabWidget.getExpandedWidget() != null) {
+                    getContext().getUISettings()
+                        .getRecipeViewerSettings()
+                        .addExclusionArea(tabWidget.getExpandedWidget());
+                }
+                tabIndex++;
             }
 
-            if (tabWidget.getExpandedWidget() != null) {
-                getContext().getUISettings()
-                    .getRecipeViewerSettings()
-                    .addExclusionArea(tabWidget.getExpandedWidget());
+            Column column = slotWidgets.get(slotIndex);
+            column.removeAll();
+            if (upgrade.hasSlotWidget()) {
+                column.size(36, slotsHeight);
+
+                UpgradeSlotUpdateGroup upgradeSlotGroup = upgradeSlotGroups[slotIndex];
+                IUpgradeWrapper wrapper = this.wrapper.upgradeHandler.getWrapperInSlot(slotIndex);
+                if (wrapper == null) continue;
+
+                upgrade.updateSlotWidgetDelegates(wrapper, upgradeSlotGroup);
+                Widget widget = upgrade.getSlotWidget(slotIndex, wrapper, stack, this, wrapper.getSettingLangKey());
+
+                if (widget != null) {
+                    column.child(widget);
+                }
+            } else {
+                column.size(0);
             }
-            tabIndex++;
         }
 
         if (openedTabIndex != null) {
@@ -635,7 +711,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 ItemSlot slotWidget = upgradeSlotWidgets.get(i);
                 ItemStack stack = slotWidget.getSlot()
                     .getStack();
-                if (stack == null || !(stack.getItem() instanceof ItemUpgrade<?>item) || !item.hasTab()) continue;
+                if (stack == null || !(stack.getItem() instanceof IUpgradeItem<?>item) || !item.hasTab()) continue;
 
                 IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
                     .getWrapperInSlot(i);
@@ -670,7 +746,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             if (stack == null) continue;
             Item item = stack.getItem();
 
-            if (!(item instanceof ItemUpgrade<?> && ((ItemUpgrade<?>) item).hasTab())) {
+            if (!(item instanceof IUpgradeItem<?> && ((IUpgradeItem<?>) item).hasTab())) {
                 continue;
             }
 

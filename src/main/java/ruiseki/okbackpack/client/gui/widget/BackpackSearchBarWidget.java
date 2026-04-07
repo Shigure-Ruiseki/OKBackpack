@@ -61,7 +61,7 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
         doSearch(prevText);
     }
 
-    private void cacheOriginalOrder() {
+    public void cacheOriginalOrder() {
         Column backpackSlots = panel.backpackInvCol;
         if (backpackSlots == null) return;
 
@@ -84,7 +84,7 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
         IWidget parent = backpackSlots.getParent();
         if (!(parent instanceof BackpackList backpackList)) return;
 
-        int columns = panel.rowSize;
+        int columns = panel.getUsableRowSize();
         int slotSize = BackpackSlot.SIZE;
 
         SearchNode compiledSearch = search.isEmpty() ? null : SearchParser.parse(search);

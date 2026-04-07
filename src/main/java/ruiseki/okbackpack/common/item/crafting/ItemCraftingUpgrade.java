@@ -31,6 +31,11 @@ public class ItemCraftingUpgrade extends ItemUpgrade<CraftingUpgradeWrapper> {
     }
 
     @Override
+    public boolean hasSlotWidget() {
+        return true;
+    }
+
+    @Override
     public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
         list.add(LangHelpers.localize("tooltip.backpack.crafting_upgrade"));
     }

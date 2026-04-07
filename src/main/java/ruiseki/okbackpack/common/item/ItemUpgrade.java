@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import com.cleanroommc.modularui.widget.Widget;
+
 import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
@@ -35,6 +37,11 @@ public class ItemUpgrade<T extends IUpgradeWrapper> extends ItemOK implements IU
     }
 
     @Override
+    public boolean hasSlotWidget() {
+        return false;
+    }
+
+    @Override
     public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
         list.add(LangHelpers.localize("tooltip.backpack.upgrade_base"));
     }
@@ -53,6 +60,16 @@ public class ItemUpgrade<T extends IUpgradeWrapper> extends ItemOK implements IU
     @Override
     public ExpandedTabWidget getExpandedTabWidget(int slotIndex, T wrapper, ItemStack stack, IStoragePanel<?> panel,
         String titleKey) {
+        return null;
+    }
+
+    @Override
+    public void updateSlotWidgetDelegates(T wrapper, UpgradeSlotUpdateGroup group) {
+
+    }
+
+    @Override
+    public Widget<?> getSlotWidget(int slotIndex, T wrapper, ItemStack stack, IStoragePanel<?> panel, String titleKey) {
         return null;
     }
 }

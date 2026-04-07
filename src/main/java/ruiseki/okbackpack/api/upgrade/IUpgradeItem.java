@@ -7,6 +7,8 @@ import java.util.function.Consumer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import com.cleanroommc.modularui.widget.Widget;
+
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
@@ -18,12 +20,20 @@ import ruiseki.okbackpack.common.item.infinity.ItemSurvivalInfinityUpgrade;
 
 public interface IUpgradeItem<W extends IUpgradeWrapper> {
 
+    boolean hasTab();
+
+    boolean hasSlotWidget();
+
     W createWrapper(ItemStack stack, IStorageWrapper storage, Consumer<ItemStack> upgradeConsumer);
 
     void updateWidgetDelegates(W wrapper, UpgradeSlotUpdateGroup group);
 
     ExpandedTabWidget getExpandedTabWidget(int slotIndex, W wrapper, ItemStack stack, IStoragePanel<?> panel,
         String titleKey);
+
+    void updateSlotWidgetDelegates(W wrapper, UpgradeSlotUpdateGroup group);
+
+    Widget<?> getSlotWidget(int slotIndex, W wrapper, ItemStack stack, IStoragePanel<?> panel, String titleKey);
 
     /**
      * Checks if this upgrade can be added to the given storage wrapper.
