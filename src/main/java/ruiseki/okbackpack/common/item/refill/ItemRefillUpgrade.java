@@ -44,7 +44,7 @@ public class ItemRefillUpgrade extends ItemUpgrade<RefillUpgradeWrapper> {
     public void updateWidgetDelegates(RefillUpgradeWrapper wrapper, UpgradeSlotUpdateGroup group) {
         DelegatedStackHandlerSH handler = group.get("refill_filter_handler");
         if (handler == null) return;
-        handler.setDelegatedStackHandler(wrapper::getFilterHandler);
+        handler.setDelegatedStackHandler(wrapper::getFilterItems);
         handler.syncToServer(DelegatedStackHandlerSH.getId(DelegatedStackHandlerSHRegisters.UPDATE_FILTERABLE));
     }
 

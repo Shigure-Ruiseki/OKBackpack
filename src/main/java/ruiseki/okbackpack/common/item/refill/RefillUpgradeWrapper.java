@@ -13,6 +13,7 @@ import com.cleanroommc.modularui.utils.item.IItemHandler;
 
 import lombok.Getter;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.IRefillUpgrade;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
@@ -23,7 +24,6 @@ import ruiseki.okcore.helper.ItemStackHelpers;
 @Getter
 public class RefillUpgradeWrapper extends UpgradeWrapperBase implements IRefillUpgrade {
 
-    private static final String FILTER_ITEMS_TAG = "FilterItems";
     private static final String ENABLED_TAG = "Enabled";
     private static final int COOLDOWN_TICKS = 20;
     private static final int BLOCK_RANGE = 5;
@@ -45,13 +45,13 @@ public class RefillUpgradeWrapper extends UpgradeWrapperBase implements IRefillU
             @Override
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
-                tag.setTag(FILTER_ITEMS_TAG, this.serializeNBT());
+                tag.setTag(IBasicFilterable.FILTER_ITEMS_TAG, this.serializeNBT());
                 save();
                 onFilterSlotChanged(slot);
             }
         };
 
-        NBTTagCompound handlerTag = ItemNBTHelpers.getCompound(upgrade, FILTER_ITEMS_TAG, false);
+        NBTTagCompound handlerTag = ItemNBTHelpers.getCompound(upgrade, IBasicFilterable.FILTER_ITEMS_TAG, false);
         if (handlerTag != null) filterHandler.deserializeNBT(handlerTag);
     }
 
@@ -78,6 +78,21 @@ public class RefillUpgradeWrapper extends UpgradeWrapperBase implements IRefillU
     @Override
     public void toggle() {
         setEnabled(!isEnabled());
+    }
+
+    @Override
+    public BaseItemStackHandler getFilterItems() {
+        return filterHandler;
+    }
+
+    @Override
+    public FilterType getFilterType() {
+        return FilterType.WHITELIST;
+    }
+
+    @Override
+    public void setFilterType(FilterType type) {
+        // Refill upgrades always operate as whitelist
     }
 
     @Override

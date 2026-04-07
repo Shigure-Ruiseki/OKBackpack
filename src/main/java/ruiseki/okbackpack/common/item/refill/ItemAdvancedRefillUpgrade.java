@@ -51,7 +51,7 @@ public class ItemAdvancedRefillUpgrade extends ItemUpgrade<AdvancedRefillUpgrade
     public void updateWidgetDelegates(AdvancedRefillUpgradeWrapper wrapper, UpgradeSlotUpdateGroup group) {
         DelegatedStackHandlerSH handler = group.get("adv_refill_filter_handler");
         if (handler == null) return;
-        handler.setDelegatedStackHandler(wrapper::getFilterHandler);
+        handler.setDelegatedStackHandler(wrapper::getFilterItems);
         handler.syncToServer(DelegatedStackHandlerSH.getId(DelegatedStackHandlerSHRegisters.UPDATE_FILTERABLE));
     }
 
