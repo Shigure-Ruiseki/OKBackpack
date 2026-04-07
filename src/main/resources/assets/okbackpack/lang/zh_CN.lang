@@ -52,6 +52,7 @@ gui.backpack.advanced_compacting_settings=高级压制设置
 gui.backpack.jukebox_settings=唱片机设置
 gui.backpack.advanced_jukebox_settings=高级唱片机设置
 gui.backpack.smelting_settings=熔炼设置
+gui.backpack.anvil_settings=铁砧
 gui.backpack.auto_smelting_settings=自动熔炼设置
 gui.backpack.smoking_settings=烟熏设置
 gui.backpack.auto_smoking_settings=自动烟熏设置
@@ -213,6 +214,7 @@ item.tool_swapper_upgrade.name=工具替换升级
 item.advanced_tool_swapper_upgrade.name=高级工具替换升级
 item.infinity_upgrade.name=无限升级（管理员）
 item.survival_infinity_upgrade.name=生存模式无限升级
+item.anvil_upgrade.name=铁砧升级
 
 
 # Tooltips
@@ -258,6 +260,7 @@ tooltip.backpack.auto_blasting_upgrade.1=自动抽入/排出物品
 tooltip.backpack.tool_swapper_upgrade=左击时自动将玩家手持物品替换为对应方块/实体的挖掘或攻击工具
 tooltip.backpack.advanced_tool_swapper_upgrade=左击时自动将玩家手持物品替换为对应方块/实体的挖掘或攻击工具
 tooltip.backpack.advanced_tool_swapper_upgrade.1=具有过滤选项，并可按[%s]手动替换工具
+tooltip.backpack.anvil_upgrade=在升级标签页中添加一个铁砧
 
 #Messages
 messages.backpack.cant.bag=无法放置睡袋！检查周围区域。

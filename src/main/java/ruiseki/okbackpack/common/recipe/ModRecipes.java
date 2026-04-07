@@ -564,6 +564,24 @@ public class ModRecipes implements IInitListener {
                 'U',
                 ModItems.TOOL_SWAPPER_UPGRADE.getItem()));
 
+        // Anvil Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.ANVIL_UPGRADE.getItem(),
+                "ADA",
+                "IUI",
+                " C ",
+                'A',
+                Blocks.anvil,
+                'C',
+                Blocks.chest,
+                'D',
+                "gemDiamond",
+                'I',
+                "ingotIron",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
         // Smelting Upgrade
         GameRegistry.addRecipe(
             new ShapedOreRecipe(

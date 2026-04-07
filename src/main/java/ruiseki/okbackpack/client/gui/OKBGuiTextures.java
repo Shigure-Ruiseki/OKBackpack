@@ -240,6 +240,41 @@ public class OKBGuiTextures {
         .xy(0, 0, 16, 16)
         .build();
 
+    public static final UITexture ANVIL_TEXT_FIELD_ENABLED = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(28, 99, 100, 16)
+        .name("anvil_text_field_enabled")
+        .build();
+
+    public static final UITexture ANVIL_TEXT_FIELD_DISABLED = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(28, 115, 100, 16)
+        .name("anvil_text_field_disabled")
+        .build();
+
+    public static final UITexture ANVIL_PLUS_SIGN = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(113, 203, 13, 13)
+        .name("anvil_plus_sign")
+        .build();
+
+    public static final UITexture ANVIL_ARROW = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(56, 221, 14, 15)
+        .name("anvil_arrow")
+        .build();
+
+    public static final UITexture ANVIL_RED_CROSS = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(113, 216, 15, 15)
+        .name("anvil_red_cross")
+        .build();
+
     public static UITexture icon(String name, int x, int y) {
         return icon(name, x, y, 16, 16);
     }

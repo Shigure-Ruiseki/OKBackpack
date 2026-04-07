@@ -52,6 +52,7 @@ gui.backpack.advanced_compacting_settings=Adv. Compacting Settings
 gui.backpack.jukebox_settings=Jukebox Settings
 gui.backpack.advanced_jukebox_settings=Adv. Jukebox Settings
 gui.backpack.smelting_settings=Smelting Settings
+gui.backpack.anvil_settings=Anvil
 gui.backpack.auto_smelting_settings=Auto-Smelting Settings
 gui.backpack.smoking_settings=Smoking Settings
 gui.backpack.auto_smoking_settings=Auto-Smoking Settings
@@ -212,6 +213,7 @@ item.tool_swapper_upgrade.name=Tool Swapper Upgrade
 item.advanced_tool_swapper_upgrade.name=Adv. Tool Swapper Upgrade
 item.infinity_upgrade.name=Infinity Upgrade (Admin)
 item.survival_infinity_upgrade.name=Survival Infinity Upgrade
+item.anvil_upgrade.name=Anvil Upgrade
 
 
 # Tooltips
@@ -257,6 +259,7 @@ tooltip.backpack.auto_blasting_upgrade.1=Automatically pulls in/pushes out items
 tooltip.backpack.tool_swapper_upgrade=Automatically swaps held item to the matching mining/attack tool for the target block/entity on left click
 tooltip.backpack.advanced_tool_swapper_upgrade=Automatically swaps held item to the matching mining/attack tool for the target block/entity on left click
 tooltip.backpack.advanced_tool_swapper_upgrade.1=Has filter options and manual tool swap by [%s]
+tooltip.backpack.anvil_upgrade=Adds an anvil in the upgrade tab
 
 #Messages
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.

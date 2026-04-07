@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Level;
 
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
+import ruiseki.okbackpack.common.item.anvil.ItemAnvilUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemAdvancedCompactingUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemCompactingUpgrade;
 import ruiseki.okbackpack.common.item.crafting.ItemCraftingUpgrade;
@@ -69,6 +70,7 @@ public enum ModItems {
     AUTO_BLASTING_UPGRADE(new ItemAutoBlastingUpgrade(), Mods.EtFuturum),
     TOOL_SWAPPER_UPGRADE(new ItemToolSwapperUpgrade()),
     ADVANCED_TOOL_SWAPPER_UPGRADE(new ItemAdvancedToolSwapperUpgrade()),
+    ANVIL_UPGRADE(new ItemAnvilUpgrade()),
     INFINITY_UPGRADE(new ItemInfinityUpgrade()),
     SURVIVAL_INFINITY_UPGRADE(new ItemSurvivalInfinityUpgrade()),
 
