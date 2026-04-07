@@ -9,6 +9,15 @@ key.categories.okbackpack=OK Backpack
 key.okbackpack.open_backpack=Open Backpack
 key.okbackpack.pick_block=Pick Block
 key.okbackpack.tool_swap=Swap tool based on current block/entity
+key.okbackpack.toggle_upgrade_1=Switch Upgrade in the 1st Slot On/Off
+key.okbackpack.toggle_upgrade_2=Switch Upgrade in the 2nd Slot On/Off
+key.okbackpack.toggle_upgrade_3=Switch Upgrade in the 3rd Slot On/Off
+key.okbackpack.toggle_upgrade_4=Switch Upgrade in the 4th Slot On/Off
+key.okbackpack.toggle_upgrade_5=Switch Upgrade in the 5th Slot On/Off
+
+# Status
+gui.okbackpack.status.upgrade_switched_off=%s Switched Off
+gui.okbackpack.status.upgrade_switched_on=%s Switched On
 
 # Sort
 gui.sort_type.by_mod_id=Mod ID

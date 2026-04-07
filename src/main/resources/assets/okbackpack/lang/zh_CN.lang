@@ -9,6 +9,15 @@ key.categories.okbackpack=OK背包
 key.okbackpack.open_backpack=打开背包
 key.okbackpack.pick_block=选取方块
 key.okbackpack.tool_swap=基于所指方块/实体替换工具
+key.okbackpack.toggle_upgrade_1=打开/关闭第一个插槽中的升级卡
+key.okbackpack.toggle_upgrade_2=打开/关闭第二个插槽中的升级卡
+key.okbackpack.toggle_upgrade_3=打开/关闭第三个插槽中的升级卡
+key.okbackpack.toggle_upgrade_4=打开/关闭第四个插槽中的升级卡
+key.okbackpack.toggle_upgrade_5=打开/关闭第五个插槽中的升级卡
+
+# Status
+gui.okbackpack.status.upgrade_switched_off=%s已关闭
+gui.okbackpack.status.upgrade_switched_on=%s已开启
 
 # Sort
 gui.sort_type.by_mod_id=按模组ID

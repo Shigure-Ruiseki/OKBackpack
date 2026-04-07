@@ -9,6 +9,15 @@ key.categories.okbackpack=Omoshiroi Kamo
 key.okbackpack.open_backpack=リュックを開く
 key.okbackpack.pick_block=ブロック選択
 key.okbackpack.tool_swap=壊すブロックに応じてツールを交換
+key.okbackpack.toggle_upgrade_1=1つ目の追加機能のON/OFF
+key.okbackpack.toggle_upgrade_2=2つ目の追加機能のON/OFF
+key.okbackpack.toggle_upgrade_3=3つ目の追加機能のON/OFF
+key.okbackpack.toggle_upgrade_4=4つ目の追加機能のON/OFF
+key.okbackpack.toggle_upgrade_5=5つ目の追加機能のON/OFF
+
+# Status
+gui.okbackpack.status.upgrade_switched_off=%s を無効にしました
+gui.okbackpack.status.upgrade_switched_on=%s を有効にしました
 
 # Sort
 gui.sort_type.by_mod_id=Mod ID
