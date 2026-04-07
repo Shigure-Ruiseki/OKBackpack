@@ -144,8 +144,7 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
         smeltingInventory.setStackInSlot(2, stack);
     }
 
-    protected void doSmeltTick() {
-        if (!isEnabled()) return;
+    protected boolean doSmeltTick() {
 
         boolean dirty = false;
         int fuelProgress = getBurnTime();
@@ -223,8 +222,9 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
         }
 
         if (dirty) {
-            markDirty();
+            save();
         }
+        return dirty;
     }
 
     @Override
@@ -244,14 +244,14 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
     @Override
     public boolean tick(EntityPlayer player) {
         if (player.worldObj.isRemote) return false;
-        doSmeltTick();
-        return false;
+        if (!isEnabled()) return false;
+        return doSmeltTick();
     }
 
     @Override
     public boolean tick(World world, BlockPos pos) {
         if (world.isRemote) return false;
-        doSmeltTick();
-        return false;
+        if (!isEnabled()) return false;
+        return doSmeltTick();
     }
 }
