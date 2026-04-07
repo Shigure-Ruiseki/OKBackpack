@@ -226,6 +226,18 @@ public class ModRecipes implements IInitListener {
                     "blockNetherite",
                     'U',
                     ModItems.STACK_UPGRADE.newItemStack(1, 2)));
+
+            // Stack Upgrade Starter Tier
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.STACK_UPGRADE.newItemStack(1, 5),
+                    "BBB",
+                    "BUB",
+                    "BBB",
+                    'B',
+                    "blockCopper",
+                    'U',
+                    ModItems.BASE_UPGRADE.getItem()));
         }
 
         // Stack Upgrade Tier Omega
@@ -513,6 +525,62 @@ public class ModRecipes implements IInitListener {
                 "ingotGold",
                 'U',
                 ModItems.JUKEBOX_UPGRADE.getItem()));
+
+        // Tool Swapper Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.TOOL_SWAPPER_UPGRADE.getItem(),
+                "RSR",
+                "PUA",
+                "IHI",
+                'S',
+                Items.wooden_sword,
+                'P',
+                Items.wooden_pickaxe,
+                'A',
+                Items.wooden_axe,
+                'H',
+                Items.wooden_shovel,
+                'R',
+                "dustRedstone",
+                'I',
+                "ingotIron",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Advanced Tool Swapper Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.ADVANCED_TOOL_SWAPPER_UPGRADE.getItem(),
+                " D ",
+                "GUG",
+                "RRR",
+                'D',
+                "gemDiamond",
+                'R',
+                "dustRedstone",
+                'G',
+                "ingotGold",
+                'U',
+                ModItems.TOOL_SWAPPER_UPGRADE.getItem()));
+
+        // Anvil Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.ANVIL_UPGRADE.getItem(),
+                "ADA",
+                "IUI",
+                " C ",
+                'A',
+                Blocks.anvil,
+                'C',
+                Blocks.chest,
+                'D',
+                "gemDiamond",
+                'I',
+                "ingotIron",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
 
         // Smelting Upgrade
         GameRegistry.addRecipe(

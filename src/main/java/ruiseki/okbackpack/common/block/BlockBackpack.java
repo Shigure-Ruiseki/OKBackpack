@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -38,6 +39,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
 import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.wrapper.IAdminProtectable;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.client.renderer.player.IArmorRender;
@@ -101,6 +103,45 @@ public class BlockBackpack extends BlockOK {
         this.backpackSlots = backpackSlots;
         this.upgradeSlots = upgradeSlots;
         this.isFullSize = this.isOpaque = false;
+    }
+
+    @Override
+    public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, int x, int y, int z) {
+        if (hasAdminProtection(world, x, y, z) && !player.capabilities.isCreativeMode) {
+            return -1.0f;
+        }
+        return super.getPlayerRelativeBlockHardness(player, world, x, y, z);
+    }
+
+    private boolean hasAdminProtection(World world, int x, int y, int z) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof TEBackpack backpack) {
+            for (var entry : backpack.getWrapper()
+                .gatherCapabilityUpgrades(IAdminProtectable.class)
+                .values()) {
+                if (entry.isAdmin()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public float getExplosionResistance(Entity exploder, World world, int x, int y, int z, double explosionX,
+        double explosionY, double explosionZ) {
+        if (hasAdminProtection(world, x, y, z)) {
+            return Float.MAX_VALUE;
+        }
+        return super.getExplosionResistance(exploder, world, x, y, z, explosionX, explosionY, explosionZ);
+    }
+
+    @Override
+    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
+        if (hasAdminProtection(world, x, y, z)) {
+            return;
+        }
+        super.onBlockExploded(world, x, y, z, explosion);
     }
 
     @Override

@@ -230,7 +230,10 @@ public class TEBackpack extends TileSideCapability
 
     @Override
     public int getInventoryStackLimit() {
-        return 64 * wrapper.applySlotLimitModifiers();
+        double mod = wrapper.applySlotLimitModifiers();
+        double raw = 64.0 * mod;
+        if (raw >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
+        return (int) Math.ceil(raw);
     }
 
     @Override

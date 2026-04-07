@@ -54,25 +54,29 @@ public class ModConfig {
     @Config.RangeInt(min = 1)
     public static int obsidianUpgradeSlots;
 
-    @Config.DefaultInt(2)
-    @Config.RangeInt(min = 1)
-    public static int stackUpgradeTier1Mul;
+    @Config.DefaultDouble(1.5)
+    @Config.RangeDouble(min = 0.1)
+    public static double stackUpgradeStarterMul;
 
-    @Config.DefaultInt(4)
-    @Config.RangeInt(min = 1)
-    public static int stackUpgradeTier2Mul;
+    @Config.DefaultDouble(2)
+    @Config.RangeDouble(min = 1)
+    public static double stackUpgradeTier1Mul;
 
-    @Config.DefaultInt(8)
-    @Config.RangeInt(min = 1)
-    public static int stackUpgradeTier3Mul;
+    @Config.DefaultDouble(4)
+    @Config.RangeDouble(min = 1)
+    public static double stackUpgradeTier2Mul;
 
-    @Config.DefaultInt(16)
-    @Config.RangeInt(min = 1)
-    public static int stackUpgradeTier4Mul;
+    @Config.DefaultDouble(8)
+    @Config.RangeDouble(min = 1)
+    public static double stackUpgradeTier3Mul;
 
-    @Config.DefaultInt(33554431)
-    @Config.RangeInt(min = 1)
-    public static int stackUpgradeTierOmegaMul;
+    @Config.DefaultDouble(16)
+    @Config.RangeDouble(min = 1)
+    public static double stackUpgradeTier4Mul;
+
+    @Config.DefaultDouble(33554431)
+    @Config.RangeDouble(min = 1)
+    public static double stackUpgradeTierOmegaMul;
 
     @Config.DefaultInt(5)
     public static int magnetRange;

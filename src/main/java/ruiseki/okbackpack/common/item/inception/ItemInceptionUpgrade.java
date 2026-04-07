@@ -30,13 +30,10 @@ public class ItemInceptionUpgrade extends ItemUpgrade<InceptionUpgradeWrapper> {
     public UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper wrapper, ItemStack upgradeStack, int targetSlot) {
         int[] conflicts = IUpgradeItem.findConflictSlots(wrapper, targetSlot, ItemInceptionUpgrade.class);
         if (conflicts.length >= 1) {
-            return UpgradeSlotChangeResult.fail(
-                "gui.backpack.error.add.only_single_upgrade_allowed",
-                conflicts,
-                upgradeStack.getDisplayName(),
-                wrapper.getDisplayName());
+            return UpgradeSlotChangeResult
+                .failOnlySingleAllowed(conflicts, upgradeStack.getDisplayName(), wrapper.getDisplayName());
         }
-        return UpgradeSlotChangeResult.success();
+        return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
     }
 
     @Override

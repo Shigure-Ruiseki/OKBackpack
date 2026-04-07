@@ -153,6 +153,13 @@ public class JukeboxUpgradeWrapper extends UpgradeWrapperBase implements IJukebo
     }
 
     @Override
+    public void onBeforeRemoved() {
+        if (isPlaying()) {
+            stop();
+        }
+    }
+
+    @Override
     public boolean tick(EntityPlayer player) {
         if (player.worldObj.isRemote) return false;
         boolean wasPlaying = isPlaying();

@@ -1,12 +1,15 @@
 package ruiseki.okbackpack.common.item.stack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
+import ruiseki.okbackpack.api.wrapper.IInfinityUpgrade;
 import ruiseki.okbackpack.api.wrapper.IStackSizeUpgrade;
-import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 
 public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSizeUpgrade {
@@ -22,52 +25,92 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
 
     @Override
     public boolean canRemoveUpgrade(int slotIndex) {
+        return getRemoveUpgradeResult(slotIndex).isSuccessful();
+    }
 
-        int totalMultiplier = calculateMultiplierExcluding(slotIndex);
+    @Override
+    public UpgradeSlotChangeResult getRemoveUpgradeResult(int slotIndex) {
 
-        for (ItemStack stack : storage.getStacks()) {
+        if (!storage.gatherCapabilityUpgrades(IInfinityUpgrade.class)
+            .isEmpty()) {
+            return UpgradeSlotChangeResult.success();
+        }
+
+        double totalMultiplier = Math.max(calculateMultiplierExcluding(slotIndex), 1.0);
+
+        List<Integer> conflictSlots = new ArrayList<>();
+        for (int i = 0; i < storage.getSlots(); i++) {
+            ItemStack stack = storage.getStackInSlot(i);
             if (stack == null) continue;
 
-            int newLimit = stack.getMaxStackSize() * totalMultiplier;
+            double rawLimit = stack.getMaxStackSize() * totalMultiplier;
+            long newLimit = rawLimit >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (long) Math.ceil(rawLimit);
 
             if (stack.stackSize > newLimit) {
-                return false;
+                conflictSlots.add(i);
             }
         }
 
-        return true;
+        if (!conflictSlots.isEmpty()) {
+            return UpgradeSlotChangeResult.failStackLowMultiplier(
+                conflictSlots.stream()
+                    .mapToInt(Integer::intValue)
+                    .toArray(),
+                ItemStackUpgrade.formatMultiplier(totalMultiplier));
+        }
+
+        return UpgradeSlotChangeResult.success();
     }
 
     @Override
     public boolean canReplaceUpgrade(int slotIndex, ItemStack replacement) {
-        if (replacement == null) return true;
+        return getReplaceUpgradeResult(slotIndex, replacement).isSuccessful();
+    }
 
-        int totalOtherMultiplier = calculateMultiplierExcluding(slotIndex);
+    @Override
+    public UpgradeSlotChangeResult getReplaceUpgradeResult(int slotIndex, ItemStack replacement) {
+        if (replacement == null) return UpgradeSlotChangeResult.success();
 
-        IUpgradeWrapper wrapper = storage.getUpgradeHandler()
-            .getWrapperInSlot(slotIndex);
-
-        int totalMultiplier = totalOtherMultiplier;
-
-        if (wrapper instanceof IStackSizeUpgrade sizeUpgrade) {
-            totalMultiplier += sizeUpgrade.getMultiplier();
+        if (!storage.gatherCapabilityUpgrades(IInfinityUpgrade.class)
+            .isEmpty()) {
+            return UpgradeSlotChangeResult.success();
         }
 
-        for (ItemStack stack : storage.getStacks()) {
+        double totalMultiplier = calculateMultiplierExcluding(slotIndex);
+
+        // Add the replacement's multiplier, not the current upgrade's
+        if (replacement.getItem() instanceof ItemStackUpgrade) {
+            totalMultiplier += ItemStackUpgrade.multiplier(replacement);
+        }
+
+        totalMultiplier = Math.max(totalMultiplier, 1.0);
+
+        List<Integer> conflictSlots = new ArrayList<>();
+        for (int i = 0; i < storage.getSlots(); i++) {
+            ItemStack stack = storage.getStackInSlot(i);
             if (stack == null) continue;
 
-            int maxAllowed = stack.getMaxStackSize() * totalMultiplier;
+            double rawLimit = stack.getMaxStackSize() * totalMultiplier;
+            long maxAllowed = rawLimit >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (long) Math.ceil(rawLimit);
 
             if (stack.stackSize > maxAllowed) {
-                return false;
+                conflictSlots.add(i);
             }
         }
 
-        return true;
+        if (!conflictSlots.isEmpty()) {
+            return UpgradeSlotChangeResult.failStackLowMultiplier(
+                conflictSlots.stream()
+                    .mapToInt(Integer::intValue)
+                    .toArray(),
+                ItemStackUpgrade.formatMultiplier(totalMultiplier));
+        }
+
+        return UpgradeSlotChangeResult.success();
     }
 
-    private int calculateMultiplierExcluding(int excludedSlot) {
-        int total = 0;
+    private double calculateMultiplierExcluding(int excludedSlot) {
+        double total = 0;
 
         for (var entry : storage.gatherCapabilityUpgrades(IStackSizeUpgrade.class)
             .entrySet()) {
@@ -85,7 +128,7 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
     }
 
     @Override
-    public int getMultiplier() {
+    public double getMultiplier() {
         return ItemStackUpgrade.multiplier(upgrade);
     }
 }

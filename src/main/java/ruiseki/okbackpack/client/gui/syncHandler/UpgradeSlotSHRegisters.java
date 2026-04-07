@@ -8,6 +8,7 @@ import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotSHRegistry;
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
+import ruiseki.okbackpack.api.wrapper.IAnvilUpgrade;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.ICompactingUpgrade;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
@@ -18,6 +19,7 @@ import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade;
 import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade.JukeboxLoopMode;
 import ruiseki.okbackpack.api.wrapper.IMagnetUpgrade;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
+import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
@@ -47,6 +49,8 @@ public class UpgradeSlotSHRegisters implements IInitListener {
     public static final String UPDATE_JUKEBOX_NEXT = "update_jukebox_next";
     public static final String UPDATE_JUKEBOX_SHUFFLE = "update_jukebox_shuffle";
     public static final String UPDATE_JUKEBOX_LOOP = "update_jukebox_loop";
+    public static final String UPDATE_TOOL_SWAPPER = "update_tool_swapper";
+    public static final String UPDATE_ANVIL_NAME = "update_anvil_name";
 
     @Override
     public void onInit(Step step) {
@@ -196,6 +200,21 @@ public class UpgradeSlotSHRegisters implements IInitListener {
                 if (ordinal >= 0 && ordinal < modes.length) {
                     jukebox.setLoopMode(modes[ordinal]);
                 }
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_TOOL_SWAPPER, (slot, buf) -> {
+                IUpgradeWrapper wrapper = slot.getWrapper();
+                if (!(wrapper instanceof IToolSwapperUpgrade upgrade)) return;
+                upgrade.setWeaponSwapMode(NetworkUtils.readEnumValue(buf, IToolSwapperUpgrade.WeaponSwapMode.class));
+                upgrade.setToolSwapMode(NetworkUtils.readEnumValue(buf, IToolSwapperUpgrade.ToolSwapMode.class));
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_ANVIL_NAME, (slot, buf) -> {
+                IUpgradeWrapper wrapper = slot.getWrapper();
+                if (!(wrapper instanceof IAnvilUpgrade anvil)) return;
+                String name = buf.readStringFromBuffer(50);
+                anvil.setRepairedItemName(name);
+                anvil.updateRepairOutput();
             });
 
         }

@@ -8,6 +8,7 @@ import org.lwjgl.input.Keyboard;
 import ruiseki.okbackpack.client.audio.BackpackJukeboxSoundManager;
 import ruiseki.okbackpack.client.key.OpenBackpackHandler;
 import ruiseki.okbackpack.client.key.PickBlockHandler;
+import ruiseki.okbackpack.client.key.ToolSwapHandler;
 import ruiseki.okbackpack.common.event.ItemRenderEvent;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.nei.BackpackGuiOpener;
@@ -20,6 +21,7 @@ public class ClientProxy extends ClientProxyComponent {
 
     public static KeyBinding keyOpenBackpack;
     public static KeyBinding keyBackpackPickBlock;
+    public static KeyBinding keyToolSwap;
 
     public ClientProxy() {
         super(new CommonProxy());
@@ -39,6 +41,9 @@ public class ClientProxy extends ClientProxyComponent {
 
         keyBackpackPickBlock = KeyRegistry.newKeyBinding(getMod(), "pick_block", Keyboard.KEY_NONE);
         keyRegistry.addKeyHandler(keyBackpackPickBlock, new PickBlockHandler());
+
+        keyToolSwap = KeyRegistry.newKeyBinding(getMod(), "tool_swap", Keyboard.KEY_NONE);
+        keyRegistry.addKeyHandler(keyToolSwap, new ToolSwapHandler());
 
         if (Mods.NotEnoughItems.isLoaded()) {
             new BackpackGuiOpener(keyOpenBackpack);

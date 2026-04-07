@@ -182,6 +182,12 @@ public class OKBGuiTextures {
     public static final UITexture VOID_ALL = icon("void_all", 0, 48);
     public static final UITexture VOID_AUTOMATION = icon("void_automation", 16, 48);
 
+    public static final IDrawable SWAP_WEAPON_ICON = icon("swap_weapon", 32, 64);
+    public static final IDrawable NO_SWAP_WEAPON_ICON = icon("no_swap_weapon", 48, 64);
+    public static final IDrawable SWAP_TOOL_ICON = icon("swap_tool", 64, 64);
+    public static final IDrawable ONLY_TOOL_SWAP_TOOL_ICON = icon("only_tool_swap_tool", 80, 64);
+    public static final IDrawable NO_SWAP_TOOL_ICON = icon("no_swap_tool", 96, 64);
+
     public static final IDrawable JUKEBOX_STOP_ICON = icon("jukebox_stop", 0, 64);
     public static final IDrawable JUKEBOX_PLAY_ICON = icon("jukebox_play", 16, 64);
     public static final IDrawable JUKEBOX_NEXT_ICON = icon("jukebox_next", 32, 96);
@@ -232,6 +238,41 @@ public class OKBGuiTextures {
         .location(Reference.MOD_ID, "textures/items/sleepingBag.png")
         .imageSize(16, 16)
         .xy(0, 0, 16, 16)
+        .build();
+
+    public static final UITexture ANVIL_TEXT_FIELD_ENABLED = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(28, 99, 100, 16)
+        .name("anvil_text_field_enabled")
+        .build();
+
+    public static final UITexture ANVIL_TEXT_FIELD_DISABLED = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(28, 115, 100, 16)
+        .name("anvil_text_field_disabled")
+        .build();
+
+    public static final UITexture ANVIL_PLUS_SIGN = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(113, 203, 13, 13)
+        .name("anvil_plus_sign")
+        .build();
+
+    public static final UITexture ANVIL_ARROW = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(56, 221, 14, 15)
+        .name("anvil_arrow")
+        .build();
+
+    public static final UITexture ANVIL_RED_CROSS = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(113, 216, 15, 15)
+        .name("anvil_red_cross")
         .build();
 
     public static UITexture icon(String name, int x, int y) {

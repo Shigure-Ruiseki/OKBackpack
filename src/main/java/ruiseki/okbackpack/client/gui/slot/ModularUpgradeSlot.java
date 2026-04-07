@@ -14,6 +14,9 @@ import lombok.Setter;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
+import ruiseki.okbackpack.common.item.infinity.InfinityUpgradeWrapper;
+import ruiseki.okbackpack.common.item.infinity.ItemInfinityUpgrade;
+import ruiseki.okbackpack.common.item.infinity.ItemSurvivalInfinityUpgrade;
 
 public class ModularUpgradeSlot extends ModularSlot {
 
@@ -34,16 +37,38 @@ public class ModularUpgradeSlot extends ModularSlot {
         ItemStack current = this.getStack();
         if (current == null) return true;
 
+        // Admin infinity upgrade: only admins can remove/replace
+        if (current.getItem() instanceof ItemInfinityUpgrade) {
+            if (!InfinityUpgradeWrapper.isAdmin(player)) {
+                // Non-admin can only swap with another infinity variant
+                ItemStack cursor = player.inventory.getItemStack();
+                if (cursor == null || !(cursor.getItem() instanceof ItemInfinityUpgrade
+                    || cursor.getItem() instanceof ItemSurvivalInfinityUpgrade)) {
+                    return false;
+                }
+            }
+        }
+
         ItemStack cursor = player.inventory.getItemStack();
         int slot = getSlotIndex();
 
         // cursor empty → remove
         if (cursor == null) {
-            return wrapper.canRemoveUpgrade(slot);
+            UpgradeSlotChangeResult result = wrapper.getRemoveUpgradeResult(slot);
+            if (!result.isSuccessful()) {
+                lastChangeResult = result;
+                return false;
+            }
+            return true;
         }
 
         // cursor not empty → replace
-        return wrapper.canReplaceUpgrade(slot, cursor);
+        UpgradeSlotChangeResult replaceResult = wrapper.getReplaceUpgradeResult(slot, cursor);
+        if (!replaceResult.isSuccessful()) {
+            lastChangeResult = replaceResult;
+            return false;
+        }
+        return true;
     }
 
     @Override

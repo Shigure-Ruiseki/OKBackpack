@@ -40,7 +40,9 @@ public class BackpackInventoryHelpers {
 
             ItemStack inSlot = wrapper.getStackInSlot(i);
 
-            int limit = mem.getMaxStackSize() * wrapper.applyStackLimitModifiers();
+            double stackMod = wrapper.applyStackLimitModifiers();
+            double rawLimit = mem.getMaxStackSize() * stackMod;
+            int limit = rawLimit >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) Math.ceil(rawLimit);
             int current = inSlot != null ? inSlot.stackSize : 0;
 
             if (current >= limit) continue;
@@ -86,7 +88,9 @@ public class BackpackInventoryHelpers {
             ItemStack baseStack = wrapper.getStackInSlot(i);
             if (baseStack == null) continue;
 
-            int slotMaxSize = baseStack.getMaxStackSize() * wrapper.applyStackLimitModifiers();
+            double mergeMod = wrapper.applyStackLimitModifiers();
+            double rawMaxSize = baseStack.getMaxStackSize() * mergeMod;
+            int slotMaxSize = rawMaxSize >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) Math.ceil(rawMaxSize);
 
             for (int j = i + 1; j < wrapper.getSlots(); j++) {
                 if (isMem != wrapper.isSlotMemorized(j) || wrapper.isSlotLocked(j)) continue;

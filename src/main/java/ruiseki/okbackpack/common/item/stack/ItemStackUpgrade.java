@@ -23,7 +23,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
 
     @SideOnly(Side.CLIENT)
-    protected IIcon tier1, tier2, tier3, tier4, tierOmega;
+    protected IIcon tier1, tier2, tier3, tier4, tierOmega, tierStarter;
 
     public ItemStackUpgrade() {
         super("stack_upgrade");
@@ -34,14 +34,13 @@ public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
     public UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper wrapper, ItemStack upgradeStack, int targetSlot) {
         int[] conflicts = IUpgradeItem.findConflictSlots(wrapper, targetSlot, ItemStackUpgrade.class);
         if (conflicts.length >= 3) {
-            return UpgradeSlotChangeResult.fail(
-                "gui.backpack.error.add.only_x_upgrades_allowed",
+            return UpgradeSlotChangeResult.failOnlyXAllowed(
                 conflicts,
                 3,
-                upgradeStack.getDisplayName(),
+                LangHelpers.localize("item.stack_upgrade.name"),
                 wrapper.getDisplayName());
         }
-        return UpgradeSlotChangeResult.success();
+        return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
     }
 
     @Override
@@ -51,23 +50,20 @@ public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
         list.add(new ItemStack(item, 1, 2));
         list.add(new ItemStack(item, 1, 3));
         list.add(new ItemStack(item, 1, 4));
+        list.add(new ItemStack(item, 1, 5));
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         int meta = stack.getItemDamage();
-        switch (meta) {
-            case 1:
-                return super.getUnlocalizedName(stack) + ".gold";
-            case 2:
-                return super.getUnlocalizedName(stack) + ".diamond";
-            case 3:
-                return super.getUnlocalizedName(stack) + ".obsidian";
-            case 4:
-                return super.getUnlocalizedName(stack) + ".omega";
-            default:
-                return super.getUnlocalizedName(stack) + ".iron";
-        }
+        return switch (meta) {
+            case 1 -> super.getUnlocalizedName(stack) + ".gold";
+            case 2 -> super.getUnlocalizedName(stack) + ".diamond";
+            case 3 -> super.getUnlocalizedName(stack) + ".obsidian";
+            case 4 -> super.getUnlocalizedName(stack) + ".omega";
+            case 5 -> super.getUnlocalizedName(stack) + ".starter";
+            default -> super.getUnlocalizedName(stack) + ".iron";
+        };
     }
 
     @Override
@@ -77,6 +73,7 @@ public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
             case 2 -> tier3;
             case 3 -> tier4;
             case 4 -> tierOmega;
+            case 5 -> tierStarter;
             default -> tier1;
         };
     }
@@ -89,11 +86,12 @@ public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
         tier3 = reg.registerIcon(Reference.PREFIX_MOD + "stack_upgrade_tier_3");
         tier4 = reg.registerIcon(Reference.PREFIX_MOD + "stack_upgrade_tier_4");
         tierOmega = reg.registerIcon(Reference.PREFIX_MOD + "stack_upgrade_tier_omega");
+        tierStarter = reg.registerIcon(Reference.PREFIX_MOD + "stack_upgrade_starter_tier");
     }
 
     @Override
     public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
-        list.add(LangHelpers.localize("tooltip.backpack.stack_upgrade", multiplier(itemstack)));
+        list.add(LangHelpers.localize("tooltip.backpack.stack_upgrade", formatMultiplier(multiplier(itemstack))));
     }
 
     @Override
@@ -102,13 +100,21 @@ public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
         return new StackUpgradeWrapper(stack, storage, upgradeConsumer);
     }
 
-    public static int multiplier(ItemStack stack) {
+    public static double multiplier(ItemStack stack) {
         return switch (stack.getItemDamage()) {
             case 1 -> ModConfig.stackUpgradeTier2Mul;
             case 2 -> ModConfig.stackUpgradeTier3Mul;
             case 3 -> ModConfig.stackUpgradeTier4Mul;
             case 4 -> ModConfig.stackUpgradeTierOmegaMul;
+            case 5 -> ModConfig.stackUpgradeStarterMul;
             default -> ModConfig.stackUpgradeTier1Mul;
         };
+    }
+
+    public static String formatMultiplier(double value) {
+        if (value == (long) value) {
+            return String.valueOf((long) value);
+        }
+        return String.valueOf(value);
     }
 }

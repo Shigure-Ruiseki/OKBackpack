@@ -1,12 +1,14 @@
 package ruiseki.okbackpack;
 
 import ruiseki.okbackpack.common.event.BackpackEventHandler;
+import ruiseki.okbackpack.common.event.ToolSwapEventHandler;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.common.network.PacketJukeboxPlaybackState;
 import ruiseki.okbackpack.common.network.PacketJukeboxPositionUpdate;
 import ruiseki.okbackpack.common.network.PacketQuickDraw;
 import ruiseki.okbackpack.common.network.PacketRecordDuration;
 import ruiseki.okbackpack.common.network.PacketSyncCarriedItem;
+import ruiseki.okbackpack.common.network.PacketToolSwap;
 import ruiseki.okcore.init.ModBase;
 import ruiseki.okcore.network.PacketHandler;
 import ruiseki.okcore.proxy.CommonProxyComponent;
@@ -27,11 +29,13 @@ public class CommonProxy extends CommonProxyComponent {
         packetHandler.register(PacketJukeboxPlaybackState.class);
         packetHandler.register(PacketJukeboxPositionUpdate.class);
         packetHandler.register(PacketRecordDuration.class);
+        packetHandler.register(PacketToolSwap.class);
     }
 
     @Override
     public void registerEventHooks() {
         super.registerEventHooks();
         BackpackEventHandler handler = new BackpackEventHandler();
+        new ToolSwapEventHandler();
     }
 }

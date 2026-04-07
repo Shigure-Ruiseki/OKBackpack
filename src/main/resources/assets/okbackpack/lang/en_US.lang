@@ -8,6 +8,7 @@ config.generalConfig=General Settings
 key.categories.okbackpack=OK Backpack
 key.okbackpack.open_backpack=Open Backpack
 key.okbackpack.pick_block=Pick Block
+key.okbackpack.tool_swap=Swap Tool Based on Targeted Block/Entity
 
 # Sort
 gui.sort_type.by_mod_id=Mod ID
@@ -51,6 +52,7 @@ gui.backpack.advanced_compacting_settings=Adv. Compacting Settings
 gui.backpack.jukebox_settings=Jukebox Settings
 gui.backpack.advanced_jukebox_settings=Adv. Jukebox Settings
 gui.backpack.smelting_settings=Smelting Settings
+gui.backpack.anvil_settings=Anvil
 gui.backpack.auto_smelting_settings=Auto-Smelting Settings
 gui.backpack.smoking_settings=Smoking Settings
 gui.backpack.auto_smoking_settings=Auto-Smoking Settings
@@ -151,6 +153,23 @@ gui.backpack.jukebox_loop_all=Loop: All
 gui.backpack.jukebox_loop_single=Loop: Single
 gui.backpack.sleeping_bag=Use Sleeping Bag
 
+gui.backpack.swap_weapon=Swap Weapon\nWhen holding a tool and left-clicking an entity,\nswaps a weapon into hand
+gui.backpack.no_swap_weapon=Do Not Swap Weapon\nNever swaps a weapon into hand
+gui.backpack.swap_tool=Swap Tool\nWhen holding a weapon or tool,\nswaps the appropriate tool into hand
+gui.backpack.only_tool_swap_tool=Only Tool Swaps Tool\nOnly swaps when holding a tool,\nnot when holding a weapon
+gui.backpack.no_swap_tool=Do Not Swap Tool\nNever swaps a tool into hand
+
+gui.backpack.advanced_tool_swapper_settings=Tool Swapper
+
+gui.backpack.error.add.upgrade_not_allowed=%s cannot be installed on %s
+gui.backpack.error.add.only_single_upgrade_allowed=Only a single %s can be installed on %s
+gui.backpack.error.add.only_x_upgrades_allowed=Only %d %s can be installed on %s
+gui.backpack.error.add.any_upgrade_exists=All upgrade slots must be empty
+gui.backpack.error.add.no_upgrade_can_be_added=Cannot add upgrades
+gui.backpack.error.remove.infinity_upgrade_only_admin=Only administrators can remove infinity upgrade
+gui.backpack.error.remove.banned_item=Must remove this item before removing upgrade
+gui.backpack.error.remove.stack_low_multiplier=Stack multiplier must be greater than %s
+
 # Items
 tile.leather_backpack.name=Leather Backpack
 tile.iron_backpack.name=Iron Backpack
@@ -160,11 +179,13 @@ tile.obsidian_backpack.name=Obsidian Backpack
 tile.sleeping_bag.name=Sleeping Bag
 
 item.upgrade_base.name=Upgrade Base
+item.stack_upgrade.name=Stack Upgrade
 item.stack_upgrade.iron.name=Stack Upgrade Tier 1
 item.stack_upgrade.gold.name=Stack Upgrade Tier 2
 item.stack_upgrade.diamond.name=Stack Upgrade Tier 3
 item.stack_upgrade.obsidian.name=Stack Upgrade Tier 4
 item.stack_upgrade.omega.name=Stack Upgrade Omega Tier
+item.stack_upgrade.starter.name=Stack Upgrade Starter Tier
 item.crafting_upgrade.name=Crafting Upgrade
 item.everlasting_upgrade.name=Everlasting Upgrade
 item.magnet_upgrade.name=Magnet Upgrade
@@ -188,6 +209,11 @@ item.void_upgrade.name=Void Upgrade
 item.advanced_void_upgrade.name=Adv. Void Upgrade
 item.jukebox_upgrade.name=Jukebox Upgrade
 item.advanced_jukebox_upgrade.name=Adv. Jukebox Upgrade
+item.tool_swapper_upgrade.name=Tool Swapper Upgrade
+item.advanced_tool_swapper_upgrade.name=Adv. Tool Swapper Upgrade
+item.infinity_upgrade.name=Infinity Upgrade (Admin)
+item.survival_infinity_upgrade.name=Survival Infinity Upgrade
+item.anvil_upgrade.name=Anvil Upgrade
 
 
 # Tooltips
@@ -199,7 +225,7 @@ tooltip.backpack.magnet_upgrade=Automatically picks up nearby entities
 tooltip.backpack.advanced_magnet_upgrade=Automatically picks up nearby entities with more configurations
 tooltip.backpack.everlasting_upgrade=Makes the backpack invincible, preventing despawning or falling into the void. Ensures retrieval even when thrown into the void.
 tooltip.backpack.upgrade_base=It does nothing! Feel free to put it in your upgrade slots!
-tooltip.backpack.stack_upgrade=Multiplies stack size by %d
+tooltip.backpack.stack_upgrade=Multiplies stack size by %s
 tooltip.backpack.crafting_upgrade=Adds additional crafting grid to side of backpack
 tooltip.backpack.inception_upgrade=Allows backpacks to be stored inside backpack
 tooltip.backpack.pickup_upgrade=Allows backpacks to pickup items
@@ -213,6 +239,10 @@ tooltip.backpack.advanced_void_upgrade=Voids items selected in filter. Has more 
 tooltip.backpack.jukebox_upgrade=Portable jukebox
 tooltip.backpack.advanced_jukebox_upgrade=Portable jukebox with more record slots
 tooltip.backpack.advanced_jukebox_upgrade.1=And more playback options
+tooltip.backpack.infinity_upgrade=Makes all items in the backpack infinite
+tooltip.backpack.infinity_upgrade.1=Only administrators can install, remove, or break this backpack
+tooltip.backpack.survival_infinity_upgrade=Makes all items in the backpack infinite
+tooltip.backpack.survival_infinity_upgrade.1=All players can use this upgrade
 tooltip.backpack.compacting_upgrade=Compacts items into their compressed variants
 tooltip.backpack.compacting_upgrade.1=2x2 recipes only
 tooltip.backpack.advanced_compacting_upgrade=Compacts items into their compressed variants
@@ -226,11 +256,10 @@ tooltip.backpack.auto_smoking_upgrade.1=Automatically pulls in/pushes out items
 tooltip.backpack.blasting_upgrade=Blast-smelts ores and metals at high speed in the upgrade tab
 tooltip.backpack.auto_blasting_upgrade=Blast-smelts ores and metals at high speed in the upgrade tab
 tooltip.backpack.auto_blasting_upgrade.1=Automatically pulls in/pushes out items
-
-#Upgrade Errors
-gui.backpack.error.add.upgrade_not_allowed=%s cannot be installed on %s
-gui.backpack.error.add.only_single_upgrade_allowed=Only a single %s can be installed on %s
-gui.backpack.error.add.only_x_upgrades_allowed=Only %d %s can be installed on %s
+tooltip.backpack.tool_swapper_upgrade=Automatically swaps held item to the matching mining/attack tool for the target block/entity on left click
+tooltip.backpack.advanced_tool_swapper_upgrade=Automatically swaps held item to the matching mining/attack tool for the target block/entity on left click
+tooltip.backpack.advanced_tool_swapper_upgrade.1=Has filter options and manual tool swap by [%s]
+tooltip.backpack.anvil_upgrade=Adds an anvil in the upgrade tab
 
 #Messages
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.

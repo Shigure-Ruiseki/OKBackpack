@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Level;
 
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
+import ruiseki.okbackpack.common.item.anvil.ItemAnvilUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemAdvancedCompactingUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemCompactingUpgrade;
 import ruiseki.okbackpack.common.item.crafting.ItemCraftingUpgrade;
@@ -16,6 +17,8 @@ import ruiseki.okbackpack.common.item.feeding.ItemFeedingUpgrade;
 import ruiseki.okbackpack.common.item.filter.ItemAdvancedFilterUpgrade;
 import ruiseki.okbackpack.common.item.filter.ItemFilterUpgrade;
 import ruiseki.okbackpack.common.item.inception.ItemInceptionUpgrade;
+import ruiseki.okbackpack.common.item.infinity.ItemInfinityUpgrade;
+import ruiseki.okbackpack.common.item.infinity.ItemSurvivalInfinityUpgrade;
 import ruiseki.okbackpack.common.item.jukebox.ItemAdvancedJukeboxUpgrade;
 import ruiseki.okbackpack.common.item.jukebox.ItemJukeboxUpgrade;
 import ruiseki.okbackpack.common.item.magnet.ItemAdvancedMagnetUpgrade;
@@ -29,6 +32,8 @@ import ruiseki.okbackpack.common.item.smelter.ItemBlastingUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemSmeltingUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemSmokingUpgrade;
 import ruiseki.okbackpack.common.item.stack.ItemStackUpgrade;
+import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgrade;
+import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgrade;
 import ruiseki.okbackpack.common.item.voiding.ItemAdvancedVoidUpgrade;
 import ruiseki.okbackpack.common.item.voiding.ItemVoidUpgrade;
 import ruiseki.okbackpack.compat.Mods;
@@ -63,6 +68,11 @@ public enum ModItems {
     AUTO_SMOKING_UPGRADE(new ItemAutoSmokingUpgrade(), Mods.EtFuturum),
     BLASTING_UPGRADE(new ItemBlastingUpgrade(), Mods.EtFuturum),
     AUTO_BLASTING_UPGRADE(new ItemAutoBlastingUpgrade(), Mods.EtFuturum),
+    TOOL_SWAPPER_UPGRADE(new ItemToolSwapperUpgrade()),
+    ADVANCED_TOOL_SWAPPER_UPGRADE(new ItemAdvancedToolSwapperUpgrade()),
+    ANVIL_UPGRADE(new ItemAnvilUpgrade()),
+    INFINITY_UPGRADE(new ItemInfinityUpgrade()),
+    SURVIVAL_INFINITY_UPGRADE(new ItemSurvivalInfinityUpgrade()),
 
     //
     ;
