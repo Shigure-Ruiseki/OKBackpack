@@ -8,7 +8,16 @@ config.generalConfig=General Settings
 key.categories.okbackpack=OK Backpack
 key.okbackpack.open_backpack=Open Backpack
 key.okbackpack.pick_block=Pick Block
-key.okbackpack.tool_swap=Swap Tool Based on Targeted Block/Entity
+key.okbackpack.tool_swap=Swap tool based on current block/entity
+key.okbackpack.toggle_upgrade_1=Switch Upgrade in the 1st Slot On/Off
+key.okbackpack.toggle_upgrade_2=Switch Upgrade in the 2nd Slot On/Off
+key.okbackpack.toggle_upgrade_3=Switch Upgrade in the 3rd Slot On/Off
+key.okbackpack.toggle_upgrade_4=Switch Upgrade in the 4th Slot On/Off
+key.okbackpack.toggle_upgrade_5=Switch Upgrade in the 5th Slot On/Off
+
+# Status
+gui.okbackpack.status.upgrade_switched_off=%s Switched Off
+gui.okbackpack.status.upgrade_switched_on=%s Switched On
 
 # Sort
 gui.sort_type.by_mod_id=Mod ID
@@ -34,45 +43,47 @@ gui.configuration_tab=Configuration Tab
 gui.search_bar.tool_tip=Right click to clear the search bar
 
 gui.backpack.pickup_settings=Pickup Settings
-gui.backpack.advanced_pickup_settings=Adv. Pickup Settings
+gui.backpack.advanced_pickup_settings=Advanced Pickup Settings
 gui.backpack.magnet_settings=Magnet Settings
-gui.backpack.advanced_magnet_settings=Adv. Magnet Settings
+gui.backpack.advanced_magnet_settings=Advanced Magnet Settings
 gui.backpack.feeding_settings=Feeding Settings
-gui.backpack.advanced_feeding_settings=Adv. Feeding Settings
+gui.backpack.advanced_feeding_settings=Advanced Feeding Settings
 gui.backpack.filter_settings=Filter Settings
-gui.backpack.advanced_filter_settings=Adv. Filter Settings
+gui.backpack.advanced_filter_settings=Advanced Filter Settings
 gui.backpack.backpack_settings=Backpack Settings
-gui.backpack.memory_settings=Memory Settings
-gui.backpack.sorting_settings=Sorting Settings
-gui.backpack.crafting_settings=Crafting Settings
+gui.backpack.memory_settings=Slot Memory Settings
+gui.backpack.sorting_settings=No Sort Slot Settings
+gui.backpack.crafting_settings=Crafting
 gui.backpack.void_settings=Void Settings
-gui.backpack.advanced_void_settings=Adv. Void Settings
+gui.backpack.advanced_void_settings=Advanced Void Settings
 gui.backpack.compacting_settings=Compacting Settings
-gui.backpack.advanced_compacting_settings=Adv. Compacting Settings
-gui.backpack.jukebox_settings=Jukebox Settings
-gui.backpack.advanced_jukebox_settings=Adv. Jukebox Settings
-gui.backpack.smelting_settings=Smelting Settings
+gui.backpack.advanced_compacting_settings=Advanced Compacting Settings
+gui.backpack.jukebox_settings=Jukebox
+gui.backpack.advanced_jukebox_settings=Advanced Jukebox
+gui.backpack.refill_settings=Refill Settings
+gui.backpack.advanced_refill_settings=Advanced Refill Settings
+gui.backpack.smelting_settings=Smelting
 gui.backpack.anvil_settings=Anvil
-gui.backpack.auto_smelting_settings=Auto-Smelting Settings
-gui.backpack.smoking_settings=Smoking Settings
-gui.backpack.auto_smoking_settings=Auto-Smoking Settings
-gui.backpack.blasting_settings=Blasting Settings
-gui.backpack.auto_blasting_settings=Auto-Blasting Settings
+gui.backpack.auto_smelting_settings=Auto-Smelting
+gui.backpack.smoking_settings=Smoking
+gui.backpack.auto_smoking_settings=Auto-Smoking
+gui.backpack.blasting_settings=Blasting
+gui.backpack.auto_blasting_settings=Auto-Blasting
 gui.backpack.smelting_input=Input
 gui.backpack.fuel_filter=Fuel Filter
-gui.backpack.only_reversible=Only Reversible
-gui.backpack.all_recipes=All Recipes
+gui.backpack.only_reversible=Compact Only Uncraftable
+gui.backpack.all_recipes=Compact Anything
 
 
 # Tooltips
 gui.backpack.stack_size_extra=Count: %s / %s
 gui.backpack.not_in_effect=Not in effect
-gui.backpack.whitelist=Whitelist
-gui.backpack.blacklist=Blacklist
+gui.backpack.whitelist=Allow
+gui.backpack.blacklist=Block
 
-gui.backpack.match_item=By Item
-gui.backpack.match_mod_id=By Mod ID
-gui.backpack.match_ore_dict=By Ore Dictionary
+gui.backpack.match_item=Match Item
+gui.backpack.match_mod_id=Match Mod
+gui.backpack.match_ore_dict=Match Ore Dictionary
 
 gui.backpack.match_durability=Match Durability
 gui.backpack.ignore_durability=Ignore Durability
@@ -80,11 +91,11 @@ gui.backpack.ignore_durability=Ignore Durability
 gui.backpack.match_nbt=Match NBT
 gui.backpack.ignore_nbt=Ignore NBT
 
-gui.backpack.item_magnet=Get items
-gui.backpack.ignore_item_magnet=Do not get items
+gui.backpack.item_magnet=Pickup Items
+gui.backpack.ignore_item_magnet=Do Not Pickup Items
 
-gui.backpack.exp_magnet=Get experients
-gui.backpack.ignore_exp_magnet=Do not get experients
+gui.backpack.exp_magnet=Pickup Experience
+gui.backpack.ignore_exp_magnet=Do Not Pickup Experience
 
 gui.backpack.add_ore_dict_entry=Add Ore Dict.
 gui.backpack.remove_ore_dict_entry=Remove Ore Dict.
@@ -97,29 +108,29 @@ gui.backpack.ignore_health=Do not consider health\nIgnores player's health and o
 gui.backpack.consider_health=Feed player immediately when hurt\nIgnores hunger setting when player is not at max health
 
 gui.backpack.input_output=Input & Output
-gui.backpack.input=Input Only
-gui.backpack.output=Output Only
+gui.backpack.input=Input
+gui.backpack.output=Output
 
-gui.backpack.sort_inventory=Sort Backpack Inventory
-gui.backpack.sort_by_name=Sort By Name
-gui.backpack.sort_by_mod_id=Sort By Mod ID
-gui.backpack.sort_by_count=Sort By Count
-gui.backpack.sort_by_ore_dict=Sort By Ore Dictionary
+gui.backpack.sort_inventory=Sort Inventory
+gui.backpack.sort_by_name=By Name
+gui.backpack.sort_by_mod_id=By Mod
+gui.backpack.sort_by_count=By Count
+gui.backpack.sort_by_ore_dict=By Ore Dictionary
 
-gui.backpack.transfer_to_player_inv=Transfer All Items to Player Inventory
-gui.backpack.transfer_to_player_inv_matched_1=Transfer Matched Items to Player Inventory
+gui.backpack.transfer_to_player_inv=Transfer to Inventory
+gui.backpack.transfer_to_player_inv_matched_1=Transfer Matching to Inventory
 gui.backpack.transfer_to_player_inv_matched_2=Shift To Transfer All
-gui.backpack.transfer_to_backpack_inv=Transfer All Items to Backpack Inventory
-gui.backpack.transfer_to_backpack_inv_matched_1=Transfer Matched Items to Backpack Inventory
+gui.backpack.transfer_to_backpack_inv=Transfer to Storage
+gui.backpack.transfer_to_backpack_inv_matched_1=Transfer Matching to Storage
 gui.backpack.transfer_to_backpack_inv_matched_2=Shift To Transfer All
 
 gui.backpack.memorized_slot=Memorized Slot
-gui.backpack.memorize_all=Memorize All Slots
-gui.backpack.unmemorize_all=Forget All Slots
+gui.backpack.memorize_all=Select All Slots
+gui.backpack.unmemorize_all=Unselect All Slots
 
 gui.backpack.no_sorting_slot=No Sorting Slot
-gui.backpack.lock_all_sort=Select All Slots For No Sorting
-gui.backpack.unlock_all_sort=Select All Slots For Sorting
+gui.backpack.lock_all_sort=Select All Slots
+gui.backpack.unlock_all_sort=Unselect All Slots
 
 gui.backpack.into_backpack=Shift Click Result Into\nBackpack
 gui.backpack.into_inventory=Shift Click Result Into\nPlayer's Inventory
@@ -127,48 +138,58 @@ gui.backpack.used_backpack=Refill Crafting Grid
 gui.backpack.unused_backpack=Do Not Refill Crafting Grid
 
 gui.backpack.search_hint=Search...
-gui.backpack.lock_search=Keep Search Phrase: On
-gui.backpack.unlock_search=Keep Search Phrase: Off
+gui.backpack.lock_search=Keep Search Phrase: ON
+gui.backpack.unlock_search=Keep Search Phrase: OFF
 
-gui.backpack.lock_backpack=Another Player Can Not Open
-gui.backpack.unlock_backpack=Another Player Can Open
+gui.backpack.lock_backpack=Another player can NOT open
+gui.backpack.unlock_backpack=Another player can open
 
-gui.backpack.keep_tab=Keep Tab Open: On
-gui.backpack.not_keep_tab=Keep Tab Open: Off
+gui.backpack.keep_tab=Keep Tab Open: ON
+gui.backpack.not_keep_tab=Keep Tab Open: OFF
 
-gui.backpack.void_any=Void Any
-gui.backpack.void_overflow=Void Overflow
+gui.backpack.void_any=Void Always
+gui.backpack.void_overflow=Void Slot Overflow
 
-gui.backpack.void_all=Works in Gui as well
-gui.backpack.void_automation=Only works with other upgrade/automation
+gui.backpack.void_all=Works in GUI as well
+gui.backpack.void_automation=Only works with other upgrades/automation
+
+gui.backpack.sleeping_bag=Use Sleeping Bag
 
 gui.backpack.jukebox_play=Play
 gui.backpack.jukebox_stop=Stop
 gui.backpack.jukebox_prev=Previous
 gui.backpack.jukebox_next=Next
-gui.backpack.jukebox_shuffle_off=Shuffle: Off
-gui.backpack.jukebox_shuffle_on=Shuffle: On
-gui.backpack.jukebox_loop_off=Loop: Off
-gui.backpack.jukebox_loop_all=Loop: All
-gui.backpack.jukebox_loop_single=Loop: Single
-gui.backpack.sleeping_bag=Use Sleeping Bag
+gui.backpack.jukebox_shuffle_off=Shuffle Disabled
+gui.backpack.jukebox_shuffle_on=Shuffle Enabled
+gui.backpack.jukebox_loop_off=Repeat Disabled
+gui.backpack.jukebox_loop_all=Repeat All
+gui.backpack.jukebox_loop_single=Repeat One
 
-gui.backpack.swap_weapon=Swap Weapon\nWhen holding a tool and left-clicking an entity,\nswaps a weapon into hand
-gui.backpack.no_swap_weapon=Do Not Swap Weapon\nNever swaps a weapon into hand
-gui.backpack.swap_tool=Swap Tool\nWhen holding a weapon or tool,\nswaps the appropriate tool into hand
-gui.backpack.only_tool_swap_tool=Only Tool Swaps Tool\nOnly swaps when holding a tool,\nnot when holding a weapon
-gui.backpack.no_swap_tool=Do Not Swap Tool\nNever swaps a tool into hand
+gui.backpack.refill.enabled=Enabled
+gui.backpack.refill.target.main_hand=Main hand
+gui.backpack.refill.target.main_hand.acronym=M
+gui.backpack.refill.target.any=Any slot
+gui.backpack.refill.target.any.acronym=A
+gui.backpack.refill.target.hotbar=Hotbar slot %s
+gui.backpack.refill.target_tooltip=Refill %s
+gui.backpack.refill.scroll_hint=Scroll to change target slot
 
-gui.backpack.advanced_tool_swapper_settings=Tool Swapper
+gui.backpack.swap_weapon=Swap Weapon\nSwaps weapon into hand when a tool is clicked on entity
+gui.backpack.no_swap_weapon=Do Not Swap Weapon\nWeapon is never swapped into hand
+gui.backpack.swap_tool=Swap Tools\nSwaps appropriate tool into hand when it holds weapon or another tool
+gui.backpack.only_tool_swap_tool=Only Swap For Other Tools\nSwaps tool into hand only if it holds another tool, does not swap for weapon
+gui.backpack.no_swap_tool=Do Not Swap Tools\nTools are never swapped into hand
 
-gui.backpack.error.add.upgrade_not_allowed=%s cannot be installed on %s
-gui.backpack.error.add.only_single_upgrade_allowed=Only a single %s can be installed on %s
-gui.backpack.error.add.only_x_upgrades_allowed=Only %d %s can be installed on %s
-gui.backpack.error.add.any_upgrade_exists=All upgrade slots must be empty
-gui.backpack.error.add.no_upgrade_can_be_added=Cannot add upgrades
-gui.backpack.error.remove.infinity_upgrade_only_admin=Only administrators can remove infinity upgrade
-gui.backpack.error.remove.banned_item=Must remove this item before removing upgrade
-gui.backpack.error.remove.stack_low_multiplier=Stack multiplier must be greater than %s
+gui.backpack.advanced_tool_swapper_settings=Advanced Tool Swapper Settings
+
+gui.backpack.error.add.upgrade_not_allowed=%s can't be used in %s
+gui.backpack.error.add.only_single_upgrade_allowed=Only single %s can be used in %s
+gui.backpack.error.add.only_x_upgrades_allowed=Only %dx %s can be used in %s
+gui.backpack.error.add.any_upgrade_exists=All upgrade slots need to be empty
+gui.backpack.error.add.no_upgrade_can_be_added=No upgrade can be added
+gui.backpack.error.remove.infinity_upgrade_only_admin=Only admins can remove Infinity Upgrade
+gui.backpack.error.remove.banned_item=This item must be removed before the upgrade can be
+gui.backpack.error.remove.stack_low_multiplier=There's at least one slot or upgrade that requires multiplier higher than %s
 
 # Items
 tile.leather_backpack.name=Leather Backpack
@@ -189,31 +210,33 @@ item.stack_upgrade.starter.name=Stack Upgrade Starter Tier
 item.crafting_upgrade.name=Crafting Upgrade
 item.everlasting_upgrade.name=Everlasting Upgrade
 item.magnet_upgrade.name=Magnet Upgrade
-item.advanced_magnet_upgrade.name=Adv. Magnet Upgrade
+item.advanced_magnet_upgrade.name=Advanced Magnet Upgrade
 item.pickup_upgrade.name=Pickup Upgrade
-item.advanced_pickup_upgrade.name=Adv. Pickup Upgrade
+item.advanced_pickup_upgrade.name=Advanced Pickup Upgrade
 item.feeding_upgrade.name=Feeding Upgrade
-item.advanced_feeding_upgrade.name=Adv. Feeding Upgrade
+item.advanced_feeding_upgrade.name=Advanced Feeding Upgrade
 item.filter_upgrade.name=Filter Upgrade
-item.advanced_filter_upgrade.name=Adv. Filter Upgrade
+item.advanced_filter_upgrade.name=Advanced Filter Upgrade
 item.compacting_upgrade.name=Compacting Upgrade
-item.advanced_compacting_upgrade.name=Adv. Compacting Upgrade
+item.advanced_compacting_upgrade.name=Advanced Compacting Upgrade
 item.smelting_upgrade.name=Smelting Upgrade
-item.auto_smelting_upgrade.name=Auto-Smelting Upgrade
+item.auto_smelting_upgrade.name=Auto-smelting Upgrade
 item.smoking_upgrade.name=Smoking Upgrade
-item.auto_smoking_upgrade.name=Auto-Smoking Upgrade
+item.auto_smoking_upgrade.name=Auto-smoking Upgrade
 item.blasting_upgrade.name=Blasting Upgrade
-item.auto_blasting_upgrade.name=Auto-Blasting Upgrade
+item.auto_blasting_upgrade.name=Auto-blasting Upgrade
 item.inception_upgrade.name=Inception Upgrade
 item.void_upgrade.name=Void Upgrade
-item.advanced_void_upgrade.name=Adv. Void Upgrade
+item.advanced_void_upgrade.name=Advanced Void Upgrade
 item.jukebox_upgrade.name=Jukebox Upgrade
-item.advanced_jukebox_upgrade.name=Adv. Jukebox Upgrade
+item.advanced_jukebox_upgrade.name=Advanced Jukebox Upgrade
 item.tool_swapper_upgrade.name=Tool Swapper Upgrade
-item.advanced_tool_swapper_upgrade.name=Adv. Tool Swapper Upgrade
+item.advanced_tool_swapper_upgrade.name=Advanced Tool Swapper Upgrade
 item.infinity_upgrade.name=Infinity Upgrade (Admin)
 item.survival_infinity_upgrade.name=Survival Infinity Upgrade
 item.anvil_upgrade.name=Anvil Upgrade
+item.refill_upgrade.name=Refill Upgrade
+item.advanced_refill_upgrade.name=Advanced Refill Upgrade
 
 
 # Tooltips
@@ -221,45 +244,55 @@ tooltip.backpack.inventory_size=Inventory size: %d
 tooltip.backpack.upgrade_slots_size=Upgrade slots: %d
 tooltip.backpack.stack_multiplier=-> Stack multiplier: %d%s
 
-tooltip.backpack.magnet_upgrade=Automatically picks up nearby entities
-tooltip.backpack.advanced_magnet_upgrade=Automatically picks up nearby entities with more configurations
-tooltip.backpack.everlasting_upgrade=Makes the backpack invincible, preventing despawning or falling into the void. Ensures retrieval even when thrown into the void.
+tooltip.backpack.magnet_upgrade=Magnets items into backpack at range
+tooltip.backpack.advanced_magnet_upgrade=Magnets items into backpack at a greater range
+tooltip.backpack.advanced_magnet_upgrade.1=Has more filtering options
+tooltip.backpack.everlasting_upgrade=Backpack becomes indestructible
+tooltip.backpack.everlasting_upgrade.1=Can't despawn or fall into void
 tooltip.backpack.upgrade_base=It does nothing! Feel free to put it in your upgrade slots!
-tooltip.backpack.stack_upgrade=Multiplies stack size by %s
-tooltip.backpack.crafting_upgrade=Adds additional crafting grid to side of backpack
-tooltip.backpack.inception_upgrade=Allows backpacks to be stored inside backpack
-tooltip.backpack.pickup_upgrade=Allows backpacks to pickup items
-tooltip.backpack.advanced_pickup_upgrade=Allows backpack to pickup items with more configurations
-tooltip.backpack.feeding_upgrade=Allows backpacks to automatically feed player
-tooltip.backpack.advanced_feeding_upgrade=Allows backpack to automatically feed player with more configurations
-tooltip.backpack.filter_upgrade=Filters inserted items when placing in world
-tooltip.backpack.advanced_filter_upgrade=Filters inserted items when placing in world with more configurations
+tooltip.backpack.stack_upgrade=Multiplies the number of stacks that can fit in a slot by %s
+tooltip.backpack.crafting_upgrade=Crafting table in an upgrade tab
+tooltip.backpack.inception_upgrade=Makes it possible to put backpacks into the backpack
+tooltip.backpack.pickup_upgrade=Makes backpack pickup items
+tooltip.backpack.advanced_pickup_upgrade=Makes backpack pickup items
+tooltip.backpack.advanced_pickup_upgrade.1=Has more filtering options
+tooltip.backpack.feeding_upgrade=Feeds player with food from backpack's inventory
+tooltip.backpack.advanced_feeding_upgrade=Feeds player with food from backpack's inventory
+tooltip.backpack.advanced_feeding_upgrade.1=More options for when food gets fed to player
+tooltip.backpack.filter_upgrade=Filters items piped in and/or out of backpack
+tooltip.backpack.advanced_filter_upgrade=Filters items piped in and/or out of backpack
+tooltip.backpack.advanced_filter_upgrade.1=Has more filtering options
 tooltip.backpack.void_upgrade=Voids items selected in filter
-tooltip.backpack.advanced_void_upgrade=Voids items selected in filter. Has more filtering options
-tooltip.backpack.jukebox_upgrade=Portable jukebox
-tooltip.backpack.advanced_jukebox_upgrade=Portable jukebox with more record slots
-tooltip.backpack.advanced_jukebox_upgrade.1=And more playback options
-tooltip.backpack.infinity_upgrade=Makes all items in the backpack infinite
-tooltip.backpack.infinity_upgrade.1=Only administrators can install, remove, or break this backpack
-tooltip.backpack.survival_infinity_upgrade=Makes all items in the backpack infinite
-tooltip.backpack.survival_infinity_upgrade.1=All players can use this upgrade
+tooltip.backpack.advanced_void_upgrade=Voids items selected in filter
+tooltip.backpack.advanced_void_upgrade.1=Has more filtering options
+tooltip.backpack.jukebox_upgrade=Portable Jukebox
+tooltip.backpack.advanced_jukebox_upgrade=Portable Jukebox with support for more music discs
+tooltip.backpack.advanced_jukebox_upgrade.1=Also more playback options
+tooltip.backpack.infinity_upgrade=Makes all items in backpack infinite
+tooltip.backpack.infinity_upgrade.1=Only admins can set infinite items and break or pickup backpack
+tooltip.backpack.survival_infinity_upgrade=Makes all items in backpack infinite
+tooltip.backpack.survival_infinity_upgrade.1=All players can set infinite items and break or pickup backpack
 tooltip.backpack.compacting_upgrade=Compacts items into their compressed variants
-tooltip.backpack.compacting_upgrade.1=2x2 recipes only
+tooltip.backpack.compacting_upgrade.1=Only 2x2 recipes
 tooltip.backpack.advanced_compacting_upgrade=Compacts items into their compressed variants
-tooltip.backpack.advanced_compacting_upgrade.1=Includes 2x2, 3x3 recipes and more filter options
-tooltip.backpack.smelting_upgrade=Smelts items in the upgrade tab
-tooltip.backpack.auto_smelting_upgrade=Smelts items in the upgrade tab
-tooltip.backpack.auto_smelting_upgrade.1=Automatically pulls in/pushes out items
-tooltip.backpack.smoking_upgrade=Smokes food in the upgrade tab
-tooltip.backpack.auto_smoking_upgrade=Smokes food in the upgrade tab
-tooltip.backpack.auto_smoking_upgrade.1=Automatically pulls in/pushes out items
-tooltip.backpack.blasting_upgrade=Blast-smelts ores and metals at high speed in the upgrade tab
-tooltip.backpack.auto_blasting_upgrade=Blast-smelts ores and metals at high speed in the upgrade tab
-tooltip.backpack.auto_blasting_upgrade.1=Automatically pulls in/pushes out items
-tooltip.backpack.tool_swapper_upgrade=Automatically swaps held item to the matching mining/attack tool for the target block/entity on left click
-tooltip.backpack.advanced_tool_swapper_upgrade=Automatically swaps held item to the matching mining/attack tool for the target block/entity on left click
-tooltip.backpack.advanced_tool_swapper_upgrade.1=Has filter options and manual tool swap by [%s]
-tooltip.backpack.anvil_upgrade=Adds an anvil in the upgrade tab
+tooltip.backpack.advanced_compacting_upgrade.1=Both 2x2 and 3x3 recipes with more filtering options
+tooltip.backpack.smelting_upgrade=Smelting in an upgrade tab
+tooltip.backpack.auto_smelting_upgrade=Smelting in an upgrade tab
+tooltip.backpack.auto_smelting_upgrade.1=Automatically pulls/pushes items
+tooltip.backpack.smoking_upgrade=Smoking food in an upgrade tab
+tooltip.backpack.auto_smoking_upgrade=Smoking food in an upgrade tab
+tooltip.backpack.auto_smoking_upgrade.1=Automatically pulls/pushes items
+tooltip.backpack.blasting_upgrade=Blasting ores and metal stuff in an upgrade tab
+tooltip.backpack.auto_blasting_upgrade=Blasting ores and metal stuff in an upgrade tab
+tooltip.backpack.auto_blasting_upgrade.1=Automatically pulls/pushes items
+tooltip.backpack.tool_swapper_upgrade=Automatically swaps item in player's hand for the one effective on the block/entity when these are left clicked.
+tooltip.backpack.advanced_tool_swapper_upgrade=Automatically swaps item in player's hand for the one effective on the block/entity when these are left clicked.
+tooltip.backpack.advanced_tool_swapper_upgrade.1=Has filter options and enables swapping wrench like tools for block/entity player is looking at with %s
+tooltip.backpack.anvil_upgrade=Anvil in an upgrade tab
+tooltip.backpack.refill_upgrade=Keeps refilling stack of selected items in player's inventory
+tooltip.backpack.advanced_refill_upgrade=Keeps refilling stack of selected items in player's inventory
+tooltip.backpack.advanced_refill_upgrade.1=Allows for more precise target slot selection
+tooltip.backpack.advanced_refill_upgrade.2=Also allows middle click picking blocks from backpack
 
 #Messages
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.

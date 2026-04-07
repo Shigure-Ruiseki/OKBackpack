@@ -582,6 +582,40 @@ public class ModRecipes implements IInitListener {
                 'U',
                 ModItems.BASE_UPGRADE.getItem()));
 
+        // Refill Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.REFILL_UPGRADE.getItem(),
+                " E ",
+                "IUI",
+                "RCR",
+                'E',
+                Items.ender_pearl,
+                'C',
+                Blocks.chest,
+                'R',
+                "dustRedstone",
+                'I',
+                "ingotIron",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Advanced Refill Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.ADVANCED_REFILL_UPGRADE.getItem(),
+                " D ",
+                "GUG",
+                "RRR",
+                'D',
+                "gemDiamond",
+                'R',
+                "dustRedstone",
+                'G',
+                "ingotGold",
+                'U',
+                ModItems.REFILL_UPGRADE.getItem()));
+
         // Smelting Upgrade
         GameRegistry.addRecipe(
             new ShapedOreRecipe(

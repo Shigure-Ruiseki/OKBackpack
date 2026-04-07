@@ -9,6 +9,15 @@ key.categories.okbackpack=OK背包
 key.okbackpack.open_backpack=打开背包
 key.okbackpack.pick_block=选取方块
 key.okbackpack.tool_swap=基于所指方块/实体替换工具
+key.okbackpack.toggle_upgrade_1=打开/关闭第一个插槽中的升级卡
+key.okbackpack.toggle_upgrade_2=打开/关闭第二个插槽中的升级卡
+key.okbackpack.toggle_upgrade_3=打开/关闭第三个插槽中的升级卡
+key.okbackpack.toggle_upgrade_4=打开/关闭第四个插槽中的升级卡
+key.okbackpack.toggle_upgrade_5=打开/关闭第五个插槽中的升级卡
+
+# Status
+gui.okbackpack.status.upgrade_switched_off=%s已关闭
+gui.okbackpack.status.upgrade_switched_on=%s已开启
 
 # Sort
 gui.sort_type.by_mod_id=按模组ID
@@ -18,7 +27,7 @@ gui.sort_type.by_ore_dict=按矿物词典
 gui.sort_order.asc=升序
 gui.sort_order.desc=降序
 
-# Backpack =
+# Backpack ==============================================
 
 # Config
 config.backpackConfig=背包设置
@@ -33,31 +42,33 @@ gui.configuration_tab=配置标签页
 
 gui.search_bar.tool_tip=右键点击清空搜索栏
 
-gui.backpack.pickup_settings=拾取设置
-gui.backpack.advanced_pickup_settings=高级拾取设置
-gui.backpack.magnet_settings=磁铁设置
-gui.backpack.advanced_magnet_settings=高级磁铁设置
-gui.backpack.feeding_settings=喂食设置
-gui.backpack.advanced_feeding_settings=高级喂食设置
-gui.backpack.filter_settings=过滤设置
-gui.backpack.advanced_filter_settings=高级过滤设置
+gui.backpack.pickup_settings=拾取
+gui.backpack.advanced_pickup_settings=高级拾取
+gui.backpack.magnet_settings=磁铁
+gui.backpack.advanced_magnet_settings=高级磁铁
+gui.backpack.feeding_settings=喂食
+gui.backpack.advanced_feeding_settings=高级喂食
+gui.backpack.filter_settings=过滤
+gui.backpack.advanced_filter_settings=高级过滤
 gui.backpack.backpack_settings=背包设置
 gui.backpack.memory_settings=记忆设置
 gui.backpack.sorting_settings=排序设置
-gui.backpack.crafting_settings=合成设置
-gui.backpack.void_settings=虚空设置
-gui.backpack.advanced_void_settings=高级虚空设置
-gui.backpack.compacting_settings=压制设置
-gui.backpack.advanced_compacting_settings=高级压制设置
-gui.backpack.jukebox_settings=唱片机设置
-gui.backpack.advanced_jukebox_settings=高级唱片机设置
-gui.backpack.smelting_settings=熔炼设置
+gui.backpack.crafting_settings=合成
+gui.backpack.void_settings=虚空
+gui.backpack.advanced_void_settings=高级虚空
+gui.backpack.compacting_settings=压制
+gui.backpack.advanced_compacting_settings=高级压制
+gui.backpack.jukebox_settings=唱片机
+gui.backpack.advanced_jukebox_settings=高级唱片机
+gui.backpack.refill_settings=补货
+gui.backpack.advanced_refill_settings=高级补货
+gui.backpack.smelting_settings=熔炼
 gui.backpack.anvil_settings=铁砧
-gui.backpack.auto_smelting_settings=自动熔炼设置
-gui.backpack.smoking_settings=烟熏设置
-gui.backpack.auto_smoking_settings=自动烟熏设置
-gui.backpack.blasting_settings=高炉设置
-gui.backpack.auto_blasting_settings=自动高炉设置
+gui.backpack.auto_smelting_settings=自动熔炼
+gui.backpack.smoking_settings=烟熏
+gui.backpack.auto_smoking_settings=自动烟熏
+gui.backpack.blasting_settings=高炉
+gui.backpack.auto_blasting_settings=自动高炉
 gui.backpack.smelting_input=输入
 gui.backpack.fuel_filter=燃料过滤
 gui.backpack.only_reversible=仅可逆配方
@@ -65,14 +76,14 @@ gui.backpack.all_recipes=所有配方
 
 
 # Tooltips
-gui.backpack.stack_size_extra=数量: %s / %s
+gui.backpack.stack_size_extra=数量：%s / %s
 gui.backpack.not_in_effect=未生效
-gui.backpack.whitelist=白名单
-gui.backpack.blacklist=黑名单
+gui.backpack.whitelist=允许
+gui.backpack.blacklist=阻止
 
-gui.backpack.match_item=按物品匹配
-gui.backpack.match_mod_id=按模组ID匹配
-gui.backpack.match_ore_dict=按矿物词典匹配
+gui.backpack.match_item=匹配物品
+gui.backpack.match_mod_id=匹配模组
+gui.backpack.match_ore_dict=匹配矿物词典
 
 gui.backpack.match_durability=匹配耐久
 gui.backpack.ignore_durability=忽略耐久
@@ -90,21 +101,21 @@ gui.backpack.add_ore_dict_entry=添加矿物词典
 gui.backpack.remove_ore_dict_entry=移除矿物词典
 gui.backpack.ore_dict_input_help=可在此输入矿物词典（支持正则表达式）
 
-gui.backpack.complete_hunger=仅在饥饿值足够时喂食\n不会浪费任何饥饿值
-gui.backpack.half_hunger=仅在饥饿值足够时喂食\n最多浪费一半饥饿值
-gui.backpack.immediate_hunger=只要玩家稍微饥饿就喂食\n会浪费较多饥饿值
-gui.backpack.ignore_health=忽略生命值\n仅根据饥饿设置喂食
-gui.backpack.consider_health=受伤时立即喂食\n当生命未满时忽略饥饿设置
+gui.backpack.complete_hunger=仅在玩家足够饥饿时喂食\n不会浪费食物提供的任何饥饿值
+gui.backpack.half_hunger=仅在玩家足够饥饿时喂食\n最多浪费食物提供的一半饥饿值
+gui.backpack.immediate_hunger=当玩家稍微饥饿时立即喂食\n浪费食物提供的大量饥饿值
+gui.backpack.ignore_health=忽略生命值\n忽略玩家的生命值，仅基于饥饿值喂食玩家
+gui.backpack.consider_health=当玩家受伤时立即喂食\n在玩家未达到最大生命值前忽略饥饿值
 
-gui.backpack.input_output=输入与输出
-gui.backpack.input=仅输入
-gui.backpack.output=仅输出
+gui.backpack.input_output=输入&输出
+gui.backpack.input=输入
+gui.backpack.output=输出
 
-gui.backpack.sort_inventory=排序背包物品
-gui.backpack.sort_by_name=按名称排序
-gui.backpack.sort_by_mod_id=按模组ID排序
-gui.backpack.sort_by_count=按数量排序
-gui.backpack.sort_by_ore_dict=按矿物词典排序
+gui.backpack.sort_inventory=整理背包物品栏
+gui.backpack.sort_by_name=按名称
+gui.backpack.sort_by_mod_id=按模组ID
+gui.backpack.sort_by_count=按数量
+gui.backpack.sort_by_ore_dict=按矿物词典
 
 gui.backpack.transfer_to_player_inv=转移所有物品到玩家物品栏
 gui.backpack.transfer_to_player_inv_matched_1=转移匹配物品到玩家物品栏
@@ -121,36 +132,28 @@ gui.backpack.no_sorting_slot=不排序槽位
 gui.backpack.lock_all_sort=全部设为不排序
 gui.backpack.unlock_all_sort=全部设为可排序
 
-gui.backpack.into_backpack=按住 Shift 点击结果放入\n背包
-gui.backpack.into_inventory=按住 Shift 点击结果放入\n玩家物品栏
-gui.backpack.used_backpack=自动重填合成栏
-gui.backpack.unused_backpack=不自动重填合成栏
+gui.backpack.into_backpack=Shift点击将成品放入\n背包
+gui.backpack.into_inventory=Shift点击将成品放入\n玩家物品栏
+gui.backpack.used_backpack=自动重填合成方格
+gui.backpack.unused_backpack=不自动重填合成方格
 
 gui.backpack.search_hint=搜索…
-gui.backpack.lock_search=保留搜索内容: 开
-gui.backpack.unlock_search=保留搜索内容: 关
+gui.backpack.lock_search=保留搜索内容：开
+gui.backpack.unlock_search=保留搜索内容：关
 
 gui.backpack.lock_backpack=其他玩家不可打开
 gui.backpack.unlock_backpack=其他玩家可打开
 
-gui.backpack.keep_tab=保持标签页开启: 开
-gui.backpack.not_keep_tab=保持标签页开启: 关
+gui.backpack.keep_tab=保持标签页打开：开
+gui.backpack.not_keep_tab=保持标签页打开：关
 
-gui.backpack.void_any=虚空任意物品
-gui.backpack.void_overflow=虚空溢出物品
+gui.backpack.void_any=销毁任意物品
+gui.backpack.void_overflow=销毁溢出物品
 
-gui.backpack.void_all=在GUI中也生效
-gui.backpack.void_automation=仅在自动化/其他升级中生效
+gui.backpack.void_all=在GUI中也工作
+gui.backpack.void_automation=仅在其他升级/自动化中工作
 
 gui.backpack.sleeping_bag=使用睡袋
-
-gui.backpack.swap_weapon=替换武器\n当手持工具左击实体时，将武器替换到手上
-gui.backpack.no_swap_weapon=不替换武器\n永远不会将武器替换到手上
-gui.backpack.swap_tool=替换工具\n手持武器或工具时，将合适的工具替换到手上
-gui.backpack.only_tool_swap_tool=只由工具替换工具\n仅在手持工具时替换，手持武器不替换
-gui.backpack.no_swap_tool=不替换工具\n永远不会将工具替换到手上
-
-gui.backpack.advanced_tool_swapper_settings=工具替换
 
 gui.backpack.jukebox_play=播放
 gui.backpack.jukebox_stop=停止
@@ -161,6 +164,23 @@ gui.backpack.jukebox_shuffle_on=启用随机播放
 gui.backpack.jukebox_loop_off=关闭循环
 gui.backpack.jukebox_loop_all=全部循环
 gui.backpack.jukebox_loop_single=单曲循环
+
+gui.backpack.refill.enabled=启用
+gui.backpack.refill.target.main_hand=主手
+gui.backpack.refill.target.main_hand.acronym=主
+gui.backpack.refill.target.any=任意槽位
+gui.backpack.refill.target.any.acronym=任
+gui.backpack.refill.target.hotbar=快捷栏%s
+gui.backpack.refill.target_tooltip=补充§a%s
+gui.backpack.refill.scroll_hint=§8§o用滚轮改变槽位
+
+gui.backpack.swap_weapon=替换武器\n当手持工具左击实体时，将武器替换到手上
+gui.backpack.no_swap_weapon=不替换武器\n永远不会将武器替换到手上
+gui.backpack.swap_tool=替换工具\n手持武器或工具时，将合适的工具替换到手上
+gui.backpack.only_tool_swap_tool=只由工具替换工具\n仅在手持工具时替换，手持武器不替换
+gui.backpack.no_swap_tool=不替换工具\n永远不会将工具替换到手上
+
+gui.backpack.advanced_tool_swapper_settings=工具替换
 
 gui.backpack.error.add.upgrade_not_allowed=%s不能加装于%s
 gui.backpack.error.add.only_single_upgrade_allowed=仅可加装单个%s于%s
@@ -215,33 +235,41 @@ item.advanced_tool_swapper_upgrade.name=高级工具替换升级
 item.infinity_upgrade.name=无限升级（管理员）
 item.survival_infinity_upgrade.name=生存模式无限升级
 item.anvil_upgrade.name=铁砧升级
+item.refill_upgrade.name=补货升级
+item.advanced_refill_upgrade.name=高级补货升级
 
 
 # Tooltips
-tooltip.backpack.inventory_size=物品栏大小: %d
-tooltip.backpack.upgrade_slots_size=升级槽位: %d
-tooltip.backpack.stack_multiplier=→ 堆叠倍率: %d%s
+tooltip.backpack.inventory_size=物品栏大小：%d
+tooltip.backpack.upgrade_slots_size=升级槽位：%d
+tooltip.backpack.stack_multiplier=→ 堆叠倍数：%d%s
 
-tooltip.backpack.magnet_upgrade=自动吸取附近实体
-tooltip.backpack.advanced_magnet_upgrade=自动吸取附近实体（具有更多配置）
-tooltip.backpack.everlasting_upgrade=使背包不可破坏，不会消失或掉入虚空
+tooltip.backpack.magnet_upgrade=将一定范围内的物品吸入背包
+tooltip.backpack.advanced_magnet_upgrade=将更大范围内的物品吸入背包
+tooltip.backpack.advanced_magnet_upgrade.1=更多的过滤选项
+tooltip.backpack.everlasting_upgrade=使背包变得坚不可摧
+tooltip.backpack.everlasting_upgrade.1=不会消失及掉入虚空
 tooltip.backpack.upgrade_base=没有任何作用！可以放入升级槽位中！
-tooltip.backpack.stack_upgrade=堆叠上限×%s
-tooltip.backpack.crafting_upgrade=在背包侧边添加一个合成栏
-tooltip.backpack.inception_upgrade=允许背包内嵌套背包
-tooltip.backpack.pickup_upgrade=允许背包自动拾取物品
-tooltip.backpack.advanced_pickup_upgrade=允许背包自动拾取物品（更多配置）
-tooltip.backpack.feeding_upgrade=允许背包自动喂食玩家
-tooltip.backpack.advanced_feeding_upgrade=允许背包自动喂食玩家（更多配置）
-tooltip.backpack.filter_upgrade=过滤放入世界时插入的物品
-tooltip.backpack.advanced_filter_upgrade=过滤放入世界时插入的物品（更多配置）
-tooltip.backpack.void_upgrade=销毁过滤器选定的物品
-tooltip.backpack.advanced_void_upgrade=销毁过滤器选定的物品（更多过滤选项）
-tooltip.backpack.jukebox_upgrade=便携式唱片机
+tooltip.backpack.stack_upgrade=单格堆叠上限×%s
+tooltip.backpack.crafting_upgrade=在升级标签页中添加一个工作台
+tooltip.backpack.inception_upgrade=使背包套背包成为可能
+tooltip.backpack.pickup_upgrade=能够让背包捡起物品
+tooltip.backpack.advanced_pickup_upgrade=使背包捡起物品
+tooltip.backpack.advanced_pickup_upgrade.1=更多的过滤选项
+tooltip.backpack.feeding_upgrade=将背包内的食物喂给玩家
+tooltip.backpack.advanced_feeding_upgrade=将背包内的食物喂给玩家
+tooltip.backpack.advanced_feeding_upgrade.1=更多喂食条件选项
+tooltip.backpack.filter_upgrade=过滤输入/输出背包的物品
+tooltip.backpack.advanced_filter_upgrade=过滤输入/输出背包的物品
+tooltip.backpack.advanced_filter_upgrade.1=更多的过滤选项
+tooltip.backpack.void_upgrade=销毁过滤器中选定的物品
+tooltip.backpack.advanced_void_upgrade=销毁过滤器中选定的物品
+tooltip.backpack.advanced_void_upgrade.1=更多的过滤选项
+tooltip.backpack.jukebox_upgrade=便携唱片机
 tooltip.backpack.advanced_jukebox_upgrade=支持更多唱片的便携唱片机
 tooltip.backpack.advanced_jukebox_upgrade.1=当然还有更多播放选项
-tooltip.backpack.infinity_upgrade=使背包内所有物品数量无限
-tooltip.backpack.infinity_upgrade.1=仅管理员可安装、卸下或破坏此背包
+tooltip.backpack.infinity_upgrade=使背包内的所有物品数量无限
+tooltip.backpack.infinity_upgrade.1=仅管理员可设置物品数量无限，破坏和拾取背包
 tooltip.backpack.survival_infinity_upgrade=使背包内所有物品数量无限
 tooltip.backpack.survival_infinity_upgrade.1=所有玩家均可设置物品数量无限，破坏和拾取背包
 tooltip.backpack.compacting_upgrade=将物品压制为对应的压缩变体
@@ -261,6 +289,10 @@ tooltip.backpack.tool_swapper_upgrade=左击时自动将玩家手持物品替换
 tooltip.backpack.advanced_tool_swapper_upgrade=左击时自动将玩家手持物品替换为对应方块/实体的挖掘或攻击工具
 tooltip.backpack.advanced_tool_swapper_upgrade.1=具有过滤选项，并可按[%s]手动替换工具
 tooltip.backpack.anvil_upgrade=在升级标签页中添加一个铁砧
+tooltip.backpack.refill_upgrade=使所选物品在玩家物品栏中自动补充至一组
+tooltip.backpack.advanced_refill_upgrade=使所选物品在玩家物品栏中自动补充至一组
+tooltip.backpack.advanced_refill_upgrade.1=更精准的目标槽位选择
+tooltip.backpack.advanced_refill_upgrade.2=可按[%s]从背包中选取方块
 
 #Messages
 messages.backpack.cant.bag=无法放置睡袋！检查周围区域。

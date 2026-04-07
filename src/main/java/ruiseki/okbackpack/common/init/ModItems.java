@@ -25,6 +25,8 @@ import ruiseki.okbackpack.common.item.magnet.ItemAdvancedMagnetUpgrade;
 import ruiseki.okbackpack.common.item.magnet.ItemMagnetUpgrade;
 import ruiseki.okbackpack.common.item.pickup.ItemAdvancedPickupUpgrade;
 import ruiseki.okbackpack.common.item.pickup.ItemPickupUpgrade;
+import ruiseki.okbackpack.common.item.refill.ItemAdvancedRefillUpgrade;
+import ruiseki.okbackpack.common.item.refill.ItemRefillUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemAutoBlastingUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemAutoSmeltingUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemAutoSmokingUpgrade;
@@ -70,6 +72,8 @@ public enum ModItems {
     AUTO_BLASTING_UPGRADE(new ItemAutoBlastingUpgrade(), Mods.EtFuturum),
     TOOL_SWAPPER_UPGRADE(new ItemToolSwapperUpgrade()),
     ADVANCED_TOOL_SWAPPER_UPGRADE(new ItemAdvancedToolSwapperUpgrade()),
+    REFILL_UPGRADE(new ItemRefillUpgrade()),
+    ADVANCED_REFILL_UPGRADE(new ItemAdvancedRefillUpgrade()),
     ANVIL_UPGRADE(new ItemAnvilUpgrade()),
     INFINITY_UPGRADE(new ItemInfinityUpgrade()),
     SURVIVAL_INFINITY_UPGRADE(new ItemSurvivalInfinityUpgrade()),

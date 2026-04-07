@@ -30,8 +30,9 @@ public class DelegatedStackHandlerSHRegisters implements IInitListener {
 
             DelegatedStackHandlerSHRegistry.registerServer(UPDATE_FILTERABLE, (handler, buf) -> {
                 IUpgradeWrapper wrapper = handler.getWrapper();
-                if (!(wrapper instanceof IBasicFilterable upgrade)) return;
-                handler.setDelegatedStackHandler(upgrade::getFilterItems);
+                if (wrapper instanceof IBasicFilterable upgrade) {
+                    handler.setDelegatedStackHandler(upgrade::getFilterItems);
+                }
             });
 
             DelegatedStackHandlerSHRegistry.registerServer(UPDATE_ORE_DICT, (handler, buf) -> {

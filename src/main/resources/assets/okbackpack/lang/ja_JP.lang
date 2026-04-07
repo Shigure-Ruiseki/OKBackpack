@@ -1,130 +1,157 @@
 # General
 creativetab.okBackpack=OK Backpack
 
+# Config
+config.generalConfig=全般設定
+
 # Key binding
 key.categories.okbackpack=Omoshiroi Kamo
-key.okbackpack.open_backpack=バックパックを開く
-key.okbackpack.tool_swap=対象ブロック/エンティティに基づいてツールを交換
+key.okbackpack.open_backpack=リュックを開く
+key.okbackpack.pick_block=ブロック選択
+key.okbackpack.tool_swap=壊すブロックに応じてツールを交換
+key.okbackpack.toggle_upgrade_1=1つ目の追加機能のON/OFF
+key.okbackpack.toggle_upgrade_2=2つ目の追加機能のON/OFF
+key.okbackpack.toggle_upgrade_3=3つ目の追加機能のON/OFF
+key.okbackpack.toggle_upgrade_4=4つ目の追加機能のON/OFF
+key.okbackpack.toggle_upgrade_5=5つ目の追加機能のON/OFF
+
+# Status
+gui.okbackpack.status.upgrade_switched_off=%s を無効にしました
+gui.okbackpack.status.upgrade_switched_on=%s を有効にしました
+
+# Sort
+gui.sort_type.by_mod_id=Mod ID
+gui.sort_type.by_name=名前
+gui.sort_type.by_count=個数
+gui.sort_type.by_ore_dict=鉱石辞書
+gui.sort_order.asc=昇順
+gui.sort_order.desc=降順
+
+# Backpack ==============================================
 
 # Config
-config.backpackConfig=バックパックの設定
-config.feedingConfig=自動食事アップグレードの設定
-config.magnetConfig=マグネットアップグレードの設定
+config.backpackConfig=リュックの設定
+config.feedingConfig=ごはん機能の設定
+config.magnetConfig=アイテム引き寄せ機能の設定
 
 # GUI
-container.backpack=バックパック
-gui.backpack=バックパック
+container.backpack=リュック
+gui.backpack=リュック
 gui.backpack.settings=設定
 gui.configuration_tab=設定タブ
 
-gui.backpack.pickup_settings=拾うアップグレードの設定
-gui.backpack.advanced_pickup_settings=詳細な拾うアップグレードの設定
-gui.backpack.magnet_settings=マグネットの設定
-gui.backpack.advanced_magnet_settings=詳細なマグネットアップグレードの設定
-gui.backpack.feeding_settings=自動食事アップグレードの設定
-gui.backpack.advanced_feeding_settings=詳細な自動食事アップグレードの設定
-gui.backpack.filter_settings=フィルターの設定
-gui.backpack.advanced_filter_settings=詳細なフィルターの設定
-gui.backpack.backpack_settings=バックパックの設定
-gui.backpack.memory_settings=メモリーの設定
-gui.backpack.sorting_settings=ソートの設定
-gui.backpack.crafting_settings=クラフトアップグレードの設定
-gui.backpack.void_settings=自動廃棄アップグレードの設定
-gui.backpack.advanced_void_settings=詳細な自動廃棄アップグレードの設定
-gui.backpack.compacting_settings=圧縮設定
-gui.backpack.advanced_compacting_settings=詳細な圧縮設定
-gui.backpack.jukebox_settings=ジュークボックス設定
-gui.backpack.advanced_jukebox_settings=詳細なジュークボックス設定
-gui.backpack.smelting_settings=精錬設定
-gui.backpack.anvil_settings=金床
-gui.backpack.auto_smelting_settings=自動精錬設定
-gui.backpack.smoking_settings=燻製設定
-gui.backpack.auto_smoking_settings=自動燻製設定
-gui.backpack.blasting_settings=溶鉱炉設定
-gui.backpack.auto_blasting_settings=自動溶鉱炉設定
+gui.search_bar.tool_tip=右クリックで検索バーをクリア
+
+gui.backpack.pickup_settings=直入れ機能
+gui.backpack.advanced_pickup_settings=直入れ機能・改
+gui.backpack.magnet_settings=引き寄せ機能
+gui.backpack.advanced_magnet_settings=引き寄せ機能・改
+gui.backpack.feeding_settings=ごはん機能
+gui.backpack.advanced_feeding_settings=ごはん機能・改
+gui.backpack.filter_settings=仕分け機能
+gui.backpack.advanced_filter_settings=仕分け機能・改
+gui.backpack.backpack_settings=リュックの設定
+gui.backpack.memory_settings=スロットごとの設定
+gui.backpack.sorting_settings=並び替えの除外設定
+gui.backpack.crafting_settings=作業台機能
+gui.backpack.void_settings=ごみ箱機能
+gui.backpack.advanced_void_settings=ごみ箱機能・改
+gui.backpack.compacting_settings=圧縮機能
+gui.backpack.advanced_compacting_settings=圧縮機能・改
+gui.backpack.jukebox_settings=ジュークボックス
+gui.backpack.advanced_jukebox_settings=ジュークボックス・改
+gui.backpack.refill_settings=補充機能
+gui.backpack.advanced_refill_settings=補充機能・改
+gui.backpack.smelting_settings=かまど機能
+gui.backpack.anvil_settings=金床機能
+gui.backpack.auto_smelting_settings=かまど機能・改
+gui.backpack.smoking_settings=食料かまど機能
+gui.backpack.auto_smoking_settings=食料かまど機能・改
+gui.backpack.blasting_settings=鉱石かまど機能
+gui.backpack.auto_blasting_settings=鉱石かまど機能・改
 gui.backpack.smelting_input=入力
 gui.backpack.fuel_filter=燃料フィルター
-gui.backpack.only_reversible=可逆レシピのみ
-gui.backpack.all_recipes=すべてのレシピ
+gui.backpack.only_reversible=元に戻せないアイテムは圧縮しない
+gui.backpack.all_recipes=全てのアイテムを圧縮
 
 
 # Tooltips
-gui.backpack.stack_size_extra=数: %s / %s
+gui.backpack.stack_size_extra=個数: %s / %s
 gui.backpack.not_in_effect=無効
-gui.backpack.whitelist=ホワイトリスト
-gui.backpack.blacklist=ブラックリスト
+gui.backpack.whitelist=指定したアイテムのみ
+gui.backpack.blacklist=指定したアイテム以外
 
-gui.backpack.match_item=アイテム一致
-gui.backpack.match_mod_id=Mod ID一致
-gui.backpack.match_ore_dict=鉱石辞書一致
+gui.backpack.match_item=一致するアイテムのみ
+gui.backpack.match_mod_id=MODが一致するアイテムのみ
+gui.backpack.match_ore_dict=鉱石辞書が一致するアイテムのみ
 
-gui.backpack.match_durability=耐久値を区別
-gui.backpack.ignore_durability=耐久値を無視
+gui.backpack.match_durability=耐久力が一致するアイテムのみ
+gui.backpack.ignore_durability=耐久力は無視
 
-gui.backpack.match_nbt=NBTを区別
-gui.backpack.ignore_nbt=NBTを無視
+gui.backpack.match_nbt=NBTが一致するアイテムのみ
+gui.backpack.ignore_nbt=NBTは無視
 
-gui.backpack.item_magnet=アイテムを吸引する
-gui.backpack.ignore_item_magnet=アイテムを吸引しない
+gui.backpack.item_magnet=アイテムを回収する
+gui.backpack.ignore_item_magnet=アイテムを回収しない
 
-gui.backpack.exp_magnet=経験値を吸引する
-gui.backpack.ignore_exp_magnet=経験値を吸引しない
+gui.backpack.exp_magnet=経験値を回収する
+gui.backpack.ignore_exp_magnet=経験値を回収しない
 
 gui.backpack.add_ore_dict_entry=鉱石辞書を追加
 gui.backpack.remove_ore_dict_entry=鉱石辞書を削除
 gui.backpack.ore_dict_input_help=鉱石辞書名を入力（正規表現OK）
 
-gui.backpack.complete_hunger=お腹が空いていて、食料の満腹度を\n全く無駄にしない時のみ食べる
-gui.backpack.half_hunger=お腹が空いていて、食料の満腹度を\n最大半分まで無駄にする場合でも食べる
-gui.backpack.immediate_hunger=少しでもお腹が空いたらすぐに食べる\n食料の満腹度をかなり無駄にする可能性アリ
-gui.backpack.ignore_health=体力を考慮しない\nプレイヤーの体力を無視し、満腹度設定に基づいてのみ食べる
-gui.backpack.consider_health=ダメージを受けたら即座に食べる\n体力が最大でない場合、満腹度設定が無視される
+gui.backpack.complete_hunger=食料が全く無駄にならないように食べます。
+gui.backpack.half_hunger=適当なタイミングで食べます。\n食料をあまり無駄にしません。
+gui.backpack.immediate_hunger=満腹度が少しでも減ると食べます。\n食料の消費が激しいです。
+gui.backpack.ignore_health=体力を考慮しません。\n満腹度の設定のみで食べます。
+gui.backpack.consider_health=体力が減るとすぐに食べます。\n体力が減った場合は満腹度の設定より優先されます。
 
-gui.backpack.input_output=搬入 & 搬出
-gui.backpack.input=搬入のみ
-gui.backpack.output=搬出のみ
+gui.backpack.input_output=出し入れを制限
+gui.backpack.input=入れるアイテムを制限
+gui.backpack.output=取り出すアイテムを制限
 
-gui.backpack.sort_inventory=バックパック内をソート
-gui.backpack.sort_by_name=名前順
+gui.backpack.sort_inventory=並べ替え
+gui.backpack.sort_by_name=五十音順
 gui.backpack.sort_by_mod_id=Mod ID順
 gui.backpack.sort_by_count=個数順
 gui.backpack.sort_by_ore_dict=鉱石辞書順
 
-gui.backpack.transfer_to_player_inv=全てのアイテムをプレイヤーインベントリへ移動
-gui.backpack.transfer_to_player_inv_matched_1=一致するアイテムをプレイヤーインベントリへ移動
+gui.backpack.transfer_to_player_inv=全てのアイテムをインベントリへ移動
+gui.backpack.transfer_to_player_inv_matched_1=一致するアイテムをインベントリへ移動
 gui.backpack.transfer_to_player_inv_matched_2=Shiftキーで全て移動
-gui.backpack.transfer_to_backpack_inv=全てのアイテムをバックパックへ移動
-gui.backpack.transfer_to_backpack_inv_matched_1=一致するアイテムをバックパックへ移動
+gui.backpack.transfer_to_backpack_inv=全てのアイテムをリュックへ移動
+gui.backpack.transfer_to_backpack_inv_matched_1=一致するアイテムをリュックへ移動
 gui.backpack.transfer_to_backpack_inv_matched_2=Shiftキーで全て移動
 
 gui.backpack.memorized_slot=記憶済みのスロット
-gui.backpack.memorize_all=全スロットを記憶
-gui.backpack.unmemorize_all=全スロットの記憶を抹消
+gui.backpack.memorize_all=全てのスロットを選択
+gui.backpack.unmemorize_all=スロット選択を全解除
 
-gui.backpack.no_sorting_slot=ソートを除外するスロット
-gui.backpack.lock_all_sort=全スロットをソートの除外に設定
-gui.backpack.unlock_all_sort=全スロットをソートの対象に設定
+gui.backpack.no_sorting_slot=並び替えしないスロット
+gui.backpack.lock_all_sort=全てのスロットを選択
+gui.backpack.unlock_all_sort=スロット選択を全解除
 
-gui.backpack.into_backpack=Shiftクリックの結果を\nバックパックへ
-gui.backpack.into_inventory=Shiftクリックの結果を\nプレイヤーインベントリへ
+gui.backpack.into_backpack=完成品をSHIFT＋クリックするとリュックへ
+gui.backpack.into_inventory=完成品をSHIFT＋クリックするとインベントリへ
 gui.backpack.used_backpack=クラフトグリッドに補充する
 gui.backpack.unused_backpack=クラフトグリッドに補充しない
 
 gui.backpack.search_hint=検索...
-gui.backpack.lock_search=検索語句を保持する
-gui.backpack.unlock_search=検索語句を保持しない
+gui.backpack.lock_search=検索語句を保持する: ON
+gui.backpack.unlock_search=検索語句を保持する: OFF
 
-gui.backpack.lock_backpack=他のプレイヤーは開けられない
-gui.backpack.unlock_backpack=他のプレイヤーも開けられる
+gui.backpack.lock_backpack=他のプレイヤは開けない
+gui.backpack.unlock_backpack=他のプレイヤも開ける
 
-gui.backpack.keep_tab=タブを開いたままにする
-gui.backpack.not_keep_tab=タブを閉じる
+gui.backpack.keep_tab=開いたタブを記憶: ON
+gui.backpack.not_keep_tab=開いたタブを記憶: OFF
 
-gui.backpack.void_any=全て廃棄
-gui.backpack.void_overflow=あふれた分を廃棄
+gui.backpack.void_any=全て消去
+gui.backpack.void_overflow=1枚キープして消去
 
-gui.backpack.void_all=GUI内でも機能する
-gui.backpack.void_automation=他のアップグレード/自動化でのみ機能する
+gui.backpack.void_all=手動で入れたアイテムも対象
+gui.backpack.void_automation=他の追加機能や、ホッパー・ケーブルなどで入ってきたアイテムのみ
 
 gui.backpack.jukebox_play=再生
 gui.backpack.jukebox_stop=停止
@@ -136,111 +163,136 @@ gui.backpack.jukebox_loop_off=ループ: オフ
 gui.backpack.jukebox_loop_all=ループ: 全曲
 gui.backpack.jukebox_loop_single=ループ: 一曲
 
-gui.backpack.swap_weapon=武器に交換\nツールを持ってエンティティを左クリックした時、\n武器を手に交換します
-gui.backpack.no_swap_weapon=武器に交換しない\n武器を手に交換しません
-gui.backpack.swap_tool=ツールに交換\n武器またはツールを持っている時、\n適切なツールを手に交換します
-gui.backpack.only_tool_swap_tool=ツールのみツールに交換\nツールを持っている時のみ交換し、\n武器を持っている時は交換しません
-gui.backpack.no_swap_tool=ツールに交換しない\nツールを手に交換しません
+gui.backpack.sleeping_bag=寝袋を使用
 
-gui.backpack.advanced_tool_swapper_settings=ツール交換
+gui.backpack.refill.enabled=有効
+gui.backpack.refill.target.main_hand=手持ちのスロット
+gui.backpack.refill.target.main_hand.acronym=主
+gui.backpack.refill.target.any=指定したスロット
+gui.backpack.refill.target.any.acronym=ス
+gui.backpack.refill.target.hotbar=スロット %s
+gui.backpack.refill.target_tooltip=%sを補充
+gui.backpack.refill.scroll_hint=スクロールで対象スロットを変更
 
-gui.backpack.error.add.upgrade_not_allowed=%1$sは%2$sに装着できません
-gui.backpack.error.add.only_single_upgrade_allowed=%1$sは%2$sに1つだけ装着可能です
-gui.backpack.error.add.only_x_upgrades_allowed=%2$sは%3$sに%1$d個まで装着可能です
+gui.backpack.swap_weapon=武器を交換\n攻撃するときは武器に持ち替えます
+gui.backpack.no_swap_weapon=武器は交換しない\n武器には持ち替えません
+gui.backpack.swap_tool=ツールを交換\nブロックを破壊するとき、適切なツールに持ち替えます。
+gui.backpack.only_tool_swap_tool=ツール同士のみ交換\n武器を持っているときはツールに持ち替えません
+gui.backpack.no_swap_tool=ツールは交換しない\nツールの持ち替えを行いません
+
+gui.backpack.advanced_tool_swapper_settings=ツール交換機能
+
+gui.backpack.error.add.upgrade_not_allowed=%sは%sには使えません
+gui.backpack.error.add.only_single_upgrade_allowed=%sは%sにはひとつしか使えません
+gui.backpack.error.add.only_x_upgrades_allowed=%sは%sには%d個しか使えません
 gui.backpack.error.add.any_upgrade_exists=全てのアップグレードスロットが空でなければなりません
 gui.backpack.error.add.no_upgrade_can_be_added=アップグレードを追加できません
 gui.backpack.error.remove.infinity_upgrade_only_admin=管理者のみが無限アップグレードを取り外せます
 gui.backpack.error.remove.banned_item=アップグレードを取り外す前にこのアイテムを取り除く必要があります
-gui.backpack.error.remove.stack_low_multiplier=スタック倍率は%sより大きくなければなりません
+gui.backpack.error.remove.stack_low_multiplier=%s倍以上にスタックされているアイテムがあるので外せません。
 
 # Items
-tile.leather_backpack.name=革のバックパック
-tile.iron_backpack.name=鉄のバックパック
-tile.gold_backpack.name=金のバックパック
-tile.diamond_backpack.name=ダイヤモンドのバックパック
-tile.obsidian_backpack.name=黒曜石のバックパック
+tile.leather_backpack.name=革のリュック
+tile.iron_backpack.name=鉄のリュック
+tile.gold_backpack.name=金のリュック
+tile.diamond_backpack.name=ダイヤモンドのリュック
+tile.obsidian_backpack.name=黒曜石のリュック
+tile.sleeping_bag.name=寝袋
 
-item.upgrade_base.name=アップグレードベース
-item.stack_upgrade.name=スタックアップグレード
-item.stack_upgrade.iron.name=スタックアップグレード Tier 1
-item.stack_upgrade.gold.name=スタックアップグレード Tier 2
-item.stack_upgrade.diamond.name=スタックアップグレード Tier 3
-item.stack_upgrade.obsidian.name=スタックアップグレード Tier 4
-item.stack_upgrade.omega.name=スタックアップグレード Tier Ω
-item.stack_upgrade.starter.name=スタックアップグレード 青春版
-item.crafting_upgrade.name=クラフトアップグレード
-item.everlasting_upgrade.name=永遠アップグレード
-item.magnet_upgrade.name=マグネットアップグレード
-item.advanced_magnet_upgrade.name=詳細なマグネットアップグレード
-item.pickup_upgrade.name=拾うアップグレード
-item.advanced_pickup_upgrade.name=詳細な拾うアップグレード
-item.feeding_upgrade.name=自動食事アップグレード
-item.advanced_feeding_upgrade.name=詳細な自動食事アップグレード
-item.filter_upgrade.name=フィルターアップグレード
-item.advanced_filter_upgrade.name=詳細なフィルターアップグレード
-item.compacting_upgrade.name=圧縮アップグレード
-item.advanced_compacting_upgrade.name=詳細な圧縮アップグレード
-item.smelting_upgrade.name=精錬アップグレード
-item.auto_smelting_upgrade.name=自動精錬アップグレード
-item.smoking_upgrade.name=燻製アップグレード
-item.auto_smoking_upgrade.name=自動燻製アップグレード
-item.blasting_upgrade.name=溶鉱炉アップグレード
-item.auto_blasting_upgrade.name=自動溶鉱炉アップグレード
-item.inception_upgrade.name=インセプションアップグレード
-item.void_upgrade.name=廃棄アップグレード
-item.advanced_void_upgrade.name=詳細な廃棄アップグレード
-item.jukebox_upgrade.name=ジュークボックスアップグレード
-item.advanced_jukebox_upgrade.name=詳細なジュークボックスアップグレード
-item.tool_swapper_upgrade.name=ツール交換アップグレード
-item.advanced_tool_swapper_upgrade.name=詳細なツール交換アップグレード
-item.infinity_upgrade.name=無限アップグレード（管理者）
-item.survival_infinity_upgrade.name=サバイバル無限アップグレード
-item.anvil_upgrade.name=金床アップグレード
+item.upgrade_base.name=リュックの強化素材
+item.stack_upgrade.name=スタック数増加
+item.stack_upgrade.iron.name=スタック数増加x2
+item.stack_upgrade.gold.name=スタック数増加x4
+item.stack_upgrade.diamond.name=スタック数増加x8
+item.stack_upgrade.obsidian.name=スタック数増加x16
+item.stack_upgrade.omega.name=スタック数増加 オメガ
+item.stack_upgrade.starter.name=スタック数増加x1.5
+item.crafting_upgrade.name=作業台機能
+item.everlasting_upgrade.name=防護機能
+item.magnet_upgrade.name=アイテム引き寄せ機能
+item.advanced_magnet_upgrade.name=アイテム引き寄せ機能・改
+item.pickup_upgrade.name=アイテム直入れ機能
+item.advanced_pickup_upgrade.name=アイテム直入れ機能・改
+item.feeding_upgrade.name=ごはん機能
+item.advanced_feeding_upgrade.name=ごはん機能・改
+item.filter_upgrade.name=仕分けフィルタ機能
+item.advanced_filter_upgrade.name=仕分けフィルタ機能・改
+item.compacting_upgrade.name=アイテム圧縮機能
+item.advanced_compacting_upgrade.name=アイテム圧縮機能・改
+item.smelting_upgrade.name=かまど機能
+item.auto_smelting_upgrade.name=かまど機能・改
+item.smoking_upgrade.name=食料かまど機能
+item.auto_smoking_upgrade.name=食料かまど機能・改
+item.blasting_upgrade.name=鉱石かまど機能
+item.auto_blasting_upgrade.name=鉱石かまど機能・改
+item.inception_upgrade.name=入れ子機能
+item.void_upgrade.name=ごみ箱機能
+item.advanced_void_upgrade.name=ごみ箱機能・改
+item.jukebox_upgrade.name=ジュークボックス機能
+item.advanced_jukebox_upgrade.name=ジュークボックス機能・改
+item.tool_swapper_upgrade.name=ツール交換機能
+item.advanced_tool_swapper_upgrade.name=ツール交換機能・改
+item.infinity_upgrade.name=無限スタック数 (Admin)
+item.survival_infinity_upgrade.name=無限スタック数
+item.anvil_upgrade.name=金床機能
+item.refill_upgrade.name=補充機能
+item.advanced_refill_upgrade.name=補充機能・改
+
 
 # Tooltips
 tooltip.backpack.inventory_size=インベントリサイズ: %d
 tooltip.backpack.upgrade_slots_size=アップグレードスロット: %d
 tooltip.backpack.stack_multiplier=-> スタック倍率: %d%s
 
-tooltip.backpack.magnet_upgrade=近くのエンティティを自動で拾います
-tooltip.backpack.advanced_magnet_upgrade=近くのエンティティを自動で拾います（詳細設定可能）
-tooltip.backpack.everlasting_upgrade=バックパックを無敵にし、デスポーンや奈落への落下を防ぎます。奈落に落ちても回収可能です。(バグで消えたように見えるかもしれません)
+tooltip.backpack.magnet_upgrade=周囲のアイテムを引き寄せてリュックに入れます。
+tooltip.backpack.advanced_magnet_upgrade=より拾い範囲のアイテムを引き寄せてリュックに入れます。
+tooltip.backpack.advanced_magnet_upgrade.1=アイテムフィルタの数が増えます。
+tooltip.backpack.everlasting_upgrade=死亡時や奈落に落ちてもリュックが消滅しなくなります。
+tooltip.backpack.everlasting_upgrade.1=デスポーンや奈落への落下を防ぎます。
 tooltip.backpack.upgrade_base=何もしません！アップグレードスロットに入れてみてください！
-tooltip.backpack.stack_upgrade=スタックサイズを %s 倍にします
-tooltip.backpack.crafting_upgrade=バックパックの横にクラフトグリッドを追加します
-tooltip.backpack.inception_upgrade=バックパックの中にバックパックを入れられるようになります
-tooltip.backpack.pickup_upgrade=バックパックがアイテムを拾えるようにします
-tooltip.backpack.advanced_pickup_upgrade=バックパックがアイテムを拾えるようにします（詳細設定可能）
-tooltip.backpack.feeding_upgrade=バックパックがプレイヤーに自動で食事を与えられるようにします
-tooltip.backpack.advanced_feeding_upgrade=バックパックがプレイヤーに自動で食事を与えられるようにします（詳細設定可能）
-tooltip.backpack.filter_upgrade=ワールドに設置する際に搬入アイテムをフィルタリングします
-tooltip.backpack.advanced_filter_upgrade=ワールドに設置する際に搬入アイテムをフィルタリングします（詳細設定可能）
-tooltip.backpack.void_upgrade=フィルターで選択されたアイテムを消去します
-tooltip.backpack.advanced_void_upgrade=フィルターで選択されたアイテムを消去します。より詳細なフィルタリングオプションがあります
-tooltip.backpack.jukebox_upgrade=ポータブルジュークボックス
-tooltip.backpack.advanced_jukebox_upgrade=より多くのレコードスロットを持つポータブルジュークボックス
-tooltip.backpack.advanced_jukebox_upgrade.1=より多くの再生オプションも利用可能
-tooltip.backpack.infinity_upgrade=バックパック内の全てのアイテムを無限にします
-tooltip.backpack.infinity_upgrade.1=管理者のみがこのバックパックの設置・取り外し・破壊が可能です
-tooltip.backpack.survival_infinity_upgrade=バックパック内の全てのアイテムを無限にします
-tooltip.backpack.survival_infinity_upgrade.1=全てのプレイヤーがこのアップグレードを使用できます
-tooltip.backpack.compacting_upgrade=アイテムを対応する圧縮バリアントに圧縮します
+tooltip.backpack.stack_upgrade=1スロットあたりのスタック数を%s倍にします。
+tooltip.backpack.crafting_upgrade=リュック内で手動でクラフトできるようになります。
+tooltip.backpack.inception_upgrade=リュックの中にリュックを入れることができます。
+tooltip.backpack.pickup_upgrade=拾ったアイテムが直接リュックに入ります。
+tooltip.backpack.advanced_pickup_upgrade=拾ったアイテムが直接リュックに入ります。
+tooltip.backpack.advanced_pickup_upgrade.1=アイテムフィルタの数が増えます。
+tooltip.backpack.feeding_upgrade=リュック内の食料を自動で食べます。
+tooltip.backpack.advanced_feeding_upgrade=リュック内の食料を自動で食べます。
+tooltip.backpack.advanced_feeding_upgrade.1=食事のタイミングを指定可能。
+tooltip.backpack.filter_upgrade=出し入れするアイテムにフィルタをかけます。
+tooltip.backpack.advanced_filter_upgrade=出し入れするアイテムにフィルタをかけます。
+tooltip.backpack.advanced_filter_upgrade.1=アイテムフィルタの数が増えます。
+tooltip.backpack.void_upgrade=フィルタで指定したアイテムを消滅させます。
+tooltip.backpack.advanced_void_upgrade=指定したアイテムを消滅させます。
+tooltip.backpack.advanced_void_upgrade.1=指定できるアイテム数が増えます。
+tooltip.backpack.jukebox_upgrade=リュックでジュークボックスの機能を楽しめます。
+tooltip.backpack.advanced_jukebox_upgrade=リュックでより多くのディスクによるジュークボックスの機能を楽しめます。
+tooltip.backpack.advanced_jukebox_upgrade.1=再生オプションも充実。
+tooltip.backpack.infinity_upgrade=リュック内のアイテム個数を無限にします。
+tooltip.backpack.infinity_upgrade.1=Adminのみ設定可能で、リュックを壊したり拾うのもAdminのみに限定されます。
+tooltip.backpack.survival_infinity_upgrade=リュック内のアイテム個数を無限にします。
+tooltip.backpack.survival_infinity_upgrade.1=利用に制限はありません。
+tooltip.backpack.compacting_upgrade=アイテムを自動で圧縮します。
 tooltip.backpack.compacting_upgrade.1=2x2レシピのみ
-tooltip.backpack.advanced_compacting_upgrade=アイテムを対応する圧縮バリアントに圧縮します
-tooltip.backpack.advanced_compacting_upgrade.1=2x2、3x3レシピおよびより多くのフィルターオプションを含む
-tooltip.backpack.smelting_upgrade=アップグレードタブでアイテムを精錬します
-tooltip.backpack.auto_smelting_upgrade=アップグレードタブでアイテムを精錬します
-tooltip.backpack.auto_smelting_upgrade.1=アイテムを自動搬入/搬出します
-tooltip.backpack.smoking_upgrade=アップグレードタブで食べ物を燻製にします
-tooltip.backpack.auto_smoking_upgrade=アップグレードタブで食べ物を燻製にします
-tooltip.backpack.auto_smoking_upgrade.1=アイテムを自動搬入/搬出します
-tooltip.backpack.blasting_upgrade=アップグレードタブで鉱石や金属を高速精錬します
-tooltip.backpack.auto_blasting_upgrade=アップグレードタブで鉱石や金属を高速精錬します
-tooltip.backpack.auto_blasting_upgrade.1=アイテムを自動搬入/搬出します
-tooltip.backpack.tool_swapper_upgrade=左クリック時にプレイヤーの手持ちアイテムを対象ブロック/エンティティに適した採掘・攻撃ツールに自動交換します
-tooltip.backpack.advanced_tool_swapper_upgrade=左クリック時にプレイヤーの手持ちアイテムを対象ブロック/エンティティに適した採掘・攻撃ツールに自動交換します
-tooltip.backpack.advanced_tool_swapper_upgrade.1=フィルターオプション付き、キーバインド[%s]で手動ツール交換可能
-tooltip.backpack.anvil_upgrade=アップグレードタブに金床を追加します
+tooltip.backpack.advanced_compacting_upgrade=圧縮できるアイテムを自動で圧縮します。
+tooltip.backpack.advanced_compacting_upgrade.1=3x3で圧縮するアイテムにも対応。
+tooltip.backpack.smelting_upgrade=リュック内で食料や鉱石を手動で焼けるようになります。
+tooltip.backpack.auto_smelting_upgrade=リュック内で食料や鉱石を自動で焼けるようになります。
+tooltip.backpack.auto_smelting_upgrade.1=自動搬入/搬出対応
+tooltip.backpack.smoking_upgrade=リュック内で食料を手動で焼けるようになります。
+tooltip.backpack.auto_smoking_upgrade=リュック内で食料を自動で焼けるようになります。
+tooltip.backpack.auto_smoking_upgrade.1=自動搬入/搬出対応
+tooltip.backpack.blasting_upgrade=リュック内で鉱石を手動で焼けるようになります。
+tooltip.backpack.auto_blasting_upgrade=リュック内で鉱石を自動で焼けるようになります。
+tooltip.backpack.auto_blasting_upgrade.1=自動搬入/搬出対応
+tooltip.backpack.tool_swapper_upgrade=ブロックを破壊するとき、適切なツールに自動で切り替わります。
+tooltip.backpack.advanced_tool_swapper_upgrade=ブロックを破壊するとき、適切なツールに自動で切り替わります。
+tooltip.backpack.advanced_tool_swapper_upgrade.1=フィルタで交換するツールを指定できます。
+tooltip.backpack.anvil_upgrade=リュック内で金床が使えるようになります。
+tooltip.backpack.refill_upgrade=消費したアイテムをリュックから補充します。
+tooltip.backpack.advanced_refill_upgrade=消費したアイテムをリュックから補充します。
+tooltip.backpack.advanced_refill_upgrade.1=対象スロットの選択が可能。
+tooltip.backpack.advanced_refill_upgrade.2=ミドルクリックで補充可能。
 
 #メッセージ
 messages.backpack.cant.bag=寝袋を配置できません！周囲を確認してください。

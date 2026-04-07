@@ -17,6 +17,8 @@ public class UpgradeSlotGroupRegisters implements IInitListener {
             UpgradeSlotGroupRegistry.register(new AdvancedJukeboxStorageSlotGroupFactory());
             UpgradeSlotGroupRegistry.register(new SmeltingSlotGroupFactory());
             UpgradeSlotGroupRegistry.register(new AnvilSlotGroupFactory());
+            UpgradeSlotGroupRegistry.register(new RefillFilterSlotGroupFactory());
+            UpgradeSlotGroupRegistry.register(new AdvancedRefillFilterSlotGroupFactory());
         }
     }
 }

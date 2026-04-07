@@ -25,6 +25,8 @@ import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.item.feeding.AdvancedFeedingUpgradeWrapper;
 import ruiseki.okbackpack.common.item.jukebox.AdvancedJukeboxUpgradeWrapper;
+import ruiseki.okbackpack.common.item.refill.AdvancedRefillUpgradeWrapper;
+import ruiseki.okbackpack.common.item.refill.TargetSlot;
 import ruiseki.okcore.init.IInitListener;
 
 public class UpgradeSlotSHRegisters implements IInitListener {
@@ -51,6 +53,7 @@ public class UpgradeSlotSHRegisters implements IInitListener {
     public static final String UPDATE_JUKEBOX_LOOP = "update_jukebox_loop";
     public static final String UPDATE_TOOL_SWAPPER = "update_tool_swapper";
     public static final String UPDATE_ANVIL_NAME = "update_anvil_name";
+    public static final String UPDATE_REFILL_TARGET_SLOT = "update_refill_target_slot";
 
     @Override
     public void onInit(Step step) {
@@ -215,6 +218,16 @@ public class UpgradeSlotSHRegisters implements IInitListener {
                 String name = buf.readStringFromBuffer(50);
                 anvil.setRepairedItemName(name);
                 anvil.updateRepairOutput();
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_REFILL_TARGET_SLOT, (slot, buf) -> {
+                IUpgradeWrapper wrapper = slot.getWrapper();
+                if (!(wrapper instanceof AdvancedRefillUpgradeWrapper refill)) return;
+                int filterSlot = buf.readInt();
+                int ordinal = buf.readInt();
+                if (filterSlot >= 0 && filterSlot < refill.getFilterSlotCount()) {
+                    refill.setTargetSlot(filterSlot, TargetSlot.fromOrdinal(ordinal));
+                }
             });
 
         }

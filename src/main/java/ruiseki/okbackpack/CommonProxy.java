@@ -8,6 +8,7 @@ import ruiseki.okbackpack.common.network.PacketJukeboxPositionUpdate;
 import ruiseki.okbackpack.common.network.PacketQuickDraw;
 import ruiseki.okbackpack.common.network.PacketRecordDuration;
 import ruiseki.okbackpack.common.network.PacketSyncCarriedItem;
+import ruiseki.okbackpack.common.network.PacketToggleUpgrade;
 import ruiseki.okbackpack.common.network.PacketToolSwap;
 import ruiseki.okcore.init.ModBase;
 import ruiseki.okcore.network.PacketHandler;
@@ -30,6 +31,7 @@ public class CommonProxy extends CommonProxyComponent {
         packetHandler.register(PacketJukeboxPositionUpdate.class);
         packetHandler.register(PacketRecordDuration.class);
         packetHandler.register(PacketToolSwap.class);
+        packetHandler.register(PacketToggleUpgrade.class);
     }
 
     @Override
