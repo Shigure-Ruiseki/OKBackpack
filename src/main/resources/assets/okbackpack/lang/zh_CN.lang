@@ -18,7 +18,7 @@ gui.sort_type.by_ore_dict=按矿物词典
 gui.sort_order.asc=升序
 gui.sort_order.desc=降序
 
-# Backpack =
+# Backpack ==============================================
 
 # Config
 config.backpackConfig=背包设置

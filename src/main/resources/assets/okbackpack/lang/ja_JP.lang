@@ -1,10 +1,24 @@
 # General
 creativetab.okBackpack=OK Backpack
 
+# Config
+config.generalConfig=全般設定
+
 # Key binding
 key.categories.okbackpack=Omoshiroi Kamo
 key.okbackpack.open_backpack=リュックを開く
+key.okbackpack.pick_block=ブロック選択
 key.okbackpack.tool_swap=壊すブロックに応じてツールを交換
+
+# Sort
+gui.sort_type.by_mod_id=Mod ID
+gui.sort_type.by_name=名前
+gui.sort_type.by_count=個数
+gui.sort_type.by_ore_dict=鉱石辞書
+gui.sort_order.asc=昇順
+gui.sort_order.desc=降順
+
+# Backpack ==============================================
 
 # Config
 config.backpackConfig=リュックの設定
@@ -16,6 +30,8 @@ container.backpack=リュック
 gui.backpack=リュック
 gui.backpack.settings=設定
 gui.configuration_tab=設定タブ
+
+gui.search_bar.tool_tip=右クリックで検索バーをクリア
 
 gui.backpack.pickup_settings=直入れ機能
 gui.backpack.advanced_pickup_settings=直入れ機能・改
@@ -172,6 +188,7 @@ tile.iron_backpack.name=鉄のリュック
 tile.gold_backpack.name=金のリュック
 tile.diamond_backpack.name=ダイヤモンドのリュック
 tile.obsidian_backpack.name=黒曜石のリュック
+tile.sleeping_bag.name=寝袋
 
 item.upgrade_base.name=リュックの強化素材
 item.stack_upgrade.name=スタック数増加
@@ -211,6 +228,7 @@ item.survival_infinity_upgrade.name=無限スタック数
 item.anvil_upgrade.name=金床機能
 item.refill_upgrade.name=補充機能
 item.advanced_refill_upgrade.name=補充機能・改
+
 
 # Tooltips
 tooltip.backpack.inventory_size=インベントリサイズ: %d
