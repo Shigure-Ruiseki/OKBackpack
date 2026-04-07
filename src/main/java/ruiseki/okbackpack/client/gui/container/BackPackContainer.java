@@ -18,6 +18,7 @@ import com.cleanroommc.modularui.api.inventory.ClickType;
 import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.screen.NEAAnimationHandler;
 import com.cleanroommc.modularui.utils.Platform;
+import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
@@ -31,6 +32,7 @@ import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingMatrixSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
+import ruiseki.okbackpack.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
@@ -282,7 +284,16 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                                 clickedSlot.putStack(slotStack);
 
                             } else if (heldStack.stackSize <= stackLimit(clickedSlot, heldStack)) {
-                                clickedSlot.putStack(heldStack);
+                                if (clickedSlot instanceof ModularUpgradeSlot mus) {
+                                    int slotIndex = clickedSlot.getSlotIndex();
+                                    ((IItemHandlerModifiable) mus.getItemHandler())
+                                        .setStackInSlot(slotIndex, heldStack);
+                                    clickedSlot.onSlotChanged();
+                                } else {
+                                    clickedSlot.putStack(heldStack);
+                                    clickedSlot.onSlotChanged();
+                                }
+
                                 playerInventory.setItemStack(slotStack);
                             }
                         } else if (slotStack.getItem() == heldStack.getItem() && heldStack.getMaxStackSize() > 1
@@ -412,6 +423,13 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                 } else {
                     transferItemFiltered(fromSlot, fromStack, slot -> PLAYER_INV.equals(slot.getSlotGroupName()));
                 }
+        }
+        if (fromSlot instanceof ModularUpgradeSlot upgradeSlot) {
+            transferItemFiltered(fromSlot, fromStack, slot -> PLAYER_INV.equals(slot.getSlotGroupName()));
+            if (fromStack.stackSize != originalSize) {
+                int slotIndex = upgradeSlot.getSlotIndex();
+                ((IItemHandlerModifiable) upgradeSlot.getItemHandler()).setStackInSlot(slotIndex, Platform.EMPTY_STACK);
+            }
         } else if (PLAYER_INV.equals(fromSlot.getSlotGroupName())) {
             transferItemFiltered(
                 fromSlot,
