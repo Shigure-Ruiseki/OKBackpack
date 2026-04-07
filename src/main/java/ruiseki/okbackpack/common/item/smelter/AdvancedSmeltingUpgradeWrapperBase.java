@@ -205,7 +205,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                         storage.setStackInSlot(i, stack);
                     }
                     input = getInput();
-                    markDirty();
+                    save();
                     break;
                 } else if (ItemHandlerHelper.canItemStacksStack(input, stack)) {
                     int space = input.getMaxStackSize() - input.stackSize;
@@ -220,7 +220,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                         } else {
                             storage.setStackInSlot(i, stack);
                         }
-                        markDirty();
+                        save();
                         break;
                     }
                 }
@@ -249,7 +249,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                         storage.setStackInSlot(i, stack);
                     }
                     fuel = getFuel();
-                    markDirty();
+                    save();
                     break;
                 } else if (ItemHandlerHelper.canItemStacksStack(fuel, stack)) {
                     int space = fuel.getMaxStackSize() - fuel.stackSize;
@@ -264,7 +264,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                         } else {
                             storage.setStackInSlot(i, stack);
                         }
-                        markDirty();
+                        save();
                         break;
                     }
                 }
@@ -363,7 +363,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
         }
 
         if (dirty) {
-            markDirty();
+            save();
         }
         return dirty;
     }

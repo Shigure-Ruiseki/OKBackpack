@@ -16,7 +16,9 @@ import net.minecraft.item.crafting.CraftingManager;
 
 import com.cleanroommc.modularui.api.inventory.ClickType;
 import com.cleanroommc.modularui.screen.ModularContainer;
+import com.cleanroommc.modularui.screen.NEAAnimationHandler;
 import com.cleanroommc.modularui.utils.Platform;
+import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
@@ -30,6 +32,7 @@ import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingMatrixSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
+import ruiseki.okbackpack.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
@@ -172,7 +175,154 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
         ItemStack heldStack = playerInventory.getItemStack();
         ItemStack returnable = null;
 
-        if (clickTypeIn == ClickType.PICKUP_ALL) {
+        if (clickTypeIn == ClickType.QUICK_CRAFT || acc().getDragEvent() != 0) {
+            return super.slotClick(slotId, mouseButton, mode, player);
+        }
+
+        // Handle click events in the inventory
+        if ((clickTypeIn == ClickType.PICKUP || clickTypeIn == ClickType.QUICK_MOVE)
+            && (mouseButton == LEFT_MOUSE || mouseButton == RIGHT_MOUSE)) {
+
+            // If the slot ID is DROP_TO_WORLD, delegate to the original slot click method
+            if (slotId == DROP_TO_WORLD) {
+                return superSlotClick(slotId, mouseButton, mode, player);
+            }
+
+            // Early return if the slot ID is invalid (< 0)
+            if (slotId < 0) return Platform.EMPTY_STACK;
+
+            // Handle QuickMove (shift-click)
+            if (clickTypeIn == ClickType.QUICK_MOVE) {
+                Slot fromSlot = getSlot(slotId);
+
+                // If the slot cannot be taken from, return empty
+                if (!fromSlot.canTakeStack(player)) {
+                    return Platform.EMPTY_STACK;
+                }
+
+                // Check if NEA animation should handle this QuickMove
+                if (NEAAnimationHandler.shouldHandleNEA(this)) {
+                    returnable = NEAAnimationHandler.injectQuickMove(this, player, slotId, fromSlot);
+                } else {
+                    // Default QuickMove handling
+                    returnable = handleQuickMove(player, slotId, fromSlot);
+                }
+
+            } else { // Handle PICKUP click (left/right click)
+                Slot clickedSlot = getSlot(slotId);
+
+                if (clickedSlot != null) {
+                    ItemStack slotStack = clickedSlot.getStack(); // Get the stack in the slot
+
+                    // If the slot is empty
+                    if (slotStack == null) {
+                        // If the player is holding an item and the slot accepts it
+                        if (heldStack != null && clickedSlot.isItemValid(heldStack)) {
+                            int stackCount = mouseButton == LEFT_MOUSE ? heldStack.stackSize : 1;
+
+                            // Limit the stack size that can be placed in the slot
+                            int lim = stackLimit(clickedSlot, heldStack);
+                            if (stackCount > lim) {
+                                stackCount = lim;
+                            }
+
+                            // Split the stack from the player's hand and put into the slot
+                            clickedSlot.putStack(heldStack.splitStack(stackCount));
+
+                            // If the player runs out of items in hand, set heldStack to null
+                            if (heldStack.stackSize == 0) {
+                                playerInventory.setItemStack(null);
+                            }
+                        }
+
+                    } else if (clickedSlot.canTakeStack(player)) { // Slot has items and can be taken
+                        if (heldStack == null) { // Player is not holding any item
+                            int s = Math.min(slotStack.stackSize, slotStack.getMaxStackSize());
+                            int toRemove = (mouseButton == LEFT_MOUSE) ? s : (s + 1) / 2;
+
+                            // Extract item from slot into player's hand
+                            ItemStack extracted = clickedSlot.decrStackSize(toRemove);
+
+                            if (extracted != null) {
+                                playerInventory.setItemStack(extracted);
+                                clickedSlot.onPickupFromSlot(player, extracted);
+                            }
+
+                            // If the slot is empty after extraction, set it to null
+                            if (clickedSlot.getStack() == null || clickedSlot.getStack().stackSize <= 0) {
+                                clickedSlot.putStack(null);
+                            }
+
+                            clickedSlot.onSlotChanged();
+                            detectAndSendChanges();
+
+                            return extracted == null ? Platform.EMPTY_STACK : extracted;
+
+                        } else if (clickedSlot.isItemValid(heldStack)) { // Player is holding a valid item
+                            // If the items are the same type, damage, and NBT
+                            if (slotStack.getItem() == heldStack.getItem()
+                                && slotStack.getItemDamage() == heldStack.getItemDamage()
+                                && ItemStack.areItemStackTagsEqual(slotStack, heldStack)) {
+
+                                int stackCount = mouseButton == LEFT_MOUSE ? heldStack.stackSize : 1;
+
+                                // Limit the number of items that can be merged into the slot
+                                int lim = stackLimit(clickedSlot, heldStack);
+                                if (stackCount > lim - slotStack.stackSize) {
+                                    stackCount = lim - slotStack.stackSize;
+                                }
+
+                                // Split items from player's hand
+                                heldStack.splitStack(stackCount);
+
+                                if (heldStack.stackSize == 0) {
+                                    playerInventory.setItemStack(null);
+                                }
+
+                                // Merge into the slot stack
+                                slotStack.stackSize += stackCount;
+                                clickedSlot.putStack(slotStack);
+
+                            } else if (heldStack.stackSize <= stackLimit(clickedSlot, heldStack)) {
+                                if (clickedSlot instanceof ModularUpgradeSlot mus) {
+                                    int slotIndex = clickedSlot.getSlotIndex();
+                                    ((IItemHandlerModifiable) mus.getItemHandler())
+                                        .setStackInSlot(slotIndex, heldStack);
+                                    clickedSlot.onSlotChanged();
+                                } else {
+                                    clickedSlot.putStack(heldStack);
+                                    clickedSlot.onSlotChanged();
+                                }
+
+                                playerInventory.setItemStack(slotStack);
+                            }
+                        } else if (slotStack.getItem() == heldStack.getItem() && heldStack.getMaxStackSize() > 1
+                            && (!slotStack.getHasSubtypes() || slotStack.getItemDamage() == heldStack.getItemDamage())
+                            && ItemStack.areItemStackTagsEqual(slotStack, heldStack)) {
+
+                                int stackCount = slotStack.stackSize;
+
+                                // Merge slot stack into held stack if possible
+                                if (stackCount > 0 && stackCount + heldStack.stackSize <= heldStack.getMaxStackSize()) {
+                                    heldStack.stackSize += stackCount;
+                                    slotStack = clickedSlot.decrStackSize(stackCount);
+
+                                    if (slotStack.stackSize == 0) {
+                                        clickedSlot.putStack(null);
+                                    }
+
+                                    clickedSlot.onPickupFromSlot(player, playerInventory.getItemStack());
+                                }
+                            }
+                    }
+
+                    clickedSlot.onSlotChanged();
+                }
+            }
+
+            detectAndSendChanges(); // Update inventory on client
+            return returnable;
+        } else if (clickTypeIn == ClickType.PICKUP_ALL) {
 
             if (heldStack != null) {
 
@@ -196,9 +346,7 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                             if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) continue;
                         }
 
-                        if (slot1.getHasStack() && func_94527_a(slot1, heldStack, true)
-                            && slot1.canTakeStack(player)
-                            && canMergeSlot(heldStack, slot1)) {
+                        if (slot1.getHasStack() && slot1.canTakeStack(player) && canMergeSlot(heldStack, slot1)) {
 
                             ItemStack stackInSlot = slot1.getStack();
 
@@ -275,6 +423,19 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                 } else {
                     transferItemFiltered(fromSlot, fromStack, slot -> PLAYER_INV.equals(slot.getSlotGroupName()));
                 }
+        }
+        if (fromSlot instanceof ModularUpgradeSlot upgradeSlot) {
+            transferItemFiltered(
+                fromSlot,
+                fromStack,
+                slot -> PLAYER_INV.equals(slot.getSlotGroupName()),
+                slot -> slot instanceof ModularBackpackSlot && wrapper.isSlotMemorized(slot.getSlotIndex()),
+                slot -> slot instanceof ModularBackpackSlot);
+            if (fromStack.stackSize != originalSize) {
+                int slotIndex = upgradeSlot.getSlotIndex();
+                ((IItemHandlerModifiable) upgradeSlot.getItemHandler()).setStackInSlot(slotIndex, Platform.EMPTY_STACK);
+            }
+            return fromStack;
         } else if (PLAYER_INV.equals(fromSlot.getSlotGroupName())) {
             transferItemFiltered(
                 fromSlot,

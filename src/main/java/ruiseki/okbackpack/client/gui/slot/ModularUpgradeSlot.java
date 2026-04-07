@@ -20,7 +20,7 @@ import ruiseki.okbackpack.common.item.infinity.ItemSurvivalInfinityUpgrade;
 
 public class ModularUpgradeSlot extends ModularSlot {
 
-    private final IStorageWrapper wrapper;
+    protected final IStorageWrapper wrapper;
 
     @Getter
     @Setter
