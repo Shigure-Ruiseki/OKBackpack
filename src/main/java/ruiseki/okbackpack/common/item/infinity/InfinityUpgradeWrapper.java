@@ -2,22 +2,26 @@ package ruiseki.okbackpack.common.item.infinity;
 
 import java.util.function.Consumer;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
 
 import org.jetbrains.annotations.Nullable;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IEntityApplicable;
 import ruiseki.okbackpack.api.wrapper.IInfinityUpgrade;
 import ruiseki.okbackpack.api.wrapper.IInventoryModifiable;
 import ruiseki.okbackpack.api.wrapper.ISlotModifiable;
+import ruiseki.okbackpack.common.entity.EntityBackpack;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class InfinityUpgradeWrapper extends UpgradeWrapperBase
-    implements IInventoryModifiable, ISlotModifiable, IInfinityUpgrade {
+    implements IInventoryModifiable, ISlotModifiable, IInfinityUpgrade, IEntityApplicable {
 
     private static final String SAVED_STACK_SIZES_TAG = "SavedStackSizes";
 
@@ -33,6 +37,13 @@ public class InfinityUpgradeWrapper extends UpgradeWrapperBase
     @Override
     public boolean isAdmin() {
         return admin;
+    }
+
+    @Override
+    public void applyContainerEntity(World world, Entity selfEntity) {
+        if (admin && selfEntity instanceof EntityBackpack backpack) {
+            backpack.setImmortal(true);
+        }
     }
 
     @Override
