@@ -26,23 +26,6 @@ public class OKBGuiTextures {
         .imageSize(36, 36)
         .build();
 
-    public static final UITexture ENERGY_BAR = UITexture.builder()
-        .location(Reference.MOD_ID, "gui/progress_energy")
-        .imageSize(16, 128)
-        .build();
-
-    public static final UITexture ENERGY_BAR_BACKGROUND = UITexture.builder()
-        .location(Reference.MOD_ID, "gui/progress_energy")
-        .imageSize(16, 128)
-        .xy(0, 0, 16, 64)
-        .build();
-
-    public static final UITexture ENERGY_BAR_FOREGROUND = UITexture.builder()
-        .location(Reference.MOD_ID, "gui/progress_energy")
-        .imageSize(16, 128)
-        .xy(0, 64, 16, 64)
-        .build();
-
     public static final UITexture BASIC_BAR = UITexture.builder()
         .location(Reference.MOD_ID, "gui/progress_white")
         .imageSize(64, 32)
@@ -273,6 +256,42 @@ public class OKBGuiTextures {
         .imageSize(256, 256)
         .xy(113, 216, 15, 15)
         .name("anvil_red_cross")
+        .build();
+
+    // Battery upgrade GUI textures
+    public static final UITexture BATTERY_BAR_BACKGROUND = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(29, 30, 18, 54)
+        .name("battery_bar_bg")
+        .build();
+
+    public static final UITexture BATTERY_OVERLAY = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(47, 56, 16, 18)
+        .name("battery_overlay")
+        .build();
+
+    public static final UITexture BATTERY_CHARGE_SEGMENT = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(47, 74, 16, 6)
+        .name("battery_charge_segment")
+        .build();
+
+    public static final UITexture BATTERY_CONNECTION_TOP = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(47, 48, 16, 4)
+        .name("battery_connection_top")
+        .build();
+
+    public static final UITexture BATTERY_CONNECTION_BOTTOM = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(47, 52, 16, 4)
+        .name("battery_connection_bottom")
         .build();
 
     public static UITexture icon(String name, int x, int y) {

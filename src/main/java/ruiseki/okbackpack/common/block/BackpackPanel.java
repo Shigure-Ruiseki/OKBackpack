@@ -626,8 +626,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 IUpgradeWrapper wrapper = this.wrapper.upgradeHandler.getWrapperInSlot(slotIndex);
                 if (wrapper == null) continue;
 
-                upgrade.updateSlotWidgetDelegates(wrapper, upgradeSlotGroup);
                 Widget widget = upgrade.getSlotWidget(slotIndex, wrapper, stack, this, wrapper.getSettingLangKey());
+                upgrade.updateSlotWidgetDelegates(wrapper, upgradeSlotGroup);
 
                 if (widget != null) {
                     column.child(widget);
@@ -663,6 +663,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 getContext().getUISettings()
                     .getRecipeViewerSettings()
                     .removeExclusionArea(tabWidget.getExpandedWidget());
+                tabWidget.setExpandedWidget(null);
+                tabWidget.child(null);
             }
         }
     }

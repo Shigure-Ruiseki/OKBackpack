@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Level;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.common.item.anvil.ItemAnvilUpgrade;
+import ruiseki.okbackpack.common.item.battery.ItemBatteryUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemAdvancedCompactingUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemCompactingUpgrade;
 import ruiseki.okbackpack.common.item.crafting.ItemCraftingUpgrade;
@@ -75,6 +76,7 @@ public enum ModItems {
     REFILL_UPGRADE(new ItemRefillUpgrade()),
     ADVANCED_REFILL_UPGRADE(new ItemAdvancedRefillUpgrade()),
     ANVIL_UPGRADE(new ItemAnvilUpgrade()),
+    BATTERY_UPGRADE(new ItemBatteryUpgrade()),
     INFINITY_UPGRADE(new ItemInfinityUpgrade()),
     SURVIVAL_INFINITY_UPGRADE(new ItemSurvivalInfinityUpgrade()),
 

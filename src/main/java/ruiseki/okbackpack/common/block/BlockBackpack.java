@@ -34,12 +34,15 @@ import com.gtnewhorizon.gtnhlib.blockstate.registry.BlockPropertyRegistry;
 import com.gtnewhorizon.gtnhlib.client.model.color.BlockColor;
 import com.gtnewhorizon.gtnhlib.client.model.color.IBlockColor;
 
+import cofh.api.energy.IEnergyContainerItem;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
 import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IAdminProtectable;
+import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.client.renderer.player.IArmorRender;
@@ -232,8 +235,9 @@ public class BlockBackpack extends BlockOK {
         return super.onBlockActivated(worldIn, x, y, z, player, side, subX, subY, subZ);
     }
 
+    @Optional.Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHCore")
     public static class ItemBackpack extends ItemBlockBauble
-        implements IGuiHolder<PlayerInventoryGuiData>, IBaubleRender, IArmorRender {
+        implements IGuiHolder<PlayerInventoryGuiData>, IBaubleRender, IArmorRender, IEnergyContainerItem {
 
         public int backpackSlots = 27;
         public int upgradeSlots = 1;
@@ -244,6 +248,76 @@ public class BlockBackpack extends BlockOK {
                 this.backpackSlots = backpack.getBackpackSlots();
                 this.upgradeSlots = backpack.getUpgradeSlots();
             }
+        }
+
+        private @Nullable IBatteryUpgrade getBatteryUpgrade(ItemStack stack) {
+            if (stack == null || !stack.hasTagCompound()) return null;
+            if (!stack.getTagCompound()
+                .hasKey(BackpackWrapper.BACKPACK_NBT)) return null;
+            BackpackWrapper wrapper = new BackpackWrapper(stack, this);
+            wrapper.readFromItem();
+            var batteries = wrapper.gatherCapabilityUpgrades(IBatteryUpgrade.class);
+            if (batteries.isEmpty()) return null;
+            return batteries.values()
+                .iterator()
+                .next();
+        }
+
+        private @Nullable BackpackWrapper createWrapper(ItemStack stack) {
+            if (stack == null || !stack.hasTagCompound()) return null;
+            if (!stack.getTagCompound()
+                .hasKey(BackpackWrapper.BACKPACK_NBT)) return null;
+            BackpackWrapper wrapper = new BackpackWrapper(stack, this);
+            wrapper.readFromItem();
+            return wrapper;
+        }
+
+        @Override
+        @Optional.Method(modid = "CoFHCore")
+        public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
+            BackpackWrapper wrapper = createWrapper(container);
+            if (wrapper == null) return 0;
+            var batteries = wrapper.gatherCapabilityUpgrades(IBatteryUpgrade.class);
+            if (batteries.isEmpty()) return 0;
+            IBatteryUpgrade battery = batteries.values()
+                .iterator()
+                .next();
+            int received = battery.receiveEnergy(maxReceive, simulate);
+            if (!simulate && received > 0) {
+                wrapper.writeToItem();
+            }
+            return received;
+        }
+
+        @Override
+        @Optional.Method(modid = "CoFHCore")
+        public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
+            BackpackWrapper wrapper = createWrapper(container);
+            if (wrapper == null) return 0;
+            var batteries = wrapper.gatherCapabilityUpgrades(IBatteryUpgrade.class);
+            if (batteries.isEmpty()) return 0;
+            IBatteryUpgrade battery = batteries.values()
+                .iterator()
+                .next();
+            int extracted = battery.extractEnergy(maxExtract, simulate);
+            if (!simulate && extracted > 0) {
+                wrapper.writeToItem();
+            }
+            return extracted;
+        }
+
+        @Override
+        @Optional.Method(modid = "CoFHCore")
+        public int getEnergyStored(ItemStack container) {
+            IBatteryUpgrade battery = getBatteryUpgrade(container);
+            return battery != null ? battery.getEnergyStored() : 0;
+        }
+
+        @Override
+        @Optional.Method(modid = "CoFHCore")
+        public int getMaxEnergyStored(ItemStack container) {
+            IBatteryUpgrade battery = getBatteryUpgrade(container);
+            return battery != null ? battery.getMaxEnergyStored() : 0;
         }
 
         @Override
