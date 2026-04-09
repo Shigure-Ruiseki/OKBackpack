@@ -31,11 +31,12 @@ public class BatterySlotWidget extends Widget<BatterySlotWidget> {
     private IntSupplier energyStoredSupplier;
     private IntSupplier maxEnergySupplier;
 
-    public BatterySlotWidget(int slotIndex, BatteryUpgradeWrapper wrapper, int height) {
+    public BatterySlotWidget(int slotIndex, BatteryUpgradeWrapper wrapper) {
         this.slotIndex = slotIndex;
         this.energyStoredSupplier = wrapper::getEnergyStored;
         this.maxEnergySupplier = wrapper::getMaxEnergyStored;
-        size(BAR_WIDTH, height);
+        width(BAR_WIDTH);
+        heightRel(1f);
         tooltipAutoUpdate(true);
         tooltipDynamic(this::buildTooltip);
     }

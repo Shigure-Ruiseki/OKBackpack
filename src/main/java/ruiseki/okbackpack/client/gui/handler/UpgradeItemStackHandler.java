@@ -70,6 +70,7 @@ public class UpgradeItemStackHandler extends BaseItemStackHandler {
 
     @Override
     public @Nullable ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        if (!isVisualSlot(slot)) return stack;
         ItemStack before = getStackInSlot(slot);
         ItemStack result = super.insertItem(slot, stack, simulate);
         if (!simulate && before == null && getStackInSlot(slot) != null) {
@@ -81,6 +82,7 @@ public class UpgradeItemStackHandler extends BaseItemStackHandler {
 
     @Override
     public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+        if (!isVisualSlot(slot)) return;
         ItemStack originalStack = getStackInSlot(slot);
         boolean itemsDiffer = !ItemStack.areItemStacksEqual(originalStack, stack);
 
@@ -112,6 +114,7 @@ public class UpgradeItemStackHandler extends BaseItemStackHandler {
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        if (!isVisualSlot(slot)) return null;
         if (!simulate) {
             ItemStack slotStack = getStackInSlot(slot);
             if (slotStack != null && amount == 1) {

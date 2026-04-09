@@ -38,6 +38,7 @@ public class BackpackItemStackHandler extends BaseItemStackHandler implements IM
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
+        if (!isVisualSlot(slot)) return false;
         if (memorizedSlotStack.get(slot) == null) {
             return !(stack.getItem() instanceof BlockBackpack.ItemBackpack) || wrapper.canAddStack(slot, stack);
         }
@@ -80,9 +81,9 @@ public class BackpackItemStackHandler extends BaseItemStackHandler implements IM
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        if (stack == null) {
-            return null;
-        }
+        if (!isVisualSlot(slot)) return stack;
+        if (stack == null) return null;
+
         ItemStack existing = stacks.get(slot);
 
         int limit = getStackLimit(slot, stack);
@@ -114,6 +115,7 @@ public class BackpackItemStackHandler extends BaseItemStackHandler implements IM
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        if (!isVisualSlot(slot)) return null;
         if (amount == 0) return null;
 
         ItemStack existing = stacks.get(slot);
@@ -195,6 +197,7 @@ public class BackpackItemStackHandler extends BaseItemStackHandler implements IM
 
     @Override
     public ItemStack prioritizedInsertion(int slot, ItemStack stack, boolean simulate) {
+        if (!isVisualSlot(slot)) return stack;
         if (stack == null || stack.stackSize <= 0) return stack;
 
         if (!wrapper.canAddStack(slot, stack)) {

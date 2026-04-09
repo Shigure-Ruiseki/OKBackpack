@@ -11,7 +11,6 @@ import cofh.api.energy.IEnergyContainerItem;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
-import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
@@ -60,24 +59,22 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatter
 
     @Override
     public void onAdded() {
-        if (storage instanceof BackpackWrapper bw) {
-            int size = bw.backpackHandler.getSlots();
-            size -= ItemBatteryUpgrade.SLOTS_NEEDED;
-            bw.backpackSlots = size;
-            bw.backpackHandler.resize(size);
-            bw.markDirty();
-        }
+        int size = storage.getStackHandler()
+            .getSlots();
+        size -= ItemBatteryUpgrade.SLOTS_NEEDED;
+        storage.getStackHandler()
+            .setVisualSize(size);
+        storage.markDirty();
     }
 
     @Override
     public void onBeforeRemoved() {
-        if (storage instanceof BackpackWrapper bw) {
-            int size = bw.backpackHandler.getSlots();
-            size += ItemBatteryUpgrade.SLOTS_NEEDED;
-            bw.backpackSlots = size;
-            bw.backpackHandler.resize(size);
-            bw.markDirty();
-        }
+        int size = storage.getStackHandler()
+            .getSlots();
+        size += ItemBatteryUpgrade.SLOTS_NEEDED;
+        storage.getStackHandler()
+            .setVisualSize(size);
+        storage.markDirty();
     }
 
     @Override

@@ -24,7 +24,6 @@ import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularFilterSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okbackpack.common.block.BackpackPanel;
-import ruiseki.okbackpack.common.block.BackpackWrapper;
 
 public class BackpackOverlay extends DefaultOverlayHandler {
 
@@ -130,14 +129,13 @@ public class BackpackOverlay extends DefaultOverlayHandler {
             return itemPresenceSlots;
         }
 
-        BackpackWrapper wrapper = (BackpackWrapper) container.wrapper;
         EntityPlayer player = container.getPlayer();
 
         final List<ItemStack> invStacks = new ArrayList<>();
 
         // backpack inventory
-        for (int i = 0; i < wrapper.getSlots(); i++) {
-            ItemStack stack = wrapper.getStackInSlot(i);
+        for (int i = 0; i < container.wrapper.getSlots(); i++) {
+            ItemStack stack = container.wrapper.getStackInSlot(i);
             if (stack != null && stack.stackSize > 0) {
                 invStacks.add(stack.copy());
             }

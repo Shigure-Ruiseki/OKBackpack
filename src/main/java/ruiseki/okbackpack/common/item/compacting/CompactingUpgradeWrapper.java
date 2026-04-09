@@ -16,7 +16,6 @@ import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.ICompactingUpgrade;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
-import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.BasicUpgradeWrapper;
 import ruiseki.okbackpack.common.recipe.CompactingRecipeCache;
 import ruiseki.okbackpack.common.recipe.CompactingRecipeCache.CompactingResult;
@@ -62,16 +61,15 @@ public class CompactingUpgradeWrapper extends BasicUpgradeWrapper implements ICo
 
     private void doCompact() {
         if (!isEnabled()) return;
-        if (!(storage instanceof BackpackWrapper bw)) return;
-
-        BackpackItemStackHandler invHandler = bw.backpackHandler;
         CompactingRecipeCache cache = CompactingRecipeCache.getInstance();
         boolean onlyReversible = isOnlyReversible();
 
         Map<ItemId, List<Integer>> stackSlots = new HashMap<>();
 
-        for (int i = 0; i < invHandler.getSlots(); i++) {
-            ItemStack stack = invHandler.getStackInSlot(i);
+        for (int i = 0; i < storage.getStackHandler()
+            .getSlots(); i++) {
+            ItemStack stack = storage.getStackHandler()
+                .getStackInSlot(i);
             if (stack == null || stack.stackSize <= 0) continue;
             if (!checkFilter(stack)) continue;
 
@@ -84,7 +82,8 @@ public class CompactingUpgradeWrapper extends BasicUpgradeWrapper implements ICo
             List<Integer> slots = entry.getValue();
             if (slots.isEmpty()) continue;
 
-            ItemStack template = invHandler.getStackInSlot(slots.get(0));
+            ItemStack template = storage.getStackHandler()
+                .getStackInSlot(slots.get(0));
             CompactingResult result = cache.findCompactingRecipe(template, true, onlyReversible);
             if (result == null) continue;
 
@@ -93,7 +92,8 @@ public class CompactingUpgradeWrapper extends BasicUpgradeWrapper implements ICo
             // Sum total count of this item type across all slots
             int totalCount = 0;
             for (int idx : slots) {
-                ItemStack stack = invHandler.getStackInSlot(idx);
+                ItemStack stack = storage.getStackHandler()
+                    .getStackInSlot(idx);
                 if (stack == null || stack.stackSize <= 0) continue;
                 if (!ItemHandlerHelper.canItemStacksStack(template, stack)) continue;
                 totalCount += stack.stackSize;
@@ -107,13 +107,13 @@ public class CompactingUpgradeWrapper extends BasicUpgradeWrapper implements ICo
                 .copy();
             outputCopy.stackSize = compactableUnits;
 
-            ItemStack remaining = tryInsertOutput(outputCopy, invHandler);
+            ItemStack remaining = tryInsertOutput(outputCopy, storage.getStackHandler());
 
             int insertedUnits = compactableUnits - (remaining == null ? 0 : remaining.stackSize);
             if (insertedUnits <= 0) continue;
 
             int consumed = insertedUnits * inputCount;
-            consumeFromSlotsBySlots(invHandler, slots, consumed);
+            consumeFromSlotsBySlots(storage.getStackHandler(), slots, consumed);
         }
     }
 

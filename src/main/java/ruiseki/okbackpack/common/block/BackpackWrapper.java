@@ -217,6 +217,11 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     @Override
+    public BackpackItemStackHandler getStackHandler() {
+        return backpackHandler;
+    }
+
+    @Override
     public UpgradeItemStackHandler getUpgradeHandler() {
         return upgradeHandler;
     }
@@ -622,6 +627,7 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public boolean canInsert(int slot, ItemStack stack) {
+        if (!backpackHandler.isVisualSlot(slot)) return false;
         Map<Integer, IFilterUpgrade> gathered = gatherCapabilityUpgrades(IFilterUpgrade.class);
         if (gathered.isEmpty()) return true;
         for (IFilterUpgrade mod : gathered.values()) {
@@ -632,6 +638,7 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public boolean canExtract(int slot, ItemStack stack) {
+        if (!backpackHandler.isVisualSlot(slot)) return false;
         Map<Integer, IFilterUpgrade> gathered = gatherCapabilityUpgrades(IFilterUpgrade.class);
         if (gathered.isEmpty()) return true;
         for (IFilterUpgrade mod : gathered.values()) {

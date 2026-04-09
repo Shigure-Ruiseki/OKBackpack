@@ -12,6 +12,7 @@ import com.cleanroommc.modularui.utils.item.IItemHandler;
 import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
+import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okbackpack.common.SortType;
 import ruiseki.okcore.datastructure.BlockPos;
@@ -21,6 +22,8 @@ public interface IStorageWrapper
     extends IItemHandlerModifiable, IItemHandler, ITintable, INBTSerializable, IMemoryStorage, ILockedStorage {
 
     UpgradeItemStackHandler getUpgradeHandler();
+
+    <T extends BaseItemStackHandler> T getStackHandler();
 
     String getDisplayName();
 
