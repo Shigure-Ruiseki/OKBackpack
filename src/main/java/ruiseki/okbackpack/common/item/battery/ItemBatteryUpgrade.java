@@ -1,6 +1,5 @@
 package ruiseki.okbackpack.common.item.battery;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -10,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import com.cleanroommc.modularui.widget.Widget;
 
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
@@ -24,6 +24,7 @@ import ruiseki.okbackpack.client.gui.widget.upgrade.BatterySlotWidget;
 import ruiseki.okbackpack.client.gui.widget.upgrade.BatteryUpgradeWidget;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
+import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -65,24 +66,19 @@ public class ItemBatteryUpgrade extends ItemUpgrade<BatteryUpgradeWrapper> {
                 wrapper.getDisplayName());
         }
 
-        // Check last SLOTS_NEEDED inventory slots are empty
-        int totalSlots = wrapper.getSlots();
-        int startSlot = Math.max(0, totalSlots - SLOTS_NEEDED);
-        List<Integer> occupiedSlots = new ArrayList<>();
-        for (int i = startSlot; i < totalSlots; i++) {
-            ItemStack stack = wrapper.getStackInSlot(i);
-            if (stack != null) {
-                occupiedSlots.add(i);
+        // Check that the last SLOTS_NEEDED slots are empty
+        if (wrapper instanceof IBackpackWrapper bw) {
+            BackpackWrapper backpackWrapper = (BackpackWrapper) bw;
+            int totalSlots = backpackWrapper.backpackHandler.getSlots();
+            int[] filledInTail = backpackWrapper.backpackHandler
+                .getFilledSlotsInRange(totalSlots - SLOTS_NEEDED, totalSlots);
+            if (filledInTail.length > 0) {
+                return UpgradeSlotChangeResult.failWithInventoryConflicts(
+                    "gui.backpack.error.add.needs_occupied_inventory_slots",
+                    filledInTail,
+                    SLOTS_NEEDED,
+                    LangHelpers.localize("item.battery_upgrade.name"));
             }
-        }
-        if (!occupiedSlots.isEmpty()) {
-            return UpgradeSlotChangeResult.failWithInventoryConflicts(
-                "gui.backpack.error.add.needs_occupied_inventory_slots",
-                occupiedSlots.stream()
-                    .mapToInt(Integer::intValue)
-                    .toArray(),
-                SLOTS_NEEDED,
-                LangHelpers.localize("item.battery_upgrade.name"));
         }
 
         return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);

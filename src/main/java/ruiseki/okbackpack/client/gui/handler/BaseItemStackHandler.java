@@ -42,4 +42,17 @@ public class BaseItemStackHandler extends ItemStackHandler {
             }
         }
     }
+
+    /**
+     * Returns the indices of non-null slots in the given range [from, to).
+     */
+    public int[] getFilledSlotsInRange(int from, int to) {
+        List<Integer> indices = new ArrayList<>();
+        for (int i = from; i < to && i < stacks.size(); i++) {
+            if (stacks.get(i) != null) indices.add(i);
+        }
+        return indices.stream()
+            .mapToInt(Integer::intValue)
+            .toArray();
+    }
 }
