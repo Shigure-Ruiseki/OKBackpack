@@ -4,6 +4,9 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,6 +48,7 @@ import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.client.renderer.player.IArmorRender;
 import ruiseki.okbackpack.client.renderer.player.IBaubleRender;
 import ruiseki.okbackpack.client.renderer.player.PlayerRenderContext;
+import ruiseki.okbackpack.client.tooltip.BackpackTooltipRenderer;
 import ruiseki.okbackpack.common.entity.EntityBackpack;
 import ruiseki.okcore.block.BlockOK;
 import ruiseki.okcore.helper.LangHelpers;
@@ -354,6 +358,75 @@ public class BlockBackpack extends BlockOK {
         @Override
         @SideOnly(Side.CLIENT)
         public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean flag) {
+            // UUID - only show with F3+H and if uuid is stored in NBT
+            if (flag) {
+                NBTTagCompound tag = stack.getTagCompound();
+                if (tag != null && tag.hasKey(BackpackWrapper.BACKPACK_NBT)) {
+                    NBTTagCompound bpTag = tag.getCompoundTag(BackpackWrapper.BACKPACK_NBT);
+                    if (bpTag.hasKey(BackpackWrapper.UUID_TAG, 8)) {
+                        String uuid = bpTag.getString(BackpackWrapper.UUID_TAG);
+                        list.add("\u00a78" + LangHelpers.localize("tooltip.backpack.contents.uuid", uuid));
+                    }
+                }
+            }
+
+            if (!GuiScreen.isShiftKeyDown()) {
+                // "Press <Left Shift> to View Contents"
+                String shiftKey = "\u00a7b" + LangHelpers.localize("tooltip.backpack.contents.shift")
+                    + "\u00a7r\u00a77";
+                list.add("\u00a77" + LangHelpers.localize("tooltip.backpack.contents.press_for_contents", shiftKey));
+                BackpackTooltipRenderer.reset();
+            } else {
+                // Expanded tooltip with upgrade/inventory info
+                BackpackWrapper wrapper = new BackpackWrapper(stack, this);
+                BackpackTooltipRenderer.prepareContents(wrapper);
+
+                boolean hasUpgrades = !BackpackTooltipRenderer.upgradeInfos.isEmpty();
+                boolean hasContents = !BackpackTooltipRenderer.sortedContents.isEmpty();
+
+                if (!hasUpgrades && !hasContents) {
+                    // Empty backpack
+                    list.add("\u00a7e" + LangHelpers.localize("tooltip.backpack.contents.empty"));
+                    BackpackTooltipRenderer.shouldRenderItems = false;
+                } else {
+                    FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+
+                    // Stack multiplier
+                    double multiplier = wrapper.applyStackLimitModifiers();
+                    if (multiplier > 1 && multiplier != Integer.MAX_VALUE) {
+                        list.add(
+                            "\u00a7a" + LangHelpers.localize(
+                                "tooltip.backpack.contents.stack_multiplier",
+                                String.format("%.1f", multiplier)));
+                    } else if (multiplier == Integer.MAX_VALUE) {
+                        list.add(
+                            "\u00a7a" + LangHelpers.localize("tooltip.backpack.contents.stack_multiplier", "\u221E"));
+                    }
+
+                    int requiredWidth = BackpackTooltipRenderer.getRequiredWidth(font);
+                    String spacer = BackpackTooltipRenderer.createSpacerLine(font, requiredWidth);
+
+                    if (hasUpgrades) {
+                        // "Upgrades" header
+                        list.add("\u00a7e" + LangHelpers.localize("tooltip.backpack.contents.upgrades"));
+                        BackpackTooltipRenderer.upgradeSpacerStartIndex = list.size();
+                        int upgradeLines = BackpackTooltipRenderer.getUpgradeSpacerLines();
+                        for (int i = 0; i < upgradeLines; i++) {
+                            list.add(spacer);
+                        }
+                    }
+
+                    if (hasContents) {
+                        // "Inventory" header
+                        list.add("\u00a7e" + LangHelpers.localize("tooltip.backpack.contents.inventory"));
+                        BackpackTooltipRenderer.inventorySpacerStartIndex = list.size();
+                        int inventoryLines = BackpackTooltipRenderer.getInventorySpacerLines();
+                        for (int i = 0; i < inventoryLines; i++) {
+                            list.add(spacer);
+                        }
+                    }
+                }
+            }
             list.add(LangHelpers.localize("tooltip.backpack.inventory_size", backpackSlots));
             list.add(LangHelpers.localize("tooltip.backpack.upgrade_slots_size", upgradeSlots));
             super.addInformation(stack, player, list, flag);
