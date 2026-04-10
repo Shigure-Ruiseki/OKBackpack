@@ -22,6 +22,7 @@
 #### Upgrades
 
 - [X] Stack upgrade — extended backpacks max slot stack
+- [X] Stack downgrade — decreased backpack max slot stack
 - [X] Inception upgrade — backpacks inside backpacks
 - [X] Pickup upgrade — auto-pickup items
 - [X] Feeding upgrade — auto-feed player
@@ -33,6 +34,9 @@
 - [X] Compacting upgrade — compact item
 - [X] JukeBox upgrade — play music disc
 - [X] Smelting upgrade — smelt item
+- [X] Refill upgrade — automatically refills items
+- [X] Tank upgrade — stores fluids
+- [X] Battery upgrade — stores energy
 
 ## License
 
