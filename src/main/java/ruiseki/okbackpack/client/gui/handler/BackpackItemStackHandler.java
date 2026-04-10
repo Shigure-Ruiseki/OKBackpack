@@ -7,9 +7,9 @@ import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 
-import ruiseki.okbackpack.api.ILockedItemHandler;
-import ruiseki.okbackpack.api.IMemoryItemHandler;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.handler.ILockedItemHandler;
+import ruiseki.okbackpack.api.handler.IMemoryItemHandler;
 import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okcore.helper.ItemStackHelpers;
 
