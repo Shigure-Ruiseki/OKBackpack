@@ -135,6 +135,11 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatter
     }
 
     @Override
+    public int getMaxTransfer() {
+        return getMaxTransferInternal();
+    }
+
+    @Override
     public String getSettingLangKey() {
         return "gui.backpack.battery_settings";
     }
@@ -207,7 +212,7 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatter
         return false;
     }
 
-    private int getMaxTransfer() {
+    private int getMaxTransferInternal() {
         int slots = storage.getSlots();
         double stackMultiplier = storage.applyStackLimitModifiers();
         return (int) (BASE_MAX_TRANSFER * (slots / 9.0) * stackMultiplier);

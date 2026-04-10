@@ -426,9 +426,15 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
     }
 
     public void rebuildInventorySlots() {
+        int savedScroll = 0;
+        if (backpackList != null && backpackList.getScrollData() != null) {
+            savedScroll = backpackList.getScrollData()
+                .getScroll();
+        }
+
         slotRow.removeAll();
 
-        backpackList = new BackpackList(this).name("backpack_slots");
+        backpackList = new BackpackList(this, savedScroll).name("backpack_slots");
         addInventorySlots();
         slotRow.child(backpackList);
 

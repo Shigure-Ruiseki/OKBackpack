@@ -1,5 +1,7 @@
 package ruiseki.okbackpack.common.block;
 
+import java.util.Map;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -16,13 +18,15 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import lombok.experimental.Delegate;
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.common.init.ModBlocks;
+import ruiseki.okcore.energy.IOKEnergyIO;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileEntityOK;
 import ruiseki.okcore.tileentity.TileSideCapability;
 
 public class TEBackpack extends TileSideCapability
-    implements ISidedInventory, IGuiHolder<SidedPosGuiData>, TileEntityOK.ITickingTile {
+    implements ISidedInventory, IGuiHolder<SidedPosGuiData>, TileEntityOK.ITickingTile, IOKEnergyIO {
 
     private int[] allSlots;
 
@@ -292,4 +296,61 @@ public class TEBackpack extends TileSideCapability
         markDirty();
     }
 
+    private IBatteryUpgrade getBatteryUpgrade() {
+        Map<Integer, IBatteryUpgrade> batteries = wrapper.gatherCapabilityUpgrades(IBatteryUpgrade.class);
+        if (batteries.isEmpty()) return null;
+        return batteries.values()
+            .iterator()
+            .next();
+    }
+
+    @Override
+    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+        IBatteryUpgrade battery = getBatteryUpgrade();
+        if (battery == null) return 0;
+        int received = battery.receiveEnergy(maxReceive, simulate);
+        if (!simulate && received > 0) {
+            markDirty();
+        }
+        return received;
+    }
+
+    @Override
+    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+        IBatteryUpgrade battery = getBatteryUpgrade();
+        if (battery == null) return 0;
+        int extracted = battery.extractEnergy(maxExtract, simulate);
+        if (!simulate && extracted > 0) {
+            markDirty();
+        }
+        return extracted;
+    }
+
+    @Override
+    public int getEnergyStored() {
+        IBatteryUpgrade battery = getBatteryUpgrade();
+        return battery != null ? battery.getEnergyStored() : 0;
+    }
+
+    @Override
+    public int getMaxEnergyStored() {
+        IBatteryUpgrade battery = getBatteryUpgrade();
+        return battery != null ? battery.getMaxEnergyStored() : 0;
+    }
+
+    @Override
+    public void setEnergyStored(int energy) {
+        // Energy is managed by the battery upgrade internally
+    }
+
+    @Override
+    public int getEnergyTransfer() {
+        IBatteryUpgrade battery = getBatteryUpgrade();
+        return battery != null ? battery.getMaxTransfer() : 0;
+    }
+
+    @Override
+    public boolean canConnectEnergy(ForgeDirection from) {
+        return getBatteryUpgrade() != null;
+    }
 }

@@ -14,5 +14,7 @@ public interface IBatteryUpgrade extends IStorageUpgrade, ITickable {
 
     boolean canReceive();
 
+    int getMaxTransfer();
+
     float getChargeRatio();
 }
