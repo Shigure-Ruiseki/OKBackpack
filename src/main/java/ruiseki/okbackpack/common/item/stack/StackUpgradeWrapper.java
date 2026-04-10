@@ -19,6 +19,13 @@ import ruiseki.okbackpack.common.item.tank.TankUpgradeWrapper;
 
 public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSizeUpgrade {
 
+    private static class StackModifierState {
+
+        public double additiveTotal;
+        public double downgradeProduct = 1;
+        public boolean hasAdditive;
+    }
+
     public StackUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage, Consumer<ItemStack> upgradeConsumer) {
         super(upgrade, storage, upgradeConsumer);
     }
@@ -41,7 +48,7 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
             return UpgradeSlotChangeResult.success();
         }
 
-        double totalMultiplier = Math.max(calculateMultiplierExcluding(slotIndex), 1.0);
+        double totalMultiplier = toEffectiveMultiplier(calculateStateExcluding(slotIndex));
 
         List<Integer> conflictSlots = new ArrayList<>();
         for (int i = 0; i < storage.getSlots(); i++) {
@@ -84,14 +91,20 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
             return UpgradeSlotChangeResult.success();
         }
 
-        double totalMultiplier = calculateMultiplierExcluding(slotIndex);
+        StackModifierState state = calculateStateExcluding(slotIndex);
 
-        // Add the replacement's multiplier, not the current upgrade's
+        // Apply replacement by type: upgrades are additive, downgrades are multiplicative.
         if (replacement.getItem() instanceof ItemStackUpgrade) {
-            totalMultiplier += ItemStackUpgrade.multiplier(replacement);
+            double replacementMultiplier = ItemStackUpgrade.multiplier(replacement);
+            if (ItemStackUpgrade.isDowngrade(replacement)) {
+                state.downgradeProduct *= replacementMultiplier;
+            } else {
+                state.additiveTotal += replacementMultiplier;
+                state.hasAdditive = true;
+            }
         }
 
-        totalMultiplier = Math.max(totalMultiplier, 1.0);
+        double totalMultiplier = toEffectiveMultiplier(state);
 
         List<Integer> conflictSlots = new ArrayList<>();
         for (int i = 0; i < storage.getSlots(); i++) {
@@ -150,8 +163,8 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
         return UpgradeSlotChangeResult.success();
     }
 
-    private double calculateMultiplierExcluding(int excludedSlot) {
-        double total = 0;
+    private StackModifierState calculateStateExcluding(int excludedSlot) {
+        StackModifierState state = new StackModifierState();
 
         for (var entry : storage.gatherCapabilityUpgrades(IStackSizeUpgrade.class)
             .entrySet()) {
@@ -161,15 +174,30 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
                 .getStackInSlot(entry.getKey());
             if (stack == null) continue;
 
-            total += entry.getValue()
-                .getMultiplier();
+            IStackSizeUpgrade modifier = entry.getValue();
+            if (modifier.isDowngrade()) {
+                state.downgradeProduct *= modifier.getMultiplier();
+            } else {
+                state.additiveTotal += modifier.getMultiplier();
+                state.hasAdditive = true;
+            }
         }
 
-        return total;
+        return state;
+    }
+
+    private double toEffectiveMultiplier(StackModifierState state) {
+        double total = (state.hasAdditive ? state.additiveTotal : 1) * state.downgradeProduct;
+        return total <= 0 ? 1.0 : total;
     }
 
     @Override
     public double getMultiplier() {
         return ItemStackUpgrade.multiplier(upgrade);
+    }
+
+    @Override
+    public boolean isDowngrade() {
+        return ItemStackUpgrade.isDowngrade(upgrade);
     }
 }

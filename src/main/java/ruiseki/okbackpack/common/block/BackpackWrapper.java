@@ -406,10 +406,19 @@ public class BackpackWrapper implements IBackpackWrapper {
         Map<Integer, IStackSizeUpgrade> gathered = gatherCapabilityUpgrades(IStackSizeUpgrade.class);
         if (gathered.isEmpty()) return 1;
 
-        double total = 0;
+        double additiveTotal = 0;
+        double downgradeProduct = 1;
+        boolean hasAdditive = false;
         for (IStackSizeUpgrade mod : gathered.values()) {
-            total += mod.getMultiplier();
+            if (mod.isDowngrade()) {
+                downgradeProduct *= mod.getMultiplier();
+            } else {
+                additiveTotal += mod.getMultiplier();
+                hasAdditive = true;
+            }
         }
+
+        double total = (hasAdditive ? additiveTotal : 1) * downgradeProduct;
 
         return total <= 0 ? 1 : total;
     }
@@ -423,10 +432,19 @@ public class BackpackWrapper implements IBackpackWrapper {
         Map<Integer, IStackSizeUpgrade> gathered = gatherCapabilityUpgrades(IStackSizeUpgrade.class);
         if (gathered.isEmpty()) return 1;
 
-        double total = 0;
+        double additiveTotal = 0;
+        double downgradeProduct = 1;
+        boolean hasAdditive = false;
         for (IStackSizeUpgrade mod : gathered.values()) {
-            total += mod.getMultiplier();
+            if (mod.isDowngrade()) {
+                downgradeProduct *= mod.getMultiplier();
+            } else {
+                additiveTotal += mod.getMultiplier();
+                hasAdditive = true;
+            }
         }
+
+        double total = (hasAdditive ? additiveTotal : 1) * downgradeProduct;
 
         return total <= 0 ? 1 : total;
     }

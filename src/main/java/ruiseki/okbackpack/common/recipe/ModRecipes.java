@@ -226,18 +226,6 @@ public class ModRecipes implements IInitListener {
                     "blockNetherite",
                     'U',
                     ModItems.STACK_UPGRADE.newItemStack(1, 2)));
-
-            // Stack Upgrade Starter Tier
-            GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                    ModItems.STACK_UPGRADE.newItemStack(1, 5),
-                    "BBB",
-                    "BUB",
-                    "BBB",
-                    'B',
-                    "blockCopper",
-                    'U',
-                    ModItems.BASE_UPGRADE.getItem()));
         }
 
         // Stack Upgrade Tier Omega
@@ -249,6 +237,60 @@ public class ModRecipes implements IInitListener {
                 "BBB",
                 'B',
                 ModItems.STACK_UPGRADE.newItemStack(1, 3)));
+
+        // Stack Upgrade Starter Tier
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.STACK_UPGRADE.newItemStack(1, 5),
+                "BBB",
+                "BUB",
+                "BBB",
+                'B',
+                "blockCopper",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Stack Downgrade Tier 1
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.STACK_UPGRADE.newItemStack(1, 6),
+                "SFS",
+                "SUS",
+                "FSF",
+                'F',
+                Items.flint,
+                'S',
+                Items.stick,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Stack Downgrade Tier 2
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.STACK_UPGRADE.newItemStack(1, 7),
+                "FSF",
+                "SUS",
+                "FSF",
+                'F',
+                Items.flint,
+                'S',
+                Items.stick,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Stack Downgrade Tier 3
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.STACK_UPGRADE.newItemStack(1, 8),
+                "SFS",
+                "FUF",
+                "FSF",
+                'F',
+                Items.flint,
+                'S',
+                Items.stick,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
 
         // Crafting Upgrade
         GameRegistry.addRecipe(
