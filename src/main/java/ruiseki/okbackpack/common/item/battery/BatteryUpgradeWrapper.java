@@ -20,14 +20,14 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatter
     public static final int INPUT_SLOT = 0;
     public static final int OUTPUT_SLOT = 1;
 
-    private static final String ENERGY_STORED_TAG = "EnergyStored";
-    private static final String BATTERY_INV_TAG = "BatteryInv";
+    public static final String ENERGY_STORED_TAG = "EnergyStored";
+    public static final String BATTERY_INV_TAG = "BatteryInv";
 
-    private static final int BASE_ENERGY_PER_SLOT = 15000;
-    private static final int BASE_MAX_TRANSFER = 200;
+    public static final int BASE_ENERGY_PER_SLOT = 15000;
+    public static final int BASE_MAX_TRANSFER = 200;
 
     protected final BaseItemStackHandler batteryInventory;
-    private int energyStored;
+    public int energyStored;
 
     public BatteryUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage, Consumer<ItemStack> upgradeConsumer) {
         super(upgrade, storage, upgradeConsumer);
@@ -156,7 +156,7 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatter
         return doTick();
     }
 
-    private boolean doTick() {
+    public boolean doTick() {
         boolean dirty = false;
 
         // Input slot: extract energy from item → battery
@@ -178,7 +178,7 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatter
         return dirty;
     }
 
-    private boolean receiveFromItem(ItemStack stack, IEnergyContainerItem energyItem) {
+    public boolean receiveFromItem(ItemStack stack, IEnergyContainerItem energyItem) {
         int maxTransfer = getMaxTransfer();
         int canReceive = Math.min(getMaxEnergyStored() - energyStored, maxTransfer);
         if (canReceive <= 0) return false;
@@ -195,7 +195,7 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatter
         return false;
     }
 
-    private boolean extractToItem(ItemStack stack, IEnergyContainerItem energyItem) {
+    public boolean extractToItem(ItemStack stack, IEnergyContainerItem energyItem) {
         int maxTransfer = getMaxTransfer();
         int canExtract = Math.min(energyStored, maxTransfer);
         if (canExtract <= 0) return false;
@@ -212,24 +212,24 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatter
         return false;
     }
 
-    private int getMaxTransferInternal() {
+    public int getMaxTransferInternal() {
         int slots = storage.getSlots();
         double stackMultiplier = storage.applyStackLimitModifiers();
         return (int) (BASE_MAX_TRANSFER * (slots / 9.0) * stackMultiplier);
     }
 
-    private void serializeEnergyStored() {
+    public void serializeEnergyStored() {
         ItemNBTHelpers.setInt(upgrade, ENERGY_STORED_TAG, energyStored);
         save();
     }
 
-    private boolean isValidInputItem(ItemStack stack) {
+    public boolean isValidInputItem(ItemStack stack) {
         if (stack == null) return false;
         if (!(stack.getItem() instanceof IEnergyContainerItem energyItem)) return false;
         return energyItem.extractEnergy(stack, 1, true) > 0;
     }
 
-    private boolean isValidOutputItem(ItemStack stack) {
+    public boolean isValidOutputItem(ItemStack stack) {
         if (stack == null) return false;
         if (!(stack.getItem() instanceof IEnergyContainerItem energyItem)) return false;
         return energyItem.receiveEnergy(stack, 1, true) > 0;
