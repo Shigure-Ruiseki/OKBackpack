@@ -81,6 +81,14 @@ public class UpgradeSlotChangeResult {
     }
 
     /**
+     * Backpack can't support %1$s. Upgrade backpack or add stack multiplier to at least %2$s
+     */
+    public static UpgradeSlotChangeResult failUpgradeHigh(int[] conflictSlots, String upgradeName,
+        String formattedMultiplier) {
+        return fail("gui.backpack.error.add.upgrade_high", conflictSlots, upgradeName, formattedMultiplier);
+    }
+
+    /**
      * Stack multiplier must be greater than %s
      */
     public static UpgradeSlotChangeResult failStackLowMultiplier(int[] inventoryConflictSlots,
