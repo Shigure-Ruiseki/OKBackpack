@@ -5,14 +5,16 @@ import java.util.function.IntSupplier;
 
 import org.lwjgl.opengl.GL11;
 
-import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widget.Widget;
 
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
+import ruiseki.okbackpack.client.gui.slot.UpgradeSlot;
+import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.item.battery.BatteryUpgradeWrapper;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class BatterySlotWidget extends Widget<BatterySlotWidget> {
 
@@ -28,11 +30,13 @@ public class BatterySlotWidget extends Widget<BatterySlotWidget> {
     private static final int BOTTOM_BAR_COLOR = 0xffff40;
 
     private final int slotIndex;
+    private final BackpackPanel panel;
     private IntSupplier energyStoredSupplier;
     private IntSupplier maxEnergySupplier;
 
-    public BatterySlotWidget(int slotIndex, BatteryUpgradeWrapper wrapper) {
+    public BatterySlotWidget(int slotIndex, BatteryUpgradeWrapper wrapper, BackpackPanel panel) {
         this.slotIndex = slotIndex;
+        this.panel = panel;
         this.energyStoredSupplier = wrapper::getEnergyStored;
         this.maxEnergySupplier = wrapper::getMaxEnergyStored;
         width(BAR_WIDTH);
@@ -66,6 +70,15 @@ public class BatterySlotWidget extends Widget<BatterySlotWidget> {
         // 4. Connection pieces (top and bottom, drawn last)
         OKBGuiTextures.BATTERY_CONNECTION_TOP.draw(context, 1, 0, 16, 4, widgetTheme.getTheme());
         OKBGuiTextures.BATTERY_CONNECTION_BOTTOM.draw(context, 1, visibleHeight - 4, 16, 4, widgetTheme.getTheme());
+
+        // 5. Error highlight overlay (when stack upgrade removal would overflow battery)
+        if (panel != null && panel.isSlotInConflict(slotIndex)) {
+            GL11.glPushMatrix();
+            GL11.glTranslatef(0, 0, 200);
+            com.cleanroommc.modularui.drawable.GuiDraw
+                .drawRect(1, 1, BAR_WIDTH - 2, visibleHeight - 2, UpgradeSlot.ERROR_SLOT_COLOR);
+            GL11.glPopMatrix();
+        }
     }
 
     private void renderCharge(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme, int visibleHeight) {
@@ -101,7 +114,7 @@ public class BatterySlotWidget extends Widget<BatterySlotWidget> {
         String stored = NUMBER_FORMAT.format(energyStoredSupplier.getAsInt());
         String max = NUMBER_FORMAT.format(maxEnergySupplier.getAsInt());
         tooltip.clearText()
-            .addLine(IKey.str(stored + " RF / " + max + " RF"))
+            .addLine(LangHelpers.localize("tooltip.backpack.battery_contents", stored, max))
             .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
     }
 }

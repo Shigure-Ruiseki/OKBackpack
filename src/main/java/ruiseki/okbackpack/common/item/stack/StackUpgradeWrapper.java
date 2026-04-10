@@ -8,9 +8,14 @@ import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
+import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.api.wrapper.IInfinityUpgrade;
 import ruiseki.okbackpack.api.wrapper.IStackSizeUpgrade;
+import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
+import ruiseki.okbackpack.common.item.battery.BatteryUpgradeWrapper;
+import ruiseki.okbackpack.common.item.tank.ItemTankUpgrade;
+import ruiseki.okbackpack.common.item.tank.TankUpgradeWrapper;
 
 public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSizeUpgrade {
 
@@ -59,6 +64,9 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
                 ItemStackUpgrade.formatMultiplier(totalMultiplier));
         }
 
+        UpgradeSlotChangeResult storageResult = checkStorageUpgradeCapacity(totalMultiplier);
+        if (!storageResult.isSuccessful()) return storageResult;
+
         return UpgradeSlotChangeResult.success();
     }
 
@@ -104,6 +112,39 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
                     .mapToInt(Integer::intValue)
                     .toArray(),
                 ItemStackUpgrade.formatMultiplier(totalMultiplier));
+        }
+
+        UpgradeSlotChangeResult storageResult = checkStorageUpgradeCapacity(totalMultiplier);
+        if (!storageResult.isSuccessful()) return storageResult;
+
+        return UpgradeSlotChangeResult.success();
+    }
+
+    private UpgradeSlotChangeResult checkStorageUpgradeCapacity(double newMultiplier) {
+        // Check battery energy against new capacity
+        for (var entry : storage.gatherCapabilityUpgrades(IBatteryUpgrade.class)
+            .entrySet()) {
+            IBatteryUpgrade battery = entry.getValue();
+            int newMaxEnergy = (int) (BatteryUpgradeWrapper.BASE_ENERGY_PER_SLOT * storage.getStackHandler()
+                .getSlots() * newMultiplier);
+            if (battery.getEnergyStored() > newMaxEnergy) {
+                return UpgradeSlotChangeResult.failStorageCapacityLow(
+                    new int[] { entry.getKey() },
+                    ItemStackUpgrade.formatMultiplier(newMultiplier));
+            }
+        }
+
+        // Check tank fluid against new capacity
+        for (var entry : storage.gatherCapabilityUpgrades(ITankUpgrade.class)
+            .entrySet()) {
+            ITankUpgrade tank = entry.getValue();
+            int newMaxFluid = (int) (ItemTankUpgrade.SLOTS_NEEDED * TankUpgradeWrapper.BASE_CAPACITY_PER_SLOT
+                * newMultiplier);
+            if (tank.getContents() != null && tank.getContents().amount > newMaxFluid) {
+                return UpgradeSlotChangeResult.failStorageCapacityLow(
+                    new int[] { entry.getKey() },
+                    ItemStackUpgrade.formatMultiplier(newMultiplier));
+            }
         }
 
         return UpgradeSlotChangeResult.success();

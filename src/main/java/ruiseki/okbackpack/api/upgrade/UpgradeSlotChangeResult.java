@@ -98,4 +98,13 @@ public class UpgradeSlotChangeResult {
             inventoryConflictSlots,
             formattedMultiplier);
     }
+
+    /**
+     * Storage upgrade (battery/tank) capacity too low after stack multiplier reduction.
+     * Highlights the upgrade slot, not inventory slots.
+     */
+    public static UpgradeSlotChangeResult failStorageCapacityLow(int[] upgradeConflictSlots,
+        String formattedMultiplier) {
+        return fail("gui.backpack.error.remove.stack_low_multiplier", upgradeConflictSlots, formattedMultiplier);
+    }
 }

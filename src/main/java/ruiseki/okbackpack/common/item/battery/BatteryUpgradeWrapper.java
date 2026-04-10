@@ -60,7 +60,7 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatter
     @Override
     public void onAdded() {
         int size = storage.getStackHandler()
-            .getSlots();
+            .getVisualSize();
         size -= ItemBatteryUpgrade.SLOTS_NEEDED;
         storage.getStackHandler()
             .setVisualSize(size);
@@ -70,7 +70,7 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatter
     @Override
     public void onBeforeRemoved() {
         int size = storage.getStackHandler()
-            .getSlots();
+            .getVisualSize();
         size += ItemBatteryUpgrade.SLOTS_NEEDED;
         storage.getStackHandler()
             .setVisualSize(size);

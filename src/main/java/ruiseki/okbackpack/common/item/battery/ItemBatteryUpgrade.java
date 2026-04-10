@@ -22,7 +22,9 @@ import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.BatterySlotWidget;
 import ruiseki.okbackpack.client.gui.widget.upgrade.BatteryUpgradeWidget;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
+import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
+import ruiseki.okbackpack.common.item.stack.ItemStackUpgrade;
 import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemBatteryUpgrade extends ItemUpgrade<BatteryUpgradeWrapper> {
@@ -63,17 +65,34 @@ public class ItemBatteryUpgrade extends ItemUpgrade<BatteryUpgradeWrapper> {
                 wrapper.getDisplayName());
         }
 
-        // Check that the last SLOTS_NEEDED slots are empty
-        int totalSlots = wrapper.getStackHandler()
-            .getSlots();
+        // getVisualSize() already accounts for slots reserved by existing storage upgrades (tank, etc.)
+        int visualEnd = wrapper.getStackHandler()
+            .getVisualSize();
         int[] filledInTail = wrapper.getStackHandler()
-            .getFilledSlotsInRange(totalSlots - SLOTS_NEEDED, totalSlots);
+            .getFilledSlotsInRange(visualEnd - SLOTS_NEEDED, visualEnd);
         if (filledInTail.length > 0) {
             return UpgradeSlotChangeResult.failWithInventoryConflicts(
                 "gui.backpack.error.add.needs_occupied_inventory_slots",
                 filledInTail,
                 SLOTS_NEEDED,
                 LangHelpers.localize("item.battery_upgrade.name"));
+        }
+
+        // Check if stored energy exceeds capacity with current stack multiplier
+        int storedEnergy = BatteryUpgradeWrapper.getEnergyStoredStatic(upgradeStack);
+        if (storedEnergy > 0) {
+            double currentMultiplier = wrapper.applyStackLimitModifiers();
+            int slots = wrapper.getStackHandler()
+                .getSlots();
+            int capacity = (int) (BatteryUpgradeWrapper.BASE_ENERGY_PER_SLOT * slots * currentMultiplier);
+            if (storedEnergy > capacity) {
+                double requiredMultiplier = (double) storedEnergy
+                    / (BatteryUpgradeWrapper.BASE_ENERGY_PER_SLOT * slots);
+                return UpgradeSlotChangeResult.failUpgradeHigh(
+                    new int[0],
+                    LangHelpers.localize("item.battery_upgrade.name"),
+                    ItemStackUpgrade.formatMultiplier(requiredMultiplier));
+            }
         }
 
         return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
@@ -134,7 +153,8 @@ public class ItemBatteryUpgrade extends ItemUpgrade<BatteryUpgradeWrapper> {
     @Override
     public Widget<?> getSlotWidget(int slotIndex, BatteryUpgradeWrapper wrapper, ItemStack stack,
         IStoragePanel<?> panel, String titleKey) {
-        lastSlotWidget = new BatterySlotWidget(slotIndex, wrapper);
+        BackpackPanel backpackPanel = panel instanceof BackpackPanel ? (BackpackPanel) panel : null;
+        lastSlotWidget = new BatterySlotWidget(slotIndex, wrapper, backpackPanel);
         return lastSlotWidget;
     }
 
