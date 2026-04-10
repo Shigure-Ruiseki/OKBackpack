@@ -49,12 +49,6 @@ public class TankUpgradeWrapper extends UpgradeWrapperBase implements ITankUpgra
             }
 
             @Override
-            public int getSlotLimit(int slot) {
-                if (slot == INPUT_RESULT_SLOT || slot == OUTPUT_RESULT_SLOT) return 64;
-                return 1;
-            }
-
-            @Override
             public boolean isItemValid(int slot, ItemStack stack) {
                 if (slot == INPUT_SLOT) return TankUpgradeWrapper.this.isValidInputItem(stack);
                 if (slot == OUTPUT_SLOT) return TankUpgradeWrapper.this.isValidOutputItem(stack);
@@ -64,6 +58,10 @@ public class TankUpgradeWrapper extends UpgradeWrapperBase implements ITankUpgra
 
         NBTTagCompound invTag = ItemNBTHelpers.getCompound(upgrade, TANK_INV_TAG, false);
         if (invTag != null) tankInventory.deserializeNBT(invTag);
+        // Migrate old 2-slot saves: resize stacks list first, then set visualSize
+        if (tankInventory.isSizeInconsistent(4)) {
+            tankInventory.resize(4);
+        }
         if (tankInventory.getVisualSize() < 4) {
             tankInventory.setVisualSize(4);
         }
@@ -99,6 +97,9 @@ public class TankUpgradeWrapper extends UpgradeWrapperBase implements ITankUpgra
 
     @Override
     public FluidStack getContents() {
+        if (contents == null) {
+            contents = loadContents(upgrade);
+        }
         return contents;
     }
 
@@ -224,6 +225,12 @@ public class TankUpgradeWrapper extends UpgradeWrapperBase implements ITankUpgra
         } else {
             tag.removeTag(CONTENTS_TAG);
         }
+        if (upgradeConsumer != null) {
+            upgradeConsumer.accept(upgrade);
+        }
+        if (storage != null) {
+            storage.markDirty();
+        }
         save();
     }
 
@@ -240,6 +247,7 @@ public class TankUpgradeWrapper extends UpgradeWrapperBase implements ITankUpgra
     }
 
     private boolean doTick() {
+        ensureResultSlotsVisible();
         if (tickCooldown > 0) {
             tickCooldown--;
             return false;
@@ -261,22 +269,69 @@ public class TankUpgradeWrapper extends UpgradeWrapperBase implements ITankUpgra
 
         if (didSomething) {
             tickCooldown = AUTO_COOLDOWN;
+            serializeContents();
         }
         return didSomething;
     }
 
-    private boolean hasInsertRemainder(ItemStack stack) {
-        return stack != null && stack.stackSize > 0;
+    private void ensureResultSlotsVisible() {
+        if (tankInventory.isSizeInconsistent(4)) {
+            tankInventory.resize(4);
+        }
+        if (tankInventory.getVisualSize() < 4) {
+            tankInventory.setVisualSize(4);
+        }
+    }
+
+    private boolean canStacksMerge(ItemStack first, ItemStack second) {
+        return first != null && second != null
+            && first.isItemEqual(second)
+            && ItemStack.areItemStackTagsEqual(first, second);
+    }
+
+    private boolean canMoveToResultSlot(int resultSlot, ItemStack resultStack) {
+        ensureResultSlotsVisible();
+        if (resultStack == null || resultStack.stackSize <= 0) {
+            return true;
+        }
+
+        ItemStack existing = tankInventory.getStackInSlot(resultSlot);
+        int slotLimit = Math.min(tankInventory.getSlotLimit(resultSlot), resultStack.getMaxStackSize());
+
+        if (existing == null) {
+            return resultStack.stackSize <= slotLimit;
+        }
+
+        if (!canStacksMerge(existing, resultStack)) {
+            return false;
+        }
+
+        int maxMerged = Math.min(slotLimit, existing.getMaxStackSize());
+        return existing.stackSize + resultStack.stackSize <= maxMerged;
+    }
+
+    private boolean moveToResultSlot(int resultSlot, ItemStack resultStack) {
+        ensureResultSlotsVisible();
+        if (!canMoveToResultSlot(resultSlot, resultStack)) {
+            return false;
+        }
+
+        ItemStack toInsert = resultStack.copy();
+        ItemStack remaining = tankInventory.insertItem(resultSlot, toInsert, false);
+        return remaining == null || remaining.stackSize <= 0;
     }
 
     private boolean tryDrainFromItem(ItemStack stack, int slot) {
         // Try IFluidContainerItem first
         if (stack.getItem() instanceof IFluidContainerItem containerItem) {
-            FluidStack contained = containerItem.getFluid(stack);
+            ItemStack single = stack.copy();
+            single.stackSize = 1;
+
+            FluidStack contained = containerItem.getFluid(single);
             if (contained == null || contained.amount <= 0) return false;
             if (contents != null && !contents.isFluidEqual(contained)) return false;
 
-            FluidStack simDrain = containerItem.drain(stack, getMaxInOut(), false);
+            FluidStack simDrain = containerItem.drain(single, getMaxInOut(), false);
             if (simDrain == null || simDrain.amount <= 0) return false;
 
             int filled = fillIgnoreLimit(simDrain, false);
@@ -286,46 +341,63 @@ public class TankUpgradeWrapper extends UpgradeWrapperBase implements ITankUpgra
             boolean wouldEmpty = filled >= contained.amount;
             if (wouldEmpty) {
                 // Simulate: can the result slot accept the drained container?
-                ItemStack simStack = stack.copy();
-                ((IFluidContainerItem) simStack.getItem()).drain(simStack, filled, true);
-                if (hasInsertRemainder(tankInventory.insertItem(INPUT_RESULT_SLOT, simStack, true))) {
+                ItemStack simStack = single.copy();
+                containerItem.drain(simStack, filled, true);
+                if (!canMoveToResultSlot(INPUT_RESULT_SLOT, simStack)) {
                     return false; // Result slot full, don't drain
                 }
             }
 
-            FluidStack drained = containerItem.drain(stack, filled, true);
+            FluidStack drained = containerItem.drain(single, filled, true);
             if (drained != null && drained.amount > 0) {
                 fillIgnoreLimit(drained, true);
 
-                // Check if container is now empty
-                FluidStack remaining = containerItem.getFluid(stack);
-                if (remaining == null || remaining.amount <= 0) {
+                stack.stackSize--;
+                if (stack.stackSize <= 0) {
                     tankInventory.setStackInSlot(slot, null);
-                    tankInventory.insertItem(INPUT_RESULT_SLOT, stack, false);
                 } else {
                     tankInventory.setStackInSlot(slot, stack);
+                }
+
+                // Check if container is now empty
+                FluidStack remaining = containerItem.getFluid(single);
+                if (remaining == null || remaining.amount <= 0) {
+                    if (!moveToResultSlot(INPUT_RESULT_SLOT, single)) {
+                        return false;
+                    }
                 }
                 return true;
             }
         }
 
         // Try FluidContainerRegistry
-        FluidStack contained = FluidContainerRegistry.getFluidForFilledItem(stack);
+        ItemStack single = stack.copy();
+        single.stackSize = 1;
+
+        FluidStack contained = FluidContainerRegistry.getFluidForFilledItem(single);
         if (contained != null) {
             if (contents != null && !contents.isFluidEqual(contained)) return false;
             int filled = fillIgnoreLimit(contained, false);
             if (filled >= contained.amount) {
-                ItemStack empty = FluidContainerRegistry.drainFluidContainer(stack);
+                ItemStack empty = FluidContainerRegistry.drainFluidContainer(single);
                 // Pre-check: can the result slot accept the empty container?
-                if (empty != null && hasInsertRemainder(tankInventory.insertItem(INPUT_RESULT_SLOT, empty, true))) {
+                if (empty != null && !canMoveToResultSlot(INPUT_RESULT_SLOT, empty)) {
                     return false; // Result slot full, don't drain
                 }
 
-                fillIgnoreLimit(contained, true);
-                tankInventory.setStackInSlot(slot, null);
-                if (empty != null) {
-                    tankInventory.insertItem(INPUT_RESULT_SLOT, empty, false);
+                if (empty != null && !moveToResultSlot(INPUT_RESULT_SLOT, empty)) {
+                    return false;
                 }
+
+                fillIgnoreLimit(contained, true);
+
+                stack.stackSize--;
+                if (stack.stackSize <= 0) {
+                    tankInventory.setStackInSlot(slot, null);
+                } else {
+                    tankInventory.setStackInSlot(slot, stack);
+                }
+
                 return true;
             }
         }
@@ -336,59 +408,78 @@ public class TankUpgradeWrapper extends UpgradeWrapperBase implements ITankUpgra
     private boolean tryFillIntoItem(ItemStack stack, int slot) {
         if (contents == null || contents.amount <= 0) return false;
 
+        ItemStack single = stack.copy();
+        single.stackSize = 1;
+
         // Try IFluidContainerItem first
-        if (stack.getItem() instanceof IFluidContainerItem containerItem) {
+        if (single.getItem() instanceof IFluidContainerItem containerItem) {
             FluidStack toFill = new FluidStack(contents, Math.min(getMaxInOut(), contents.amount));
-            int simFilled = containerItem.fill(stack, toFill, false);
+            int simFilled = containerItem.fill(single, toFill, false);
             if (simFilled <= 0) return false;
 
             FluidStack drained = drainIgnoreLimit(simFilled, false);
             if (drained == null || drained.amount <= 0) return false;
 
             // Check if filling would make the container full
-            FluidStack currentFluid = containerItem.getFluid(stack);
+            FluidStack currentFluid = containerItem.getFluid(single);
             int currentAmount = currentFluid != null ? currentFluid.amount : 0;
-            int capacity = containerItem.getCapacity(stack);
+            int capacity = containerItem.getCapacity(single);
             boolean wouldFull = (currentAmount + simFilled >= capacity);
 
             if (wouldFull) {
                 // Simulate: can the result slot accept the filled container?
-                ItemStack simStack = stack.copy();
-                ((IFluidContainerItem) simStack.getItem()).fill(simStack, drained, true);
-                if (hasInsertRemainder(tankInventory.insertItem(OUTPUT_RESULT_SLOT, simStack, true))) {
+                ItemStack simStack = single.copy();
+                containerItem.fill(simStack, drained, true);
+                if (!canMoveToResultSlot(OUTPUT_RESULT_SLOT, simStack)) {
                     return false; // Result slot full, don't fill
                 }
             }
 
-            int actualFilled = containerItem.fill(stack, drained, true);
+            int actualFilled = containerItem.fill(single, drained, true);
             if (actualFilled > 0) {
                 drainIgnoreLimit(actualFilled, true);
 
-                // Check if container is now full
-                FluidStack afterFill = containerItem.getFluid(stack);
-                if (afterFill != null && afterFill.amount >= containerItem.getCapacity(stack)) {
+                stack.stackSize--;
+                if (stack.stackSize <= 0) {
                     tankInventory.setStackInSlot(slot, null);
-                    tankInventory.insertItem(OUTPUT_RESULT_SLOT, stack, false);
                 } else {
                     tankInventory.setStackInSlot(slot, stack);
+                }
+
+                // Check if container is now full
+                FluidStack afterFill = containerItem.getFluid(single);
+                if (afterFill != null && afterFill.amount >= containerItem.getCapacity(single)) {
+                    if (!moveToResultSlot(OUTPUT_RESULT_SLOT, single)) {
+                        return false;
+                    }
                 }
                 return true;
             }
         }
 
         // Try FluidContainerRegistry
-        ItemStack filled = FluidContainerRegistry.fillFluidContainer(contents, stack);
+        ItemStack filled = FluidContainerRegistry.fillFluidContainer(contents, single);
         if (filled != null) {
-            int fillAmount = FluidContainerRegistry.getContainerCapacity(contents, stack);
+            int fillAmount = FluidContainerRegistry.getContainerCapacity(contents, single);
             if (fillAmount > 0 && contents.amount >= fillAmount) {
                 // Pre-check: can the result slot accept the filled container?
-                if (hasInsertRemainder(tankInventory.insertItem(OUTPUT_RESULT_SLOT, filled, true))) {
+                if (!canMoveToResultSlot(OUTPUT_RESULT_SLOT, filled)) {
                     return false; // Result slot full, don't fill
                 }
 
+                if (!moveToResultSlot(OUTPUT_RESULT_SLOT, filled)) {
+                    return false;
+                }
+
                 drainIgnoreLimit(fillAmount, true);
-                tankInventory.setStackInSlot(slot, null);
-                tankInventory.insertItem(OUTPUT_RESULT_SLOT, filled, false);
+
+                stack.stackSize--;
+                if (stack.stackSize <= 0) {
+                    tankInventory.setStackInSlot(slot, null);
+                } else {
+                    tankInventory.setStackInSlot(slot, stack);
+                }
+
                 return true;
             }
         }
@@ -404,8 +495,6 @@ public class TankUpgradeWrapper extends UpgradeWrapperBase implements ITankUpgra
 
         // Try IFluidContainerItem
         if (cursorStack.getItem() instanceof IFluidContainerItem containerItem) {
-            FluidStack contained = containerItem.getFluid(cursorStack);
-
             if (contents == null || contents.amount <= 0) {
                 // Tank empty -> drain from cursor
                 drainFromCursor(containerItem, cursorStack, player);
@@ -479,34 +568,17 @@ public class TankUpgradeWrapper extends UpgradeWrapperBase implements ITankUpgra
         return false;
     }
 
-    public boolean isValidInputItem(ItemStack stack) {
+    public boolean isFluidContainer(ItemStack stack) {
         if (stack == null) return false;
+        if (stack.getItem() instanceof IFluidContainerItem) return true;
+        return FluidContainerRegistry.isContainer(stack);
+    }
 
-        if (stack.getItem() instanceof IFluidContainerItem containerItem) {
-            FluidStack contained = containerItem.getFluid(stack);
-            if (contained != null && contained.amount > 0) {
-                return contents == null || contents.isFluidEqual(contained);
-            }
-        }
-
-        FluidStack registered = FluidContainerRegistry.getFluidForFilledItem(stack);
-        if (registered != null) {
-            return contents == null || contents.isFluidEqual(registered);
-        }
-
-        return false;
+    public boolean isValidInputItem(ItemStack stack) {
+        return isFluidContainer(stack);
     }
 
     public boolean isValidOutputItem(ItemStack stack) {
-        if (stack == null) return false;
-        if (contents == null || contents.amount <= 0) return false;
-
-        if (stack.getItem() instanceof IFluidContainerItem containerItem) {
-            FluidStack contained = containerItem.getFluid(stack);
-            if (contained == null || contained.amount == 0) return true;
-            if (contained.isFluidEqual(contents) && contained.amount < containerItem.getCapacity(stack)) return true;
-        }
-
-        return FluidContainerRegistry.fillFluidContainer(contents, stack) != null;
+        return isFluidContainer(stack);
     }
 }

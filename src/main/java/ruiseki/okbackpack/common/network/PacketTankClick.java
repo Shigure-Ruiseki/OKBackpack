@@ -3,7 +3,6 @@ package ruiseki.okbackpack.common.network;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
@@ -48,9 +47,9 @@ public class PacketTankClick extends PacketCodec {
         if (upgradeWrapper instanceof ITankUpgrade tankUpgrade) {
             tankUpgrade.interactWithCursorStack(player);
 
-            // Sync the cursor stack back to client
-            ItemStack cursorStack = player.inventory.getItemStack();
+            // Sync carried stack and container slots back to client to avoid ghost items.
             player.updateHeldItem();
+            player.inventoryContainer.detectAndSendChanges();
         }
     }
 }

@@ -119,9 +119,11 @@ public class ItemTankUpgrade extends ItemUpgrade<TankUpgradeWrapper> {
         tankHandler.syncToServer(DelegatedStackHandlerSH.getId(DelegatedStackHandlerSHRegisters.UPDATE_STORAGE));
 
         DelegatedIntSH fluidAmountHandler = group.get("tank_fluid_amount");
-        if (fluidAmountHandler == null) return;
-        fluidAmountHandler.setDelegatedSupplier(() -> wrapper.getContents() != null ? wrapper.getContents().amount : 0);
-        fluidAmountHandler.syncToServer(DelegatedIntSH.getId(DelegatedValueSHRegisters.UPDATE_TANK_FLUID_AMOUNT));
+        if (fluidAmountHandler != null) {
+            fluidAmountHandler
+                .setDelegatedSupplier(() -> wrapper.getContents() != null ? wrapper.getContents().amount : 0);
+            fluidAmountHandler.syncToServer(DelegatedIntSH.getId(DelegatedValueSHRegisters.UPDATE_TANK_FLUID_AMOUNT));
+        }
 
         DelegatedIntSH tankCapacityHandler = group.get("tank_capacity");
         if (tankCapacityHandler == null) return;
@@ -134,11 +136,13 @@ public class ItemTankUpgrade extends ItemUpgrade<TankUpgradeWrapper> {
         fillRatioHandler.syncToServer(DelegatedFloatSH.getId(DelegatedValueSHRegisters.UPDATE_TANK_FILL_RATIO));
 
         DelegatedIntSH fluidIdHandler = group.get("tank_fluid_id");
-        if (fluidIdHandler == null) return;
-        fluidIdHandler.setDelegatedSupplier(
-            () -> wrapper.getContents() != null ? wrapper.getContents()
-                .getFluidID() : -1);
-        fluidIdHandler.syncToServer(DelegatedIntSH.getId(DelegatedValueSHRegisters.UPDATE_TANK_FLUID_ID));
+        if (fluidIdHandler != null) {
+            fluidIdHandler.setDelegatedSupplier(() -> {
+                FluidStack stack = wrapper.getContents();
+                return (stack != null && stack.getFluid() != null) ? stack.getFluidID() : -1;
+            });
+            fluidIdHandler.syncToServer(DelegatedIntSH.getId(DelegatedValueSHRegisters.UPDATE_TANK_FLUID_ID));
+        }
     }
 
     @Override
@@ -189,7 +193,6 @@ public class ItemTankUpgrade extends ItemUpgrade<TankUpgradeWrapper> {
         return new TankUpgradeWidget(slotIndex, wrapper, stack, panel, titleKey);
     }
 
-    @SuppressWarnings("unchecked")
     private static IStorageWrapper storage(IStoragePanel<?> panel) {
         return panel.getWrapper();
     }

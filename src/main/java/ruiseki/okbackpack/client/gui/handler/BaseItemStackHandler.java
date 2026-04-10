@@ -29,7 +29,7 @@ public class BaseItemStackHandler extends ItemStackHandler {
 
         this.stacks = newStacks;
 
-        if (visualSize > newSize) {
+        if (visualSize != null && visualSize > newSize) {
             setVisualSize(newSize);
         }
     }
