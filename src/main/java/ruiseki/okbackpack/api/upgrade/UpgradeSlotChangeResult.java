@@ -81,6 +81,14 @@ public class UpgradeSlotChangeResult {
     }
 
     /**
+     * Backpack can't support %1$s. Upgrade backpack or add stack multiplier to at least %2$s
+     */
+    public static UpgradeSlotChangeResult failUpgradeHigh(int[] conflictSlots, String upgradeName,
+        String formattedMultiplier) {
+        return fail("gui.backpack.error.add.upgrade_high", conflictSlots, upgradeName, formattedMultiplier);
+    }
+
+    /**
      * Stack multiplier must be greater than %s
      */
     public static UpgradeSlotChangeResult failStackLowMultiplier(int[] inventoryConflictSlots,
@@ -89,5 +97,14 @@ public class UpgradeSlotChangeResult {
             "gui.backpack.error.remove.stack_low_multiplier",
             inventoryConflictSlots,
             formattedMultiplier);
+    }
+
+    /**
+     * Storage upgrade (battery/tank) capacity too low after stack multiplier reduction.
+     * Highlights the upgrade slot, not inventory slots.
+     */
+    public static UpgradeSlotChangeResult failStorageCapacityLow(int[] upgradeConflictSlots,
+        String formattedMultiplier) {
+        return fail("gui.backpack.error.remove.stack_low_multiplier", upgradeConflictSlots, formattedMultiplier);
     }
 }

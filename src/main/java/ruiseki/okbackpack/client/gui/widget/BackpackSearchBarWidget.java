@@ -134,6 +134,7 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
             slot.scheduleResize();
         }
 
+        backpackList.clearPendingScroll();
         backpackList.getScrollData()
             .scrollTo(backpackList.getScrollArea(), 0);
     }

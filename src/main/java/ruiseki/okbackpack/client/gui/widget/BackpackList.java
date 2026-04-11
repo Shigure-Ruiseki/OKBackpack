@@ -17,10 +17,22 @@ public class BackpackList extends ListWidget<Column, BackpackList> {
 
     private final BackpackPanel panel;
     private final int thickness = 4;
+    private int pendingScroll = -1;
 
     public BackpackList(BackpackPanel panel) {
+        this(panel, 0);
+    }
+
+    public BackpackList(BackpackPanel panel, int initialScroll) {
         this.panel = panel;
+        if (initialScroll > 0) {
+            this.pendingScroll = initialScroll;
+        }
         width(panel.getUsableRowSize() * ItemSlot.SIZE + thickness * 2);
+    }
+
+    public void clearPendingScroll() {
+        this.pendingScroll = -1;
     }
 
     @Override
@@ -28,6 +40,16 @@ public class BackpackList extends ListWidget<Column, BackpackList> {
         if (this.getScrollData() == null) {
             scrollDirection(new BackpackScrollData(panel, thickness));
         }
+    }
+
+    @Override
+    public boolean layoutWidgets() {
+        boolean result = super.layoutWidgets();
+        if (result && pendingScroll >= 0) {
+            getScrollData().scrollTo(getScrollArea(), pendingScroll);
+            pendingScroll = -1;
+        }
+        return result;
     }
 
     public static class BackpackScrollData extends VerticalScrollData {

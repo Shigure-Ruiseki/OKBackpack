@@ -1,10 +1,17 @@
 package ruiseki.okbackpack.common.block;
 
+import java.util.Collection;
+import java.util.Map;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 
 import com.cleanroommc.modularui.api.IGuiHolder;
 import com.cleanroommc.modularui.factory.GuiFactories;
@@ -16,13 +23,16 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import lombok.experimental.Delegate;
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
+import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.common.init.ModBlocks;
+import ruiseki.okcore.energy.IOKEnergyIO;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileEntityOK;
 import ruiseki.okcore.tileentity.TileSideCapability;
 
 public class TEBackpack extends TileSideCapability
-    implements ISidedInventory, IGuiHolder<SidedPosGuiData>, TileEntityOK.ITickingTile {
+    implements ISidedInventory, IGuiHolder<SidedPosGuiData>, TileEntityOK.ITickingTile, IOKEnergyIO, IFluidHandler {
 
     private int[] allSlots;
 
@@ -292,4 +302,143 @@ public class TEBackpack extends TileSideCapability
         markDirty();
     }
 
+    private IBatteryUpgrade getBatteryUpgrade() {
+        Map<Integer, IBatteryUpgrade> batteries = wrapper.gatherCapabilityUpgrades(IBatteryUpgrade.class);
+        if (batteries.isEmpty()) return null;
+        return batteries.values()
+            .iterator()
+            .next();
+    }
+
+    @Override
+    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+        IBatteryUpgrade battery = getBatteryUpgrade();
+        if (battery == null) return 0;
+        int received = battery.receiveEnergy(maxReceive, simulate);
+        if (!simulate && received > 0) {
+            markDirty();
+        }
+        return received;
+    }
+
+    @Override
+    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+        IBatteryUpgrade battery = getBatteryUpgrade();
+        if (battery == null) return 0;
+        int extracted = battery.extractEnergy(maxExtract, simulate);
+        if (!simulate && extracted > 0) {
+            markDirty();
+        }
+        return extracted;
+    }
+
+    @Override
+    public int getEnergyStored() {
+        IBatteryUpgrade battery = getBatteryUpgrade();
+        return battery != null ? battery.getEnergyStored() : 0;
+    }
+
+    @Override
+    public int getMaxEnergyStored() {
+        IBatteryUpgrade battery = getBatteryUpgrade();
+        return battery != null ? battery.getMaxEnergyStored() : 0;
+    }
+
+    @Override
+    public void setEnergyStored(int energy) {
+        // Energy is managed by the battery upgrade internally
+    }
+
+    @Override
+    public int getEnergyTransfer() {
+        IBatteryUpgrade battery = getBatteryUpgrade();
+        return battery != null ? battery.getMaxTransfer() : 0;
+    }
+
+    @Override
+    public boolean canConnectEnergy(ForgeDirection from) {
+        return getBatteryUpgrade() != null;
+    }
+
+    private ITankUpgrade getTankForFill(Fluid fluid) {
+        ITankUpgrade emptyTank = null;
+        for (ITankUpgrade tank : wrapper.gatherCapabilityUpgrades(ITankUpgrade.class)
+            .values()) {
+            FluidStack contents = tank.getContents();
+            if (contents != null && contents.getFluid() == fluid) {
+                if (contents.amount < tank.getTankCapacity()) return tank;
+            } else if (contents == null && emptyTank == null) {
+                emptyTank = tank;
+            }
+        }
+        return emptyTank;
+    }
+
+    @Override
+    public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+        if (resource == null || resource.amount <= 0) return 0;
+        ITankUpgrade tank = getTankForFill(resource.getFluid());
+        if (tank == null) return 0;
+        int filled = tank.fill(resource, doFill);
+        if (doFill && filled > 0) markDirty();
+        return filled;
+    }
+
+    @Override
+    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+        if (resource == null || resource.amount <= 0) return null;
+        for (ITankUpgrade tank : wrapper.gatherCapabilityUpgrades(ITankUpgrade.class)
+            .values()) {
+            FluidStack contents = tank.getContents();
+            if (contents != null && contents.getFluid() == resource.getFluid()) {
+                FluidStack drained = tank.drain(resource.amount, doDrain);
+                if (drained != null && doDrain) markDirty();
+                return drained;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+        if (maxDrain <= 0) return null;
+        for (ITankUpgrade tank : wrapper.gatherCapabilityUpgrades(ITankUpgrade.class)
+            .values()) {
+            FluidStack contents = tank.getContents();
+            if (contents != null && contents.amount > 0) {
+                FluidStack drained = tank.drain(maxDrain, doDrain);
+                if (drained != null && doDrain) markDirty();
+                return drained;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean canFill(ForgeDirection from, Fluid fluid) {
+        if (fluid == null) return false;
+        return getTankForFill(fluid) != null;
+    }
+
+    @Override
+    public boolean canDrain(ForgeDirection from, Fluid fluid) {
+        for (ITankUpgrade tank : wrapper.gatherCapabilityUpgrades(ITankUpgrade.class)
+            .values()) {
+            FluidStack contents = tank.getContents();
+            if (contents != null && (fluid == null || contents.getFluid() == fluid)) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+        Collection<ITankUpgrade> tanks = wrapper.gatherCapabilityUpgrades(ITankUpgrade.class)
+            .values();
+        FluidTankInfo[] info = new FluidTankInfo[tanks.size()];
+        int i = 0;
+        for (ITankUpgrade tank : tanks) {
+            info[i++] = new FluidTankInfo(tank.getContents(), tank.getTankCapacity());
+        }
+        return info;
+    }
 }

@@ -16,7 +16,6 @@ import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
-import ruiseki.okcore.helper.MinecraftHelpers;
 
 public class UpgradeItemStackHandler extends BaseItemStackHandler {
 
@@ -35,7 +34,10 @@ public class UpgradeItemStackHandler extends BaseItemStackHandler {
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
-        return stack == null || stack.getItem() instanceof IUpgradeItem;
+        if (stack == null) return true;
+        if (!(stack.getItem() instanceof IUpgradeItem<?>upgradeItem)) return false;
+        return upgradeItem.canAddUpgradeTo(storage, stack, slot)
+            .isSuccessful();
     }
 
     @Override
@@ -68,8 +70,10 @@ public class UpgradeItemStackHandler extends BaseItemStackHandler {
 
     @Override
     public @Nullable ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        if (!isVisualSlot(slot)) return stack;
+        ItemStack before = getStackInSlot(slot);
         ItemStack result = super.insertItem(slot, stack, simulate);
-        if (MinecraftHelpers.isServerSide() && stack == null && stack != null) {
+        if (!simulate && before == null && getStackInSlot(slot) != null) {
             onUpgradeAdded(slot);
         }
 
@@ -78,25 +82,40 @@ public class UpgradeItemStackHandler extends BaseItemStackHandler {
 
     @Override
     public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+        if (!isVisualSlot(slot)) return;
         ItemStack originalStack = getStackInSlot(slot);
-        Map<Integer, IUpgradeWrapper> wrappers = getSlotWrappers();
         boolean itemsDiffer = !ItemStack.areItemStacksEqual(originalStack, stack);
 
-        if (MinecraftHelpers.isServerSide() && itemsDiffer && wrappers.containsKey(slot)) {
-            wrappers.get(slot)
-                .onBeforeRemoved();
-        }
+        if (itemsDiffer) {
+            // Fire onBeforeRemoved BEFORE changing the stack
+            Map<Integer, IUpgradeWrapper> wrappers = getSlotWrappers();
+            if (wrappers.containsKey(slot)) {
+                wrappers.get(slot)
+                    .onBeforeRemoved();
+            }
 
-        super.setStackInSlot(slot, stack);
+            // Suppress premature refresh during super.setStackInSlot
+            // (onContentsChanged would trigger refreshUpgradeWrappers before lifecycle hooks complete)
+            boolean wasJustSaving = justSavingNbtChange;
+            justSavingNbtChange = true;
+            super.setStackInSlot(slot, stack);
+            justSavingNbtChange = wasJustSaving;
 
-        if (MinecraftHelpers.isServerSide() && itemsDiffer) {
+            // Force wrapper re-creation so onUpgradeAdded sees the new stack
+            wrappersInitialized = false;
             onUpgradeAdded(slot);
+
+            // Invalidate wrappers so next access re-creates them with correct state
+            wrappersInitialized = false;
+        } else {
+            super.setStackInSlot(slot, stack);
         }
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (!simulate && MinecraftHelpers.isServerSide()) {
+        if (!isVisualSlot(slot)) return null;
+        if (!simulate) {
             ItemStack slotStack = getStackInSlot(slot);
             if (slotStack != null && amount == 1) {
                 Map<Integer, IUpgradeWrapper> wrappers = getSlotWrappers();

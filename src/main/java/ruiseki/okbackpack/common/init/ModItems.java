@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Level;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.common.item.anvil.ItemAnvilUpgrade;
+import ruiseki.okbackpack.common.item.battery.ItemBatteryUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemAdvancedCompactingUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemCompactingUpgrade;
 import ruiseki.okbackpack.common.item.crafting.ItemCraftingUpgrade;
@@ -34,6 +35,7 @@ import ruiseki.okbackpack.common.item.smelter.ItemBlastingUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemSmeltingUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemSmokingUpgrade;
 import ruiseki.okbackpack.common.item.stack.ItemStackUpgrade;
+import ruiseki.okbackpack.common.item.tank.ItemTankUpgrade;
 import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgrade;
 import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgrade;
 import ruiseki.okbackpack.common.item.voiding.ItemAdvancedVoidUpgrade;
@@ -75,6 +77,8 @@ public enum ModItems {
     REFILL_UPGRADE(new ItemRefillUpgrade()),
     ADVANCED_REFILL_UPGRADE(new ItemAdvancedRefillUpgrade()),
     ANVIL_UPGRADE(new ItemAnvilUpgrade()),
+    BATTERY_UPGRADE(new ItemBatteryUpgrade()),
+    TANK_UPGRADE(new ItemTankUpgrade()),
     INFINITY_UPGRADE(new ItemInfinityUpgrade()),
     SURVIVAL_INFINITY_UPGRADE(new ItemSurvivalInfinityUpgrade()),
 

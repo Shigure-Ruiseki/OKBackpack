@@ -8,11 +8,23 @@ import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
+import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.api.wrapper.IInfinityUpgrade;
 import ruiseki.okbackpack.api.wrapper.IStackSizeUpgrade;
+import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
+import ruiseki.okbackpack.common.item.battery.BatteryUpgradeWrapper;
+import ruiseki.okbackpack.common.item.tank.ItemTankUpgrade;
+import ruiseki.okbackpack.common.item.tank.TankUpgradeWrapper;
 
 public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSizeUpgrade {
+
+    private static class StackModifierState {
+
+        public double additiveTotal;
+        public double downgradeProduct = 1;
+        public boolean hasAdditive;
+    }
 
     public StackUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage, Consumer<ItemStack> upgradeConsumer) {
         super(upgrade, storage, upgradeConsumer);
@@ -36,7 +48,7 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
             return UpgradeSlotChangeResult.success();
         }
 
-        double totalMultiplier = Math.max(calculateMultiplierExcluding(slotIndex), 1.0);
+        double totalMultiplier = toEffectiveMultiplier(calculateStateExcluding(slotIndex));
 
         List<Integer> conflictSlots = new ArrayList<>();
         for (int i = 0; i < storage.getSlots(); i++) {
@@ -59,6 +71,9 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
                 ItemStackUpgrade.formatMultiplier(totalMultiplier));
         }
 
+        UpgradeSlotChangeResult storageResult = checkStorageUpgradeCapacity(totalMultiplier);
+        if (!storageResult.isSuccessful()) return storageResult;
+
         return UpgradeSlotChangeResult.success();
     }
 
@@ -76,14 +91,20 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
             return UpgradeSlotChangeResult.success();
         }
 
-        double totalMultiplier = calculateMultiplierExcluding(slotIndex);
+        StackModifierState state = calculateStateExcluding(slotIndex);
 
-        // Add the replacement's multiplier, not the current upgrade's
+        // Apply replacement by type: upgrades are additive, downgrades are multiplicative.
         if (replacement.getItem() instanceof ItemStackUpgrade) {
-            totalMultiplier += ItemStackUpgrade.multiplier(replacement);
+            double replacementMultiplier = ItemStackUpgrade.multiplier(replacement);
+            if (ItemStackUpgrade.isDowngrade(replacement)) {
+                state.downgradeProduct *= replacementMultiplier;
+            } else {
+                state.additiveTotal += replacementMultiplier;
+                state.hasAdditive = true;
+            }
         }
 
-        totalMultiplier = Math.max(totalMultiplier, 1.0);
+        double totalMultiplier = toEffectiveMultiplier(state);
 
         List<Integer> conflictSlots = new ArrayList<>();
         for (int i = 0; i < storage.getSlots(); i++) {
@@ -106,11 +127,44 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
                 ItemStackUpgrade.formatMultiplier(totalMultiplier));
         }
 
+        UpgradeSlotChangeResult storageResult = checkStorageUpgradeCapacity(totalMultiplier);
+        if (!storageResult.isSuccessful()) return storageResult;
+
         return UpgradeSlotChangeResult.success();
     }
 
-    private double calculateMultiplierExcluding(int excludedSlot) {
-        double total = 0;
+    private UpgradeSlotChangeResult checkStorageUpgradeCapacity(double newMultiplier) {
+        // Check battery energy against new capacity
+        for (var entry : storage.gatherCapabilityUpgrades(IBatteryUpgrade.class)
+            .entrySet()) {
+            IBatteryUpgrade battery = entry.getValue();
+            int newMaxEnergy = (int) (BatteryUpgradeWrapper.BASE_ENERGY_PER_SLOT * storage.getStackHandler()
+                .getSlots() * newMultiplier);
+            if (battery.getEnergyStored() > newMaxEnergy) {
+                return UpgradeSlotChangeResult.failStorageCapacityLow(
+                    new int[] { entry.getKey() },
+                    ItemStackUpgrade.formatMultiplier(newMultiplier));
+            }
+        }
+
+        // Check tank fluid against new capacity
+        for (var entry : storage.gatherCapabilityUpgrades(ITankUpgrade.class)
+            .entrySet()) {
+            ITankUpgrade tank = entry.getValue();
+            int newMaxFluid = (int) (ItemTankUpgrade.SLOTS_NEEDED * TankUpgradeWrapper.BASE_CAPACITY_PER_SLOT
+                * newMultiplier);
+            if (tank.getContents() != null && tank.getContents().amount > newMaxFluid) {
+                return UpgradeSlotChangeResult.failStorageCapacityLow(
+                    new int[] { entry.getKey() },
+                    ItemStackUpgrade.formatMultiplier(newMultiplier));
+            }
+        }
+
+        return UpgradeSlotChangeResult.success();
+    }
+
+    private StackModifierState calculateStateExcluding(int excludedSlot) {
+        StackModifierState state = new StackModifierState();
 
         for (var entry : storage.gatherCapabilityUpgrades(IStackSizeUpgrade.class)
             .entrySet()) {
@@ -120,15 +174,30 @@ public class StackUpgradeWrapper extends UpgradeWrapperBase implements IStackSiz
                 .getStackInSlot(entry.getKey());
             if (stack == null) continue;
 
-            total += entry.getValue()
-                .getMultiplier();
+            IStackSizeUpgrade modifier = entry.getValue();
+            if (modifier.isDowngrade()) {
+                state.downgradeProduct *= modifier.getMultiplier();
+            } else {
+                state.additiveTotal += modifier.getMultiplier();
+                state.hasAdditive = true;
+            }
         }
 
-        return total;
+        return state;
+    }
+
+    private double toEffectiveMultiplier(StackModifierState state) {
+        double total = (state.hasAdditive ? state.additiveTotal : 1) * state.downgradeProduct;
+        return total <= 0 ? 1.0 : total;
     }
 
     @Override
     public double getMultiplier() {
         return ItemStackUpgrade.multiplier(upgrade);
+    }
+
+    @Override
+    public boolean isDowngrade() {
+        return ItemStackUpgrade.isDowngrade(upgrade);
     }
 }
