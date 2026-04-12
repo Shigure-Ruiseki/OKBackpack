@@ -1,5 +1,7 @@
 package ruiseki.okbackpack.common.item.battery;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +16,7 @@ import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatteryUpgrade {
 
@@ -233,5 +236,11 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatter
         if (stack == null) return false;
         if (!(stack.getItem() instanceof IEnergyContainerItem energyItem)) return false;
         return energyItem.receiveEnergy(stack, 1, true) > 0;
+    }
+
+    @Override
+    public List<String> getTooltipLines() {
+        return Collections
+            .singletonList("\u00a7c" + LangHelpers.localize("tooltip.backpack.contents.energy", energyStored));
     }
 }

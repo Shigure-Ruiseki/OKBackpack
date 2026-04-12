@@ -38,6 +38,7 @@ dependencies {
     implementation("com.github.GTNewHorizons:ModularUI2:2.3.52-1.7.10:dev")
     implementation(rfg.deobf("curse.maven:ok-core-1475995:7880148"))
     implementation('com.github.GTNewHorizons:Baubles-Expanded:2.2.11-GTNH:dev')
+    implementation("com.github.GTNewHorizons:CodeChickenCore:1.4.10:dev")
 
     devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.8.40-GTNH:dev")
     devOnlyNonPublishable("com.github.GTNewHorizons:waila:1.9.5:dev") { transitive = false }

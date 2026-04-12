@@ -472,6 +472,7 @@ public class BlockBackpack extends BlockOK {
                     }
 
                     if (hasUpgrades) {
+                        list.addAll(BackpackContentHandler.upgradeTooltipLines);
                         list.add("\u00a7e" + LangHelpers.localize("tooltip.backpack.contents.upgrades"));
                         list.add(BackpackContentHandler.getUpgradeHandlerLine());
                     }

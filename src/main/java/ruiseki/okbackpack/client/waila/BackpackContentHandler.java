@@ -46,6 +46,7 @@ public class BackpackContentHandler {
 
     public static List<UpgradeInfo> upgradeInfos = new ArrayList<>();
     public static List<ItemStack> sortedContents = new ArrayList<>();
+    public static List<String> upgradeTooltipLines = new ArrayList<>();
 
     public static final GuiDraw.ITooltipLineHandler upgradeHandler = new GuiDraw.ITooltipLineHandler() {
 
@@ -220,6 +221,7 @@ public class BackpackContentHandler {
     public static void reset() {
         upgradeInfos.clear();
         sortedContents.clear();
+        upgradeTooltipLines.clear();
     }
 
     /**
@@ -228,6 +230,7 @@ public class BackpackContentHandler {
     public static void prepareContents(BackpackWrapper wrapper) {
         upgradeInfos.clear();
         sortedContents.clear();
+        upgradeTooltipLines.clear();
 
         // Gather upgrades
         Map<Integer, IUpgradeWrapper> wrappers = wrapper.getUpgradeHandler()
@@ -236,6 +239,7 @@ public class BackpackContentHandler {
             boolean canBeDisabled = uw instanceof IToggleable;
             boolean enabled = !canBeDisabled || ((IToggleable) uw).isEnabled();
             upgradeInfos.add(new UpgradeInfo(uw.getUpgradeStack(), canBeDisabled, enabled));
+            upgradeTooltipLines.addAll(uw.getTooltipLines());
         }
 
         // Gather inventory contents - compact and sort by count descending
