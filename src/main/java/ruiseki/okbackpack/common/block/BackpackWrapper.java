@@ -68,6 +68,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     public boolean lockBackpack;
     public String playerUuid;
     public boolean keepTab;
+    private int tabStartIndex = 0;
 
     public String customName;
 
@@ -108,6 +109,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     public static final String PLAYER_UUID_TAG = "PlayerUUID";
 
     public static final String KEEP_TAB_TAG = "KeepTab";
+    public static final String TAB_INDEX_TAG = "TabIndex";
 
     public static final String CUSTOM_NAME_TAG = "CustomName";
 
@@ -829,6 +831,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         tag.setBoolean(LOCKED_BACKPACK_TAG, lockBackpack);
 
         tag.setBoolean(KEEP_TAB_TAG, keepTab);
+        tag.setInteger(TAB_INDEX_TAG, tabStartIndex);
 
         tag.setString(UUID_TAG, uuid);
 
@@ -907,6 +910,7 @@ public class BackpackWrapper implements IBackpackWrapper {
 
         if (tag.hasKey(LOCKED_BACKPACK_TAG, 1)) this.lockBackpack = tag.getBoolean(LOCKED_BACKPACK_TAG);
         if (tag.hasKey(KEEP_TAB_TAG, 1)) this.keepTab = tag.getBoolean(KEEP_TAB_TAG);
+        if (tag.hasKey(TAB_INDEX_TAG, 3)) this.tabStartIndex = tag.getInteger(TAB_INDEX_TAG);
 
         if (tag.hasKey(UUID_TAG, 8)) {
             this.uuid = tag.getString(UUID_TAG);
@@ -967,6 +971,17 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public void setKeepTab(boolean keepTab) {
         this.keepTab = keepTab;
+        if (!keepTab) setTabStartIndex(0);
+    }
+
+    @Override
+    public int getTabStartIndex() {
+        return tabStartIndex;
+    }
+
+    @Override
+    public void setTabStartIndex(int index) {
+        this.tabStartIndex = index;
     }
 
     @Override

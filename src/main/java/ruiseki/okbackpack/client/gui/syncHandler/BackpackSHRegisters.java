@@ -23,6 +23,7 @@ public class BackpackSHRegisters implements IInitListener {
     public static final String UPDATE_TRANSFER_TO_BACKPACK_INV = "update_transfer_to_backpack_inv";
     public static final String UPDATE_TRANSFER_TO_PLAYER_INV = "update_transfer_to_player_inv";
     public static final String UPDATE_SETTING = "update_setting";
+    public static final String UPDATE_TAB_INDEX = "update_tab_index";
     public static final String DEPLOY_SLEEPING_BAG = "update_deploy_sleeping_bag";
 
     @Override
@@ -59,6 +60,11 @@ public class BackpackSHRegisters implements IInitListener {
                 handler.wrapper.setLockStorage(lock);
                 handler.wrapper.setPlayerUUID(playerUuid);
                 handler.wrapper.setKeepTab(tab);
+            });
+
+            BackpackSHRegistry.registerServer(UPDATE_TAB_INDEX, (handler, buf) -> {
+                int index = buf.readInt();
+                handler.wrapper.setTabStartIndex(index);
             });
 
             BackpackSHRegistry.registerServer(DEPLOY_SLEEPING_BAG, (handler, buf) -> { deploySleepingBag(handler); });

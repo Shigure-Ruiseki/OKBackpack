@@ -283,7 +283,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         ShiftButtonWidget sortButton = new ShiftButtonWidget(
             OKBGuiTextures.SOLID_DOWN_ARROW_ICON,
             OKBGuiTextures.SOLID_UP_ARROW_ICON).top(4)
-                .right(21)
+                .right(35)
                 .size(12)
                 .setEnabledIf(w -> !settingPanel.isPanelOpen())
                 .onMousePressed((button) -> {
@@ -324,9 +324,46 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
 
             }).setEnabledIf(cyclicVariantButtonWidget -> !settingPanel.isPanelOpen())
                 .top(4)
-                .right(7)
+                .right(21)
                 .size(12);
-        child(sortButton).child(sortTypeButton);
+
+        ShiftButtonWidget upgradeIndex = new ShiftButtonWidget(
+            OKBGuiTextures.DOT_UP_ARROW_ICON,
+            OKBGuiTextures.DOT_DOWN_ARROW_ICON).size(12)
+                .top(4)
+                .right(7)
+                .onMousePressed(btn -> {
+                    if (btn != 0) return false;
+
+                    int index = wrapper.getTabStartIndex();
+
+                    if (Interactable.hasShiftDown()) {
+                        index--;
+                    } else {
+                        index++;
+                    }
+
+                    int tabCount = tabWidgets.size();
+                    if (tabCount > 0) {
+                        index = (index % tabCount + tabCount) % tabCount;
+                    }
+
+                    wrapper.setTabStartIndex(index);
+                    backpackSyncHandler.syncToServer(
+                        BackpackSH.getId(BackpackSHRegisters.UPDATE_TAB_INDEX),
+                        buf -> buf.writeInt(wrapper.getTabStartIndex()));
+
+                    updateUpgradeWidgets();
+                    return true;
+                })
+                .tooltipDynamic(tooltip -> {
+                    tooltip.addLine(IKey.str("Scroll Tabs"));
+                    tooltip.addLine(IKey.str("Shift: Scroll Down"));
+                    tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+                });
+
+        child(sortButton).child(sortTypeButton)
+            .child(upgradeIndex);
     }
 
     public void addTransferButtons() {
@@ -563,97 +600,92 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void updateUpgradeWidgets() {
-        int tabIndex = 0;
-        Integer openedTabIndex = null;
-
+        int tabCount = 0;
         resetTabState();
-
-        for (int slotIndex = 0; slotIndex < upgradeSlotWidgets.size(); slotIndex++) {
-            ItemSlot slotWidget = upgradeSlotWidgets.get(slotIndex);
-            if (slotWidget.getSlot() == null) continue;
-            ItemStack stack = slotWidget.getSlot()
-                .getStack();
-            if (!(stack != null && stack.getItem() instanceof IUpgradeItem<?>item)) continue;
-            if (!item.hasTab()) continue;
-
-            IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
-                .getWrapperInSlot(slotIndex);
-            if (wrapper == null) continue;
-
-            if (wrapper.isTabOpened()) {
-                if (openedTabIndex != null) {
-                    wrapper.setTabOpened(false);
-                    upgradeSlotSyncHandlers[slotIndex].syncToServer(
-                        UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_UPGRADE_TAB_STATE),
-                        buf -> buf.writeBoolean(false));
-                    return;
-                }
-                openedTabIndex = slotIndex;
-            }
-        }
 
         for (int slotIndex = 0; slotIndex < wrapper.getUpgradeHandler()
             .getSlots(); slotIndex++) {
             ItemSlot slotWidget = upgradeSlotWidgets.get(slotIndex);
             if (slotWidget.getSlot() == null) continue;
+
             ItemStack stack = slotWidget.getSlot()
                 .getStack();
             if (stack == null) continue;
 
             Item item = stack.getItem();
-            if (!(item instanceof IUpgradeItem upgrade)) continue;
-            if (!upgrade.hasTab()) continue;
+            if (!(item instanceof IUpgradeItem upgrade) || !upgrade.hasTab()) continue;
 
-            TabWidget tabWidget = tabWidgets.get(tabIndex);
-            UpgradeSlotUpdateGroup upgradeSlotGroup = upgradeSlotGroups[slotIndex];
+            IUpgradeWrapper upgWrapper = wrapper.getUpgradeHandler()
+                .getWrapperInSlot(slotIndex);
+            if (upgWrapper == null) continue;
 
-            IUpgradeWrapper wrapper = this.wrapper.upgradeHandler.getWrapperInSlot(slotIndex);
-            if (wrapper == null) continue;
+            TabWidget tab = tabWidgets.get(tabCount);
+            UpgradeSlotUpdateGroup group = upgradeSlotGroups[slotIndex];
 
-            tabWidget.setShowExpanded(wrapper.isTabOpened());
-            tabWidget.setEnabled(true);
-            tabWidget.setTabIcon(
+            tab.setShowExpanded(upgWrapper.isTabOpened());
+            tab.setTabIcon(
                 new ItemDrawable(stack).asIcon()
                     .size(18));
-            tabWidget.tooltip(
-                tooltip -> tooltip.clearText()
+            tab.tooltip(
+                t -> t.clearText()
                     .addLine(IKey.str(item.getItemStackDisplayName(stack)))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
 
-            upgrade.updateWidgetDelegates(wrapper, upgradeSlotGroup);
-            ExpandedTabWidget widget = upgrade
-                .getExpandedTabWidget(slotIndex, wrapper, stack, this, wrapper.getSettingLangKey());
+            upgrade.updateWidgetDelegates(upgWrapper, group);
+            ExpandedTabWidget expanded = upgrade
+                .getExpandedTabWidget(slotIndex, upgWrapper, stack, this, upgWrapper.getSettingLangKey());
 
-            if (widget != null) {
-                tabWidget.setExpandedWidget(widget);
-            }
-
-            if (tabWidget.getExpandedWidget() != null) {
+            if (expanded != null) {
+                tab.setExpandedWidget(expanded);
                 getContext().getUISettings()
                     .getRecipeViewerSettings()
-                    .addExclusionArea(tabWidget.getExpandedWidget());
+                    .addExclusionArea(expanded);
             }
-            tabIndex++;
+
+            tabCount++;
         }
 
-        if (openedTabIndex != null) {
-            TabWidget openedTab = tabWidgets.get(openedTabIndex);
-            int covered = openedTab.getExpandedWidget() != null ? openedTab.getExpandedWidget()
-                .getCoveredTabSize() : 0;
+        int startIndex = wrapper.getTabStartIndex();
+        Integer openedRelIndex = null;
+        int coveredSize = 0;
+        for (int i = 0; i < tabCount; i++) {
+            TabWidget tab = tabWidgets.get(i);
+            if (!tab.isShowExpanded()) continue;
 
-            int upperBound = Math.min(openedTabIndex + covered - 1, tabWidgets.size());
+            openedRelIndex = (i - startIndex + tabCount) % tabCount;
 
-            for (int i = openedTabIndex + 1; i < upperBound; i++) {
-                tabWidgets.get(i)
-                    .setEnabled(false);
+            ExpandedTabWidget expanded = tab.getExpandedWidget();
+            if (expanded != null) coveredSize = expanded.getCoveredTabSize();
+            break;
+        }
+
+        int maxVisible = getMaxVisibleTabs();
+        for (int i = 0; i < tabWidgets.size(); i++) {
+            TabWidget tab = tabWidgets.get(i);
+            if (i >= tabCount) {
+                tab.setEnabled(false);
+                continue;
             }
+
+            int rel = (i - startIndex + tabCount) % tabCount;
+            boolean visible = rel < maxVisible;
+            boolean enabled = visible;
+
+            // disable covered tabs
+            if (openedRelIndex != null) {
+                int dist = rel - openedRelIndex;
+                if (dist > 0 && dist < coveredSize) enabled = false;
+            }
+
+            tab.setEnabled(enabled);
+            if (visible) tab.top((rel + 1) * 30);
         }
 
         resetOpenedTabsIfNotKeep();
-
         syncToggles();
-        disableUnusedTabWidgets(tabIndex);
-        this.scheduleResize();
+        disableUnusedTabWidgets(tabCount);
+
+        scheduleResize();
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -695,6 +727,12 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 column.child(widget);
             }
         }
+    }
+
+    private int getMaxVisibleTabs() {
+        int panelHeight = this.resizer()
+            .getArea().height;
+        return Math.max(1, (panelHeight / 30) - 1);
     }
 
     private void resetTabState() {
