@@ -22,9 +22,13 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.cleanroommc.modularui.drawable.text.RichText;
+import com.cleanroommc.modularui.screen.RichTooltipEvent;
 import com.github.bsideup.jabel.Desugar;
 
 import codechicken.lib.gui.GuiDraw;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
@@ -176,6 +180,42 @@ public class BackpackContentHandler {
             GL11.glPopAttrib();
         }
     };
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void onRichTooltipPre(RichTooltipEvent.Pre event) {
+        if (upgradeInfos.isEmpty() && sortedContents.isEmpty()) return;
+
+        if (!(event.getTooltip() instanceof RichText richText)) return;
+        List<String> lines = richText.getAsStrings();
+        boolean hasHandler = false;
+        for (String line : lines) {
+            if (line != null && line.startsWith(TOOLTIP_HANDLER)) {
+                hasHandler = true;
+                break;
+            }
+        }
+        if (!hasHandler) return;
+
+        event.setCanceled(true);
+
+        List<String> freshLines = new ArrayList<>();
+        int handlerCount = 0;
+        for (String line : lines) {
+            if (line != null && line.startsWith(TOOLTIP_HANDLER)) {
+                if (handlerCount == 0 && !upgradeInfos.isEmpty()) {
+                    freshLines.add(TOOLTIP_HANDLER + getTipLineId(upgradeHandler));
+                } else {
+                    freshLines.add(TOOLTIP_HANDLER + getTipLineId(contentsHandler));
+                }
+                handlerCount++;
+            } else {
+                freshLines.add(line);
+            }
+        }
+
+        GuiDraw
+            .drawMultilineTip(Minecraft.getMinecraft().fontRenderer, event.getX() + 12, event.getY() - 12, freshLines);
+    }
 
     public static void reset() {
         upgradeInfos.clear();
