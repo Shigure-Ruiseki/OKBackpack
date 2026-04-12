@@ -1,5 +1,7 @@
 package ruiseki.okbackpack.common.item.tank;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +18,7 @@ import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class TankUpgradeWrapper extends UpgradeWrapperBase implements ITankUpgrade {
 
@@ -580,5 +583,16 @@ public class TankUpgradeWrapper extends UpgradeWrapperBase implements ITankUpgra
 
     public boolean isValidOutputItem(ItemStack stack) {
         return isFluidContainer(stack);
+    }
+
+    @Override
+    public List<String> getTooltipLines() {
+        FluidStack fluid = getContents();
+        if (fluid != null && fluid.amount > 0) {
+            return Collections.singletonList(
+                "\u00a7e" + LangHelpers
+                    .localize("tooltip.backpack.contents.fluid", fluid.amount, "\u00a79" + fluid.getLocalizedName()));
+        }
+        return Collections.singletonList("\u00a79" + LangHelpers.localize("tooltip.backpack.contents.fluid_empty"));
     }
 }

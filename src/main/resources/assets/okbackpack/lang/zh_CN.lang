@@ -252,7 +252,17 @@ item.advanced_refill_upgrade.name=高级补货升级
 # Tooltips
 tooltip.backpack.inventory_size=物品栏大小：%d
 tooltip.backpack.upgrade_slots_size=升级槽位：%d
-tooltip.backpack.stack_multiplier=→ 堆叠倍数：%d%s
+tooltip.backpack.stack_multiplier=堆叠倍数：%d%s
+tooltip.backpack.contents.uuid=UUID: %s
+tooltip.backpack.contents.press_for_contents=按<%s>查看内容
+tooltip.backpack.contents.shift=左Shift
+tooltip.backpack.contents.stack_multiplier=堆叠倍数：%s
+tooltip.backpack.contents.energy=%s RF
+tooltip.backpack.contents.fluid=%s mB %s
+tooltip.backpack.contents.fluid_empty=空罐
+tooltip.backpack.contents.upgrades=升级
+tooltip.backpack.contents.inventory=物品
+tooltip.backpack.contents.empty=未加装升级或物品存储
 
 tooltip.backpack.magnet_upgrade=将一定范围内的物品吸入背包
 tooltip.backpack.advanced_magnet_upgrade=将更大范围内的物品吸入背包

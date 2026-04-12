@@ -1,5 +1,8 @@
 package ruiseki.okbackpack.api.wrapper;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 
 public interface IUpgradeWrapper {
@@ -17,4 +20,8 @@ public interface IUpgradeWrapper {
     void onAdded();
 
     void onBeforeRemoved();
+
+    default List<String> getTooltipLines() {
+        return Collections.emptyList();
+    }
 }

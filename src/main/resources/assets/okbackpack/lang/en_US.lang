@@ -252,7 +252,17 @@ item.advanced_refill_upgrade.name=Advanced Refill Upgrade
 # Tooltips
 tooltip.backpack.inventory_size=Inventory size: %d
 tooltip.backpack.upgrade_slots_size=Upgrade slots: %d
-tooltip.backpack.stack_multiplier=-> Stack multiplier: %d%s
+tooltip.backpack.stack_multiplier=Stack multiplier: %d%s
+tooltip.backpack.contents.uuid=UUID: %s
+tooltip.backpack.contents.press_for_contents=Press <%s> to View Contents
+tooltip.backpack.contents.shift=Left Shift
+tooltip.backpack.contents.stack_multiplier=Stack Size Multiplier: %s
+tooltip.backpack.contents.energy=%s RF
+tooltip.backpack.contents.fluid=%s mB %s
+tooltip.backpack.contents.fluid_empty=Empty tank
+tooltip.backpack.contents.upgrades=Upgrades
+tooltip.backpack.contents.inventory=Inventory
+tooltip.backpack.contents.empty=No Upgrades or Inventory Contents
 
 tooltip.backpack.magnet_upgrade=Magnets items into backpack at range
 tooltip.backpack.advanced_magnet_upgrade=Magnets items into backpack at a greater range

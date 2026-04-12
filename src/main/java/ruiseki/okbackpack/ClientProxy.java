@@ -10,6 +10,7 @@ import ruiseki.okbackpack.client.key.OpenBackpackHandler;
 import ruiseki.okbackpack.client.key.PickBlockHandler;
 import ruiseki.okbackpack.client.key.ToggleUpgradeHandler;
 import ruiseki.okbackpack.client.key.ToolSwapHandler;
+import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.common.event.ItemRenderEvent;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.nei.BackpackGuiOpener;
@@ -76,5 +77,8 @@ public class ClientProxy extends ClientProxyComponent {
         super.registerEventHooks();;
         MinecraftForge.EVENT_BUS.register(new ItemRenderEvent());
         MinecraftForge.EVENT_BUS.register(BackpackJukeboxSoundManager.getInstance());
+        if (Mods.CodeChickenCore.isLoaded()) {
+            MinecraftForge.EVENT_BUS.register(new BackpackContentHandler());
+        }
     }
 }

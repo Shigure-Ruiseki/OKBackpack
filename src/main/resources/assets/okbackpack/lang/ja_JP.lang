@@ -253,6 +253,16 @@ item.advanced_refill_upgrade.name=補充機能・改
 tooltip.backpack.inventory_size=インベントリサイズ: %d
 tooltip.backpack.upgrade_slots_size=アップグレードスロット: %d
 tooltip.backpack.stack_multiplier=-> スタック倍率: %d%s
+tooltip.backpack.contents.uuid=UUID: %s
+tooltip.backpack.contents.press_for_contents=<%s>を押すと中身を表示
+tooltip.backpack.contents.shift=左SHIFTキー
+tooltip.backpack.contents.stack_multiplier=スタック数: %s倍
+tooltip.backpack.contents.energy=%s RF
+tooltip.backpack.contents.fluid=%s mB %s
+tooltip.backpack.contents.fluid_empty=空のタンク
+tooltip.backpack.contents.upgrades=アップグレード
+tooltip.backpack.contents.inventory=インベントリ
+tooltip.backpack.contents.empty=からっぽ
 
 tooltip.backpack.magnet_upgrade=周囲のアイテムを引き寄せてリュックに入れます。
 tooltip.backpack.advanced_magnet_upgrade=より拾い範囲のアイテムを引き寄せてリュックに入れます。

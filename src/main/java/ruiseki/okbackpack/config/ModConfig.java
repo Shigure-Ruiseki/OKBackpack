@@ -92,4 +92,9 @@ public class ModConfig {
 
     @Config.DefaultInt(5)
     public static int magnetRange;
+
+    @Config.Comment("Maximum number of item stacks to display per row in the backpack tooltip")
+    @Config.DefaultInt(9)
+    @Config.RangeInt(min = 1)
+    public static int tooltipMaxItemsPerRow;
 }
