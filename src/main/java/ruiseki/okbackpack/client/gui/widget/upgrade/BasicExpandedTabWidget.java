@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import com.cleanroommc.modularui.widgets.layout.Column;
 import com.cleanroommc.modularui.widgets.layout.Row;
 
+import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 
@@ -15,9 +16,9 @@ public class BasicExpandedTabWidget<T extends UpgradeWrapperBase & IBasicFiltera
     protected final Row startingRow;
     protected final BasicFilterWidget filterWidget;
 
-    public BasicExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, String titleKey,
-        String filterSyncKey, int coveredTabSize, int width) {
-        super(slotIndex, coveredTabSize, delegatedIconStack, titleKey, width);
+    public BasicExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, IStoragePanel<?> panel,
+        String titleKey, String filterSyncKey, int coveredTabSize, int width) {
+        super(slotIndex, coveredTabSize, delegatedIconStack, panel, titleKey, width);
 
         this.wrapper = wrapper;
 
@@ -37,13 +38,14 @@ public class BasicExpandedTabWidget<T extends UpgradeWrapperBase & IBasicFiltera
         child(column);
     }
 
-    public BasicExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, String titleKey) {
-        this(slotIndex, wrapper, delegatedIconStack, titleKey, "common_filter", 4, 75);
+    public BasicExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, IStoragePanel<?> panel,
+        String titleKey) {
+        this(slotIndex, wrapper, delegatedIconStack, panel, titleKey, "common_filter", 4, 75);
     }
 
-    public BasicExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, String titleKey,
-        String filterSyncKey) {
-        this(slotIndex, wrapper, delegatedIconStack, titleKey, filterSyncKey, 4, 75);
+    public BasicExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, IStoragePanel<?> panel,
+        String titleKey, String filterSyncKey) {
+        this(slotIndex, wrapper, delegatedIconStack, panel, titleKey, filterSyncKey, 4, 75);
     }
 
     @Override

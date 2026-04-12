@@ -30,7 +30,7 @@ public class AdvancedVoidUpgradeWidget extends AdvancedExpandedTabWidget<Advance
 
     public AdvancedVoidUpgradeWidget(int slotIndex, AdvancedVoidUpgradeWrapper wrapper, ItemStack stack,
         IStoragePanel<?> panel, String titleKey) {
-        super(slotIndex, wrapper, stack, titleKey, "adv_common_filter", 6, 100);
+        super(slotIndex, wrapper, stack, panel, titleKey, "adv_common_filter", 6, 100);
 
         // CyclicVariantButtonWidget inputButton = new CyclicVariantButtonWidget(
         // VOID_INPUT_VARIANTS,

@@ -30,7 +30,7 @@ public class VoidUpgradeWidget extends BasicExpandedTabWidget<VoidUpgradeWrapper
 
     public VoidUpgradeWidget(int slotIndex, VoidUpgradeWrapper wrapper, ItemStack stack, IStoragePanel<?> panel,
         String titleKey) {
-        super(slotIndex, wrapper, stack, titleKey, "common_filter", 5, 80);
+        super(slotIndex, wrapper, stack, panel, titleKey, "common_filter", 5, 80);
 
         // CyclicVariantButtonWidget inputButton = new CyclicVariantButtonWidget(
         // VOID_INPUT_VARIANTS,

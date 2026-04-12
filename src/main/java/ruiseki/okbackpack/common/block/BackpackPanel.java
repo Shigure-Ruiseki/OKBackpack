@@ -48,6 +48,7 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageContainer;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.SortType;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.api.wrapper.IDirtable;
@@ -77,7 +78,6 @@ import ruiseki.okbackpack.client.gui.widget.TileWidget;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotGroupWidget;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
-import ruiseki.okbackpack.common.SortType;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 import ruiseki.okcore.helper.ItemStackHelpers;
@@ -641,7 +641,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             int covered = openedTab.getExpandedWidget() != null ? openedTab.getExpandedWidget()
                 .getCoveredTabSize() : 0;
 
-            int upperBound = Math.min(openedTabIndex + covered, tabWidgets.size());
+            int upperBound = Math.min(openedTabIndex + covered - 1, tabWidgets.size());
 
             for (int i = openedTabIndex + 1; i < upperBound; i++) {
                 tabWidgets.get(i)

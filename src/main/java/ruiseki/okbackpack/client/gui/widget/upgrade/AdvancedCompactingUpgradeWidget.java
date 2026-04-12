@@ -25,8 +25,8 @@ public class AdvancedCompactingUpgradeWidget extends AdvancedExpandedTabWidget<A
     private final CyclicVariantButtonWidget reversibleButton;
 
     public AdvancedCompactingUpgradeWidget(int slotIndex, AdvancedCompactingUpgradeWrapper wrapper, ItemStack stack,
-        IStoragePanel panel, String titleKey) {
-        super(slotIndex, wrapper, stack, titleKey, "adv_common_filter", 6, 100);
+        IStoragePanel<?> panel, String titleKey) {
+        super(slotIndex, wrapper, stack, panel, titleKey, "adv_common_filter", 6, 100);
 
         this.reversibleButton = new CyclicVariantButtonWidget(
             REVERSIBLE_VARIANTS,

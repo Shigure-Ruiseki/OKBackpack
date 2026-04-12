@@ -8,8 +8,8 @@ import net.minecraft.world.World;
 
 import com.cleanroommc.modularui.network.NetworkUtils;
 
+import ruiseki.okbackpack.api.SortType;
 import ruiseki.okbackpack.api.upgrade.BackpackSHRegistry;
-import ruiseki.okbackpack.common.SortType;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.common.block.TEBackpack;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;

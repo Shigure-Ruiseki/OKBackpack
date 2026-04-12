@@ -9,6 +9,6 @@ public class FeedingUpgradeWidget extends BasicExpandedTabWidget<FeedingUpgradeW
 
     public FeedingUpgradeWidget(int slotIndex, FeedingUpgradeWrapper wrapper, ItemStack stack, IStoragePanel<?> panel,
         String titleKey) {
-        super(slotIndex, wrapper, stack, titleKey, "feeding_filter");
+        super(slotIndex, wrapper, stack, panel, titleKey, "feeding_filter");
     }
 }
