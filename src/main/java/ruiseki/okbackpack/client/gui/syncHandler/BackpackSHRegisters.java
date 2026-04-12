@@ -56,9 +56,9 @@ public class BackpackSHRegisters implements IInitListener {
                 boolean lock = buf.readBoolean();
                 String playerUuid = buf.readStringFromBuffer(36);
                 boolean tab = buf.readBoolean();
-                handler.wrapper.lockBackpack = lock;
-                handler.wrapper.playerUuid = playerUuid;
-                handler.wrapper.keepTab = tab;
+                handler.wrapper.setLockStorage(lock);
+                handler.wrapper.setPlayerUUID(playerUuid);
+                handler.wrapper.setKeepTab(tab);
             });
 
             BackpackSHRegistry.registerServer(DEPLOY_SLEEPING_BAG, (handler, buf) -> { deploySleepingBag(handler); });

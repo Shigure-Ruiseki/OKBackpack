@@ -959,6 +959,36 @@ public class BackpackWrapper implements IBackpackWrapper {
         return sortType;
     }
 
+    @Override
+    public boolean isKeepTab() {
+        return keepTab;
+    }
+
+    @Override
+    public void setKeepTab(boolean keepTab) {
+        this.keepTab = keepTab;
+    }
+
+    @Override
+    public boolean isLockStorage() {
+        return lockBackpack;
+    }
+
+    @Override
+    public void setLockStorage(boolean lockStorage) {
+        this.lockBackpack = lockStorage;
+    }
+
+    @Override
+    public String getPlayerUUID() {
+        return playerUuid;
+    }
+
+    @Override
+    public void setPlayerUUID(String playerUUID) {
+        this.playerUuid = playerUUID;
+    }
+
     public boolean deploySleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ) {
         if (world.isRemote) return false;
 

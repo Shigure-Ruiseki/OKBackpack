@@ -33,7 +33,9 @@ import com.cleanroommc.modularui.theme.WidgetTheme;
 import com.cleanroommc.modularui.utils.GlStateManager;
 import com.cleanroommc.modularui.utils.item.PlayerInvWrapper;
 import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
+import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.cleanroommc.modularui.value.sync.SyncHandler;
 import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Column;
@@ -766,16 +768,6 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         }
     }
 
-    @Override
-    public IStorageContainer<?> getContainer() {
-        return (IStorageContainer<?>) syncManager.getContainer();
-    }
-
-    @Override
-    public @NotNull BackpackPanel getPanel() {
-        return this;
-    }
-
     public int getOpenCraftingUpgradeSlot() {
         for (int slotIndex = 0; slotIndex < wrapper.getUpgradeHandler()
             .getSlots(); slotIndex++) {
@@ -942,12 +934,52 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
     }
 
     @Override
+    public void setMemorySettingTabOpened(boolean opened) {
+        this.isMemorySettingTabOpened = opened;
+    }
+
+    @Override
     public boolean shouldMemorizeRespectNBT() {
         return shouldMemorizeRespectNBT;
     }
 
     @Override
+    public void setShouldMemorizeRespectNBT(boolean enabled) {
+        this.shouldMemorizeRespectNBT = enabled;
+    }
+
+    @Override
     public boolean isSortingSettingTabOpened() {
         return isSortingSettingTabOpened;
+    }
+
+    @Override
+    public void setSortingSettingTabOpened(boolean opened) {
+        this.isSortingSettingTabOpened = opened;
+    }
+
+    @Override
+    public IStorageContainer<?> getContainer() {
+        return (IStorageContainer<?>) syncManager.getContainer();
+    }
+
+    @Override
+    public @NotNull BackpackPanel getStoragePanel() {
+        return this;
+    }
+
+    @Override
+    public SyncHandler getStorageSH() {
+        return backpackSyncHandler;
+    }
+
+    @Override
+    public ItemSlotSH[] getStorageSlotSH() {
+        return backpackSlotSyncHandlers;
+    }
+
+    @Override
+    public ItemSlotSH[] getUpgradedSlotSH() {
+        return upgradeSlotSyncHandlers;
     }
 }

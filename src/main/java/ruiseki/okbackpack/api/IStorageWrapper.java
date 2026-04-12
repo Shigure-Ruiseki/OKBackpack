@@ -63,6 +63,18 @@ public interface IStorageWrapper
 
     SortType getSortType();
 
+    boolean isKeepTab();
+
+    void setKeepTab(boolean keepTab);
+
+    boolean isLockStorage();
+
+    void setLockStorage(boolean lockStorage);
+
+    String getPlayerUUID();
+
+    void setPlayerUUID(String playerUUID);
+
     boolean isDirty();
 
     void markDirty();
