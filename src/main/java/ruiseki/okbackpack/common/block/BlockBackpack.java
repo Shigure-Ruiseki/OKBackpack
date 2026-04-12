@@ -47,7 +47,7 @@ import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.client.renderer.player.IArmorRender;
 import ruiseki.okbackpack.client.renderer.player.IBaubleRender;
 import ruiseki.okbackpack.client.renderer.player.PlayerRenderContext;
-import ruiseki.okbackpack.client.waila.BackpackContentHandler;
+import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.common.entity.EntityBackpack;
 import ruiseki.okcore.block.BlockOK;
 import ruiseki.okcore.energy.IOKEnergyItem;

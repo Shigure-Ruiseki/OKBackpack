@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.client.waila;
+package ruiseki.okbackpack.client.renderer;
 
 import static codechicken.lib.gui.GuiDraw.TOOLTIP_HANDLER;
 import static codechicken.lib.gui.GuiDraw.getTipLineId;

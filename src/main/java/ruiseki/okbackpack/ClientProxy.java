@@ -10,7 +10,7 @@ import ruiseki.okbackpack.client.key.OpenBackpackHandler;
 import ruiseki.okbackpack.client.key.PickBlockHandler;
 import ruiseki.okbackpack.client.key.ToggleUpgradeHandler;
 import ruiseki.okbackpack.client.key.ToolSwapHandler;
-import ruiseki.okbackpack.client.waila.BackpackContentHandler;
+import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.common.event.ItemRenderEvent;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.nei.BackpackGuiOpener;
