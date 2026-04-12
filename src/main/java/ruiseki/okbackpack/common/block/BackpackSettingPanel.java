@@ -14,13 +14,16 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Keyboard;
 
 import com.cleanroommc.modularui.api.UpOrDown;
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
+import com.cleanroommc.modularui.theme.TextFieldTheme;
 import com.cleanroommc.modularui.theme.WidgetTheme;
+import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.value.StringValue;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
@@ -57,12 +60,15 @@ public class BackpackSettingPanel extends ModularPanel {
     private final List<String> availableSettingsFiles = new ArrayList<>();
     private final StringValue settingsInputValue = new StringValue("");
     private SettingsInputMode activeSettingsInput = SettingsInputMode.NONE;
-    private TextFieldWidget settingsInputField;
+    private SettingsInputTextFieldWidget settingsInputField;
     private ButtonWidget<?> saveButton;
     private ButtonWidget<?> exportButton;
     private ParentWidget<?> settingsButtonContainer;
-    private int selectedSettingsPresetIndex = 0;
-    private int selectedImportFileIndex = 0;
+    private int savePresetIndex = 0;
+    private int loadPresetIndex = 0;
+    private int deletePresetIndex = 0;
+    private int exportPresetIndex = 0;
+    private int importFileIndex = 0;
     private int settingsTemplateRefreshTicks = 0;
 
     private enum SettingsInputMode {
@@ -154,7 +160,7 @@ public class BackpackSettingPanel extends ModularPanel {
 
             @Override
             public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
-                cycleSettingsPreset(scrollDirection == UpOrDown.UP ? -1 : 1);
+                cycleSavePreset(scrollDirection == UpOrDown.UP ? -1 : 1);
                 return true;
             }
         };
@@ -166,11 +172,11 @@ public class BackpackSettingPanel extends ModularPanel {
             if (mouseButton == 0) {
                 if (activeSettingsInput == SettingsInputMode.SAVE_PRESET) {
                     submitSettingsInput();
-                } else if (selectedSettingsPresetIndex >= getWrapper().getSettingsPresetCount()) {
+                } else if (isSavePresetNewSlotSelected()) {
                     openSettingsInput(SettingsInputMode.SAVE_PRESET);
                     alignInputFieldToButton(saveButton);
                 } else {
-                    saveCurrentSettingsPreset(getSelectedSettingsPresetEditableName());
+                    saveCurrentSettingsPreset(getSavePresetEditableName());
                 }
                 return true;
             }
@@ -179,12 +185,17 @@ public class BackpackSettingPanel extends ModularPanel {
         saveButton.tooltipAutoUpdate(true)
             .tooltipDynamic(tooltip -> {
                 String presetLabel;
-                if (selectedSettingsPresetIndex >= getWrapper().getSettingsPresetCount()) {
+                if (activeSettingsInput == SettingsInputMode.SAVE_PRESET && settingsInputField != null) {
+                    String typed = settingsInputField.getText();
+                    presetLabel = EnumChatFormatting.GREEN + (typed == null || typed.isEmpty()
+                        ? LangHelpers.localize("gui.backpack.settings_preset_save_custom_name")
+                        : typed) + EnumChatFormatting.RESET;
+                } else if (isSavePresetNewSlotSelected()) {
                     presetLabel = EnumChatFormatting.GREEN
                         + LangHelpers.localize("gui.backpack.settings_preset_save_custom_name")
                         + EnumChatFormatting.RESET;
                 } else {
-                    presetLabel = EnumChatFormatting.GREEN + getSelectedSettingsPresetLabel()
+                    presetLabel = EnumChatFormatting.GREEN + getSettingsPresetLabel(savePresetIndex, true)
                         + EnumChatFormatting.RESET;
                 }
                 tooltip.addLine(IKey.lang("gui.backpack.settings_preset_save", presetLabel))
@@ -198,7 +209,7 @@ public class BackpackSettingPanel extends ModularPanel {
 
             @Override
             public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
-                cycleExistingPreset(scrollDirection == UpOrDown.UP ? -1 : 1);
+                cycleLoadPreset(scrollDirection == UpOrDown.UP ? -1 : 1);
                 return true;
             }
         };
@@ -215,12 +226,12 @@ public class BackpackSettingPanel extends ModularPanel {
         });
         loadButton.tooltipAutoUpdate(true)
             .tooltipDynamic(tooltip -> {
-                if (selectedSettingsPresetIndex >= getWrapper().getSettingsPresetCount()) {
+                if (loadPresetIndex >= getWrapper().getSettingsPresetCount()) {
                     tooltip.addLine(IKey.lang("gui.backpack.settings_preset_load_no_save"))
                         .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
                     return;
                 }
-                String presetLabel = EnumChatFormatting.GREEN + getSelectedSettingsPresetLabel()
+                String presetLabel = EnumChatFormatting.GREEN + getSettingsPresetLabel(loadPresetIndex, false)
                     + EnumChatFormatting.RESET;
                 tooltip.addLine(IKey.lang("gui.backpack.settings_preset_load", presetLabel))
                     .addLine(
@@ -233,7 +244,7 @@ public class BackpackSettingPanel extends ModularPanel {
 
             @Override
             public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
-                cycleExistingPreset(scrollDirection == UpOrDown.UP ? -1 : 1);
+                cycleDeletePreset(scrollDirection == UpOrDown.UP ? -1 : 1);
                 return true;
             }
         };
@@ -250,14 +261,14 @@ public class BackpackSettingPanel extends ModularPanel {
         });
         deleteButton.tooltipAutoUpdate(true)
             .tooltipDynamic(tooltip -> {
-                if (selectedSettingsPresetIndex >= getWrapper().getSettingsPresetCount()) {
+                if (deletePresetIndex >= getWrapper().getSettingsPresetCount()) {
                     tooltip.addLine(
                         IKey.lang("gui.backpack.settings_preset_delete_controls")
                             .style(IKey.GRAY, IKey.ITALIC))
                         .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
                     return;
                 }
-                String presetLabel = EnumChatFormatting.GREEN + getSelectedSettingsPresetLabel()
+                String presetLabel = EnumChatFormatting.GREEN + getSettingsPresetLabel(deletePresetIndex, false)
                     + EnumChatFormatting.RESET;
                 tooltip.addLine(IKey.lang("gui.backpack.settings_preset_delete", presetLabel))
                     .addLine(
@@ -266,24 +277,38 @@ public class BackpackSettingPanel extends ModularPanel {
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
             });
 
-        exportButton = new ButtonWidget<>().bottom(18)
+        exportButton = new ButtonWidget() {
+
+            @Override
+            public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
+                cycleExportPreset(scrollDirection == UpOrDown.UP ? -1 : 1);
+                return true;
+            }
+        };
+        exportButton.bottom(18)
             .left(0)
-            .size(18)
-            .overlay(OKBGuiTextures.EXPORT_TEMPLATE_ICON)
-            .onMousePressed(mouseButton -> {
-                if (mouseButton == 0) {
-                    if (activeSettingsInput == SettingsInputMode.EXPORT_FILE) {
-                        submitSettingsInput();
-                    } else {
-                        exportCurrentSettingsToFile(getSuggestedExportName());
-                    }
-                    return true;
+            .size(18);
+        exportButton.overlay(OKBGuiTextures.EXPORT_TEMPLATE_ICON);
+        exportButton.onMousePressed(mouseButton -> {
+            if (mouseButton == 0) {
+                if (activeSettingsInput == SettingsInputMode.EXPORT_FILE) {
+                    submitSettingsInput();
+                } else {
+                    exportCurrentSettingsToFile(getSuggestedExportName());
                 }
-                return false;
-            })
-            .tooltipAutoUpdate(true)
+                return true;
+            }
+            return false;
+        });
+        exportButton.tooltipAutoUpdate(true)
             .tooltipDynamic(tooltip -> {
-                String exportName = getSuggestedExportName();
+                String exportName;
+                if (activeSettingsInput == SettingsInputMode.EXPORT_FILE && settingsInputField != null) {
+                    String typed = settingsInputField.getText();
+                    exportName = typed == null ? "" : typed.trim();
+                } else {
+                    exportName = getSuggestedExportName();
+                }
                 String displayName;
                 if (exportName.isEmpty()) {
                     displayName = EnumChatFormatting.GREEN
@@ -333,27 +358,7 @@ public class BackpackSettingPanel extends ModularPanel {
                 tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
             });
 
-        settingsInputField = new TextFieldWidget() {
-
-            @Override
-            public void setText(@NotNull String text) {
-                super.setText(text);
-                handler.setCursor(0, text.length(), false);
-            }
-
-            @Override
-            public @NotNull Interactable.Result onKeyPressed(char character, int keyCode) {
-                if (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_NUMPADENTER) {
-                    submitSettingsInput();
-                    return Interactable.Result.SUCCESS;
-                }
-                if (keyCode == Keyboard.KEY_ESCAPE) {
-                    closeSettingsInput();
-                    return Interactable.Result.SUCCESS;
-                }
-                return super.onKeyPressed(character, keyCode);
-            }
-        }.value(settingsInputValue)
+        settingsInputField = (SettingsInputTextFieldWidget) new SettingsInputTextFieldWidget().value(settingsInputValue)
             .setMaxLength(128)
             .background(OKBGuiTextures.ANVIL_TEXT_FIELD_ENABLED)
             .size(72, 16)
@@ -387,52 +392,100 @@ public class BackpackSettingPanel extends ModularPanel {
     }
 
     private void normalizeSelectedIndexes() {
-        int presetCount = Math.max(1, getWrapper().getSettingsPresetCount() + 1);
-        selectedSettingsPresetIndex = Math.max(0, Math.min(selectedSettingsPresetIndex, presetCount - 1));
+        int presetCount = getWrapper().getSettingsPresetCount();
+        savePresetIndex = clampIndex(savePresetIndex, presetCount + 1);
+        loadPresetIndex = clampIndex(loadPresetIndex, Math.max(1, presetCount));
+        deletePresetIndex = clampIndex(deletePresetIndex, Math.max(1, presetCount));
+        exportPresetIndex = clampIndex(exportPresetIndex, Math.max(1, presetCount));
 
         if (availableSettingsFiles.isEmpty()) {
-            selectedImportFileIndex = 0;
+            importFileIndex = 0;
         } else {
-            selectedImportFileIndex = Math.floorMod(selectedImportFileIndex, availableSettingsFiles.size());
+            importFileIndex = Math.floorMod(importFileIndex, availableSettingsFiles.size());
         }
     }
 
-    private void cycleSettingsPreset(int delta) {
-        int presetCount = Math.max(1, getWrapper().getSettingsPresetCount() + 1);
-        selectedSettingsPresetIndex = Math.floorMod(selectedSettingsPresetIndex + delta, presetCount);
+    private int clampIndex(int index, int size) {
+        return size <= 0 ? 0 : Math.max(0, Math.min(index, size - 1));
     }
 
-    private void cycleExistingPreset(int delta) {
+    private boolean isSavePresetNewSlotSelected() {
+        return savePresetIndex >= getWrapper().getSettingsPresetCount();
+    }
+
+    private void cycleSavePreset(int delta) {
+        int presetCount = Math.max(1, getWrapper().getSettingsPresetCount() + 1);
+        savePresetIndex = Math.floorMod(savePresetIndex + delta, presetCount);
+        if (activeSettingsInput == SettingsInputMode.SAVE_PRESET) {
+            syncSettingsInputWithActiveMode();
+        }
+    }
+
+    private void cycleLoadPreset(int delta) {
         int presetCount = getWrapper().getSettingsPresetCount();
         if (presetCount <= 0) return;
-        selectedSettingsPresetIndex = Math.floorMod(selectedSettingsPresetIndex + delta, presetCount);
+        loadPresetIndex = Math.floorMod(loadPresetIndex + delta, presetCount);
+    }
+
+    private void cycleDeletePreset(int delta) {
+        int presetCount = getWrapper().getSettingsPresetCount();
+        if (presetCount <= 0) return;
+        deletePresetIndex = Math.floorMod(deletePresetIndex + delta, presetCount);
+    }
+
+    private void cycleExportPreset(int delta) {
+        int presetCount = getWrapper().getSettingsPresetCount();
+        if (presetCount <= 0) return;
+        exportPresetIndex = Math.floorMod(exportPresetIndex + delta, presetCount);
+        if (activeSettingsInput == SettingsInputMode.EXPORT_FILE) {
+            syncSettingsInputWithActiveMode();
+        }
     }
 
     private void cycleImportFile(int delta) {
         refreshAvailableSettingsFiles();
         if (!availableSettingsFiles.isEmpty()) {
-            selectedImportFileIndex = Math.floorMod(selectedImportFileIndex + delta, availableSettingsFiles.size());
+            importFileIndex = Math.floorMod(importFileIndex + delta, availableSettingsFiles.size());
         }
     }
 
-    private void openSettingsInput(SettingsInputMode mode) {
-        if (activeSettingsInput == mode) {
-            closeSettingsInput();
+    private void syncSettingsInputWithActiveMode() {
+        if (settingsInputField == null) {
             return;
         }
 
-        activeSettingsInput = mode;
-        String text = mode == SettingsInputMode.SAVE_PRESET ? getSelectedSettingsPresetEditableName()
-            : getSuggestedExportName();
+        String text = activeSettingsInput == SettingsInputMode.SAVE_PRESET ? getSavePresetEditableName()
+            : activeSettingsInput == SettingsInputMode.EXPORT_FILE ? getSuggestedExportName() : "";
         settingsInputValue.setStringValue(text);
-        settingsInputField.setText(text);
+        settingsInputField.setTextAndMoveCursorToEnd(text);
+    }
+
+    private int adjustExistingPresetIndexAfterDelete(int index, int deletedIndex, int newCount) {
+        if (index > deletedIndex) {
+            index--;
+        }
+        return clampIndex(index, Math.max(1, newCount));
+    }
+
+    private int adjustSavePresetIndexAfterDelete(int index, int deletedIndex, int newCount) {
+        if (index > deletedIndex) {
+            index--;
+        }
+        return Math.max(0, Math.min(index, newCount));
+    }
+
+    private void openSettingsInput(SettingsInputMode mode) {
+        activeSettingsInput = mode;
+        String text = mode == SettingsInputMode.SAVE_PRESET ? getSavePresetEditableName() : getSuggestedExportName();
+        settingsInputValue.setStringValue(text);
+        settingsInputField.setTextAndMoveCursorToEnd(text);
     }
 
     private void closeSettingsInput() {
         activeSettingsInput = SettingsInputMode.NONE;
         settingsInputValue.setStringValue("");
         if (settingsInputField != null) {
-            settingsInputField.setText("");
+            settingsInputField.setTextAndMoveCursorToEnd("");
         }
     }
 
@@ -461,43 +514,64 @@ public class BackpackSettingPanel extends ModularPanel {
 
     private void saveCurrentSettingsPreset(String name) {
         BackpackWrapper wrapper = getWrapper();
-        String presetName = name.isEmpty() ? getSelectedSettingsPresetEditableName() : name;
-        wrapper.saveSettingsPreset(selectedSettingsPresetIndex, presetName);
+        int oldPresetCount = wrapper.getSettingsPresetCount();
+        String presetName = name.isEmpty() ? getSavePresetEditableName() : name;
+        wrapper.saveSettingsPreset(savePresetIndex, presetName);
+        normalizeSelectedIndexes();
         getBackpackSyncHandler()
             .syncToServer(BackpackSH.getId(BackpackSHRegisters.UPDATE_SAVE_SETTINGS_PRESET), buffer -> {
-                buffer.writeInt(selectedSettingsPresetIndex);
+                buffer.writeInt(savePresetIndex);
                 buffer.writeStringToBuffer(presetName == null ? "" : presetName);
             });
+        if (savePresetIndex >= oldPresetCount && wrapper.getSettingsPresetCount() > oldPresetCount) {
+            loadPresetIndex = clampIndex(loadPresetIndex, wrapper.getSettingsPresetCount());
+            deletePresetIndex = clampIndex(deletePresetIndex, wrapper.getSettingsPresetCount());
+            exportPresetIndex = clampIndex(exportPresetIndex, wrapper.getSettingsPresetCount());
+        }
     }
 
     private void loadSelectedSettingsPreset() {
+        loadSettingsPreset(loadPresetIndex);
+    }
+
+    private void loadSettingsPreset(int presetIndex) {
         BackpackWrapper wrapper = getWrapper();
-        if (selectedSettingsPresetIndex >= wrapper.getSettingsPresetCount()) {
+        if (presetIndex >= wrapper.getSettingsPresetCount()) {
             return;
         }
 
-        if (wrapper.loadSettingsPreset(selectedSettingsPresetIndex)) {
+        if (wrapper.loadSettingsPreset(presetIndex)) {
             syncLocalPlayerSettingsFromWrapper();
             getBackpackSyncHandler().syncToServer(
                 BackpackSH.getId(BackpackSHRegisters.UPDATE_LOAD_SETTINGS_PRESET),
-                buffer -> buffer.writeInt(selectedSettingsPresetIndex));
+                buffer -> buffer.writeInt(presetIndex));
         }
     }
 
     private void deleteSelectedSettingsPreset() {
         BackpackWrapper wrapper = getWrapper();
-        if (selectedSettingsPresetIndex >= wrapper.getSettingsPresetCount()) {
+        if (deletePresetIndex >= wrapper.getSettingsPresetCount()) {
             return;
         }
 
-        int indexToDelete = selectedSettingsPresetIndex;
-        selectedSettingsPresetIndex = wrapper.deleteSettingsPreset(indexToDelete);
+        int oldPresetCount = wrapper.getSettingsPresetCount();
+        boolean saveWasNewSlot = savePresetIndex >= oldPresetCount;
+        int indexToDelete = deletePresetIndex;
+        deletePresetIndex = wrapper.deleteSettingsPreset(indexToDelete);
         getBackpackSyncHandler().syncToServer(
             BackpackSH.getId(BackpackSHRegisters.UPDATE_DELETE_SETTINGS_PRESET),
             buffer -> buffer.writeInt(indexToDelete));
 
+        int newPresetCount = wrapper.getSettingsPresetCount();
+        loadPresetIndex = adjustExistingPresetIndexAfterDelete(loadPresetIndex, indexToDelete, newPresetCount);
+        exportPresetIndex = adjustExistingPresetIndexAfterDelete(exportPresetIndex, indexToDelete, newPresetCount);
+        if (saveWasNewSlot) {
+            savePresetIndex = newPresetCount;
+        } else {
+            savePresetIndex = adjustSavePresetIndexAfterDelete(savePresetIndex, indexToDelete, newPresetCount);
+        }
         normalizeSelectedIndexes();
-        loadSelectedSettingsPreset();
+        loadSettingsPreset(deletePresetIndex);
     }
 
     private void exportCurrentSettingsToFile(String input) {
@@ -521,9 +595,9 @@ public class BackpackSettingPanel extends ModularPanel {
         }
 
         refreshAvailableSettingsFiles();
-        selectedImportFileIndex = availableSettingsFiles.indexOf(fileName);
-        if (selectedImportFileIndex < 0) {
-            selectedImportFileIndex = 0;
+        importFileIndex = availableSettingsFiles.indexOf(fileName);
+        if (importFileIndex < 0) {
+            importFileIndex = 0;
         }
     }
 
@@ -540,6 +614,8 @@ public class BackpackSettingPanel extends ModularPanel {
         }
 
         try {
+            int oldPresetCount = wrapper.getSettingsPresetCount();
+            boolean saveWasNewSlot = savePresetIndex >= oldPresetCount;
             BackpackMaterial material = new BackpackJsonReader(new File(SETTINGS_TEMPLATE_DIR, fileName + ".json"))
                 .read();
             if (material == null || !material.hasSettings()) {
@@ -548,7 +624,12 @@ public class BackpackSettingPanel extends ModularPanel {
 
             String presetName = getUniqueImportedPresetName(fileName);
             BackpackSettingsTemplate template = material.toSettingsTemplate(wrapper.getSlots());
-            selectedSettingsPresetIndex = wrapper.addSettingsPreset(presetName, template);
+            wrapper.addSettingsPreset(presetName, template);
+            normalizeSelectedIndexes();
+            if (saveWasNewSlot) {
+                savePresetIndex = wrapper.getSettingsPresetCount();
+                normalizeSelectedIndexes();
+            }
             getBackpackSyncHandler()
                 .syncToServer(BackpackSH.getId(BackpackSHRegisters.UPDATE_IMPORT_SETTINGS_PRESET), buffer -> {
                     buffer.writeStringToBuffer(presetName);
@@ -576,23 +657,25 @@ public class BackpackSettingPanel extends ModularPanel {
         property.setKeepSearchPhrase(wrapper.isKeepSearchPhrase());
     }
 
-    private String getSelectedSettingsPresetEditableName() {
+    private String getSettingsPresetEditableName(int presetIndex) {
         BackpackWrapper wrapper = getWrapper();
-        return selectedSettingsPresetIndex < wrapper.getSettingsPresetCount()
-            ? wrapper.getSettingsPresetName(selectedSettingsPresetIndex)
-            : "";
+        return presetIndex < wrapper.getSettingsPresetCount() ? wrapper.getSettingsPresetName(presetIndex) : "";
     }
 
-    private String getSelectedSettingsPresetLabel() {
-        String name = getSelectedSettingsPresetEditableName();
-        if (selectedSettingsPresetIndex >= getWrapper().getSettingsPresetCount()) {
+    private String getSavePresetEditableName() {
+        return getSettingsPresetEditableName(savePresetIndex);
+    }
+
+    private String getSettingsPresetLabel(int presetIndex, boolean allowNewSlot) {
+        String name = getSettingsPresetEditableName(presetIndex);
+        if (allowNewSlot && presetIndex >= getWrapper().getSettingsPresetCount()) {
             return LangHelpers.localize("gui.backpack.settings_preset_new_slot");
         }
         return name == null || name.isEmpty() ? LangHelpers.localize("gui.backpack.settings_preset_unnamed") : name;
     }
 
     private String getSuggestedExportName() {
-        String name = getSelectedSettingsPresetEditableName();
+        String name = getSettingsPresetEditableName(exportPresetIndex);
         return name == null || name.trim()
             .isEmpty() ? "" : name.trim();
     }
@@ -601,7 +684,7 @@ public class BackpackSettingPanel extends ModularPanel {
         if (availableSettingsFiles.isEmpty()) {
             return "";
         }
-        return availableSettingsFiles.get(selectedImportFileIndex);
+        return availableSettingsFiles.get(importFileIndex);
     }
 
     private String getUniqueImportedPresetName(String baseName) {
@@ -624,6 +707,12 @@ public class BackpackSettingPanel extends ModularPanel {
         return candidate + " (" + suffix + ")";
     }
 
+    private void syncSettingModeState() {
+        parent.setMemorySettingTabOpened(memoryTab.isShowExpanded());
+        parent.setSortingSettingTabOpened(sortTab.isShowExpanded());
+        parent.setShouldMemorizeRespectNBT(((MemorySettingWidget) memoryTab.getExpandedWidget()).isRespectNBT());
+    }
+
     public void updateTabState(int openIndex) {
         TabWidget[] tabs = { backpackTab, sortTab, memoryTab };
 
@@ -642,6 +731,8 @@ public class BackpackSettingPanel extends ModularPanel {
                 tabs[i].setEnabled(false);
             }
         }
+
+        syncSettingModeState();
     }
 
     @Override
@@ -662,9 +753,7 @@ public class BackpackSettingPanel extends ModularPanel {
     @Override
     public void onOpen(ModularScreen screen) {
         super.onOpen(screen);
-        parent.setMemorySettingTabOpened(memoryTab.isShowExpanded());
-        parent.setShouldMemorizeRespectNBT(((MemorySettingWidget) memoryTab.getExpandedWidget()).isRespectNBT());
-        parent.setSortingSettingTabOpened(sortTab.isShowExpanded());
+        syncSettingModeState();
     }
 
     @Override
@@ -681,7 +770,7 @@ public class BackpackSettingPanel extends ModularPanel {
         super.onUpdate();
 
         if (saveButton != null && exportButton != null) {
-            if (saveButton.isHovering() && selectedSettingsPresetIndex >= getWrapper().getSettingsPresetCount()) {
+            if (saveButton.isHovering() && isSavePresetNewSlotSelected()) {
                 if (activeSettingsInput != SettingsInputMode.SAVE_PRESET) {
                     openSettingsInput(SettingsInputMode.SAVE_PRESET);
                     alignInputFieldToButton(saveButton);
@@ -714,6 +803,81 @@ public class BackpackSettingPanel extends ModularPanel {
             getArea().height,
             WidgetTheme.getDefault()
                 .getTheme());
+        if (settingsInputField != null && settingsInputField.isEnabled()) {
+            settingsInputField.drawBackgroundPost(
+                context,
+                settingsInputField.getWidgetTheme(
+                    settingsInputField.getPanel()
+                        .getTheme()));
+            settingsInputField.drawTextPost(context);
+        }
     }
 
+    public class SettingsInputTextFieldWidget extends TextFieldWidget {
+
+        @Override
+        public void preDraw(ModularGuiContext context, boolean transformed) {
+            if (!transformed) {
+                super.preDraw(context, false);
+            }
+        }
+
+        @Override
+        public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {}
+
+        public void drawBackgroundPost(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
+            IDrawable bg = getCurrentBackground(getPanel().getTheme(), widgetTheme);
+            if (bg != null) {
+                bg.draw(
+                    context,
+                    getArea().x - getPanel().getArea().x,
+                    getArea().y - getPanel().getArea().y,
+                    getArea().width,
+                    getArea().height,
+                    getActiveWidgetTheme(widgetTheme, isHovering()));
+            }
+        }
+
+        public void drawTextPost(ModularGuiContext context) {
+            WidgetThemeEntry<TextFieldTheme> entry = getWidgetTheme(getPanel().getTheme(), TextFieldTheme.class);
+            TextFieldTheme widgetTheme = entry.getTheme();
+            int relativeX = getArea().x - getPanel().getArea().x;
+            int relativeY = getArea().y - getPanel().getArea().y;
+            this.renderer.setColor(this.textColor != null ? this.textColor : widgetTheme.getTextColor());
+            this.renderer.setCursorColor(this.textColor != null ? this.textColor : widgetTheme.getTextColor());
+            this.renderer.setMarkedColor(this.markedColor != null ? this.markedColor : widgetTheme.getMarkedColor());
+            this.renderer.setSimulate(false);
+            this.renderer.setPos(
+                relativeX + getArea().getPadding()
+                    .getLeft(),
+                relativeY + getArea().getPadding()
+                    .getTop());
+            this.renderer.setScale(this.scale);
+            this.renderer.setAlignment(this.textAlignment, getArea().paddedWidth(), getArea().paddedHeight());
+            drawText(context, widgetTheme);
+        }
+
+        public void setTextAndMoveCursorToEnd(@NotNull String text) {
+            super.setText(text);
+            handler.setCursor(0, text.length(), false);
+        }
+
+        @Override
+        public WidgetTheme getActiveWidgetTheme(WidgetThemeEntry<?> widgetTheme, boolean hover) {
+            return widgetTheme.getTheme(hover);
+        }
+
+        @Override
+        public @NotNull Interactable.Result onKeyPressed(char character, int keyCode) {
+            if (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_NUMPADENTER) {
+                submitSettingsInput();
+                return Interactable.Result.SUCCESS;
+            }
+            if (keyCode == Keyboard.KEY_ESCAPE) {
+                closeSettingsInput();
+                return Interactable.Result.SUCCESS;
+            }
+            return super.onKeyPressed(character, keyCode);
+        }
+    }
 }
