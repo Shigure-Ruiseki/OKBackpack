@@ -8,12 +8,13 @@ import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Row;
 
+import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.TabWidget.ExpandDirection;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
-import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.block.BackpackSettingPanel;
 
 public class MemorySettingWidget extends ExpandedTabWidget {
@@ -22,16 +23,18 @@ public class MemorySettingWidget extends ExpandedTabWidget {
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.ignore_nbt"), OKBGuiTextures.IGNORE_NBT_ICON),
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.match_nbt"), OKBGuiTextures.MATCH_NBT_ICON));
 
-    private final BackpackPanel panel;
+    private final IStoragePanel<?> panel;
+    private final IStorageWrapper wrapper;
     private final BackpackSettingPanel settingPanel;
     private final TabWidget parentTabWidget;
 
     private final CyclicVariantButtonWidget respectNBTButton;
 
-    public MemorySettingWidget(BackpackPanel panel, BackpackSettingPanel settingPanel, TabWidget parentTabWidget) {
+    public MemorySettingWidget(IStoragePanel<?> panel, BackpackSettingPanel settingPanel, TabWidget parentTabWidget) {
         super(2, OKBGuiTextures.BRAIN_ICON, "gui.backpack.memory_settings", 80, ExpandDirection.RIGHT);
 
         this.panel = panel;
+        this.wrapper = panel.getWrapper();
         this.settingPanel = settingPanel;
         this.parentTabWidget = parentTabWidget;
 
@@ -44,16 +47,14 @@ public class MemorySettingWidget extends ExpandedTabWidget {
             .overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
-                    var wrapper = panel.wrapper;
-
                     for (int i = 0; i < wrapper.getSlots(); i++) {
-                        wrapper.setMemoryStack(i, panel.shouldMemorizeRespectNBT);
+                        wrapper.setMemoryStack(i, panel.shouldMemorizeRespectNBT());
                     }
 
-                    for (BackpackSlotSH syncHandler : panel.backpackSlotSyncHandlers) {
+                    for (BackpackSlotSH syncHandler : (BackpackSlotSH[]) panel.getStorageSlotSH()) {
                         syncHandler.syncToServer(
                             BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_MEMORY_STACK),
-                            buf -> buf.writeBoolean(panel.isMemorySettingTabOpened));
+                            buf -> buf.writeBoolean(panel.isMemorySettingTabOpened()));
                     }
 
                     return true;
@@ -68,13 +69,11 @@ public class MemorySettingWidget extends ExpandedTabWidget {
             .overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
-                    var wrapper = panel.wrapper;
-
                     for (int i = 0; i < wrapper.getSlots(); i++) {
                         wrapper.unsetMemoryStack(i);
                     }
 
-                    for (BackpackSlotSH syncHandler : panel.backpackSlotSyncHandlers) {
+                    for (BackpackSlotSH syncHandler : (BackpackSlotSH[]) panel.getStorageSlotSH()) {
                         syncHandler
                             .syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_MEMORY_STACK));
                     }
@@ -89,7 +88,7 @@ public class MemorySettingWidget extends ExpandedTabWidget {
 
         respectNBTButton = new CyclicVariantButtonWidget(
             RESPECT_NBT_VARIANTS,
-            index -> this.panel.shouldMemorizeRespectNBT = (index != 0));
+            index -> this.panel.setShouldMemorizeRespectNBT(index != 0));
 
         buttonRow.top(28)
             .child(memorizeAllButton)
@@ -113,7 +112,7 @@ public class MemorySettingWidget extends ExpandedTabWidget {
     @Override
     public void updateTabState() {
         parentTabWidget.setShowExpanded(!parentTabWidget.isShowExpanded());
-        panel.isMemorySettingTabOpened = parentTabWidget.isShowExpanded();
+        panel.setMemorySettingTabOpened(parentTabWidget.isShowExpanded());
         settingPanel.updateTabState(1);
     }
 

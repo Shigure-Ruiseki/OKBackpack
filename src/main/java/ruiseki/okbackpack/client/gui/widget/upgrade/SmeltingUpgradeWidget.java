@@ -17,7 +17,7 @@ public class SmeltingUpgradeWidget<T extends SmeltingUpgradeWrapperBase> extends
     private final T wrapper;
 
     public SmeltingUpgradeWidget(int slotIndex, T wrapper, ItemStack stack, IStoragePanel<?> panel, String titleKey) {
-        super(slotIndex, 4, stack, titleKey, 95);
+        super(slotIndex, 3, stack, panel, titleKey, 95);
         this.wrapper = wrapper;
 
         this.syncHandler("upgrades", slotIndex);
@@ -59,7 +59,6 @@ public class SmeltingUpgradeWidget<T extends SmeltingUpgradeWrapperBase> extends
             .child(furnaceGroup);
 
         child(column);
-        height(90);
     }
 
     @Override

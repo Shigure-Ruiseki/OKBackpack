@@ -21,12 +21,12 @@ public class RefillUpgradeWidget extends ExpandedUpgradeTabWidget<RefillUpgradeW
 
     public RefillUpgradeWidget(int slotIndex, RefillUpgradeWrapper wrapper, ItemStack delegatedIconStack,
         IStoragePanel<?> panel, String titleKey) {
-        this(slotIndex, wrapper, delegatedIconStack, titleKey, "refill_filter", 4, 4, 90);
+        this(slotIndex, wrapper, delegatedIconStack, panel, titleKey, "refill_filter", 4, 3, 90);
     }
 
     protected RefillUpgradeWidget(int slotIndex, RefillUpgradeWrapper wrapper, ItemStack delegatedIconStack,
-        String titleKey, String filterSyncKey, int slotsPerRow, int coveredTabSize, int width) {
-        super(slotIndex, coveredTabSize, delegatedIconStack, titleKey, width);
+        IStoragePanel<?> panel, String titleKey, String filterSyncKey, int slotsPerRow, int coveredTabSize, int width) {
+        super(slotIndex, coveredTabSize, delegatedIconStack, panel, titleKey, width);
 
         this.wrapper = wrapper;
         this.filterSyncKey = filterSyncKey;
@@ -47,13 +47,12 @@ public class RefillUpgradeWidget extends ExpandedUpgradeTabWidget<RefillUpgradeW
             slotGroup.child(slot);
         }
 
-        Column column = (Column) new Column().pos(8, 28)
+        Column column = (Column) new Column().pos(8, 32)
             .coverChildren()
             .childPadding(2)
             .child(slotGroup);
 
         child(column);
-        height(75);
     }
 
     @Override

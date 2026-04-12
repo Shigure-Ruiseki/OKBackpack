@@ -55,8 +55,6 @@ public class SearchParser {
         switch (c) {
             case '@':
                 return new ModNode(body);
-            case '#':
-                return new TooltipNode(body);
             case '$':
                 return new OreNode(body);
             case '%':

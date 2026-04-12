@@ -58,6 +58,6 @@ public class ItemAdvancedPickupUpgrade extends ItemUpgrade<AdvancedPickupUpgrade
     @Override
     public ExpandedTabWidget getExpandedTabWidget(int slotIndex, AdvancedPickupUpgradeWrapper wrapper, ItemStack stack,
         IStoragePanel<?> panel, String titleKey) {
-        return new AdvancedExpandedTabWidget<>(slotIndex, wrapper, stack, titleKey);
+        return new AdvancedExpandedTabWidget<>(slotIndex, wrapper, stack, panel, titleKey);
     }
 }

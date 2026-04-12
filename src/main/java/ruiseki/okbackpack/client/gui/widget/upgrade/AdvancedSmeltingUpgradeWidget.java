@@ -19,7 +19,7 @@ public class AdvancedSmeltingUpgradeWidget<T extends AdvancedSmeltingUpgradeWrap
 
     public AdvancedSmeltingUpgradeWidget(int slotIndex, T wrapper, ItemStack stack, IStoragePanel<?> panel,
         String titleKey) {
-        super(slotIndex, 8, stack, titleKey, 100);
+        super(slotIndex, 8, stack, panel, titleKey, 100);
         this.wrapper = wrapper;
 
         AdvancedFilterWidget filterWidget = new AdvancedFilterWidget(slotIndex, wrapper, "adv_common_filter").width(88)

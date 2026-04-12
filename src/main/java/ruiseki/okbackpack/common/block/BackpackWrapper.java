@@ -27,6 +27,7 @@ import baubles.api.BaublesApi;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
+import ruiseki.okbackpack.api.SortType;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.api.wrapper.IEntityApplicable;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
@@ -42,7 +43,6 @@ import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
-import ruiseki.okbackpack.common.SortType;
 import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.network.PacketJukeboxPlaybackState;
@@ -957,6 +957,36 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public SortType getSortType() {
         return sortType;
+    }
+
+    @Override
+    public boolean isKeepTab() {
+        return keepTab;
+    }
+
+    @Override
+    public void setKeepTab(boolean keepTab) {
+        this.keepTab = keepTab;
+    }
+
+    @Override
+    public boolean isLockStorage() {
+        return lockBackpack;
+    }
+
+    @Override
+    public void setLockStorage(boolean lockStorage) {
+        this.lockBackpack = lockStorage;
+    }
+
+    @Override
+    public String getPlayerUUID() {
+        return playerUuid;
+    }
+
+    @Override
+    public void setPlayerUUID(String playerUUID) {
+        this.playerUuid = playerUUID;
     }
 
     public boolean deploySleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ) {

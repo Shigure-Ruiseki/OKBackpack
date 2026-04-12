@@ -33,7 +33,9 @@ import com.cleanroommc.modularui.theme.WidgetTheme;
 import com.cleanroommc.modularui.utils.GlStateManager;
 import com.cleanroommc.modularui.utils.item.PlayerInvWrapper;
 import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
+import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.cleanroommc.modularui.value.sync.SyncHandler;
 import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Column;
@@ -46,6 +48,7 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageContainer;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.SortType;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.api.wrapper.IDirtable;
@@ -75,7 +78,6 @@ import ruiseki.okbackpack.client.gui.widget.TileWidget;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotGroupWidget;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
-import ruiseki.okbackpack.common.SortType;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 import ruiseki.okcore.helper.ItemStackHelpers;
@@ -639,7 +641,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             int covered = openedTab.getExpandedWidget() != null ? openedTab.getExpandedWidget()
                 .getCoveredTabSize() : 0;
 
-            int upperBound = Math.min(openedTabIndex + covered, tabWidgets.size());
+            int upperBound = Math.min(openedTabIndex + covered - 1, tabWidgets.size());
 
             for (int i = openedTabIndex + 1; i < upperBound; i++) {
                 tabWidgets.get(i)
@@ -764,16 +766,6 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             }
             isResetOpenedTabs = true;
         }
-    }
-
-    @Override
-    public IStorageContainer<?> getContainer() {
-        return (IStorageContainer<?>) syncManager.getContainer();
-    }
-
-    @Override
-    public @NotNull BackpackPanel getPanel() {
-        return this;
     }
 
     public int getOpenCraftingUpgradeSlot() {
@@ -942,12 +934,52 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
     }
 
     @Override
+    public void setMemorySettingTabOpened(boolean opened) {
+        this.isMemorySettingTabOpened = opened;
+    }
+
+    @Override
     public boolean shouldMemorizeRespectNBT() {
         return shouldMemorizeRespectNBT;
     }
 
     @Override
+    public void setShouldMemorizeRespectNBT(boolean enabled) {
+        this.shouldMemorizeRespectNBT = enabled;
+    }
+
+    @Override
     public boolean isSortingSettingTabOpened() {
         return isSortingSettingTabOpened;
+    }
+
+    @Override
+    public void setSortingSettingTabOpened(boolean opened) {
+        this.isSortingSettingTabOpened = opened;
+    }
+
+    @Override
+    public IStorageContainer<?> getContainer() {
+        return (IStorageContainer<?>) syncManager.getContainer();
+    }
+
+    @Override
+    public @NotNull BackpackPanel getStoragePanel() {
+        return this;
+    }
+
+    @Override
+    public SyncHandler getStorageSH() {
+        return backpackSyncHandler;
+    }
+
+    @Override
+    public ItemSlotSH[] getStorageSlotSH() {
+        return backpackSlotSyncHandlers;
+    }
+
+    @Override
+    public ItemSlotSH[] getUpgradedSlotSH() {
+        return upgradeSlotSyncHandlers;
     }
 }

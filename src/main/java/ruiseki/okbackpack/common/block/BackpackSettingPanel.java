@@ -2,6 +2,9 @@ package ruiseki.okbackpack.common.block;
 
 import static ruiseki.okbackpack.common.block.BackpackPanel.LAYERED_TAB_TEXTURE;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
@@ -9,6 +12,7 @@ import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetTheme;
 
+import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.widget.BackpackSettingWidget;
 import ruiseki.okbackpack.client.gui.widget.MemorySettingWidget;
@@ -18,13 +22,14 @@ import ruiseki.okbackpack.client.gui.widget.upgrade.SortingSettingWidget;
 
 public class BackpackSettingPanel extends ModularPanel {
 
-    private final BackpackPanel parent;
+    private final IStoragePanel<?> parent;
 
+    private final List<TabWidget> tabs = new ArrayList<>();
     private final TabWidget backpackTab;
     private final TabWidget memoryTab;
     private final TabWidget sortTab;
 
-    public BackpackSettingPanel(BackpackPanel parent) {
+    public BackpackSettingPanel(IStoragePanel<?> parent) {
         super("backpack_settings");
         this.parent = parent;
 
@@ -53,36 +58,31 @@ public class BackpackSettingPanel extends ModularPanel {
         sortTab.setExpandedWidget(new SortingSettingWidget(parent, this, sortTab));
         sortTab.setTabIcon(OKBGuiTextures.NO_SORT_ICON);
 
+        tabs.add(backpackTab);
+        tabs.add(memoryTab);
+        tabs.add(sortTab);
+
         child(backpackTab).child(memoryTab)
             .child(sortTab);
     }
 
     public void updateTabState(int openIndex) {
-        backpackTab.setEnabled(true);
-        memoryTab.setEnabled(true);
-        sortTab.setEnabled(true);
+        TabWidget[] tabs = { backpackTab, memoryTab, sortTab };
 
-        switch (openIndex) {
-            case 0:
-                memoryTab.setShowExpanded(false);
-                sortTab.setShowExpanded(false);
-                parent.isMemorySettingTabOpened = false;
-                parent.isSortingSettingTabOpened = false;
-                memoryTab.setEnabled(!backpackTab.isShowExpanded());
-                break;
+        for (TabWidget tab : tabs) {
+            tab.setEnabled(true);
+        }
 
-            case 1:
-                backpackTab.setShowExpanded(false);
-                sortTab.setShowExpanded(false);
-                parent.isSortingSettingTabOpened = false;
-                sortTab.setEnabled(!memoryTab.isShowExpanded());
-                break;
+        for (int i = 0; i < tabs.length; i++) {
+            if (i != openIndex) {
+                tabs[i].setShowExpanded(false);
+            }
+        }
 
-            case 2:
-                backpackTab.setShowExpanded(false);
-                memoryTab.setShowExpanded(false);
-                parent.isMemorySettingTabOpened = false;
-                break;
+        if (tabs[openIndex].isShowExpanded()) {
+            for (int i = openIndex + 1; i < tabs.length; i++) {
+                tabs[i].setEnabled(false);
+            }
         }
     }
 
@@ -94,20 +94,17 @@ public class BackpackSettingPanel extends ModularPanel {
     @Override
     public void onOpen(ModularScreen screen) {
         super.onOpen(screen);
-        parent.isMemorySettingTabOpened = memoryTab.isShowExpanded();
-        parent.shouldMemorizeRespectNBT = ((MemorySettingWidget) memoryTab.getExpandedWidget()).isRespectNBT();
-        parent.isSortingSettingTabOpened = sortTab.isShowExpanded();
-        parent.upgradeSlotGroupWidget.setEnabled(false);
+        parent.setMemorySettingTabOpened(memoryTab.isShowExpanded());
+        parent.setShouldMemorizeRespectNBT(((MemorySettingWidget) memoryTab.getExpandedWidget()).isRespectNBT());
+        parent.setSortingSettingTabOpened(sortTab.isShowExpanded());
     }
 
     @Override
     public void onClose() {
         super.onClose();
-        parent.isMemorySettingTabOpened = false;
-        parent.shouldMemorizeRespectNBT = false;
-        parent.isSortingSettingTabOpened = false;
-        parent.updateUpgradeWidgets();
-        parent.upgradeSlotGroupWidget.setEnabled(true);
+        parent.setMemorySettingTabOpened(false);
+        parent.setShouldMemorizeRespectNBT(false);
+        parent.setSortingSettingTabOpened(false);
     }
 
     @Override

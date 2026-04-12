@@ -8,6 +8,8 @@ import com.cleanroommc.modularui.api.value.ISyncOrValue;
 import com.cleanroommc.modularui.drawable.ItemDrawable;
 
 import lombok.Getter;
+import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
@@ -19,27 +21,62 @@ public abstract class ExpandedUpgradeTabWidget<U extends UpgradeWrapperBase> ext
     @Getter
     protected UpgradeSlotSH slotSyncHandler = null;
 
-    public ExpandedUpgradeTabWidget(int slotIndex, int coveredTabSize, ItemStack delegatedIconStack, String titleKey,
-        int width) {
+    @Getter
+    protected IStoragePanel<?> storagePanel;
+
+    public ExpandedUpgradeTabWidget(int slotIndex, int coveredTabSize, ItemStack delegatedIconStack,
+        IStoragePanel<?> storagePanel, String titleKey, int width) {
         super(coveredTabSize, new ItemDrawable(delegatedIconStack), titleKey, width);
         this.syncHandler("upgrades", slotIndex);
+        this.storagePanel = storagePanel;
     }
 
-    public ExpandedUpgradeTabWidget(int slotIndex, int coveredTabSize, ItemStack delegatedIconStack, String titleKey) {
-        this(slotIndex, coveredTabSize, delegatedIconStack, titleKey, 80);
+    public ExpandedUpgradeTabWidget(int slotIndex, int coveredTabSize, ItemStack delegatedIconStack,
+        IStoragePanel<?> storagePanel, String titleKey) {
+        this(slotIndex, coveredTabSize, delegatedIconStack, storagePanel, titleKey, 80);
     }
 
+    @Override
     public void updateTabState() {
         U wrapper = getWrapper();
-        if (wrapper != null) {
-            boolean newState = !wrapper.isTabOpened();
-            wrapper.setTabOpened(newState);
+        if (wrapper == null) return;
+
+        boolean isCurrentlyOpened = wrapper.isTabOpened();
+
+        if (isCurrentlyOpened) {
+            wrapper.setTabOpened(false);
 
             if (slotSyncHandler != null) {
                 slotSyncHandler.syncToServer(
                     UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_UPGRADE_TAB_STATE),
-                    buf -> { buf.writeBoolean(newState); });
+                    buf -> buf.writeBoolean(false));
             }
+            return;
+        }
+
+        for (int i = 0; i < storagePanel.getWrapper()
+            .getUpgradeHandler()
+            .getSlots(); i++) {
+
+            IUpgradeWrapper w = storagePanel.getWrapper()
+                .getUpgradeHandler()
+                .getWrapperInSlot(i);
+
+            if (w != null && w.isTabOpened()) {
+                w.setTabOpened(false);
+
+                storagePanel.getUpgradedSlotSH()[i].syncToServer(
+                    UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_UPGRADE_TAB_STATE),
+                    buf -> buf.writeBoolean(false));
+            }
+        }
+
+        wrapper.setTabOpened(true);
+
+        if (slotSyncHandler != null) {
+            slotSyncHandler.syncToServer(
+                UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_UPGRADE_TAB_STATE),
+                buf -> buf.writeBoolean(true));
         }
     }
 

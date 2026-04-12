@@ -5,25 +5,27 @@ import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Row;
 
+import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.TabWidget;
 import ruiseki.okbackpack.client.gui.widget.TabWidget.ExpandDirection;
-import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.block.BackpackSettingPanel;
-import ruiseki.okbackpack.common.block.BackpackWrapper;
 
 public class SortingSettingWidget extends ExpandedTabWidget {
 
-    private final BackpackPanel panel;
+    private final IStoragePanel<?> panel;
+    private final IStorageWrapper wrapper;
     private final BackpackSettingPanel settingPanel;
     private final TabWidget parentTabWidget;
 
-    public SortingSettingWidget(BackpackPanel panel, BackpackSettingPanel settingPanel, TabWidget parentTabWidget) {
+    public SortingSettingWidget(IStoragePanel<?> panel, BackpackSettingPanel settingPanel, TabWidget parentTabWidget) {
         super(2, OKBGuiTextures.NO_SORT_ICON, "gui.backpack.sorting_settings", 80, ExpandDirection.RIGHT);
 
         this.panel = panel;
+        this.wrapper = panel.getWrapper();
         this.settingPanel = settingPanel;
         this.parentTabWidget = parentTabWidget;
 
@@ -36,13 +38,11 @@ public class SortingSettingWidget extends ExpandedTabWidget {
             .overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
-                    BackpackWrapper wrapper = panel.wrapper;
-
                     for (int i = 0; i < wrapper.getSlots(); i++) {
                         wrapper.setSlotLocked(i, true);
                     }
 
-                    for (BackpackSlotSH syncHandler : panel.backpackSlotSyncHandlers) {
+                    for (BackpackSlotSH syncHandler : (BackpackSlotSH[]) panel.getStorageSlotSH()) {
                         syncHandler.syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_SLOT_LOCK));
                     }
 
@@ -58,13 +58,11 @@ public class SortingSettingWidget extends ExpandedTabWidget {
             .overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
-                    BackpackWrapper wrapper = panel.wrapper;
-
                     for (int i = 0; i < wrapper.getSlots(); i++) {
                         wrapper.setSlotLocked(i, false);
                     }
 
-                    for (BackpackSlotSH syncHandler : panel.backpackSlotSyncHandlers) {
+                    for (BackpackSlotSH syncHandler : (BackpackSlotSH[]) panel.getStorageSlotSH()) {
                         syncHandler.syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_SLOT_LOCK));
                     }
 
@@ -93,7 +91,7 @@ public class SortingSettingWidget extends ExpandedTabWidget {
     @Override
     public void updateTabState() {
         parentTabWidget.setShowExpanded(!parentTabWidget.isShowExpanded());
-        panel.isSortingSettingTabOpened = parentTabWidget.isShowExpanded();
+        panel.setSortingSettingTabOpened(parentTabWidget.isShowExpanded());
         settingPanel.updateTabState(2);
     }
 }
