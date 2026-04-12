@@ -590,8 +590,8 @@ public class TankUpgradeWrapper extends UpgradeWrapperBase implements ITankUpgra
         FluidStack fluid = getContents();
         if (fluid != null && fluid.amount > 0) {
             return Collections.singletonList(
-                "\u00a7e"
-                    + LangHelpers.localize("tooltip.backpack.contents.fluid", fluid.amount, "\u00a79"+fluid.getLocalizedName()));
+                "\u00a7e" + LangHelpers
+                    .localize("tooltip.backpack.contents.fluid", fluid.amount, "\u00a79" + fluid.getLocalizedName()));
         }
         return Collections.singletonList("\u00a79" + LangHelpers.localize("tooltip.backpack.contents.fluid_empty"));
     }
