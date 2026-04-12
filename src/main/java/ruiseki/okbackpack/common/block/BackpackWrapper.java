@@ -217,6 +217,11 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     @Override
+    public BackpackItemStackHandler getStackHandler() {
+        return backpackHandler;
+    }
+
+    @Override
     public UpgradeItemStackHandler getUpgradeHandler() {
         return upgradeHandler;
     }
@@ -401,10 +406,19 @@ public class BackpackWrapper implements IBackpackWrapper {
         Map<Integer, IStackSizeUpgrade> gathered = gatherCapabilityUpgrades(IStackSizeUpgrade.class);
         if (gathered.isEmpty()) return 1;
 
-        double total = 0;
+        double additiveTotal = 0;
+        double downgradeProduct = 1;
+        boolean hasAdditive = false;
         for (IStackSizeUpgrade mod : gathered.values()) {
-            total += mod.getMultiplier();
+            if (mod.isDowngrade()) {
+                downgradeProduct *= mod.getMultiplier();
+            } else {
+                additiveTotal += mod.getMultiplier();
+                hasAdditive = true;
+            }
         }
+
+        double total = (hasAdditive ? additiveTotal : 1) * downgradeProduct;
 
         return total <= 0 ? 1 : total;
     }
@@ -418,10 +432,19 @@ public class BackpackWrapper implements IBackpackWrapper {
         Map<Integer, IStackSizeUpgrade> gathered = gatherCapabilityUpgrades(IStackSizeUpgrade.class);
         if (gathered.isEmpty()) return 1;
 
-        double total = 0;
+        double additiveTotal = 0;
+        double downgradeProduct = 1;
+        boolean hasAdditive = false;
         for (IStackSizeUpgrade mod : gathered.values()) {
-            total += mod.getMultiplier();
+            if (mod.isDowngrade()) {
+                downgradeProduct *= mod.getMultiplier();
+            } else {
+                additiveTotal += mod.getMultiplier();
+                hasAdditive = true;
+            }
         }
+
+        double total = (hasAdditive ? additiveTotal : 1) * downgradeProduct;
 
         return total <= 0 ? 1 : total;
     }
@@ -622,6 +645,7 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public boolean canInsert(int slot, ItemStack stack) {
+        if (!backpackHandler.isVisualSlot(slot)) return false;
         Map<Integer, IFilterUpgrade> gathered = gatherCapabilityUpgrades(IFilterUpgrade.class);
         if (gathered.isEmpty()) return true;
         for (IFilterUpgrade mod : gathered.values()) {
@@ -632,6 +656,7 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public boolean canExtract(int slot, ItemStack stack) {
+        if (!backpackHandler.isVisualSlot(slot)) return false;
         Map<Integer, IFilterUpgrade> gathered = gatherCapabilityUpgrades(IFilterUpgrade.class);
         if (gathered.isEmpty()) return true;
         for (IFilterUpgrade mod : gathered.values()) {

@@ -41,6 +41,7 @@ import lombok.Getter;
 import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IAdminProtectable;
+import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.client.renderer.player.IArmorRender;
@@ -49,6 +50,7 @@ import ruiseki.okbackpack.client.renderer.player.PlayerRenderContext;
 import ruiseki.okbackpack.client.waila.BackpackContentHandler;
 import ruiseki.okbackpack.common.entity.EntityBackpack;
 import ruiseki.okcore.block.BlockOK;
+import ruiseki.okcore.energy.IOKEnergyItem;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemBlockBauble;
 
@@ -235,7 +237,7 @@ public class BlockBackpack extends BlockOK {
     }
 
     public static class ItemBackpack extends ItemBlockBauble
-        implements IGuiHolder<PlayerInventoryGuiData>, IBaubleRender, IArmorRender {
+        implements IGuiHolder<PlayerInventoryGuiData>, IBaubleRender, IArmorRender, IOKEnergyItem {
 
         public int backpackSlots = 27;
         public int upgradeSlots = 1;
@@ -246,6 +248,77 @@ public class BlockBackpack extends BlockOK {
                 this.backpackSlots = backpack.getBackpackSlots();
                 this.upgradeSlots = backpack.getUpgradeSlots();
             }
+        }
+
+        private @Nullable IBatteryUpgrade getBatteryUpgrade(ItemStack stack) {
+            if (stack == null || !stack.hasTagCompound()) return null;
+            if (!stack.getTagCompound()
+                .hasKey(BackpackWrapper.BACKPACK_NBT)) return null;
+            BackpackWrapper wrapper = new BackpackWrapper(stack, this);
+            wrapper.readFromItem();
+            var batteries = wrapper.gatherCapabilityUpgrades(IBatteryUpgrade.class);
+            if (batteries.isEmpty()) return null;
+            return batteries.values()
+                .iterator()
+                .next();
+        }
+
+        private @Nullable BackpackWrapper createWrapper(ItemStack stack) {
+            if (stack == null || !stack.hasTagCompound()) return null;
+            if (!stack.getTagCompound()
+                .hasKey(BackpackWrapper.BACKPACK_NBT)) return null;
+            BackpackWrapper wrapper = new BackpackWrapper(stack, this);
+            wrapper.readFromItem();
+            return wrapper;
+        }
+
+        @Override
+        public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
+            BackpackWrapper wrapper = createWrapper(container);
+            if (wrapper == null) return 0;
+            var batteries = wrapper.gatherCapabilityUpgrades(IBatteryUpgrade.class);
+            if (batteries.isEmpty()) return 0;
+            IBatteryUpgrade battery = batteries.values()
+                .iterator()
+                .next();
+            int received = battery.receiveEnergy(maxReceive, simulate);
+            if (!simulate && received > 0) {
+                wrapper.writeToItem();
+            }
+            return received;
+        }
+
+        @Override
+        public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
+            BackpackWrapper wrapper = createWrapper(container);
+            if (wrapper == null) return 0;
+            var batteries = wrapper.gatherCapabilityUpgrades(IBatteryUpgrade.class);
+            if (batteries.isEmpty()) return 0;
+            IBatteryUpgrade battery = batteries.values()
+                .iterator()
+                .next();
+            int extracted = battery.extractEnergy(maxExtract, simulate);
+            if (!simulate && extracted > 0) {
+                wrapper.writeToItem();
+            }
+            return extracted;
+        }
+
+        @Override
+        public int getEnergyStored(ItemStack container) {
+            IBatteryUpgrade battery = getBatteryUpgrade(container);
+            return battery != null ? battery.getEnergyStored() : 0;
+        }
+
+        @Override
+        public void setEnergyStored(ItemStack container, int energy) {
+            // Energy is managed by the battery upgrade internally
+        }
+
+        @Override
+        public int getMaxEnergyStored(ItemStack container) {
+            IBatteryUpgrade battery = getBatteryUpgrade(container);
+            return battery != null ? battery.getMaxEnergyStored() : 0;
         }
 
         @Override

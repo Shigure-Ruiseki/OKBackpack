@@ -45,7 +45,7 @@ public class DelegatedIntSH extends DelegatedValueSH<Integer>
 
     @Override
     public void write(PacketBuffer buffer) {
-        buffer.writeFloat(getIntValue());
+        buffer.writeInt(getIntValue());
     }
 
     @Override

@@ -78,6 +78,18 @@ public class ModConfig {
     @Config.RangeDouble(min = 1)
     public static double stackUpgradeTierOmegaMul;
 
+    @Config.DefaultInt(8)
+    @Config.RangeInt(min = 1)
+    public static int stackDowngradeTier1Div;
+
+    @Config.DefaultInt(16)
+    @Config.RangeInt(min = 1)
+    public static int stackDowngradeTier2Div;
+
+    @Config.DefaultInt(32)
+    @Config.RangeInt(min = 1)
+    public static int stackDowngradeTier3Div;
+
     @Config.DefaultInt(5)
     public static int magnetRange;
 

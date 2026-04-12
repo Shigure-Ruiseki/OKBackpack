@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.AdaptableUITexture;
 import com.cleanroommc.modularui.drawable.GuiDraw;
@@ -200,6 +201,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
 
                 activeError = null;
 
+                updateSlotWidgets();
                 updateUpgradeWidgets();
             });
         }
@@ -253,6 +255,15 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         slotsHeight = visibleRows * slotSize;
         backpackList.maxSize(slotsHeight);
         backpackList.scheduleResize();
+
+        for (Column column : slotWidgets) {
+            if (column != null) {
+                column.height(slotsHeight);
+                column.getChildren()
+                    .forEach(IWidget::scheduleResize);
+                column.scheduleResize();
+            }
+        }
 
         this.scheduleResize();
     }
@@ -415,9 +426,15 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
     }
 
     public void rebuildInventorySlots() {
+        int savedScroll = 0;
+        if (backpackList != null && backpackList.getScrollData() != null) {
+            savedScroll = backpackList.getScrollData()
+                .getScroll();
+        }
+
         slotRow.removeAll();
 
-        backpackList = new BackpackList(this).name("backpack_slots");
+        backpackList = new BackpackList(this, savedScroll).name("backpack_slots");
         addInventorySlots();
         slotRow.child(backpackList);
 
@@ -440,7 +457,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         int usableRowSize = getUsableRowSize();
         backpackInvCol = (Column) new Column().coverChildren();
 
-        for (int i = 0; i < wrapper.getSlots(); i++) {
+        for (int i = 0; i < wrapper.getStackHandler()
+            .getVisualSize(); i++) {
             int col = i % usableRowSize;
             int row = i / usableRowSize;
 
@@ -547,7 +565,6 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         Integer openedTabIndex = null;
 
         resetTabState();
-        rebuildInventorySlots();
 
         for (int slotIndex = 0; slotIndex < upgradeSlotWidgets.size(); slotIndex++) {
             ItemSlot slotWidget = upgradeSlotWidgets.get(slotIndex);
@@ -583,58 +600,38 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
 
             Item item = stack.getItem();
             if (!(item instanceof IUpgradeItem upgrade)) continue;
-            if (upgrade.hasTab()) {
+            if (!upgrade.hasTab()) continue;
 
-                TabWidget tabWidget = tabWidgets.get(tabIndex);
-                UpgradeSlotUpdateGroup upgradeSlotGroup = upgradeSlotGroups[slotIndex];
+            TabWidget tabWidget = tabWidgets.get(tabIndex);
+            UpgradeSlotUpdateGroup upgradeSlotGroup = upgradeSlotGroups[slotIndex];
 
-                IUpgradeWrapper wrapper = this.wrapper.upgradeHandler.getWrapperInSlot(slotIndex);
-                if (wrapper == null) continue;
+            IUpgradeWrapper wrapper = this.wrapper.upgradeHandler.getWrapperInSlot(slotIndex);
+            if (wrapper == null) continue;
 
-                tabWidget.setShowExpanded(wrapper.isTabOpened());
-                tabWidget.setEnabled(true);
-                tabWidget.setTabIcon(
-                    new ItemDrawable(stack).asIcon()
-                        .size(18));
-                tabWidget.tooltip(
-                    tooltip -> tooltip.clearText()
-                        .addLine(IKey.str(item.getItemStackDisplayName(stack)))
-                        .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+            tabWidget.setShowExpanded(wrapper.isTabOpened());
+            tabWidget.setEnabled(true);
+            tabWidget.setTabIcon(
+                new ItemDrawable(stack).asIcon()
+                    .size(18));
+            tabWidget.tooltip(
+                tooltip -> tooltip.clearText()
+                    .addLine(IKey.str(item.getItemStackDisplayName(stack)))
+                    .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
 
-                upgrade.updateWidgetDelegates(wrapper, upgradeSlotGroup);
-                ExpandedTabWidget widget = upgrade
-                    .getExpandedTabWidget(slotIndex, wrapper, stack, this, wrapper.getSettingLangKey());
+            upgrade.updateWidgetDelegates(wrapper, upgradeSlotGroup);
+            ExpandedTabWidget widget = upgrade
+                .getExpandedTabWidget(slotIndex, wrapper, stack, this, wrapper.getSettingLangKey());
 
-                if (widget != null) {
-                    tabWidget.setExpandedWidget(widget);
-                }
-
-                if (tabWidget.getExpandedWidget() != null) {
-                    getContext().getUISettings()
-                        .getRecipeViewerSettings()
-                        .addExclusionArea(tabWidget.getExpandedWidget());
-                }
-                tabIndex++;
+            if (widget != null) {
+                tabWidget.setExpandedWidget(widget);
             }
 
-            Column column = slotWidgets.get(slotIndex);
-            column.removeAll();
-            if (upgrade.hasSlotWidget()) {
-                column.size(36, slotsHeight);
-
-                UpgradeSlotUpdateGroup upgradeSlotGroup = upgradeSlotGroups[slotIndex];
-                IUpgradeWrapper wrapper = this.wrapper.upgradeHandler.getWrapperInSlot(slotIndex);
-                if (wrapper == null) continue;
-
-                upgrade.updateSlotWidgetDelegates(wrapper, upgradeSlotGroup);
-                Widget widget = upgrade.getSlotWidget(slotIndex, wrapper, stack, this, wrapper.getSettingLangKey());
-
-                if (widget != null) {
-                    column.child(widget);
-                }
-            } else {
-                column.size(0);
+            if (tabWidget.getExpandedWidget() != null) {
+                getContext().getUISettings()
+                    .getRecipeViewerSettings()
+                    .addExclusionArea(tabWidget.getExpandedWidget());
             }
+            tabIndex++;
         }
 
         if (openedTabIndex != null) {
@@ -657,12 +654,55 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         this.scheduleResize();
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void updateSlotWidgets() {
+        rebuildInventorySlots();
+
+        for (int slotIndex = 0; slotIndex < wrapper.getUpgradeHandler()
+            .getSlots(); slotIndex++) {
+            ItemSlot slotWidget = upgradeSlotWidgets.get(slotIndex);
+            if (slotWidget.getSlot() == null) continue;
+
+            ItemStack stack = slotWidget.getSlot()
+                .getStack();
+            Column column = slotWidgets.get(slotIndex);
+
+            column.removeAll();
+
+            if (stack == null || !(stack.getItem() instanceof IUpgradeItem upgrade)) {
+                column.size(0);
+                continue;
+            }
+
+            if (!upgrade.hasSlotWidget()) {
+                column.size(0);
+                continue;
+            }
+
+            IUpgradeWrapper wrapper = this.wrapper.upgradeHandler.getWrapperInSlot(slotIndex);
+            if (wrapper == null) continue;
+
+            column.size(36, slotsHeight);
+
+            UpgradeSlotUpdateGroup upgradeSlotGroup = upgradeSlotGroups[slotIndex];
+            Widget widget = upgrade.getSlotWidget(slotIndex, wrapper, stack, this, wrapper.getSettingLangKey());
+
+            upgrade.updateSlotWidgetDelegates(wrapper, upgradeSlotGroup);
+
+            if (widget != null) {
+                column.child(widget);
+            }
+        }
+    }
+
     private void resetTabState() {
         for (TabWidget tabWidget : tabWidgets) {
             if (tabWidget.getExpandedWidget() != null) {
                 getContext().getUISettings()
                     .getRecipeViewerSettings()
                     .removeExclusionArea(tabWidget.getExpandedWidget());
+                tabWidget.setExpandedWidget(null);
+                tabWidget.child(null);
             }
         }
     }
