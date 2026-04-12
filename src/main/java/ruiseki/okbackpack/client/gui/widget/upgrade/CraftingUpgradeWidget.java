@@ -41,9 +41,9 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
     private ItemSlot[] craftingMatrix;
     private ItemSlot craftingResult;
 
-    public CraftingUpgradeWidget(int slotIndex, CraftingUpgradeWrapper wrapper, ItemStack stack, IStoragePanel panel,
+    public CraftingUpgradeWidget(int slotIndex, CraftingUpgradeWrapper wrapper, ItemStack stack, IStoragePanel<?> panel,
         String titleKey) {
-        super(slotIndex, 5, stack, titleKey, 90);
+        super(slotIndex, 5, stack, panel, titleKey, 90);
         this.wrapper = wrapper;
 
         this.syncHandler("upgrades", slotIndex);

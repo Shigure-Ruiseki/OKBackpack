@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common;
+package ruiseki.okbackpack.api;
 
 import java.util.List;
 

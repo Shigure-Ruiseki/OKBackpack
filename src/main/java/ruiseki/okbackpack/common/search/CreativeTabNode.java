@@ -10,7 +10,13 @@ final class CreativeTabNode implements SearchNode {
 
     @Override
     public boolean matches(ItemStackKey k) {
-        return k.getCreativeTab()
+        if (k.getStack() == null || k.getStack()
+            .getItem() == null) return false;
+        return k.getStack()
+            .getItem()
+            .getCreativeTab()
+            .getTabLabel()
+            .toLowerCase()
             .contains(tab);
     }
 }

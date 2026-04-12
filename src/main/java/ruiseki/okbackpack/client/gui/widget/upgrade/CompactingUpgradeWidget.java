@@ -26,7 +26,7 @@ public class CompactingUpgradeWidget extends BasicExpandedTabWidget<CompactingUp
 
     public CompactingUpgradeWidget(int slotIndex, CompactingUpgradeWrapper wrapper, ItemStack stack,
         IStoragePanel<?> panel, String titleKey) {
-        super(slotIndex, wrapper, stack, titleKey, "common_filter", 5, 90);
+        super(slotIndex, wrapper, stack, panel, titleKey, "common_filter", 5, 90);
 
         this.reversibleButton = new CyclicVariantButtonWidget(
             REVERSIBLE_VARIANTS,

@@ -1,182 +1,82 @@
 package ruiseki.okbackpack.common.search;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.oredict.OreDictionary;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+public class ItemStackKey {
 
-public final class ItemStackKey {
+    public final ItemStack stack;
 
-    public final Item item;
-    public final int meta;
-    public final NBTTagCompound tag;
+    private static final Map<ItemStack, ItemStackKey> CACHE = new ConcurrentHashMap<>();
 
-    public final int hash;
-
-    private final int tagHash;
-
-    @SideOnly(Side.CLIENT)
-    private String displayNameLower;
-
-    @SideOnly(Side.CLIENT)
-    private List<String> tooltipLower;
-
-    @SideOnly(Side.CLIENT)
-    private String creativeTab;
-
-    @SideOnly(Side.CLIENT)
-    private int[] oreIds;
-
-    private ItemStackKey(Item item, int meta, NBTTagCompound tag) {
-        this.item = item;
-        this.meta = meta;
-
-        if (tag != null && tag.hasNoTags()) {
-            tag = null;
-        }
-
-        this.tag = tag != null ? (NBTTagCompound) tag.copy() : null;
-
-        this.tagHash = this.tag != null ? this.tag.hashCode() : 0;
-        this.hash = computeHash();
+    public static ItemStackKey of(ItemStack stack) {
+        return CACHE.computeIfAbsent(stack, ItemStackKey::new);
     }
 
-    static ItemStackKey of(ItemStack stack) {
-        if (stack == null) throw new IllegalArgumentException("stack");
+    private boolean hashInitialized = false;
+    private int hash;
 
-        return new ItemStackKey(
-            stack.getItem(),
-            stack.getItemDamage(),
-            stack.hasTagCompound() ? stack.getTagCompound() : null);
+    private ItemStackKey(ItemStack stack) {
+        ItemStack copy = stack.copy();
+        copy.stackSize = 1;
+        this.stack = copy;
     }
 
-    private int computeHash() {
-        int h = Item.getIdFromItem(item);
-        h = 31 * h + meta;
-        h = 31 * h + tagHash;
-        return h;
+    public static void clearCache() {
+        CACHE.clear();
     }
 
-    @Override
-    public int hashCode() {
-        return hash;
+    public ItemStack getStack() {
+        return stack;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ItemStackKey other)) return false;
-        if (hash != other.hash) return false;
-
-        if (item != other.item) return false;
-        if (meta != other.meta) return false;
-
-        if (tag == null) return other.tag == null;
-        if (other.tag == null) return false;
-
-        return tag.equals(other.tag);
-    }
-
-    public ItemStack toStack() {
-        return toStack(1);
-    }
-
-    public ItemStack toStack(int count) {
-        ItemStack stack = new ItemStack(item, count, meta);
-        if (tag != null) {
-            stack.setTagCompound((NBTTagCompound) tag.copy());
+        if (this == o) {
+            return true;
         }
-        return stack;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public String getDisplayName() {
-        if (displayNameLower == null) {
-            displayNameLower = toStack().getDisplayName()
-                .toLowerCase();
+        if (o == null || getClass() != o.getClass()) {
+            return false;
         }
-        return displayNameLower;
+        ItemStackKey that = (ItemStackKey) o;
+        return ItemStack.areItemStacksEqual(this.stack, that.stack);
     }
 
-    @SideOnly(Side.CLIENT)
-    public String getModId() {
-        String name = Item.itemRegistry.getNameForObject(item);
-        if (name == null) return "";
-        int idx = name.indexOf(':');
-        return idx >= 0 ? name.substring(0, idx) : name;
+    public boolean hashCodeNotEquals(ItemStack otherStack) {
+        return hashCode() != computeHash(otherStack);
     }
 
-    @SideOnly(Side.CLIENT)
-    public List<String> getTooltipLower() {
-        if (tooltipLower != null) return tooltipLower;
-
-        tooltipLower = Collections.emptyList();
-
-        if (Minecraft.getMinecraft() == null || Minecraft.getMinecraft().thePlayer == null) {
-            return tooltipLower;
+    @Override
+    public int hashCode() {
+        if (!hashInitialized) {
+            hashInitialized = true;
+            hash = computeHash(stack);
         }
-
-        ItemStack stack = toStack();
-        List<String> raw = stack.getTooltip(Minecraft.getMinecraft().thePlayer, false);
-
-        List<String> list = new ArrayList<>(raw.size());
-        for (String s : raw) {
-            list.add(s.toLowerCase());
-        }
-
-        tooltipLower = list;
-        return tooltipLower;
+        return hash;
     }
 
-    @SideOnly(Side.CLIENT)
-    public String getCreativeTab() {
-        if (creativeTab != null) return creativeTab;
-
-        creativeTab = item.getCreativeTab() != null ? item.getCreativeTab()
-            .getTabLabel()
-            .toLowerCase() : "";
-        return creativeTab;
+    public boolean matches(ItemStack stack) {
+        return hashCode() == computeHash(stack);
     }
 
-    @SideOnly(Side.CLIENT)
-    public int[] getOreIds() {
-        if (oreIds == null) {
-            oreIds = OreDictionary.getOreIDs(toStack());
-        }
-        return oreIds;
+    @Override
+    public String toString() {
+        return "ItemStackKey[stack=" + stack + ']';
     }
 
-    public void write(PacketBuffer buf) throws IOException {
-        buf.writeVarIntToBuffer(Item.getIdFromItem(item));
-        buf.writeVarIntToBuffer(meta);
+    private static int computeHash(ItemStack stack) {
+        int hash = 1;
 
-        if (tag != null) {
-            buf.writeBoolean(true);
-            buf.writeNBTTagCompoundToBuffer(tag);
-        } else {
-            buf.writeBoolean(false);
-        }
-    }
+        hash = 31 * hash + Item.getIdFromItem(stack.getItem());
+        hash = 31 * hash + stack.getItemDamage();
 
-    public static ItemStackKey read(PacketBuffer buf) throws IOException {
-        Item item = Item.getItemById(buf.readVarIntFromBuffer());
-        int meta = buf.readVarIntFromBuffer();
+        NBTTagCompound tag = stack.getTagCompound();
+        hash = 31 * hash + (tag == null ? 0 : tag.hashCode());
 
-        NBTTagCompound tag = null;
-        if (buf.readBoolean()) {
-            tag = buf.readNBTTagCompoundFromBuffer();
-        }
-
-        return new ItemStackKey(item, meta, tag);
+        return hash;
     }
 }

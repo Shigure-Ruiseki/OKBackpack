@@ -35,7 +35,7 @@ public class ToolSwapperUpgradeWidget extends AdvancedExpandedTabWidget<Advanced
 
     public ToolSwapperUpgradeWidget(int slotIndex, AdvancedToolSwapperUpgradeWrapper wrapper, ItemStack stack,
         IStoragePanel<?> panel, String titleKey) {
-        super(slotIndex, wrapper, stack, titleKey, "adv_common_filter", 6, 100);
+        super(slotIndex, wrapper, stack, panel, titleKey, "adv_common_filter", 6, 100);
 
         CyclicVariantButtonWidget weaponButton = new CyclicVariantButtonWidget(
             WEAPON_SWAP_VARIANTS,

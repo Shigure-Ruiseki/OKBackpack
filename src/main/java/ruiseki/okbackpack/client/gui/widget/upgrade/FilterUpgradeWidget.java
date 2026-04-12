@@ -29,7 +29,7 @@ public class FilterUpgradeWidget extends BasicExpandedTabWidget<FilterUpgradeWra
 
     public FilterUpgradeWidget(int slotIndex, FilterUpgradeWrapper wrapper, ItemStack stack, IStoragePanel<?> panel,
         String titleKey) {
-        super(slotIndex, wrapper, stack, titleKey, "common_filter", 5, 75);
+        super(slotIndex, wrapper, stack, panel, titleKey, "common_filter", 5, 75);
 
         this.filterButton = new CyclicVariantButtonWidget(
             FILTER_VARIANTS,

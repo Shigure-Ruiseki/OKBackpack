@@ -30,7 +30,7 @@ public class AdvancedRefillUpgradeWidget extends ExpandedUpgradeTabWidget<Advanc
 
     public AdvancedRefillUpgradeWidget(int slotIndex, AdvancedRefillUpgradeWrapper wrapper,
         ItemStack delegatedIconStack, IStoragePanel<?> panel, String titleKey) {
-        super(slotIndex, 6, delegatedIconStack, titleKey, 90);
+        super(slotIndex, 4, delegatedIconStack, panel, titleKey, 90);
 
         this.wrapper = wrapper;
         this.filterSyncKey = "adv_refill_filter";
@@ -56,13 +56,12 @@ public class AdvancedRefillUpgradeWidget extends ExpandedUpgradeTabWidget<Advanc
             slotGroup.child(slot);
         }
 
-        Column column = (Column) new Column().pos(8, 28)
+        Column column = (Column) new Column().pos(8, 32)
             .coverChildren()
             .childPadding(2)
             .child(slotGroup);
 
         child(column);
-        height(110);
     }
 
     @Override

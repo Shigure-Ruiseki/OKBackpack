@@ -26,7 +26,7 @@ public class JukeboxUpgradeWidget extends ExpandedUpgradeTabWidget<JukeboxUpgrad
 
     public JukeboxUpgradeWidget(int slotIndex, JukeboxUpgradeWrapper wrapper, ItemStack stack, IStoragePanel<?> panel,
         String titleKey) {
-        super(slotIndex, 3, stack, titleKey, 75);
+        super(slotIndex, 3, stack, panel, titleKey, 75);
         this.wrapper = wrapper;
 
         ItemSlot recordSlot = new ItemSlot() {

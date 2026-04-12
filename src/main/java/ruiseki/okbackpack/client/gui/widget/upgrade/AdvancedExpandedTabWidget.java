@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import com.cleanroommc.modularui.widgets.layout.Column;
 import com.cleanroommc.modularui.widgets.layout.Row;
 
+import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 
@@ -15,9 +16,9 @@ public class AdvancedExpandedTabWidget<T extends UpgradeWrapperBase & IAdvancedF
     protected final Row startingRow;
     protected final AdvancedFilterWidget filterWidget;
 
-    public AdvancedExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, String titleKey,
-        String filterSyncKey, int coveredTabSize, int width) {
-        super(slotIndex, coveredTabSize, delegatedIconStack, titleKey, width);
+    public AdvancedExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, IStoragePanel<?> panel,
+        String titleKey, String filterSyncKey, int coveredTabSize, int width) {
+        super(slotIndex, coveredTabSize, delegatedIconStack, panel, titleKey, width);
 
         this.wrapper = wrapper;
 
@@ -37,8 +38,9 @@ public class AdvancedExpandedTabWidget<T extends UpgradeWrapperBase & IAdvancedF
         child(column);
     }
 
-    public AdvancedExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, String titleKey) {
-        this(slotIndex, wrapper, delegatedIconStack, titleKey, "adv_common_filter", 6, 100);
+    public AdvancedExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, IStoragePanel<?> panel,
+        String titleKey) {
+        this(slotIndex, wrapper, delegatedIconStack, panel, titleKey, "adv_common_filter", 6, 100);
     }
 
     @Override

@@ -8,8 +8,8 @@ import net.minecraft.world.World;
 
 import com.cleanroommc.modularui.network.NetworkUtils;
 
+import ruiseki.okbackpack.api.SortType;
 import ruiseki.okbackpack.api.upgrade.BackpackSHRegistry;
-import ruiseki.okbackpack.common.SortType;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.common.block.TEBackpack;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
@@ -56,9 +56,9 @@ public class BackpackSHRegisters implements IInitListener {
                 boolean lock = buf.readBoolean();
                 String playerUuid = buf.readStringFromBuffer(36);
                 boolean tab = buf.readBoolean();
-                handler.wrapper.lockBackpack = lock;
-                handler.wrapper.playerUuid = playerUuid;
-                handler.wrapper.keepTab = tab;
+                handler.wrapper.setLockStorage(lock);
+                handler.wrapper.setPlayerUUID(playerUuid);
+                handler.wrapper.setKeepTab(tab);
             });
 
             BackpackSHRegistry.registerServer(DEPLOY_SLEEPING_BAG, (handler, buf) -> { deploySleepingBag(handler); });

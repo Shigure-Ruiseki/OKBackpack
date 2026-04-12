@@ -52,7 +52,7 @@ public class AdvancedJukeboxUpgradeWidget extends ExpandedUpgradeTabWidget<Advan
 
     public AdvancedJukeboxUpgradeWidget(int slotIndex, AdvancedJukeboxUpgradeWrapper wrapper, ItemStack stack,
         IStoragePanel<?> panel, String titleKey) {
-        super(slotIndex, 5, stack, titleKey, 100);
+        super(slotIndex, 5, stack, panel, titleKey, 100);
         this.wrapper = wrapper;
 
         SlotGroupWidget slotGroup = new SlotGroupWidget().name("adv_jukebox_slots")

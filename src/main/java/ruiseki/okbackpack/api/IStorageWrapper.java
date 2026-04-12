@@ -14,7 +14,6 @@ import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
-import ruiseki.okbackpack.common.SortType;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.persist.nbt.INBTSerializable;
 
@@ -62,6 +61,18 @@ public interface IStorageWrapper
     void setSortType(SortType sortType);
 
     SortType getSortType();
+
+    boolean isKeepTab();
+
+    void setKeepTab(boolean keepTab);
+
+    boolean isLockStorage();
+
+    void setLockStorage(boolean lockStorage);
+
+    String getPlayerUUID();
+
+    void setPlayerUUID(String playerUUID);
 
     boolean isDirty();
 
