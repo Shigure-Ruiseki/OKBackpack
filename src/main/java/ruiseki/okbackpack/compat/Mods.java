@@ -8,6 +8,7 @@ public enum Mods {
 
     // spotless:off
     NotEnoughItems("NotEnoughItems"),
+    CodeChickenCore("CodeChickenCore"),
     EtFuturum("etfuturum"),
     TConstruct("TConstruct"),
     ;

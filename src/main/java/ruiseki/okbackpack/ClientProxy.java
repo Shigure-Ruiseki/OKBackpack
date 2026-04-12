@@ -77,6 +77,8 @@ public class ClientProxy extends ClientProxyComponent {
         super.registerEventHooks();;
         MinecraftForge.EVENT_BUS.register(new ItemRenderEvent());
         MinecraftForge.EVENT_BUS.register(BackpackJukeboxSoundManager.getInstance());
-        MinecraftForge.EVENT_BUS.register(new BackpackContentHandler());
+        if (Mods.CodeChickenCore.isLoaded()) {
+            MinecraftForge.EVENT_BUS.register(new BackpackContentHandler());
+        }
     }
 }

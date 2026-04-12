@@ -42,13 +42,14 @@ import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IAdminProtectable;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
+import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.client.renderer.player.IArmorRender;
 import ruiseki.okbackpack.client.renderer.player.IBaubleRender;
 import ruiseki.okbackpack.client.renderer.player.PlayerRenderContext;
-import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.common.entity.EntityBackpack;
+import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.block.BlockOK;
 import ruiseki.okcore.energy.IOKEnergyItem;
 import ruiseki.okcore.helper.LangHelpers;
@@ -446,8 +447,10 @@ public class BlockBackpack extends BlockOK {
                 String shiftKey = "\u00a7b" + LangHelpers.localize("tooltip.backpack.contents.shift")
                     + "\u00a7r\u00a77";
                 list.add("\u00a77" + LangHelpers.localize("tooltip.backpack.contents.press_for_contents", shiftKey));
-                BackpackContentHandler.reset();
-            } else {
+                if (Mods.CodeChickenCore.isLoaded()) {
+                    BackpackContentHandler.reset();
+                }
+            } else if (Mods.CodeChickenCore.isLoaded()) {
                 // Expanded tooltip with upgrade/inventory info
                 BackpackWrapper wrapper = new BackpackWrapper(stack, this);
                 BackpackContentHandler.prepareContents(wrapper);
