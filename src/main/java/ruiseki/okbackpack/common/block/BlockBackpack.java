@@ -4,8 +4,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -48,7 +46,7 @@ import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.client.renderer.player.IArmorRender;
 import ruiseki.okbackpack.client.renderer.player.IBaubleRender;
 import ruiseki.okbackpack.client.renderer.player.PlayerRenderContext;
-import ruiseki.okbackpack.client.tooltip.BackpackTooltipRenderer;
+import ruiseki.okbackpack.client.waila.BackpackContentHandler;
 import ruiseki.okbackpack.common.entity.EntityBackpack;
 import ruiseki.okcore.block.BlockOK;
 import ruiseki.okcore.helper.LangHelpers;
@@ -375,22 +373,19 @@ public class BlockBackpack extends BlockOK {
                 String shiftKey = "\u00a7b" + LangHelpers.localize("tooltip.backpack.contents.shift")
                     + "\u00a7r\u00a77";
                 list.add("\u00a77" + LangHelpers.localize("tooltip.backpack.contents.press_for_contents", shiftKey));
-                BackpackTooltipRenderer.reset();
+                BackpackContentHandler.reset();
             } else {
                 // Expanded tooltip with upgrade/inventory info
                 BackpackWrapper wrapper = new BackpackWrapper(stack, this);
-                BackpackTooltipRenderer.prepareContents(wrapper);
+                BackpackContentHandler.prepareContents(wrapper);
 
-                boolean hasUpgrades = !BackpackTooltipRenderer.upgradeInfos.isEmpty();
-                boolean hasContents = !BackpackTooltipRenderer.sortedContents.isEmpty();
+                boolean hasUpgrades = !BackpackContentHandler.upgradeInfos.isEmpty();
+                boolean hasContents = !BackpackContentHandler.sortedContents.isEmpty();
 
                 if (!hasUpgrades && !hasContents) {
                     // Empty backpack
                     list.add("\u00a7e" + LangHelpers.localize("tooltip.backpack.contents.empty"));
-                    BackpackTooltipRenderer.shouldRenderItems = false;
                 } else {
-                    FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-
                     // Stack multiplier
                     double multiplier = wrapper.applyStackLimitModifiers();
                     if (multiplier > 1 && multiplier != Integer.MAX_VALUE) {
@@ -403,27 +398,14 @@ public class BlockBackpack extends BlockOK {
                             "\u00a7a" + LangHelpers.localize("tooltip.backpack.contents.stack_multiplier", "\u221E"));
                     }
 
-                    int requiredWidth = BackpackTooltipRenderer.getRequiredWidth(font);
-                    String spacer = BackpackTooltipRenderer.createSpacerLine(font, requiredWidth);
-
                     if (hasUpgrades) {
-                        // "Upgrades" header
                         list.add("\u00a7e" + LangHelpers.localize("tooltip.backpack.contents.upgrades"));
-                        BackpackTooltipRenderer.upgradeSpacerStartIndex = list.size();
-                        int upgradeLines = BackpackTooltipRenderer.getUpgradeSpacerLines();
-                        for (int i = 0; i < upgradeLines; i++) {
-                            list.add(spacer);
-                        }
+                        list.add(BackpackContentHandler.getUpgradeHandlerLine());
                     }
 
                     if (hasContents) {
-                        // "Inventory" header
                         list.add("\u00a7e" + LangHelpers.localize("tooltip.backpack.contents.inventory"));
-                        BackpackTooltipRenderer.inventorySpacerStartIndex = list.size();
-                        int inventoryLines = BackpackTooltipRenderer.getInventorySpacerLines();
-                        for (int i = 0; i < inventoryLines; i++) {
-                            list.add(spacer);
-                        }
+                        list.add(BackpackContentHandler.getContentsHandlerLine());
                     }
                 }
             }
