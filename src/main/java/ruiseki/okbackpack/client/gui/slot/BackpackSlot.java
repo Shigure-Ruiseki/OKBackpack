@@ -41,7 +41,6 @@ import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.upgrade.SortingSettingWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
-import ruiseki.okbackpack.common.block.BackpackWrapper;
 
 public class BackpackSlot extends ItemSlot {
 
@@ -262,8 +261,7 @@ public class BackpackSlot extends ItemSlot {
             1,
             1);
 
-        boolean isMarked = wrapper.isSlotMemorized(index)
-            || (slotStack == null && memoryStack != null);
+        boolean isMarked = wrapper.isSlotMemorized(index) || (slotStack == null && memoryStack != null);
         if (isMarked) {
             GlStateManager.disableDepth();
             GuiDraw.drawRect(1, 1, 17, 17, Color.argb(139, 139, 139, 128));
