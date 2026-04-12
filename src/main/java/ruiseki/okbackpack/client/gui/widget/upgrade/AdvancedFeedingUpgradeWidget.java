@@ -43,7 +43,7 @@ public class AdvancedFeedingUpgradeWidget extends AdvancedExpandedTabWidget<Adva
 
     public AdvancedFeedingUpgradeWidget(int slotIndex, AdvancedFeedingUpgradeWrapper wrapper, ItemStack stack,
         IStoragePanel<?> panel, String titleKey) {
-        super(slotIndex, wrapper, stack, titleKey, "adv_feeding_filter", 6, 100);
+        super(slotIndex, wrapper, stack, panel, titleKey, "adv_feeding_filter", 6, 100);
 
         this.hungerButton = new CyclicVariantButtonWidget(
             HUNGER_VARIANTS,

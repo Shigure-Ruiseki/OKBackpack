@@ -3,6 +3,8 @@ package ruiseki.okbackpack.client.gui.widget.upgrade;
 import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.widget.Widget;
+import com.cleanroommc.modularui.widgets.layout.Column;
+import com.cleanroommc.modularui.widgets.layout.Row;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import ruiseki.okbackpack.api.IStoragePanel;
@@ -17,56 +19,64 @@ public class TankUpgradeWidget extends ExpandedUpgradeTabWidget<TankUpgradeWrapp
 
     public TankUpgradeWidget(int slotIndex, TankUpgradeWrapper wrapper, ItemStack stack, IStoragePanel<?> panel,
         String titleKey) {
-        super(slotIndex, 4, stack, titleKey, 70);
+        super(slotIndex, 3, stack, panel, titleKey, 70);
         this.wrapper = wrapper;
 
         this.syncHandler("upgrades", slotIndex);
 
-        int topY = 25;
-        int arrowY = topY + 18 + 3;
-        int bottomY = arrowY + 8 + 3;
-        int leftX = 8;
-        int rightX = 29;
-
         // Input slot (containers that provide fluid to tank)
         ItemSlot inputSlot = new CustomBackgroundSlot(OKCGuiTextures.EMPTY_TANK_INPUT)
             .syncHandler("tank_slot_" + slotIndex, 0)
-            .pos(leftX, topY)
             .name("tank_input_" + slotIndex);
 
         // Output slot (containers that receive fluid from tank)
         ItemSlot outputSlot = new CustomBackgroundSlot(OKCGuiTextures.EMPTY_TANK_OUTPUT)
             .syncHandler("tank_slot_" + slotIndex, 1)
-            .pos(rightX, topY)
             .name("tank_output_" + slotIndex);
+
+        Row firstRow = new Row();
+        firstRow.coverChildren()
+            .childPadding(4)
+            .child(inputSlot)
+            .child(outputSlot);
 
         // Down arrow indicators
         Widget<?> leftArrow = new Widget<>().size(15, 8)
-            .pos(leftX + 1, arrowY)
             .background(OKBGuiTextures.TANK_SLOT_ARROW);
 
         Widget<?> rightArrow = new Widget<>().size(15, 8)
-            .pos(rightX + 1, arrowY)
             .background(OKBGuiTextures.TANK_SLOT_ARROW);
+
+        Row secondRow = new Row();
+        secondRow.coverChildren()
+            .childPadding(8)
+            .child(leftArrow)
+            .child(rightArrow);
 
         // Input result slot (emptied containers go here)
         ItemSlot inputResultSlot = new ItemSlot().syncHandler("tank_slot_" + slotIndex, 2)
-            .pos(leftX, bottomY)
             .name("tank_input_result_" + slotIndex);
 
         // Output result slot (filled containers go here)
         ItemSlot outputResultSlot = new ItemSlot().syncHandler("tank_slot_" + slotIndex, 3)
-            .pos(rightX, bottomY)
             .name("tank_output_result_" + slotIndex);
 
-        child(inputSlot);
-        child(outputSlot);
-        child(leftArrow);
-        child(rightArrow);
-        child(inputResultSlot);
-        child(outputResultSlot);
+        Row thirdRow = new Row();
+        thirdRow.coverChildren()
+            .childPadding(4)
+            .child(inputResultSlot)
+            .child(outputResultSlot);
 
-        height(bottomY + 18 + 8);
+        Column column = new Column();
+
+        column.pos(8, 32)
+            .coverChildren()
+            .childPadding(3)
+            .child(firstRow)
+            .child(secondRow)
+            .child(thirdRow);
+
+        child(column);
     }
 
     @Override

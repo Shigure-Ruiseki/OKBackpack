@@ -16,7 +16,7 @@ public class BatteryUpgradeWidget extends ExpandedUpgradeTabWidget<BatteryUpgrad
 
     public BatteryUpgradeWidget(int slotIndex, BatteryUpgradeWrapper wrapper, ItemStack stack, IStoragePanel<?> panel,
         String titleKey) {
-        super(slotIndex, 4, stack, titleKey, 65);
+        super(slotIndex, 2, stack, panel, titleKey, 65);
         this.wrapper = wrapper;
 
         this.syncHandler("upgrades", slotIndex);
@@ -33,14 +33,13 @@ public class BatteryUpgradeWidget extends ExpandedUpgradeTabWidget<BatteryUpgrad
             .pos(26, 0)
             .name("battery_output_" + slotIndex);
 
-        Column column = (Column) new Column().pos(4, 26)
+        Column column = (Column) new Column().pos(4, 32)
             .coverChildren()
             .childPadding(2)
             .child(inputSlot)
             .child(outputSlot);
 
         child(column);
-        height(60);
     }
 
     @Override

@@ -18,7 +18,6 @@ import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 import ruiseki.okbackpack.client.gui.slot.BackpackSlot;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.search.ItemStackKey;
-import ruiseki.okbackpack.common.search.ItemStackKeyPool;
 import ruiseki.okbackpack.common.search.SearchNode;
 import ruiseki.okbackpack.common.search.SearchParser;
 
@@ -113,7 +112,7 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
                 continue;
             }
 
-            ItemStackKey key = ItemStackKeyPool.get(
+            ItemStackKey key = ItemStackKey.of(
                 slot.getSlot()
                     .getStack());
             boolean match = compiledSearch.matches(key);

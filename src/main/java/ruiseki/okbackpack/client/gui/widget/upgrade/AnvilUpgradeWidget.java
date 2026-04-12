@@ -35,7 +35,7 @@ public class AnvilUpgradeWidget extends ExpandedUpgradeTabWidget<AnvilUpgradeWra
 
     public AnvilUpgradeWidget(int slotIndex, AnvilUpgradeWrapper wrapper, ItemStack stack, IStoragePanel<?> panel,
         String titleKey) {
-        super(slotIndex, 5, stack, titleKey, 115);
+        super(slotIndex, 3, stack, panel, titleKey, 115);
         this.wrapper = wrapper;
 
         this.syncHandler("upgrades", slotIndex);
@@ -179,7 +179,6 @@ public class AnvilUpgradeWidget extends ExpandedUpgradeTabWidget<AnvilUpgradeWra
         child(nameField);
         child(slotsGroup);
         child(costWidget);
-        height(90);
     }
 
     @Override
