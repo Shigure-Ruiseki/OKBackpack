@@ -42,7 +42,6 @@ public abstract class BackpackGuiHolder {
     protected void addCommonWidgets(BackpackPanel panel) {
         panel.addSortingButtons();
         panel.addTransferButtons();
-        panel.addSettingsTemplateButtons();
         panel.addUpgradeSlots();
         panel.addMainWidget();
         panel.addSearchBar();
