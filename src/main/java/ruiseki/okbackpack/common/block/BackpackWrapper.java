@@ -1108,7 +1108,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     public int deleteSettingsPreset(int index) {
-        if (index < 0 || index >= settingsPresets.size() || settingsPresets.size() == 1) {
+        if (index < 0 || index >= settingsPresets.size()) {
             return 0;
         }
 
