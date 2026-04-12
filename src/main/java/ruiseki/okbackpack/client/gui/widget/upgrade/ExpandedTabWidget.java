@@ -86,7 +86,11 @@ public abstract class ExpandedTabWidget extends ParentWidget<ExpandedTabWidget> 
 
     protected class PhantomTabWidget extends SingleChildWidget<PhantomTabWidget> implements Interactable {
 
+        @Getter
+        private final Widget<?> tabIcon;
+
         public PhantomTabWidget(Widget<?> tabIcon) {
+            this.tabIcon = tabIcon;
             size(28, 24);
             tabIcon.size(18)
                 .top(5);

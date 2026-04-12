@@ -2,21 +2,36 @@ package ruiseki.okbackpack.common.entity.properties;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
+import baubles.api.BaublesApi;
+import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.common.block.BackpackWrapper;
+import ruiseki.okbackpack.common.block.BlockBackpack;
+
 public class BackpackProperty implements IExtendedEntityProperties {
 
     private static final String PROPERTY_NAME = "okbackpack.property";
     private static final String TAG_STORED_SPAWN = "storedSpawn";
+    private static final String TAG_KEEP_TAB = "keepTab";
+    private static final String TAG_SHIFT_CLICK_INTO_OPEN_TAB = "shiftClickIntoOpenTab";
+    private static final String TAG_KEEP_SEARCH_PHRASE = "keepSearchPhrase";
+    private static final String TAG_LOCK_BACKPACK = "lockBackpack";
 
     private EntityPlayer player;
     private ChunkCoordinates storedSpawn = null;
     private boolean isWakingUpInDeployedBag = false;
     private boolean isSleepingInPortableBag = false;
     private boolean isWakingUpInPortableBag = false;
+    private boolean keepTab = true;
+    private boolean shiftClickIntoOpenTab = false;
+    private boolean keepSearchPhrase = false;
+    private boolean lockBackpack = false;
 
     public void setWakingUpInDeployedBag(boolean b) {
         this.isWakingUpInDeployedBag = b;
@@ -44,6 +59,38 @@ public class BackpackProperty implements IExtendedEntityProperties {
 
     public ChunkCoordinates getStoredSpawn() {
         return storedSpawn;
+    }
+
+    public boolean isKeepTab() {
+        return keepTab;
+    }
+
+    public void setKeepTab(boolean keepTab) {
+        this.keepTab = keepTab;
+    }
+
+    public boolean isShiftClickIntoOpenTab() {
+        return shiftClickIntoOpenTab;
+    }
+
+    public void setShiftClickIntoOpenTab(boolean shiftClickIntoOpenTab) {
+        this.shiftClickIntoOpenTab = shiftClickIntoOpenTab;
+    }
+
+    public boolean isKeepSearchPhrase() {
+        return keepSearchPhrase;
+    }
+
+    public void setKeepSearchPhrase(boolean keepSearchPhrase) {
+        this.keepSearchPhrase = keepSearchPhrase;
+    }
+
+    public boolean isLockBackpack() {
+        return lockBackpack;
+    }
+
+    public void setLockBackpack(boolean lockBackpack) {
+        this.lockBackpack = lockBackpack;
     }
 
     public BackpackProperty(EntityPlayer player) {
@@ -74,6 +121,11 @@ public class BackpackProperty implements IExtendedEntityProperties {
             spawn.setInteger("posZ", storedSpawn.posZ);
             compound.setTag(TAG_STORED_SPAWN, spawn);
         }
+
+        compound.setBoolean(TAG_KEEP_TAB, keepTab);
+        compound.setBoolean(TAG_SHIFT_CLICK_INTO_OPEN_TAB, shiftClickIntoOpenTab);
+        compound.setBoolean(TAG_KEEP_SEARCH_PHRASE, keepSearchPhrase);
+        compound.setBoolean(TAG_LOCK_BACKPACK, lockBackpack);
     }
 
     @Override
@@ -84,6 +136,11 @@ public class BackpackProperty implements IExtendedEntityProperties {
                 setStoredSpawn(
                     new ChunkCoordinates(spawn.getInteger("posX"), spawn.getInteger("posY"), spawn.getInteger("posZ")));
             }
+
+            keepTab = !compound.hasKey(TAG_KEEP_TAB) || compound.getBoolean(TAG_KEEP_TAB);
+            shiftClickIntoOpenTab = compound.getBoolean(TAG_SHIFT_CLICK_INTO_OPEN_TAB);
+            keepSearchPhrase = compound.getBoolean(TAG_KEEP_SEARCH_PHRASE);
+            lockBackpack = compound.getBoolean(TAG_LOCK_BACKPACK);
         }
     }
 
@@ -94,5 +151,48 @@ public class BackpackProperty implements IExtendedEntityProperties {
 
     public void setStoredSpawn(ChunkCoordinates coords) {
         storedSpawn = coords;
+    }
+
+    public void applySettingsToWrapper(IStorageWrapper wrapper) {
+        wrapper.setKeepTab(keepTab);
+        wrapper.setShiftClickIntoOpenTab(shiftClickIntoOpenTab);
+        wrapper.setKeepSearchPhrase(keepSearchPhrase);
+        wrapper.setLockStorage(lockBackpack);
+    }
+
+    public void syncGlobalSettingsToOwnedBackpacks() {
+        if (player == null || player.worldObj == null || player.worldObj.isRemote) {
+            return;
+        }
+
+        syncInventory(player.inventory);
+        syncInventory(BaublesApi.getBaubles(player));
+    }
+
+    private void syncInventory(IInventory inventory) {
+        if (inventory == null) {
+            return;
+        }
+
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+            syncBackpackStack(inventory.getStackInSlot(i));
+        }
+    }
+
+    private void syncBackpackStack(ItemStack stack) {
+        if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack item)) {
+            return;
+        }
+
+        BackpackWrapper wrapper = new BackpackWrapper(stack, item);
+        if (!wrapper.isUsePlayerSettings()) {
+            return;
+        }
+
+        applySettingsToWrapper(wrapper);
+        wrapper.setPlayerUUID(
+            player.getUniqueID()
+                .toString());
+        wrapper.writeToItem();
     }
 }

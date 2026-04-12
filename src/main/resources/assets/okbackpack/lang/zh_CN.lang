@@ -51,8 +51,12 @@ gui.backpack.advanced_feeding_settings=高级喂食
 gui.backpack.filter_settings=过滤
 gui.backpack.advanced_filter_settings=高级过滤
 gui.backpack.backpack_settings=背包设置
-gui.backpack.memory_settings=记忆设置
-gui.backpack.sorting_settings=排序设置
+gui.backpack.memory_settings=槽位记忆设置
+gui.backpack.memory_settings.tooltip_detail=使所选槽位记忆当前物品，该槽位只会接收对应物品\n打标签页以修改此设置
+gui.backpack.memory_settings.tooltip_open_detail=使所选槽位记忆当前物品，该槽位只会接收对应物品\n全选槽位/取消全选槽位=按钮\n选择槽位=左键单击/拖动\n取消选择槽位=右键单击/拖动
+gui.backpack.sorting_settings=忽略整理设置
+gui.backpack.sorting_settings.tooltip_detail=选择忽略整理的槽位\n打开标签页以修改此设置
+gui.backpack.sorting_settings.tooltip_open_detail=选择忽略整理的槽位\n全选/取消全选槽位=按钮\n选择槽位=左键单击/拖动\n取消选择槽位=右键单击/拖动
 gui.backpack.crafting_settings=合成
 gui.backpack.void_settings=虚空
 gui.backpack.advanced_void_settings=高级虚空
@@ -127,12 +131,22 @@ gui.backpack.transfer_to_backpack_inv_matched_1=转移匹配物品到背包
 gui.backpack.transfer_to_backpack_inv_matched_2=按住 Shift 转移全部
 
 gui.backpack.memorized_slot=记忆槽位
-gui.backpack.memorize_all=记忆所有槽位
-gui.backpack.unmemorize_all=清除所有记忆
+gui.backpack.memorize_all=全选槽位
+gui.backpack.unmemorize_all=取消全选槽位
+gui.backpack.select_all_slots=全选槽位
+gui.backpack.unselect_all_slots=取消全选槽位
 
-gui.backpack.no_sorting_slot=不排序槽位
-gui.backpack.lock_all_sort=全部设为不排序
-gui.backpack.unlock_all_sort=全部设为可排序
+gui.backpack.no_sorting_slot=忽略整理槽位
+gui.backpack.lock_all_sort=全选槽位
+gui.backpack.unlock_all_sort=取消全选槽位
+
+gui.backpack.shift_click_inventory=Shift左击优先放入物品栏
+gui.backpack.shift_click_inventory.tooltip=Shift左击物品时，优先将物品放入背包物品栏
+gui.backpack.shift_click_open_tab=Shift左击优先放入升级标签页
+gui.backpack.shift_click_open_tab.tooltip=Shift左击物品时，优先将物品放入当前打开的升级标签页
+
+gui.backpack.toggle_color=更换颜色
+gui.backpack.toggle_color_detail=上一种=左击\n下一种=右击\n滚轮切换当前颜色
 
 gui.backpack.into_backpack=Shift点击将成品放入\n背包
 gui.backpack.into_inventory=Shift点击将成品放入\n玩家物品栏
@@ -141,13 +155,45 @@ gui.backpack.unused_backpack=不自动重填合成方格
 
 gui.backpack.search_hint=搜索…
 gui.backpack.lock_search=保留搜索内容：开
+gui.backpack.lock_search.tooltip=关闭并重新打开背包界面时搜索内容将被保留
 gui.backpack.unlock_search=保留搜索内容：关
+gui.backpack.unlock_search.tooltip=关闭背包界面时搜索内容将被清除
 
 gui.backpack.lock_backpack=其他玩家不可打开
+gui.backpack.lock_backpack.tooltip=阻止其他玩家打开此背包
 gui.backpack.unlock_backpack=其他玩家可打开
+gui.backpack.unlock_backpack.tooltip=任何玩家都可以打开此背包
 
 gui.backpack.keep_tab=保持标签页打开：开
+gui.backpack.keep_tab.tooltip=关闭并重新打开背包界面时当前打开的升级标签页将保持打开
 gui.backpack.not_keep_tab=保持标签页打开：关
+gui.backpack.not_keep_tab.tooltip=关闭背包界面时升级标签页会被关闭
+gui.backpack.settings_context_backpack=背包设置
+gui.backpack.settings_context_backpack.tooltip=该背包的设置\n不受到玩家全局设置影响
+gui.backpack.settings_context_player=玩家设置
+gui.backpack.settings_context_player.tooltip=玩家全局设置\n应用于玩家的所有背包/容器，被单独覆写的除外
+gui.backpack.settings_preset_save=保存设置至栏位%s
+gui.backpack.settings_preset_save_controls=用滚轮改变栏位
+gui.backpack.settings_preset_save_custom_name=输入栏位名称
+gui.backpack.settings_preset_load=从栏位%s读取设置
+gui.backpack.settings_preset_load_controls=用滚轮改变栏位
+gui.backpack.settings_preset_load_no_save=不存在可读取的设置
+gui.backpack.settings_preset_delete=删除栏位%s的设置
+gui.backpack.settings_preset_delete_controls=用滚轮改变栏位
+gui.backpack.settings_preset_export=导出设置至%s
+gui.backpack.settings_preset_export_enter_name=输入文件名
+gui.backpack.settings_preset_export_info=导出为JSON文件
+gui.backpack.settings_preset_import=从%s导入设置
+gui.backpack.settings_preset_import_controls=用滚轮改变文件
+gui.backpack.settings_preset_confirm=确认输入
+gui.backpack.settings_preset_no_files=未找到可导入的 JSON 文件
+gui.backpack.settings_preset_new_slot=1
+gui.backpack.settings_preset_unnamed=输入栏位名称
+gui.backpack.settings_message_save=设置已保存至栏位%s
+gui.backpack.settings_message_load=已从栏位%s读取设置
+gui.backpack.settings_message_export=已导出设置至%s
+gui.backpack.settings_message_export_empty_name=文件名不能为空
+gui.backpack.settings_message_export_invalid_chars=文件名包含无效字符：%s
 
 gui.backpack.void_any=销毁任意物品
 gui.backpack.void_overflow=销毁溢出物品

@@ -24,6 +24,7 @@ import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.helpers.BackpackJsonReader;
 import ruiseki.okbackpack.common.helpers.BackpackJsonWriter;
 import ruiseki.okbackpack.common.helpers.BackpackMaterial;
+import ruiseki.okbackpack.common.helpers.BackpackSettingsTemplate;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okcore.command.CommandMod;
 import ruiseki.okcore.init.ModBase;
@@ -304,6 +305,8 @@ public class CommandBackpack extends CommandMod {
             }
         }
 
+        mat.setSettingsFromTemplate(BackpackSettingsTemplate.fromWrapper(wrapper));
+
         return mat;
     }
 
@@ -329,6 +332,11 @@ public class CommandBackpack extends CommandMod {
                 wrapper.getUpgradeHandler()
                     .setStackInSlot(entry.slot, entry.toItemStack());
             }
+        }
+
+        if (mat.hasSettings()) {
+            mat.toSettingsTemplate(wrapper.getSlots())
+                .applyTo(wrapper);
         }
     }
 

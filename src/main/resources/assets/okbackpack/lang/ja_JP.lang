@@ -51,8 +51,12 @@ gui.backpack.advanced_feeding_settings=ごはん機能・改
 gui.backpack.filter_settings=仕分け機能
 gui.backpack.advanced_filter_settings=仕分け機能・改
 gui.backpack.backpack_settings=リュックの設定
-gui.backpack.memory_settings=スロットごとの設定
+gui.backpack.memory_settings=スロット記憶設定
+gui.backpack.memory_settings.tooltip_detail=選択したスロットに現在のアイテムを記憶させます\n設定を変更するにはタブを開いてください
+gui.backpack.memory_settings.tooltip_open_detail=左クリックまたはドラッグでスロットを選択\n右クリックまたはドラッグで選択解除\n全てのスロットを選択\n全てのスロットを解除\nNBT を一致させるか切り替え
 gui.backpack.sorting_settings=並び替えの除外設定
+gui.backpack.sorting_settings.tooltip_detail=選択したスロットを並び替え対象から除外します\n設定を変更するにはタブを開いてください
+gui.backpack.sorting_settings.tooltip_open_detail=左クリックまたはドラッグでスロットを選択\n右クリックまたはドラッグで選択解除\n全てのスロットを選択\n全てのスロットを解除\nハイライト色を切り替え
 gui.backpack.crafting_settings=作業台機能
 gui.backpack.void_settings=ごみ箱機能
 gui.backpack.advanced_void_settings=ごみ箱機能・改
@@ -129,10 +133,20 @@ gui.backpack.transfer_to_backpack_inv_matched_2=Shiftキーで全て移動
 gui.backpack.memorized_slot=記憶済みのスロット
 gui.backpack.memorize_all=全てのスロットを選択
 gui.backpack.unmemorize_all=スロット選択を全解除
+gui.backpack.select_all_slots=全てのスロットを選択
+gui.backpack.unselect_all_slots=スロット選択を全解除
 
 gui.backpack.no_sorting_slot=並び替えしないスロット
 gui.backpack.lock_all_sort=全てのスロットを選択
 gui.backpack.unlock_all_sort=スロット選択を全解除
+
+gui.backpack.shift_click_inventory=インベントリ優先
+gui.backpack.shift_click_inventory.tooltip=リュックやインベントリからSHIFTキーを押すと、インベントリやリュックに優先的に入れ、その後に追加機能タブにアイテムを収納します。
+gui.backpack.shift_click_open_tab=拡張機能のタブ優先
+gui.backpack.shift_click_open_tab.tooltip=リュックやインベントリからSHIFTキーを押すと、開いている追加機能タブに優先的に入れ、その後にインベントリやリュックにアイテムを収納します。
+
+gui.backpack.toggle_color=選択スロットの色
+gui.backpack.toggle_color_detail=左クリック＝次の色へ\n右クリック＝前の色へ\nホイールで現在の色を切り替え
 
 gui.backpack.into_backpack=完成品をSHIFT＋クリックするとリュックへ
 gui.backpack.into_inventory=完成品をSHIFT＋クリックするとインベントリへ
@@ -141,13 +155,45 @@ gui.backpack.unused_backpack=クラフトグリッドに補充しない
 
 gui.backpack.search_hint=検索...
 gui.backpack.lock_search=検索語句を保持する: ON
+gui.backpack.lock_search.tooltip=リュックを閉じて再び開いた時に検索語句が保持されます
 gui.backpack.unlock_search=検索語句を保持する: OFF
+gui.backpack.unlock_search.tooltip=リュックを閉じると検索語句がクリアされます
 
 gui.backpack.lock_backpack=他のプレイヤは開けない
+gui.backpack.lock_backpack.tooltip=他のプレイヤがこのリュックを開くことができません
 gui.backpack.unlock_backpack=他のプレイヤも開ける
+gui.backpack.unlock_backpack.tooltip=どのプレイヤでもこのリュックを開くことができます
 
 gui.backpack.keep_tab=開いたタブを記憶: ON
+gui.backpack.keep_tab.tooltip=リュックを閉じて再び開いた時に現在開いているアップグレードタブは開いたままになります
 gui.backpack.not_keep_tab=開いたタブを記憶: OFF
+gui.backpack.not_keep_tab.tooltip=リュックを閉じるとアップグレードタブが閉じます
+gui.backpack.settings_context_backpack=個別に適用
+gui.backpack.settings_context_backpack.tooltip=リュックごとに設定\nプレイヤ単位の設定を引き継ぐか、個別に設定したものが適用されます。
+gui.backpack.settings_context_player=全てに適用
+gui.backpack.settings_context_player.tooltip=プレイヤ単位で設定\n個別に上書き設定がない限り、プレイヤが保有する全てのリュックに適用されます。
+gui.backpack.settings_preset_save=スロット %s へ保存
+gui.backpack.settings_preset_save_controls=スクロールでスロットを変更
+gui.backpack.settings_preset_save_custom_name=スロット名を入力
+gui.backpack.settings_preset_load=スロット %s をロード
+gui.backpack.settings_preset_load_controls=スクロールでスロットを変更
+gui.backpack.settings_preset_load_no_save=ロードするデータがありません
+gui.backpack.settings_preset_delete=スロット %s を削除
+gui.backpack.settings_preset_delete_controls=スクロールでスロットを変更
+gui.backpack.settings_preset_export=設定を %s に出力
+gui.backpack.settings_preset_export_enter_name=ファイル名を入力
+gui.backpack.settings_preset_export_info=JSON ファイルに出力
+gui.backpack.settings_preset_import=JSON から設定を読み込み: %s
+gui.backpack.settings_preset_import_controls=スクロールでファイルを変更
+gui.backpack.settings_preset_confirm=入力を確定
+gui.backpack.settings_preset_no_files=読み込める JSON ファイルがありません
+gui.backpack.settings_preset_new_slot=1
+gui.backpack.settings_preset_unnamed=スロット名を入力
+gui.backpack.settings_message_save=設定をスロット %s へ保存しました
+gui.backpack.settings_message_load=スロット %s をロードしました
+gui.backpack.settings_message_export=設定を %s に出力しました
+gui.backpack.settings_message_export_empty_name=ファイル名を入力してください
+gui.backpack.settings_message_export_invalid_chars=%s はファイル名には使えない文字です
 
 gui.backpack.void_any=全て消去
 gui.backpack.void_overflow=1枚キープして消去

@@ -41,9 +41,9 @@ public class MemorySettingWidget extends ExpandedTabWidget {
         Row buttonRow = (Row) new Row().leftRel(0.5f)
             .height(20)
             .coverChildrenWidth()
-            .childPadding(2);
+            .childPadding(0);
 
-        ButtonWidget<?> memorizeAllButton = new ButtonWidget<>().size(20)
+        ButtonWidget<?> selectAllButton = new ButtonWidget<>().size(20)
             .overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
@@ -54,7 +54,7 @@ public class MemorySettingWidget extends ExpandedTabWidget {
                     for (BackpackSlotSH syncHandler : (BackpackSlotSH[]) panel.getStorageSlotSH()) {
                         syncHandler.syncToServer(
                             BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_MEMORY_STACK),
-                            buf -> buf.writeBoolean(panel.isMemorySettingTabOpened()));
+                            buf -> buf.writeBoolean(panel.shouldMemorizeRespectNBT()));
                     }
 
                     return true;
@@ -62,10 +62,10 @@ public class MemorySettingWidget extends ExpandedTabWidget {
                 return false;
             })
             .tooltipStatic(
-                t -> t.addLine(IKey.lang("gui.backpack.memorize_all"))
+                t -> t.addLine(IKey.lang("gui.backpack.select_all_slots"))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
 
-        ButtonWidget<?> unmemorizeAllButton = new ButtonWidget<>().size(20)
+        ButtonWidget<?> unselectAllButton = new ButtonWidget<>().size(20)
             .overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
@@ -83,7 +83,7 @@ public class MemorySettingWidget extends ExpandedTabWidget {
                 return false;
             })
             .tooltipStatic(
-                t -> t.addLine(IKey.lang("gui.backpack.unmemorize_all"))
+                t -> t.addLine(IKey.lang("gui.backpack.unselect_all_slots"))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
 
         respectNBTButton = new CyclicVariantButtonWidget(
@@ -91,11 +91,21 @@ public class MemorySettingWidget extends ExpandedTabWidget {
             index -> this.panel.setShouldMemorizeRespectNBT(index != 0));
 
         buttonRow.top(28)
-            .child(memorizeAllButton)
-            .child(unmemorizeAllButton)
+            .child(selectAllButton)
+            .child(unselectAllButton)
             .child(respectNBTButton);
 
         child(buttonRow);
+
+        phantomTabWidget.getTabIcon()
+            .tooltipDynamic(tooltip -> {
+                tooltip.clearText();
+                tooltip.addLine(IKey.lang("gui.backpack.memory_settings.tooltip_open_detail"));
+                tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+            });
+
+        phantomTabWidget.getTabIcon()
+            .tooltipAutoUpdate(true);
     }
 
     public boolean isRespectNBT() {
@@ -113,7 +123,7 @@ public class MemorySettingWidget extends ExpandedTabWidget {
     public void updateTabState() {
         parentTabWidget.setShowExpanded(!parentTabWidget.isShowExpanded());
         panel.setMemorySettingTabOpened(parentTabWidget.isShowExpanded());
-        settingPanel.updateTabState(1);
+        settingPanel.updateTabState(2);
     }
 
 }

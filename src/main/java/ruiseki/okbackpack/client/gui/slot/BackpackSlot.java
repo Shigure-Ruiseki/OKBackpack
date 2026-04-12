@@ -37,10 +37,11 @@ import lombok.Getter;
 import lombok.Setter;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
-import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
+import ruiseki.okbackpack.client.gui.widget.upgrade.SortingSettingWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
+import ruiseki.okbackpack.common.block.BackpackWrapper;
 
 public class BackpackSlot extends ItemSlot {
 
@@ -130,42 +131,12 @@ public class BackpackSlot extends ItemSlot {
 
     @Override
     public @NotNull Result onMousePressed(int mouseButton) {
-        int index = getSlot().slotNumber;
-
-        if (isInMemorySettingMode()) {
-
-            boolean isMemorySet = wrapper.isSlotMemorized(index);
-
-            if (isMemorySet && mouseButton == 1) {
-                wrapper.unsetMemoryStack(index);
-                getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_MEMORY_STACK));
-                return Result.SUCCESS;
-
-            } else if (!isMemorySet && mouseButton == 0) {
-                wrapper.setMemoryStack(index, panel.shouldMemorizeRespectNBT());
-                getSyncHandler().syncToServer(
-                    BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_MEMORY_STACK),
-                    buf -> buf.writeBoolean(panel.shouldMemorizeRespectNBT()));
-                return Result.SUCCESS;
-
-            } else return Result.STOP;
+        Result settingResult = handleSettingSelection(mouseButton);
+        if (settingResult != null) {
+            return settingResult;
         }
 
-        else if (isInSortSettingMode()) {
-            boolean locked = wrapper.isSlotLocked(index);
-
-            if (locked && mouseButton == 1) {
-                wrapper.setSlotLocked(index, false);
-                getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_SLOT_LOCK));
-                return Result.SUCCESS;
-            } else if (!locked && mouseButton == 0) {
-                wrapper.setSlotLocked(index, true);
-                getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_SLOT_LOCK));
-                return Result.SUCCESS;
-            } else return Result.STOP;
-        }
-
-        else if (isInSettingMode()) {
+        if (isInSettingMode()) {
             return Result.STOP;
         }
 
@@ -180,8 +151,50 @@ public class BackpackSlot extends ItemSlot {
 
     @Override
     public void onMouseDrag(int mouseButton, long timeSinceClick) {
+        Result settingResult = handleSettingSelection(mouseButton);
+        if (settingResult != null) return;
         if (isInSettingMode()) return;
         super.onMouseDrag(mouseButton, timeSinceClick);
+    }
+
+    private Result handleSettingSelection(int mouseButton) {
+        int index = getSlot().slotNumber;
+
+        if (isInMemorySettingMode()) {
+            boolean isMemorySet = wrapper.isSlotMemorized(index);
+
+            if (isMemorySet && mouseButton == 1) {
+                wrapper.unsetMemoryStack(index);
+                getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_MEMORY_STACK));
+                return Result.SUCCESS;
+
+            } else if (!isMemorySet && mouseButton == 0) {
+                wrapper.setMemoryStack(index, panel.shouldMemorizeRespectNBT());
+                getSyncHandler().syncToServer(
+                    BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_MEMORY_STACK),
+                    buf -> buf.writeBoolean(panel.shouldMemorizeRespectNBT()));
+                return Result.SUCCESS;
+
+            }
+            return Result.STOP;
+        }
+
+        if (isInSortSettingMode()) {
+            boolean locked = wrapper.isSlotLocked(index);
+
+            if (locked && mouseButton == 1) {
+                wrapper.setSlotLocked(index, false);
+                getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_SLOT_LOCK));
+                return Result.SUCCESS;
+            } else if (!locked && mouseButton == 0) {
+                wrapper.setSlotLocked(index, true);
+                getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_SLOT_LOCK));
+                return Result.SUCCESS;
+            }
+            return Result.STOP;
+        }
+
+        return null;
     }
 
     @Override
@@ -220,7 +233,8 @@ public class BackpackSlot extends ItemSlot {
 
     private void drawSettingStack(ModularGuiContext context, WidgetTheme widgetTheme) {
         ItemStack slotStack = getSlot().getStack();
-        ItemStack memoryStack = wrapper.getMemoryStack(getSlot().slotNumber);
+        int index = getSlot().slotNumber;
+        ItemStack memoryStack = wrapper.getMemoryStack(index);
         ItemStack toRender = slotStack != null ? slotStack : memoryStack;
 
         if (toRender == null) return;
@@ -248,7 +262,9 @@ public class BackpackSlot extends ItemSlot {
             1,
             1);
 
-        if (slotStack == null && memoryStack != null) {
+        boolean isMarked = wrapper.isSlotMemorized(index)
+            || (slotStack == null && memoryStack != null);
+        if (isMarked) {
             GlStateManager.disableDepth();
             GuiDraw.drawRect(1, 1, 17, 17, Color.argb(139, 139, 139, 128));
             GlStateManager.enableAlpha();
@@ -317,9 +333,15 @@ public class BackpackSlot extends ItemSlot {
     }
 
     private void drawLockedSlot(ModularGuiContext context, WidgetTheme widgetTheme) {
-        OKBGuiTextures.NO_SORT_ICON.draw(context, 1, 1, 16, 16, widgetTheme);
+        int color;
+        if (panel instanceof BackpackPanel backpackPanel) {
+            int colorIndex = backpackPanel.wrapper.getNoSortColorIndex();
+            color = 0x80000000 | SortingSettingWidget.getColorForIndex(colorIndex);
+        } else {
+            color = Color.argb(139, 139, 139, 128);
+        }
         GlStateManager.disableDepth();
-        GuiDraw.drawRect(1, 1, 17, 17, Color.argb(139, 139, 139, 128));
+        GuiDraw.drawRect(1, 1, 17, 17, color);
         GlStateManager.enableDepth();
     }
 

@@ -437,10 +437,18 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
             }
             return fromStack;
         } else if (PLAYER_INV.equals(fromSlot.getSlotGroupName())) {
-            transferItemFiltered(
-                fromSlot,
-                fromStack,
-                slot -> slot instanceof ModularBackpackSlot && wrapper.isSlotMemorized(slot.getSlotIndex()));
+            if (wrapper.isShiftClickIntoOpenTab()) {
+                transferItemFiltered(
+                    fromSlot,
+                    fromStack,
+                    slot -> slot instanceof ModularBackpackSlot && wrapper.isSlotMemorized(slot.getSlotIndex()));
+            } else {
+                transferItemFiltered(
+                    fromSlot,
+                    fromStack,
+                    slot -> slot instanceof ModularBackpackSlot && wrapper.isSlotMemorized(slot.getSlotIndex()),
+                    slot -> slot instanceof ModularBackpackSlot);
+            }
         } else {
             return super.transferItem(fromSlot, fromStack);
         }

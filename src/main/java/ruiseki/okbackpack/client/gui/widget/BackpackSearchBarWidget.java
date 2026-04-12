@@ -16,6 +16,8 @@ import com.cleanroommc.modularui.widgets.layout.Column;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
 import ruiseki.okbackpack.client.gui.slot.BackpackSlot;
+import ruiseki.okbackpack.client.gui.syncHandler.BackpackSH;
+import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.common.search.ItemStackKey;
 import ruiseki.okbackpack.common.search.SearchNode;
@@ -23,12 +25,13 @@ import ruiseki.okbackpack.common.search.SearchParser;
 
 public class BackpackSearchBarWidget extends TextFieldWidget {
 
-    protected String prevText = " ";
+    protected String prevText = "";
     private final BackpackPanel panel;
     private List<BackpackSlot> originalOrder;
 
     public BackpackSearchBarWidget(BackpackPanel panel) {
         this.panel = panel;
+        this.prevText = panel.wrapper.getSearchPhrase();
         background(VANILLA_SEARCH_BACKGROUND);
         value(new StringValue(prevText));
         tooltip().addLine(IKey.lang("gui.search_bar.tool_tip"))
@@ -47,8 +50,13 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
     public void onUpdate() {
         super.onUpdate();
         String txt = getText();
-        if (txt.isEmpty()) prevText = " ";
+        if (txt == null) txt = "";
         if (!txt.equals(prevText)) {
+            final String searchText = txt;
+            panel.wrapper.setSearchPhrase(txt);
+            panel.backpackSyncHandler.syncToServer(
+                BackpackSH.getId(BackpackSHRegisters.UPDATE_SEARCH_PHRASE),
+                buffer -> buffer.writeStringToBuffer(searchText));
             doSearch(txt);
             prevText = txt;
         }
@@ -74,6 +82,12 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
 
     public void research() {
         doSearch(prevText);
+    }
+
+    public void clearSearch() {
+        prevText = "";
+        setText("");
+        doSearch("");
     }
 
     public void doSearch(String search) {

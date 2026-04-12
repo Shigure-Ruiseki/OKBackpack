@@ -52,7 +52,11 @@ gui.backpack.filter_settings=Filter Settings
 gui.backpack.advanced_filter_settings=Advanced Filter Settings
 gui.backpack.backpack_settings=Backpack Settings
 gui.backpack.memory_settings=Slot Memory Settings
+gui.backpack.memory_settings.tooltip_detail=Make selected slots remember the current item\nOpen the tab to change this setting
+gui.backpack.memory_settings.tooltip_open_detail=Left click or drag to select slots\nRight click or drag to unselect slots\nSelect all slots\nUnselect all slots\nToggle matching NBT
 gui.backpack.sorting_settings=No Sort Slot Settings
+gui.backpack.sorting_settings.tooltip_detail=Exclude selected slots from sorting\nOpen the tab to change this setting
+gui.backpack.sorting_settings.tooltip_open_detail=Left click or drag to select slots\nRight click or drag to unselect slots\nSelect all slots\nUnselect all slots\nCycle highlight color
 gui.backpack.crafting_settings=Crafting
 gui.backpack.void_settings=Void Settings
 gui.backpack.advanced_void_settings=Advanced Void Settings
@@ -129,10 +133,20 @@ gui.backpack.transfer_to_backpack_inv_matched_2=Shift To Transfer All
 gui.backpack.memorized_slot=Memorized Slot
 gui.backpack.memorize_all=Select All Slots
 gui.backpack.unmemorize_all=Unselect All Slots
+gui.backpack.select_all_slots=Select All Slots
+gui.backpack.unselect_all_slots=Unselect All Slots
 
 gui.backpack.no_sorting_slot=No Sorting Slot
 gui.backpack.lock_all_sort=Select All Slots
 gui.backpack.unlock_all_sort=Unselect All Slots
+
+gui.backpack.shift_click_inventory=Shift Click Into Inventory First
+gui.backpack.shift_click_inventory.tooltip=Shift click from storage/inventory will first try to put the stack in inventory/storage and only then into an open tab.
+gui.backpack.shift_click_open_tab=Shift Click Into Open Tab First
+gui.backpack.shift_click_open_tab.tooltip=Shift click from storage/inventory will first try to put the stack in an open tab and only then into inventory/storage.
+
+gui.backpack.toggle_color=Toggle Color
+gui.backpack.toggle_color_detail=Next = Left Click\nPrevious = Right Click\nScroll to cycle the current color
 
 gui.backpack.into_backpack=Shift Click Result Into\nBackpack
 gui.backpack.into_inventory=Shift Click Result Into\nPlayer's Inventory
@@ -141,13 +155,45 @@ gui.backpack.unused_backpack=Do Not Refill Crafting Grid
 
 gui.backpack.search_hint=Search...
 gui.backpack.lock_search=Keep Search Phrase: ON
+gui.backpack.lock_search.tooltip=Search phrase will be kept when backpack GUI is closed and reopened
 gui.backpack.unlock_search=Keep Search Phrase: OFF
+gui.backpack.unlock_search.tooltip=Search phrase will be cleared when backpack GUI is closed
 
 gui.backpack.lock_backpack=Another player can NOT open
+gui.backpack.lock_backpack.tooltip=Other players are prevented from opening this backpack
 gui.backpack.unlock_backpack=Another player can open
+gui.backpack.unlock_backpack.tooltip=Any player can open this backpack
 
 gui.backpack.keep_tab=Keep Tab Open: ON
+gui.backpack.keep_tab.tooltip=Currently opened upgrade tab will remain open when backpack GUI is closed and reopened
 gui.backpack.not_keep_tab=Keep Tab Open: OFF
+gui.backpack.not_keep_tab.tooltip=Upgrade tabs will close when backpack GUI is closed
+gui.backpack.settings_context_backpack=Backpack
+gui.backpack.settings_context_backpack.tooltip=This Backpack's settings\nInherited from player or overriden for this backpack
+gui.backpack.settings_context_player=Player
+gui.backpack.settings_context_player.tooltip=Player level settings\nApply to all backpacks/storages unless overriden
+gui.backpack.settings_preset_save=Save settings to slot %s
+gui.backpack.settings_preset_save_controls=Scroll to change slot
+gui.backpack.settings_preset_save_custom_name=Enter slot name
+gui.backpack.settings_preset_load=Load settings from slot %s
+gui.backpack.settings_preset_load_controls=Scroll to change slot
+gui.backpack.settings_preset_load_no_save=No saved settings to load
+gui.backpack.settings_preset_delete=Delete settings in slot %s
+gui.backpack.settings_preset_delete_controls=Scroll to change slot
+gui.backpack.settings_preset_export=Export settings to %s
+gui.backpack.settings_preset_export_enter_name=Enter file name
+gui.backpack.settings_preset_export_info=Export as JSON file
+gui.backpack.settings_preset_import=Import settings from %s
+gui.backpack.settings_preset_import_controls=Scroll to change file
+gui.backpack.settings_preset_confirm=Confirm input
+gui.backpack.settings_preset_no_files=No JSON files available to import
+gui.backpack.settings_preset_new_slot=1
+gui.backpack.settings_preset_unnamed=Enter slot name
+gui.backpack.settings_message_save=Settings saved to slot %s
+gui.backpack.settings_message_load=Loaded settings from slot %s
+gui.backpack.settings_message_export=Settings exported to %s
+gui.backpack.settings_message_export_empty_name=File name cannot be empty
+gui.backpack.settings_message_export_invalid_chars=File name contains invalid characters: %s
 
 gui.backpack.void_any=Void Always
 gui.backpack.void_overflow=Void Slot Overflow

@@ -139,6 +139,15 @@ public class OKBGuiTextures {
     public static final IDrawable KEEP_TAB_ICON = icon("keep_tab", 80, 80);
     public static final IDrawable NOT_KEEP_TAB_ICON = icon("not_keep_tab", 80, 96);
 
+    public static final IDrawable SHIFT_CLICK_INVENTORY_ICON = icon("shift_click_inv", 64, 96);
+    public static final IDrawable SHIFT_CLICK_OPEN_TAB_ICON = icon("shift_click_tab", 80, 32);
+
+    public static final IDrawable SAVE_TEMPLATE_ICON = icon("save_template", 240, 16);
+    public static final IDrawable LOAD_TEMPLATE_ICON = icon("load_template", 240, 32);
+    public static final IDrawable DELETE_TEMPLATE_ICON = icon("delete_template", 240, 48);
+    public static final IDrawable EXPORT_TEMPLATE_ICON = icon("export_template", 240, 64);
+    public static final IDrawable IMPORT_TEMPLATE_ICON = icon("import_template", 240, 80);
+
     public static final IDrawable ONE_IN_FOUR_SLOT_ICON = icon("one_in_four_slot", 0, 80);
     public static final IDrawable ALL_FOUR_SLOT_ICON = icon("all_in_four_slot", 16, 80);
     public static final IDrawable NO_SORT_ICON = icon("no_sort", 32, 80);

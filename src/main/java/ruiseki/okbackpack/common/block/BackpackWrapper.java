@@ -1,5 +1,6 @@
 package ruiseki.okbackpack.common.block;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -22,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
+import com.github.bsideup.jabel.Desugar;
 
 import baubles.api.BaublesApi;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -44,6 +47,7 @@ import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
+import ruiseki.okbackpack.common.helpers.BackpackSettingsTemplate;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.network.PacketJukeboxPlaybackState;
 import ruiseki.okcore.datastructure.BlockPos;
@@ -68,6 +72,11 @@ public class BackpackWrapper implements IBackpackWrapper {
     public boolean lockBackpack;
     public String playerUuid;
     public boolean keepTab;
+    public boolean shiftClickIntoOpenTab;
+    public boolean keepSearchPhrase;
+    public String searchPhrase;
+    public boolean usePlayerSettings;
+    public int noSortColorIndex;
 
     public String customName;
 
@@ -86,6 +95,7 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     public int slotIndex = -1;
     public InventoryType type = null;
+    public final List<SettingsPreset> settingsPresets = new ArrayList<>();
 
     public static final String BACKPACK_NBT = "BackpackNBT";
 
@@ -108,6 +118,12 @@ public class BackpackWrapper implements IBackpackWrapper {
     public static final String PLAYER_UUID_TAG = "PlayerUUID";
 
     public static final String KEEP_TAB_TAG = "KeepTab";
+    public static final String SHIFT_CLICK_INTO_OPEN_TAB_TAG = "ShiftClickIntoOpenTab";
+    public static final String KEEP_SEARCH_PHRASE_TAG = "KeepSearchPhrase";
+    public static final String SEARCH_PHRASE_TAG = "SearchPhrase";
+    public static final String USE_PLAYER_SETTINGS_TAG = "UsePlayerSettings";
+    public static final String NO_SORT_COLOR_INDEX_TAG = "NoSortColorIndex";
+    public static final String SETTINGS_PRESETS_TAG = "SettingsPresets";
 
     public static final String CUSTOM_NAME_TAG = "CustomName";
 
@@ -161,7 +177,13 @@ public class BackpackWrapper implements IBackpackWrapper {
             .toString();
         this.playerUuid = "";
         this.keepTab = true;
+        this.shiftClickIntoOpenTab = false;
+        this.keepSearchPhrase = false;
+        this.searchPhrase = "";
+        this.usePlayerSettings = false;
+        this.noSortColorIndex = 0;
         this.sleepingBagDeployed = false;
+        ensureDefaultSettingsPreset();
 
         this.backpackHandler = new BackpackItemStackHandler(backpackSlots, this) {
 
@@ -829,6 +851,11 @@ public class BackpackWrapper implements IBackpackWrapper {
         tag.setBoolean(LOCKED_BACKPACK_TAG, lockBackpack);
 
         tag.setBoolean(KEEP_TAB_TAG, keepTab);
+        tag.setBoolean(SHIFT_CLICK_INTO_OPEN_TAB_TAG, shiftClickIntoOpenTab);
+        tag.setBoolean(KEEP_SEARCH_PHRASE_TAG, keepSearchPhrase);
+        tag.setString(SEARCH_PHRASE_TAG, searchPhrase == null ? "" : searchPhrase);
+        tag.setBoolean(USE_PLAYER_SETTINGS_TAG, usePlayerSettings);
+        tag.setInteger(NO_SORT_COLOR_INDEX_TAG, noSortColorIndex);
 
         tag.setString(UUID_TAG, uuid);
 
@@ -844,6 +871,12 @@ public class BackpackWrapper implements IBackpackWrapper {
         tag.setInteger(SLEEPING_BAG_X, sleepingBagX);
         tag.setInteger(SLEEPING_BAG_Y, sleepingBagY);
         tag.setInteger(SLEEPING_BAG_Z, sleepingBagZ);
+
+        NBTTagList presetsTag = new NBTTagList();
+        for (SettingsPreset preset : settingsPresets) {
+            presetsTag.appendTag(preset.serializeNBT());
+        }
+        tag.setTag(SETTINGS_PRESETS_TAG, presetsTag);
 
         return tag;
     }
@@ -907,6 +940,18 @@ public class BackpackWrapper implements IBackpackWrapper {
 
         if (tag.hasKey(LOCKED_BACKPACK_TAG, 1)) this.lockBackpack = tag.getBoolean(LOCKED_BACKPACK_TAG);
         if (tag.hasKey(KEEP_TAB_TAG, 1)) this.keepTab = tag.getBoolean(KEEP_TAB_TAG);
+        if (tag.hasKey(SHIFT_CLICK_INTO_OPEN_TAB_TAG, 1))
+            this.shiftClickIntoOpenTab = tag.getBoolean(SHIFT_CLICK_INTO_OPEN_TAB_TAG);
+        if (tag.hasKey(KEEP_SEARCH_PHRASE_TAG, 1)) this.keepSearchPhrase = tag.getBoolean(KEEP_SEARCH_PHRASE_TAG);
+        if (tag.hasKey(SEARCH_PHRASE_TAG, 8)) {
+            this.searchPhrase = tag.getString(SEARCH_PHRASE_TAG);
+        }
+        if (tag.hasKey(USE_PLAYER_SETTINGS_TAG, 1)) {
+            this.usePlayerSettings = tag.getBoolean(USE_PLAYER_SETTINGS_TAG);
+        }
+        if (tag.hasKey(NO_SORT_COLOR_INDEX_TAG, 3)) {
+            this.noSortColorIndex = tag.getInteger(NO_SORT_COLOR_INDEX_TAG);
+        }
 
         if (tag.hasKey(UUID_TAG, 8)) {
             this.uuid = tag.getString(UUID_TAG);
@@ -928,6 +973,15 @@ public class BackpackWrapper implements IBackpackWrapper {
         if (tag.hasKey(SLEEPING_BAG_X, 3)) this.sleepingBagX = tag.getInteger(SLEEPING_BAG_X);
         if (tag.hasKey(SLEEPING_BAG_Y, 3)) this.sleepingBagY = tag.getInteger(SLEEPING_BAG_Y);
         if (tag.hasKey(SLEEPING_BAG_Z, 3)) this.sleepingBagZ = tag.getInteger(SLEEPING_BAG_Z);
+
+        settingsPresets.clear();
+        if (tag.hasKey(SETTINGS_PRESETS_TAG, 9)) {
+            NBTTagList presetsTag = tag.getTagList(SETTINGS_PRESETS_TAG, 10);
+            for (int i = 0; i < presetsTag.tagCount(); i++) {
+                settingsPresets.add(SettingsPreset.fromNBT(presetsTag.getCompoundTagAt(i), backpackSlots));
+            }
+        }
+        ensureDefaultSettingsPreset();
     }
 
     @Override
@@ -967,6 +1021,113 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public void setKeepTab(boolean keepTab) {
         this.keepTab = keepTab;
+    }
+
+    @Override
+    public boolean isShiftClickIntoOpenTab() {
+        return shiftClickIntoOpenTab;
+    }
+
+    @Override
+    public void setShiftClickIntoOpenTab(boolean shiftClickIntoOpenTab) {
+        this.shiftClickIntoOpenTab = shiftClickIntoOpenTab;
+    }
+
+    @Override
+    public boolean isKeepSearchPhrase() {
+        return keepSearchPhrase;
+    }
+
+    @Override
+    public void setKeepSearchPhrase(boolean keepSearchPhrase) {
+        this.keepSearchPhrase = keepSearchPhrase;
+    }
+
+    @Override
+    public boolean isUsePlayerSettings() {
+        return usePlayerSettings;
+    }
+
+    @Override
+    public void setUsePlayerSettings(boolean usePlayerSettings) {
+        this.usePlayerSettings = usePlayerSettings;
+    }
+
+    public String getSearchPhrase() {
+        return searchPhrase == null ? "" : searchPhrase;
+    }
+
+    public void setSearchPhrase(String searchPhrase) {
+        this.searchPhrase = searchPhrase == null ? "" : searchPhrase;
+    }
+
+    public int getNoSortColorIndex() {
+        return noSortColorIndex;
+    }
+
+    public void setNoSortColorIndex(int noSortColorIndex) {
+        this.noSortColorIndex = Math.floorMod(noSortColorIndex, 16);
+    }
+
+    public int getSettingsPresetCount() {
+        return settingsPresets.size();
+    }
+
+    public String getSettingsPresetName(int index) {
+        if (index < 0 || index >= settingsPresets.size()) {
+            return "";
+        }
+        return settingsPresets.get(index).name;
+    }
+
+    public void saveSettingsPreset(int index, String name) {
+        ensurePresetIndex(index);
+        settingsPresets.set(
+            index,
+            new SettingsPreset(name == null ? "" : name.trim(), BackpackSettingsTemplate.fromWrapper(this)));
+        markDirty();
+    }
+
+    public int addSettingsPreset(String name, BackpackSettingsTemplate template) {
+        settingsPresets.add(
+            new SettingsPreset(
+                name == null ? "" : name.trim(),
+                template == null ? new BackpackSettingsTemplate(backpackSlots) : template));
+        markDirty();
+        return settingsPresets.size() - 1;
+    }
+
+    public boolean loadSettingsPreset(int index) {
+        if (index < 0 || index >= settingsPresets.size()) {
+            return false;
+        }
+
+        settingsPresets.get(index).template.applyTo(this);
+        markDirty();
+        return true;
+    }
+
+    public int deleteSettingsPreset(int index) {
+        if (index < 0 || index >= settingsPresets.size() || settingsPresets.size() == 1) {
+            return 0;
+        }
+
+        settingsPresets.remove(index);
+        ensureDefaultSettingsPreset();
+        markDirty();
+        return Math.min(index, settingsPresets.size() - 1);
+    }
+
+    private void ensurePresetIndex(int index) {
+        while (settingsPresets.size() <= index) {
+            settingsPresets.add(new SettingsPreset("", new BackpackSettingsTemplate(backpackSlots)));
+        }
+    }
+
+    private void ensureDefaultSettingsPreset() {
+        if (settingsPresets.isEmpty()) {
+            settingsPresets.add(new SettingsPreset("", new BackpackSettingsTemplate(backpackSlots)));
+        }
     }
 
     @Override
@@ -1061,5 +1222,31 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public ItemStack getBackpack() {
         return backpack;
+    }
+
+    @Desugar
+    public record SettingsPreset(String name, BackpackSettingsTemplate template) {
+
+        private static final String NAME_TAG = "Name";
+        private static final String TEMPLATE_TAG = "Template";
+
+        public SettingsPreset(String name, BackpackSettingsTemplate template) {
+            this.name = name == null ? "" : name;
+            this.template = template;
+        }
+
+        public NBTTagCompound serializeNBT() {
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setString(NAME_TAG, name);
+            tag.setTag(TEMPLATE_TAG, template.serializeNBT());
+            return tag;
+        }
+
+        public static SettingsPreset fromNBT(NBTTagCompound tag, int slotCount) {
+            String name = tag.hasKey(NAME_TAG, 8) ? tag.getString(NAME_TAG) : "";
+            BackpackSettingsTemplate template = BackpackSettingsTemplate
+                .fromNBT(tag.getCompoundTag(TEMPLATE_TAG), slotCount);
+            return new SettingsPreset(name, template);
+        }
     }
 }

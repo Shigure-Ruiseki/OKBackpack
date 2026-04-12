@@ -95,6 +95,12 @@ public class CyclicVariantButtonWidget extends ButtonWidget<CyclicVariantButtonW
         return this;
     }
 
+    public CyclicVariantButtonWidget setIndex(int index) {
+        this.index = Math.floorMod(index, variants.size());
+        markTooltipDirty();
+        return this;
+    }
+
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
 

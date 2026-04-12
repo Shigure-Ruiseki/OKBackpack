@@ -70,6 +70,18 @@ public interface IStorageWrapper
 
     void setLockStorage(boolean lockStorage);
 
+    boolean isUsePlayerSettings();
+
+    void setUsePlayerSettings(boolean usePlayerSettings);
+
+    boolean isShiftClickIntoOpenTab();
+
+    void setShiftClickIntoOpenTab(boolean shiftClickIntoOpenTab);
+
+    boolean isKeepSearchPhrase();
+
+    void setKeepSearchPhrase(boolean keepSearchPhrase);
+
     String getPlayerUUID();
 
     void setPlayerUUID(String playerUUID);

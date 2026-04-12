@@ -26,8 +26,8 @@ public class BackpackSettingPanel extends ModularPanel {
 
     private final List<TabWidget> tabs = new ArrayList<>();
     private final TabWidget backpackTab;
-    private final TabWidget memoryTab;
     private final TabWidget sortTab;
+    private final TabWidget memoryTab;
 
     public BackpackSettingPanel(IStoragePanel<?> parent) {
         super("backpack_settings");
@@ -44,30 +44,50 @@ public class BackpackSettingPanel extends ModularPanel {
         backpackTab.setExpandedWidget(new BackpackSettingWidget(parent, this, backpackTab));
         backpackTab.setTabIcon(OKBGuiTextures.BACKPACK_ICON);
 
-        memoryTab = new TabWidget(2, ExpandDirection.RIGHT);
-        memoryTab.tooltipStatic(
-            tooltip -> tooltip.addLine(IKey.lang("gui.backpack.memory_settings"))
-                .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
-        memoryTab.setExpandedWidget(new MemorySettingWidget(parent, this, memoryTab));
-        memoryTab.setTabIcon(OKBGuiTextures.BRAIN_ICON);
-
-        sortTab = new TabWidget(3, ExpandDirection.RIGHT);
-        sortTab.tooltipStatic(
-            tooltip -> tooltip.addLine(IKey.lang("gui.backpack.sorting_settings"))
-                .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+        sortTab = new TabWidget(2, ExpandDirection.RIGHT);
+        sortTab.tooltipDynamic(tooltip -> {
+            tooltip.clearText();
+            if (sortTab.isShowExpanded()) {
+                tooltip.addLine(IKey.lang("gui.backpack.sorting_settings.tooltip_open_detail"));
+            } else {
+                tooltip.addLine(IKey.lang("gui.backpack.sorting_settings"))
+                    .addLine(
+                        IKey.lang("gui.backpack.sorting_settings.tooltip_detail")
+                            .style(IKey.GRAY));
+            }
+            tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+        });
+        sortTab.tooltipAutoUpdate(true);
         sortTab.setExpandedWidget(new SortingSettingWidget(parent, this, sortTab));
         sortTab.setTabIcon(OKBGuiTextures.NO_SORT_ICON);
 
-        tabs.add(backpackTab);
-        tabs.add(memoryTab);
-        tabs.add(sortTab);
+        memoryTab = new TabWidget(3, ExpandDirection.RIGHT);
+        memoryTab.tooltipDynamic(tooltip -> {
+            tooltip.clearText();
+            if (memoryTab.isShowExpanded()) {
+                tooltip.addLine(IKey.lang("gui.backpack.memory_settings.tooltip_open_detail"));
+            } else {
+                tooltip.addLine(IKey.lang("gui.backpack.memory_settings"))
+                    .addLine(
+                        IKey.lang("gui.backpack.memory_settings.tooltip_detail")
+                            .style(IKey.GRAY));
+            }
+            tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+        });
+        memoryTab.tooltipAutoUpdate(true);
+        memoryTab.setExpandedWidget(new MemorySettingWidget(parent, this, memoryTab));
+        memoryTab.setTabIcon(OKBGuiTextures.BRAIN_ICON);
 
-        child(backpackTab).child(memoryTab)
-            .child(sortTab);
+        tabs.add(backpackTab);
+        tabs.add(sortTab);
+        tabs.add(memoryTab);
+
+        child(backpackTab).child(sortTab)
+            .child(memoryTab);
     }
 
     public void updateTabState(int openIndex) {
-        TabWidget[] tabs = { backpackTab, memoryTab, sortTab };
+        TabWidget[] tabs = { backpackTab, sortTab, memoryTab };
 
         for (TabWidget tab : tabs) {
             tab.setEnabled(true);
