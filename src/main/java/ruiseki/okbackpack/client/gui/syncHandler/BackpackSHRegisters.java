@@ -30,6 +30,7 @@ public class BackpackSHRegisters implements IInitListener {
     public static final String UPDATE_LOAD_SETTINGS_PRESET = "update_load_settings_preset";
     public static final String UPDATE_DELETE_SETTINGS_PRESET = "update_delete_settings_preset";
     public static final String UPDATE_IMPORT_SETTINGS_PRESET = "update_import_settings_preset";
+    public static final String UPDATE_TAB_INDEX = "update_tab_index";
     public static final String DEPLOY_SLEEPING_BAG = "update_deploy_sleeping_bag";
 
     @Override
@@ -129,6 +130,11 @@ public class BackpackSHRegisters implements IInitListener {
                 BackpackSettingsTemplate template = BackpackSettingsTemplate
                     .fromNBT(buf.readNBTTagCompoundFromBuffer(), handler.wrapper.getSlots());
                 handler.wrapper.addSettingsPreset(name, template);
+            });
+
+            BackpackSHRegistry.registerServer(UPDATE_TAB_INDEX, (handler, buf) -> {
+                int index = buf.readInt();
+                handler.wrapper.setTabStartIndex(index);
             });
 
             BackpackSHRegistry.registerServer(DEPLOY_SLEEPING_BAG, (handler, buf) -> { deploySleepingBag(handler); });

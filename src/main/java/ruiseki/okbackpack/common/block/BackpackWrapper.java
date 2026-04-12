@@ -77,6 +77,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     public String searchPhrase;
     public boolean usePlayerSettings;
     public int noSortColorIndex;
+    private int tabStartIndex = 0;
 
     public String customName;
 
@@ -124,6 +125,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     public static final String USE_PLAYER_SETTINGS_TAG = "UsePlayerSettings";
     public static final String NO_SORT_COLOR_INDEX_TAG = "NoSortColorIndex";
     public static final String SETTINGS_PRESETS_TAG = "SettingsPresets";
+    public static final String TAB_INDEX_TAG = "TabIndex";
 
     public static final String CUSTOM_NAME_TAG = "CustomName";
 
@@ -856,6 +858,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         tag.setString(SEARCH_PHRASE_TAG, searchPhrase == null ? "" : searchPhrase);
         tag.setBoolean(USE_PLAYER_SETTINGS_TAG, usePlayerSettings);
         tag.setInteger(NO_SORT_COLOR_INDEX_TAG, noSortColorIndex);
+        tag.setInteger(TAB_INDEX_TAG, tabStartIndex);
 
         tag.setString(UUID_TAG, uuid);
 
@@ -952,6 +955,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         if (tag.hasKey(NO_SORT_COLOR_INDEX_TAG, 3)) {
             this.noSortColorIndex = tag.getInteger(NO_SORT_COLOR_INDEX_TAG);
         }
+        if (tag.hasKey(TAB_INDEX_TAG, 3)) this.tabStartIndex = tag.getInteger(TAB_INDEX_TAG);
 
         if (tag.hasKey(UUID_TAG, 8)) {
             this.uuid = tag.getString(UUID_TAG);
@@ -1021,6 +1025,17 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public void setKeepTab(boolean keepTab) {
         this.keepTab = keepTab;
+        if (!keepTab) setTabStartIndex(0);
+    }
+
+    @Override
+    public int getTabStartIndex() {
+        return tabStartIndex;
+    }
+
+    @Override
+    public void setTabStartIndex(int index) {
+        this.tabStartIndex = index;
     }
 
     @Override

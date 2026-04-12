@@ -86,6 +86,10 @@ public interface IStorageWrapper
 
     void setPlayerUUID(String playerUUID);
 
+    int getTabStartIndex();
+
+    void setTabStartIndex(int index);
+
     boolean isDirty();
 
     void markDirty();
