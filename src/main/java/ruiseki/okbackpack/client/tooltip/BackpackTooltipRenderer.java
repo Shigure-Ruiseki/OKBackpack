@@ -19,6 +19,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.cleanroommc.modularui.screen.RichTooltipEvent;
 import com.github.bsideup.jabel.Desugar;
 import com.gtnewhorizon.gtnhlib.client.event.RenderTooltipEvent;
 
@@ -30,11 +31,11 @@ import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
+import ruiseki.okbackpack.config.ModConfig;
 
 @SideOnly(Side.CLIENT)
 public class BackpackTooltipRenderer {
 
-    private static final int MAX_STACKS_ON_LINE = 9;
     private static final int DEFAULT_STACK_WIDTH = 18;
     private static final int COUNT_PADDING = 2;
 
@@ -116,7 +117,7 @@ public class BackpackTooltipRenderer {
         }
 
         // Replicate the exact position algorithm from GTNHLib's drawHoveringText overwrite
-        capturedTooltipX = mouseX + 16;
+        capturedTooltipX = mouseX + 4 + 8;
         capturedTooltipY = mouseY - 12;
         int tooltipHeight = 8;
         if (tooltipTextSnapshot.size() > 1) {
@@ -124,12 +125,21 @@ public class BackpackTooltipRenderer {
         }
 
         if (capturedTooltipX + maxWidth > screenWidth) {
-            capturedTooltipX -= 28 + maxWidth;
+            capturedTooltipX -= 8 + 16 + maxWidth;
         }
         if (capturedTooltipY + tooltipHeight + 6 > screenHeight) {
             capturedTooltipY = screenHeight - tooltipHeight - 6;
         }
 
+        positionCaptured = true;
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onRichTooltipPostText(RichTooltipEvent.PostText event) {
+        if (!shouldRenderItems || tooltipTextSnapshot.isEmpty()) return;
+
+        capturedTooltipX = event.getX();
+        capturedTooltipY = event.getY() + 12;
         positionCaptured = true;
     }
 
@@ -219,10 +229,11 @@ public class BackpackTooltipRenderer {
         RenderItem itemRender = RenderItem.getInstance();
 
         int x = leftX;
+        int maxPerRow = ModConfig.tooltipMaxItemsPerRow;
         for (int i = 0; i < sortedContents.size(); i++) {
-            int row = i / MAX_STACKS_ON_LINE;
+            int row = i / maxPerRow;
             int y = topY + row * 20;
-            if (i % MAX_STACKS_ON_LINE == 0 && i > 0) {
+            if (i % maxPerRow == 0 && i > 0) {
                 x = leftX;
             }
 
@@ -281,7 +292,8 @@ public class BackpackTooltipRenderer {
 
     public static int getInventorySpacerLines() {
         if (sortedContents.isEmpty()) return 0;
-        int rows = 1 + (sortedContents.size() - 1) / MAX_STACKS_ON_LINE;
+        int maxPerRow = ModConfig.tooltipMaxItemsPerRow;
+        int rows = 1 + (sortedContents.size() - 1) / maxPerRow;
         return rows * 2;
     }
 
@@ -302,7 +314,7 @@ public class BackpackTooltipRenderer {
             upgradeWidth += (info.canBeDisabled ? 4 : 0) + DEFAULT_STACK_WIDTH;
         }
         int contentsWidth = 0;
-        int itemsOnLine = Math.min(sortedContents.size(), MAX_STACKS_ON_LINE);
+        int itemsOnLine = Math.min(sortedContents.size(), ModConfig.tooltipMaxItemsPerRow);
         for (int i = 0; i < itemsOnLine; i++) {
             int countWidth = font.getStringWidth(abbreviateCount(sortedContents.get(i).stackSize)) + COUNT_PADDING;
             contentsWidth += Math.max(countWidth, DEFAULT_STACK_WIDTH);
