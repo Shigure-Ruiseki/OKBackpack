@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,6 +19,9 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidHandler;
 
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
@@ -42,6 +46,7 @@ import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IAdminProtectable;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
+import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
@@ -273,6 +278,101 @@ public class BlockBackpack extends BlockOK {
             return wrapper;
         }
 
+        private @Nullable ITankUpgrade getTankForFill(BackpackWrapper wrapper, Fluid fluid) {
+            ITankUpgrade emptyTank = null;
+            for (ITankUpgrade tank : wrapper.gatherCapabilityUpgrades(ITankUpgrade.class)
+                .values()) {
+                FluidStack contents = tank.getContents();
+                if (contents != null && contents.getFluid() == fluid) {
+                    if (contents.amount < tank.getTankCapacity()) {
+                        return tank;
+                    }
+                } else if (contents == null && emptyTank == null) {
+                    emptyTank = tank;
+                }
+            }
+            return emptyTank;
+        }
+
+        private boolean tryFillBackpackFromHandler(BackpackWrapper wrapper, IFluidHandler handler,
+            ForgeDirection direction, boolean doTransfer) {
+            FluidStack available = handler.drain(direction, Integer.MAX_VALUE, false);
+            if (available == null || available.amount <= 0) return false;
+
+            ITankUpgrade tank = getTankForFill(wrapper, available.getFluid());
+            if (tank == null) return false;
+
+            int accepted = tank.fill(available, false);
+            if (accepted <= 0) return false;
+
+            FluidStack drained = handler.drain(direction, accepted, false);
+            if (drained == null || drained.amount <= 0) return false;
+
+            int actualAccepted = tank.fill(drained, false);
+            if (actualAccepted <= 0) return false;
+            if (!doTransfer) return true;
+
+            FluidStack actualDrained = handler.drain(direction, actualAccepted, true);
+            return actualDrained != null && actualDrained.amount > 0 && tank.fill(actualDrained, true) > 0;
+        }
+
+        private boolean tryDrainBackpackIntoHandler(BackpackWrapper wrapper, IFluidHandler handler,
+            ForgeDirection direction, boolean doTransfer) {
+            for (ITankUpgrade tank : wrapper.gatherCapabilityUpgrades(ITankUpgrade.class)
+                .values()) {
+                FluidStack available = tank.drain(Integer.MAX_VALUE, false);
+                if (available == null || available.amount <= 0) continue;
+
+                int accepted = handler.fill(direction, available, false);
+                if (accepted <= 0) continue;
+
+                FluidStack toTransfer = tank.drain(accepted, false);
+                if (toTransfer == null || toTransfer.amount <= 0) continue;
+
+                int actualAccepted = handler.fill(direction, toTransfer, false);
+                if (actualAccepted <= 0) continue;
+                if (!doTransfer) return true;
+
+                FluidStack actualDrained = tank.drain(actualAccepted, true);
+                if (actualDrained == null || actualDrained.amount <= 0) continue;
+
+                int filled = handler.fill(direction, actualDrained, true);
+                if (filled <= 0) {
+                    tank.fill(actualDrained, true);
+                    continue;
+                }
+
+                if (filled < actualDrained.amount) {
+                    tank.fill(new FluidStack(actualDrained, actualDrained.amount - filled), true);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private boolean tryInteractWithFluidHandler(ItemStack stack, EntityPlayer player, World world, int x, int y,
+            int z, int side, boolean doTransfer) {
+            TileEntity tile = world.getTileEntity(x, y, z);
+            if (!(tile instanceof IFluidHandler handler)) return false;
+
+            BackpackWrapper wrapper = createWrapper(stack);
+            if (wrapper == null || !wrapper.canPlayerAccess(player.getUniqueID())) return false;
+            if (wrapper.gatherCapabilityUpgrades(ITankUpgrade.class)
+                .isEmpty()) return false;
+
+            ForgeDirection direction = ForgeDirection.getOrientation(side);
+            boolean transferred = tryFillBackpackFromHandler(wrapper, handler, direction, doTransfer)
+                || tryDrainBackpackIntoHandler(wrapper, handler, direction, doTransfer);
+            if (!transferred || !doTransfer) return transferred;
+
+            wrapper.writeToItem();
+            if (player instanceof EntityPlayerMP playerMP) {
+                playerMP.updateHeldItem();
+                playerMP.inventoryContainer.detectAndSendChanges();
+            }
+            return true;
+        }
+
         @Override
         public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
             BackpackWrapper wrapper = createWrapper(container);
@@ -392,15 +492,14 @@ public class BlockBackpack extends BlockOK {
         @Override
         public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
             float hitX, float hitY, float hitZ) {
+            if (stack == null) return false;
 
-            if (player.isSneaking() && stack != null && !(world.getBlock(x, y, z) instanceof BlockBackpack)) {
+            if (player.isSneaking() && !(world.getBlock(x, y, z) instanceof BlockBackpack)) {
                 if (stack.getTagCompound() == null) {
                     new BackpackWrapper(stack, this).writeToItem();
                 }
                 return super.onItemUse(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
-            }
-
-            return false;
+            } else return tryInteractWithFluidHandler(stack, player, world, x, y, z, side, !world.isRemote);
         }
 
         @Override
