@@ -7,6 +7,7 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import ruiseki.okbackpack.api.widget.IUpgradeSlotGroupFactory;
+import ruiseki.okbackpack.client.gui.slot.ModularUpgradeWidgetSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedFloatSH;
 import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedIntSH;
@@ -25,13 +26,19 @@ public class TankSlotGroupFactory implements IUpgradeSlotGroupFactory {
         group.put("tank_inv_handler", tankInvHandler);
 
         // Input slot (index 0) - containers that provide fluid
-        ModularSlot inputSlot = new ModularSlot(tankInvHandler.delegatedStackHandler, 0);
+        ModularUpgradeWidgetSlot inputSlot = new ModularUpgradeWidgetSlot(
+            group.slotIndex,
+            tankInvHandler.delegatedStackHandler,
+            0);
         inputSlot.slotGroup("tank_slots_" + group.slotIndex);
         group.syncManager.syncValue("tank_slot_" + group.slotIndex, 0, new ItemSlotSH(inputSlot));
         group.put("tank_input", inputSlot);
 
         // Output slot (index 1) - containers that receive fluid
-        ModularSlot outputSlot = new ModularSlot(tankInvHandler.delegatedStackHandler, 1);
+        ModularUpgradeWidgetSlot outputSlot = new ModularUpgradeWidgetSlot(
+            group.slotIndex,
+            tankInvHandler.delegatedStackHandler,
+            1);
         outputSlot.slotGroup("tank_slots_" + group.slotIndex);
         group.syncManager.syncValue("tank_slot_" + group.slotIndex, 1, new ItemSlotSH(outputSlot));
         group.put("tank_output", outputSlot);

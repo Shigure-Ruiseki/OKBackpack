@@ -26,13 +26,16 @@ import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.IStorageContainer;
+import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
+import ruiseki.okbackpack.client.gui.slot.AnvilOutputModularSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingMatrixSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularUpgradeSlot;
+import ruiseki.okbackpack.client.gui.slot.ModularUpgradeWidgetSlot;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
@@ -437,17 +440,25 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
             }
             return fromStack;
         } else if (PLAYER_INV.equals(fromSlot.getSlotGroupName())) {
-            if (wrapper.isShiftClickIntoOpenTab()) {
-                transferItemFiltered(
-                    fromSlot,
-                    fromStack,
-                    slot -> slot instanceof ModularBackpackSlot && wrapper.isSlotMemorized(slot.getSlotIndex()));
-            } else {
-                transferItemFiltered(
-                    fromSlot,
-                    fromStack,
-                    slot -> slot instanceof ModularBackpackSlot && wrapper.isSlotMemorized(slot.getSlotIndex()),
-                    slot -> slot instanceof ModularBackpackSlot);
+            if (fromStack.getItem() instanceof IUpgradeItem) {
+                transferItemFiltered(fromSlot, fromStack, slot -> slot instanceof ModularUpgradeSlot);
+            }
+            if (fromStack.stackSize == originalSize) {
+                if (wrapper.isShiftClickIntoOpenTab()) {
+                    transferItemFiltered(
+                        fromSlot,
+                        fromStack,
+                        this::isUpgradeWidgetTargetSlot,
+                        slot -> slot instanceof ModularBackpackSlot && wrapper.isSlotMemorized(slot.getSlotIndex()),
+                        slot -> slot instanceof ModularBackpackSlot);
+                } else {
+                    transferItemFiltered(
+                        fromSlot,
+                        fromStack,
+                        slot -> slot instanceof ModularBackpackSlot && wrapper.isSlotMemorized(slot.getSlotIndex()),
+                        slot -> slot instanceof ModularBackpackSlot,
+                        this::isUpgradeWidgetTargetSlot);
+                }
             }
         } else {
             return super.transferItem(fromSlot, fromStack);
@@ -467,7 +478,9 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
 
         for (Predicate<ModularSlot> slotFilter : slotFilters) {
 
-            List<ModularSlot> targets = getShiftClickSlots().stream()
+            List<ModularSlot> targets = this.inventorySlots.stream()
+                .filter(slot -> slot instanceof ModularSlot)
+                .map(slot -> (ModularSlot) slot)
                 .filter(slotFilter)
                 .collect(Collectors.toList());
 
@@ -481,7 +494,57 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
 
     }
 
+    private boolean isUpgradeWidgetTargetSlot(ModularSlot slot) {
+        if (!(slot instanceof ModularUpgradeWidgetSlot uwSlot)) return false;
+        int openIndex = getOpenUpgradeSlotIndex();
+        if (openIndex < 0 || uwSlot.getUpgradeSlotIndex() != openIndex) return false;
+        if (slot.isPhantom()) return false;
+        if (isExtractionOnlyUpgradeSlot(slot)) return false;
+        return true;
+    }
+
+    private int getOpenUpgradeSlotIndex() {
+        for (int i = 0; i < wrapper.getUpgradeHandler()
+            .getSlots(); i++) {
+            IUpgradeWrapper upgradeWrapper = wrapper.getUpgradeHandler()
+                .getWrapperInSlot(i);
+            if (upgradeWrapper != null && upgradeWrapper.isTabOpened()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private boolean isExtractionOnlyUpgradeSlot(ModularSlot slot) {
+        if (slot instanceof IndexedModularCraftingSlot || slot instanceof AnvilOutputModularSlot) {
+            return true;
+        }
+        String slotGroupName = slot.getSlotGroupName();
+        return slotGroupName != null && slotGroupName.startsWith("smelting_slots_") && slot.getSlotIndex() == 2;
+    }
+
+    private boolean canQuickMoveIntoSlot(ModularSlot toSlot, ItemStack fromStack) {
+        if (toSlot.isPhantom() || isExtractionOnlyUpgradeSlot(toSlot) || !toSlot.isItemValid(fromStack)) {
+            return false;
+        }
+        if (toSlot instanceof ModularUpgradeWidgetSlot uwSlot && !uwSlot.canShiftClickInsert(fromStack)) {
+            return false;
+        }
+
+        ItemStack toStack = toSlot.getStack();
+        if (toStack == null) {
+            return true;
+        }
+
+        return ItemHandlerHelper.canItemStacksStack(fromStack, toStack)
+            && toStack.stackSize < stackLimit(toSlot, fromStack);
+    }
+
     protected void transferToSlot(ModularSlot fromSlot, ModularSlot toSlot, ItemStack fromStack) {
+
+        if (!canQuickMoveIntoSlot(toSlot, fromStack)) {
+            return;
+        }
 
         boolean isBackpackSlot = toSlot instanceof ModularBackpackSlot;
         ItemStack toStack = toSlot.getStack();
