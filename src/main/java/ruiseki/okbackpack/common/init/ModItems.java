@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Level;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.common.item.anvil.ItemAnvilUpgrade;
+import ruiseki.okbackpack.common.item.arcane.ItemArcaneCraftingUpgrade;
 import ruiseki.okbackpack.common.item.battery.ItemBatteryUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemAdvancedCompactingUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemCompactingUpgrade;
@@ -81,6 +82,7 @@ public enum ModItems {
     TANK_UPGRADE(new ItemTankUpgrade()),
     INFINITY_UPGRADE(new ItemInfinityUpgrade()),
     SURVIVAL_INFINITY_UPGRADE(new ItemSurvivalInfinityUpgrade()),
+    ARCANE_CRAFTING_UPGRADE(new ItemArcaneCraftingUpgrade(), Mods.Thaumcraft),
 
     //
     ;

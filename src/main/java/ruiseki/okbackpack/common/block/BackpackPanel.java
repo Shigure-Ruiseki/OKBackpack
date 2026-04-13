@@ -79,6 +79,7 @@ import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotGroupWidget;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
+import ruiseki.okbackpack.common.item.arcane.ArcaneCraftingUpgradeWrapper;
 import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 import ruiseki.okcore.helper.ItemStackHelpers;
 import ruiseki.okcore.helper.LangHelpers;
@@ -852,7 +853,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 .getWrapperInSlot(slotIndex);
             if (wrapper == null) continue;
 
-            if (wrapper instanceof CraftingUpgradeWrapper && wrapper.isTabOpened()) {
+            if ((wrapper instanceof CraftingUpgradeWrapper || wrapper instanceof ArcaneCraftingUpgradeWrapper)
+                && wrapper.isTabOpened()) {
                 return slotIndex;
             }
         }

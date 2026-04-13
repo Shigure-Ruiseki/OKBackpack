@@ -11,6 +11,7 @@ public enum Mods {
     CodeChickenCore("CodeChickenCore"),
     EtFuturum("etfuturum"),
     TConstruct("TConstruct"),
+    Thaumcraft("Thaumcraft"),
     ;
     // spotless:on
 
