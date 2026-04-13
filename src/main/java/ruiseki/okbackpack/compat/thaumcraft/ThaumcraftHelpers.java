@@ -1,6 +1,9 @@
 package ruiseki.okbackpack.compat.thaumcraft;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -16,6 +19,8 @@ import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.IArcaneRecipe;
+import thaumcraft.api.crafting.ShapedArcaneRecipe;
+import thaumcraft.api.crafting.ShapelessArcaneRecipe;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.research.ResearchItem;
 import thaumcraft.common.items.wands.ItemWandCasting;
@@ -23,6 +28,8 @@ import thaumcraft.common.lib.crafting.ThaumcraftCraftingManager;
 import thaumcraft.common.tiles.TileMagicWorkbench;
 
 public class ThaumcraftHelpers {
+
+    private static Field shapedMirroredField;
 
     public static boolean isWand(ItemStack stack) {
         return stack != null && stack.getItem() instanceof ItemWandCasting;
@@ -172,10 +179,120 @@ public class ThaumcraftHelpers {
     }
 
     private static boolean matchesItemsOnly(IArcaneRecipe recipe, TileMagicWorkbench proxy, EntityPlayer player) {
+        if (recipe instanceof ShapedArcaneRecipe shaped) {
+            return matchesShapedItemsOnly(shaped, proxy);
+        } else if (recipe instanceof ShapelessArcaneRecipe shapeless) {
+            return matchesShapelessItemsOnly(shapeless, proxy);
+        }
         try {
             return recipe.matches(proxy, player.worldObj, player);
         } catch (Exception ignored) {
             return false;
+        }
+    }
+
+    private static boolean matchesShapedItemsOnly(ShapedArcaneRecipe recipe, IInventory inv) {
+        boolean mirrored = getShapedMirrored(recipe);
+        for (int x = 0; x <= 3 - recipe.width; x++) {
+            for (int y = 0; y <= 3 - recipe.height; y++) {
+                if (checkShapedMatch(recipe, inv, x, y, false)) {
+                    return true;
+                }
+                if (mirrored && checkShapedMatch(recipe, inv, x, y, true)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static boolean checkShapedMatch(ShapedArcaneRecipe recipe, IInventory inv, int startX, int startY,
+        boolean mirror) {
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                int subX = x - startX;
+                int subY = y - startY;
+                Object target = null;
+                if (subX >= 0 && subY >= 0 && subX < recipe.width && subY < recipe.height) {
+                    if (mirror) {
+                        target = recipe.input[recipe.width - subX - 1 + subY * recipe.width];
+                    } else {
+                        target = recipe.input[subX + subY * recipe.width];
+                    }
+                }
+
+                ItemStack slot = ThaumcraftApiHelper.getStackInRowAndColumn(inv, x, y);
+                if (target instanceof ItemStack) {
+                    if (!checkItemEquals((ItemStack) target, slot)) {
+                        return false;
+                    }
+                } else if (target instanceof ArrayList) {
+                    boolean matched = false;
+                    for (ItemStack item : (ArrayList<ItemStack>) target) {
+                        matched = matched || checkItemEquals(item, slot);
+                    }
+                    if (!matched) {
+                        return false;
+                    }
+                } else if (target == null && slot != null) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static boolean matchesShapelessItemsOnly(ShapelessArcaneRecipe recipe, IInventory inv) {
+        ArrayList<Object> required = new ArrayList<Object>(recipe.getInput());
+        for (int x = 0; x < 9; x++) {
+            ItemStack slot = inv.getStackInSlot(x);
+            if (slot != null) {
+                boolean inRecipe = false;
+                Iterator<Object> req = required.iterator();
+                while (req.hasNext()) {
+                    boolean match = false;
+                    Object next = req.next();
+                    if (next instanceof ItemStack stack) {
+                        match = checkItemEquals(stack, slot);
+                    } else if (next instanceof ArrayList) {
+                        for (ItemStack item : (ArrayList<ItemStack>) next) {
+                            match = match || checkItemEquals(item, slot);
+                        }
+                    }
+                    if (match) {
+                        inRecipe = true;
+                        req.remove();
+                        break;
+                    }
+                }
+                if (!inRecipe) {
+                    return false;
+                }
+            }
+        }
+        return required.isEmpty();
+    }
+
+    private static boolean checkItemEquals(ItemStack target, ItemStack input) {
+        if (input == null && target != null) return false;
+        if (input != null && target == null) return false;
+        if (input == null) return true;
+        return target.getItem() == input.getItem()
+            && (!target.hasTagCompound() || ThaumcraftApiHelper.areItemStackTagsEqualForCrafting(input, target))
+            && (target.getItemDamage() == 32767 || target.getItemDamage() == input.getItemDamage());
+    }
+
+    private static boolean getShapedMirrored(ShapedArcaneRecipe recipe) {
+        try {
+            if (shapedMirroredField == null) {
+                shapedMirroredField = ShapedArcaneRecipe.class.getDeclaredField("mirrored");
+                shapedMirroredField.setAccessible(true);
+            }
+            return shapedMirroredField.getBoolean(recipe);
+        } catch (Exception e) {
+            return true;
         }
     }
 

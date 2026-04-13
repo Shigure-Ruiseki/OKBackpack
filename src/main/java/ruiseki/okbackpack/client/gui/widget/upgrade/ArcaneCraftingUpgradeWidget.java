@@ -156,13 +156,16 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
             public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
                 super.draw(context, widgetTheme);
                 if (!canCraft()) {
-                    GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-                    GL11.glDisable(GL11.GL_TEXTURE_2D);
-                    GL11.glEnable(GL11.GL_BLEND);
-                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                    GL11.glDisable(GL11.GL_LIGHTING);
-                    Gui.drawRect(-3, -3, 21, 21, 0x80000000);
-                    GL11.glPopAttrib();
+                    String missingResearch = wrapper.getMissingResearch();
+                    if (missingResearch == null || missingResearch.isEmpty()) {
+                        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+                        GL11.glDisable(GL11.GL_TEXTURE_2D);
+                        GL11.glEnable(GL11.GL_BLEND);
+                        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                        GL11.glDisable(GL11.GL_LIGHTING);
+                        Gui.drawRect(-3, -3, 21, 21, 0x80000000);
+                        GL11.glPopAttrib();
+                    }
                 }
             }
 
@@ -216,7 +219,7 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
                 GL11.glPopAttrib();
             }
         };
-        insufficientVisText.pos(47, 18 * 3 + 9 + 20)
+        insufficientVisText.pos(47, 18 * 3 + 32)
             .size(60, 10);
         craftingGroupsWidget.child(insufficientVisText);
 
@@ -251,7 +254,7 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
                 GL11.glPopAttrib();
             }
         };
-        missingResearchText.pos(47, 18 * 3 + 9 + 20)
+        missingResearchText.pos(47, 18 * 3 + 32)
             .size(60, 20);
         craftingGroupsWidget.child(missingResearchText);
 
@@ -331,7 +334,9 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
             if (!Mods.Thaumcraft.isLoaded()) return;
 
             Map<String, Integer> requiredAspects = wrapper.getRequiredAspects();
-            int amount = wrapper.hasWand() ? requiredAspects.getOrDefault(aspectTag, 0) : 0;
+            String missingResearch = wrapper.getMissingResearch();
+            boolean hasMissingResearch = missingResearch != null && !missingResearch.isEmpty();
+            int amount = (wrapper.hasWand() && !hasMissingResearch) ? requiredAspects.getOrDefault(aspectTag, 0) : 0;
 
             int color = ThaumcraftHelpers.getAspectColor(aspectTag);
             float r = ((color >> 16) & 0xFF) / 255.0f;
@@ -341,7 +346,7 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
             Minecraft mc = Minecraft.getMinecraft();
 
             float alpha;
-            if (!wrapper.hasWand()) {
+            if (!wrapper.hasWand() || hasMissingResearch) {
                 alpha = 0.3f;
             } else if (amount > 0 && isInsufficient()) {
                 long time = System.currentTimeMillis();
