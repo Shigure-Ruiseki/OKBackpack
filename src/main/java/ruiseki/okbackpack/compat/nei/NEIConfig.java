@@ -20,8 +20,14 @@ public class NEIConfig implements IConfigureNEI {
             API.addRecipeCatalyst(ModItems.ARCANE_CRAFTING_UPGRADE.newItemStack(), "thaumcraft.arcane.shaped");
             API.addRecipeCatalyst(ModItems.ARCANE_CRAFTING_UPGRADE.newItemStack(), "thaumcraft.arcane.shapeless");
             API.registerGuiOverlayHandler(BackpackGuiContainer.class, new BackpackOverlay(), "thaumcraft.wands");
-            API.registerGuiOverlayHandler(BackpackGuiContainer.class, new BackpackOverlay(), "thaumcraft.arcane.shaped");
-            API.registerGuiOverlayHandler(BackpackGuiContainer.class, new BackpackOverlay(), "thaumcraft.arcane.shapeless");
+            API.registerGuiOverlayHandler(
+                BackpackGuiContainer.class,
+                new BackpackOverlay(),
+                "thaumcraft.arcane.shaped");
+            API.registerGuiOverlayHandler(
+                BackpackGuiContainer.class,
+                new BackpackOverlay(),
+                "thaumcraft.arcane.shapeless");
         }
     }
 
