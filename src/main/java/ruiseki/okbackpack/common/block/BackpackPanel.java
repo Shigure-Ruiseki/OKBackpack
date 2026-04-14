@@ -120,6 +120,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
     public final UpgradeSlotGroupWidget upgradeSlotGroupWidget;
     public final List<ItemSlot> upgradeSlotWidgets = new ArrayList<>();
     public final List<TabWidget> tabWidgets;
+    private int activeTabCount = 0;
     public final ItemStack[] lastUpgradeStacks;
 
     public int rowSize;
@@ -343,7 +344,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                         index++;
                     }
 
-                    int tabCount = tabWidgets.size();
+                    int tabCount = activeTabCount;
                     if (tabCount > 0) {
                         index = (index % tabCount + tabCount) % tabCount;
                     }
@@ -650,7 +651,14 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             tabCount++;
         }
 
+        this.activeTabCount = tabCount;
         int startIndex = wrapper.getTabStartIndex();
+        if (tabCount > 0) {
+            startIndex = ((startIndex % tabCount) + tabCount) % tabCount;
+            wrapper.setTabStartIndex(startIndex);
+        } else {
+            startIndex = 0;
+        }
         Integer openedRelIndex = null;
         int coveredSize = 0;
         for (int i = 0; i < tabCount; i++) {
