@@ -71,12 +71,18 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     public boolean lockBackpack;
     public String playerUuid;
+
     public boolean keepTab;
+
     public boolean shiftClickIntoOpenTab;
+
     public boolean keepSearchPhrase;
     public String searchPhrase;
+
     public boolean usePlayerSettings;
     public int noSortColorIndex;
+    public final List<SettingsPreset> settingsPresets = new ArrayList<>();
+
     private int tabStartIndex = 0;
 
     public String customName;
@@ -96,43 +102,6 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     public int slotIndex = -1;
     public InventoryType type = null;
-    public final List<SettingsPreset> settingsPresets = new ArrayList<>();
-
-    public static final String BACKPACK_NBT = "BackpackNBT";
-
-    public static final String BACKPACK_INV = "BackpackInv";
-    public static final String UPGRADE_INV = "UpgradeInv";
-    public static final String BACKPACK_SLOTS = "BackpackSlots";
-    public static final String UPGRADE_SLOTS = "UpgradeSlots";
-    public static final String MEMORY_STACK_ITEMS_TAG = "MemoryItems";
-    public static final String MEMORY_STACK_RESPECT_NBT_TAG = "MemoryRespectNBT";
-    public static final String LOCKED_SLOTS_TAG = "LockedSlots";
-
-    public static final String MAIN_COLOR = "MainColor";
-    public static final String ACCENT_COLOR = "AccentColor";
-
-    public static final String SORT_TYPE_TAG = "SortType";
-
-    public static final String UUID_TAG = "UUID";
-
-    public static final String LOCKED_BACKPACK_TAG = "LockedBackpack";
-    public static final String PLAYER_UUID_TAG = "PlayerUUID";
-
-    public static final String KEEP_TAB_TAG = "KeepTab";
-    public static final String SHIFT_CLICK_INTO_OPEN_TAB_TAG = "ShiftClickIntoOpenTab";
-    public static final String KEEP_SEARCH_PHRASE_TAG = "KeepSearchPhrase";
-    public static final String SEARCH_PHRASE_TAG = "SearchPhrase";
-    public static final String USE_PLAYER_SETTINGS_TAG = "UsePlayerSettings";
-    public static final String NO_SORT_COLOR_INDEX_TAG = "NoSortColorIndex";
-    public static final String SETTINGS_PRESETS_TAG = "SettingsPresets";
-    public static final String TAB_INDEX_TAG = "TabIndex";
-
-    public static final String CUSTOM_NAME_TAG = "CustomName";
-
-    public static final String SLEEPING_BAG_DEPLOYED_TAG = "SleepingBagDeloyed";
-    public static final String SLEEPING_BAG_X = "SleepingBagX";
-    public static final String SLEEPING_BAG_Y = "SleepingBagY";
-    public static final String SLEEPING_BAG_Z = "SleepingBagZ";
 
     public BackpackWrapper() {
         this(null, null, 120, 7);
@@ -709,6 +678,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         }
     }
 
+    @Override
     public boolean canPlayerAccess(UUID playerUUID) {
         if (!lockBackpack) return true;
         if (playerUUID == null || playerUuid == null || playerUuid.isEmpty()) return false;
@@ -1068,26 +1038,32 @@ public class BackpackWrapper implements IBackpackWrapper {
         this.usePlayerSettings = usePlayerSettings;
     }
 
+    @Override
     public String getSearchPhrase() {
         return searchPhrase == null ? "" : searchPhrase;
     }
 
+    @Override
     public void setSearchPhrase(String searchPhrase) {
         this.searchPhrase = searchPhrase == null ? "" : searchPhrase;
     }
 
+    @Override
     public int getNoSortColorIndex() {
         return noSortColorIndex;
     }
 
+    @Override
     public void setNoSortColorIndex(int noSortColorIndex) {
         this.noSortColorIndex = Math.floorMod(noSortColorIndex, 16);
     }
 
+    @Override
     public int getSettingsPresetCount() {
         return settingsPresets.size();
     }
 
+    @Override
     public String getSettingsPresetName(int index) {
         if (index < 0 || index >= settingsPresets.size()) {
             return "";
@@ -1095,6 +1071,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         return settingsPresets.get(index).name;
     }
 
+    @Override
     public void saveSettingsPreset(int index, String name) {
         ensurePresetIndex(index);
         settingsPresets.set(
@@ -1103,6 +1080,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         markDirty();
     }
 
+    @Override
     public int addSettingsPreset(String name, BackpackSettingsTemplate template) {
         settingsPresets.add(
             new SettingsPreset(
@@ -1112,6 +1090,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         return settingsPresets.size() - 1;
     }
 
+    @Override
     public boolean loadSettingsPreset(int index) {
         if (index < 0 || index >= settingsPresets.size()) {
             return false;
@@ -1122,6 +1101,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         return true;
     }
 
+    @Override
     public int deleteSettingsPreset(int index) {
         if (index < 0 || index >= settingsPresets.size()) {
             return 0;
@@ -1165,6 +1145,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         this.playerUuid = playerUUID;
     }
 
+    @Override
     public boolean deploySleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ) {
         if (world.isRemote) return false;
 
@@ -1180,6 +1161,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         return sleepingBagDeployed;
     }
 
+    @Override
     public void removeSleepingBag(World world) {
         if (this.sleepingBagDeployed) {
             if (world.getBlock(sleepingBagX, sleepingBagY, sleepingBagZ) == ModBlocks.SLEEPING_BAG.getBlock())

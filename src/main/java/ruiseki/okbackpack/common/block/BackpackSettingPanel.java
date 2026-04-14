@@ -31,6 +31,7 @@ import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
@@ -136,16 +137,8 @@ public class BackpackSettingPanel extends ModularPanel {
             .child(memoryTab);
     }
 
-    private BackpackPanel getBackpackPanel() {
-        return (BackpackPanel) parent.getStoragePanel();
-    }
-
-    private BackpackWrapper getWrapper() {
-        return getBackpackPanel().wrapper;
-    }
-
-    private BackpackSH getBackpackSyncHandler() {
-        return getBackpackPanel().backpackSyncHandler;
+    private IStorageWrapper getWrapper() {
+        return parent.getWrapper();
     }
 
     private void addSettingsTemplateButtons() {
@@ -513,12 +506,12 @@ public class BackpackSettingPanel extends ModularPanel {
     }
 
     private void saveCurrentSettingsPreset(String name) {
-        BackpackWrapper wrapper = getWrapper();
+        IStorageWrapper wrapper = getWrapper();
         int oldPresetCount = wrapper.getSettingsPresetCount();
         String presetName = name.isEmpty() ? getSavePresetEditableName() : name;
         wrapper.saveSettingsPreset(savePresetIndex, presetName);
         normalizeSelectedIndexes();
-        getBackpackSyncHandler()
+        parent.getStorageSH()
             .syncToServer(BackpackSH.getId(BackpackSHRegisters.UPDATE_SAVE_SETTINGS_PRESET), buffer -> {
                 buffer.writeInt(savePresetIndex);
                 buffer.writeStringToBuffer(presetName == null ? "" : presetName);
@@ -535,21 +528,21 @@ public class BackpackSettingPanel extends ModularPanel {
     }
 
     private void loadSettingsPreset(int presetIndex) {
-        BackpackWrapper wrapper = getWrapper();
+        IStorageWrapper wrapper = getWrapper();
         if (presetIndex >= wrapper.getSettingsPresetCount()) {
             return;
         }
 
         if (wrapper.loadSettingsPreset(presetIndex)) {
             syncLocalPlayerSettingsFromWrapper();
-            getBackpackSyncHandler().syncToServer(
+            parent.getStorageSH().syncToServer(
                 BackpackSH.getId(BackpackSHRegisters.UPDATE_LOAD_SETTINGS_PRESET),
                 buffer -> buffer.writeInt(presetIndex));
         }
     }
 
     private void deleteSelectedSettingsPreset() {
-        BackpackWrapper wrapper = getWrapper();
+        IStorageWrapper wrapper = getWrapper();
         if (deletePresetIndex >= wrapper.getSettingsPresetCount()) {
             return;
         }
@@ -558,7 +551,7 @@ public class BackpackSettingPanel extends ModularPanel {
         boolean saveWasNewSlot = savePresetIndex >= oldPresetCount;
         int indexToDelete = deletePresetIndex;
         deletePresetIndex = wrapper.deleteSettingsPreset(indexToDelete);
-        getBackpackSyncHandler().syncToServer(
+        parent.getStorageSH().syncToServer(
             BackpackSH.getId(BackpackSHRegisters.UPDATE_DELETE_SETTINGS_PRESET),
             buffer -> buffer.writeInt(indexToDelete));
 
@@ -575,7 +568,7 @@ public class BackpackSettingPanel extends ModularPanel {
     }
 
     private void exportCurrentSettingsToFile(String input) {
-        BackpackWrapper wrapper = getWrapper();
+        IStorageWrapper wrapper = getWrapper();
         refreshAvailableSettingsFiles();
 
         String fileName = input.isEmpty() ? getSuggestedExportName() : input;
@@ -602,7 +595,7 @@ public class BackpackSettingPanel extends ModularPanel {
     }
 
     private void importSelectedSettingsFile() {
-        BackpackWrapper wrapper = getWrapper();
+        IStorageWrapper wrapper = getWrapper();
         refreshAvailableSettingsFiles();
         if (availableSettingsFiles.isEmpty()) {
             return;
@@ -630,7 +623,7 @@ public class BackpackSettingPanel extends ModularPanel {
                 savePresetIndex = wrapper.getSettingsPresetCount();
                 normalizeSelectedIndexes();
             }
-            getBackpackSyncHandler()
+            parent.getStorageSH()
                 .syncToServer(BackpackSH.getId(BackpackSHRegisters.UPDATE_IMPORT_SETTINGS_PRESET), buffer -> {
                     buffer.writeStringToBuffer(presetName);
                     buffer.writeNBTTagCompoundToBuffer(template.serializeNBT());
@@ -641,7 +634,7 @@ public class BackpackSettingPanel extends ModularPanel {
     }
 
     private void syncLocalPlayerSettingsFromWrapper() {
-        BackpackWrapper wrapper = getWrapper();
+        IStorageWrapper wrapper = getWrapper();
         if (!wrapper.isUsePlayerSettings()) {
             return;
         }
@@ -658,7 +651,7 @@ public class BackpackSettingPanel extends ModularPanel {
     }
 
     private String getSettingsPresetEditableName(int presetIndex) {
-        BackpackWrapper wrapper = getWrapper();
+        IStorageWrapper wrapper = getWrapper();
         return presetIndex < wrapper.getSettingsPresetCount() ? wrapper.getSettingsPresetName(presetIndex) : "";
     }
 
@@ -688,7 +681,7 @@ public class BackpackSettingPanel extends ModularPanel {
     }
 
     private String getUniqueImportedPresetName(String baseName) {
-        BackpackWrapper wrapper = getWrapper();
+        IStorageWrapper wrapper = getWrapper();
         String candidate = (baseName == null || baseName.trim()
             .isEmpty()) ? "imported" : baseName.trim();
         List<String> existingNames = new ArrayList<>();

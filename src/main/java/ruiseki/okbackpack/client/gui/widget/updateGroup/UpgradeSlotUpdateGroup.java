@@ -6,20 +6,20 @@ import java.util.Map;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.widget.IUpgradeSlotGroupFactory;
 import ruiseki.okbackpack.api.widget.UpgradeSlotGroupRegistry;
-import ruiseki.okbackpack.common.block.BackpackWrapper;
 
 public class UpgradeSlotUpdateGroup {
 
     public final IStoragePanel<?> panel;
-    public final BackpackWrapper wrapper;
+    public final IStorageWrapper wrapper;
     public final int slotIndex;
     public final PanelSyncManager syncManager;
 
     final Map<String, Object> components = new HashMap<>();
 
-    public UpgradeSlotUpdateGroup(IStoragePanel<?> panel, BackpackWrapper wrapper, int slotIndex) {
+    public UpgradeSlotUpdateGroup(IStoragePanel<?> panel, IStorageWrapper wrapper, int slotIndex) {
         this.panel = panel;
         this.wrapper = wrapper;
         this.slotIndex = slotIndex;
