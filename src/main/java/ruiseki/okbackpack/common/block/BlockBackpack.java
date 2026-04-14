@@ -39,6 +39,7 @@ import com.gtnewhorizon.gtnhlib.blockstate.registry.BlockPropertyRegistry;
 import com.gtnewhorizon.gtnhlib.client.model.color.BlockColor;
 import com.gtnewhorizon.gtnhlib.client.model.color.IBlockColor;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
@@ -55,6 +56,7 @@ import ruiseki.okbackpack.client.renderer.player.IBaubleRender;
 import ruiseki.okbackpack.client.renderer.player.PlayerRenderContext;
 import ruiseki.okbackpack.common.entity.EntityBackpack;
 import ruiseki.okbackpack.compat.Mods;
+import ruiseki.okbackpack.compat.thaumcraft.TEBackpackTC;
 import ruiseki.okcore.block.BlockOK;
 import ruiseki.okcore.energy.IOKEnergyItem;
 import ruiseki.okcore.helper.LangHelpers;
@@ -113,6 +115,12 @@ public class BlockBackpack extends BlockOK {
         this.backpackSlots = backpackSlots;
         this.upgradeSlots = upgradeSlots;
         this.isFullSize = this.isOpaque = false;
+    }
+
+    @Override
+    protected void registerTileEntity() {
+        GameRegistry.registerTileEntity(TEBackpackTC.class, name + "TileEntityTC");
+        GameRegistry.registerTileEntity(TEBackpack.class, name + "TileEntity");
     }
 
     @Override
@@ -221,7 +229,7 @@ public class BlockBackpack extends BlockOK {
 
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
-        TEBackpack backpack = new TEBackpack();
+        TEBackpack backpack = Mods.Thaumcraft.isLoaded() ? new TEBackpackTC() : new TEBackpack();
         BackpackWrapper wrapper = new BackpackWrapper(backpack, backpackSlots, upgradeSlots);
         backpack.setWrapper(wrapper);
         return backpack;

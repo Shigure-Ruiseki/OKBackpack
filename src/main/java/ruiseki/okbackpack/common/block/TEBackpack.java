@@ -21,25 +21,18 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
-import cpw.mods.fml.common.Optional;
 import lombok.experimental.Delegate;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.common.init.ModBlocks;
-import ruiseki.okbackpack.compat.Mods;
-import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okcore.energy.IOKEnergyIO;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileEntityOK;
 import ruiseki.okcore.tileentity.TileSideCapability;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
-import thaumcraft.api.aspects.IAspectContainer;
 
-@Optional.Interface(iface = "thaumcraft.api.aspects.IAspectContainer", modid = "Thaumcraft")
-public class TEBackpack extends TileSideCapability implements ISidedInventory, IGuiHolder<SidedPosGuiData>,
-    TileEntityOK.ITickingTile, IOKEnergyIO, IFluidHandler, IAspectContainer {
+public class TEBackpack extends TileSideCapability
+    implements ISidedInventory, IGuiHolder<SidedPosGuiData>, TileEntityOK.ITickingTile, IOKEnergyIO, IFluidHandler {
 
     private int[] allSlots;
 
@@ -449,63 +442,4 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
         return info;
     }
 
-    @Override
-    @Optional.Method(modid = "Thaumcraft")
-    public AspectList getAspects() {
-        return ThaumcraftHelpers.getWandAspects(wrapper);
-    }
-
-    @Override
-    @Optional.Method(modid = "Thaumcraft")
-    public void setAspects(AspectList aspects) {}
-
-    @Override
-    @Optional.Method(modid = "Thaumcraft")
-    public boolean doesContainerAccept(Aspect aspect) {
-        return Mods.Thaumcraft.isLoaded() && ThaumcraftHelpers.doesWandAcceptAspect(wrapper, aspect);
-    }
-
-    @Override
-    @Optional.Method(modid = "Thaumcraft")
-    public int addToContainer(Aspect aspect, int amount) {
-        int leftover = ThaumcraftHelpers.addAspectToWands(wrapper, aspect, amount);
-        if (leftover < amount) markDirty();
-        return leftover;
-    }
-
-    @Override
-    @Optional.Method(modid = "Thaumcraft")
-    public boolean takeFromContainer(Aspect aspect, int amount) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    @Optional.Method(modid = "Thaumcraft")
-    public boolean takeFromContainer(AspectList aspects) {
-        return false;
-    }
-
-    @Override
-    @Optional.Method(modid = "Thaumcraft")
-    public boolean doesContainerContainAmount(Aspect aspect, int amount) {
-        return ThaumcraftHelpers.getWandAspectAmount(wrapper, aspect) >= amount;
-    }
-
-    @Override
-    @Deprecated
-    @Optional.Method(modid = "Thaumcraft")
-    public boolean doesContainerContain(AspectList aspects) {
-        if (aspects == null) return false;
-        for (Aspect a : aspects.getAspects()) {
-            if (a != null && !doesContainerContainAmount(a, aspects.getAmount(a))) return false;
-        }
-        return true;
-    }
-
-    @Override
-    @Optional.Method(modid = "Thaumcraft")
-    public int containerContains(Aspect aspect) {
-        return ThaumcraftHelpers.getWandAspectAmount(wrapper, aspect);
-    }
 }
