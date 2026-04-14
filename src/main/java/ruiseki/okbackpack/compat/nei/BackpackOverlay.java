@@ -18,6 +18,7 @@ import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.DefaultOverlayHandler;
 import codechicken.nei.recipe.GuiOverlayButton;
 import codechicken.nei.recipe.IRecipeHandler;
+import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.gui.slot.CraftingSlotInfo;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
@@ -26,6 +27,15 @@ import ruiseki.okbackpack.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 
 public class BackpackOverlay extends DefaultOverlayHandler {
+
+    private static final int ARCANE_X0 = 47;
+    private static final int ARCANE_Y0 = 38;
+    private static final int ARCANE_DX = 28;
+    private static final int ARCANE_DY = 27;
+
+    private static final int CRAFTING_X0 = 25;
+    private static final int CRAFTING_Y0 = 6;
+    private static final int CRAFTING_SLOT_SIZE = 18;
 
     public BackpackOverlay() {
         super(0, 0);
@@ -56,7 +66,12 @@ public class BackpackOverlay extends DefaultOverlayHandler {
             return slots;
         }
 
-        CraftingSlotInfo info = panel.getCraftingInfo(craftingUpgradeSlot);
+        ICraftingUpgrade wrapper = panel.getOpenCraftingUpgradeWrapper();
+        if (wrapper == null) {
+            return slots;
+        }
+
+        CraftingSlotInfo info = panel.getCraftingInfo(craftingUpgradeSlot, wrapper.getCraftingInfoKey());
         if (info == null) {
             return slots;
         }
@@ -89,26 +104,24 @@ public class BackpackOverlay extends DefaultOverlayHandler {
             return recipeSlotList;
         }
 
-        CraftingSlotInfo info = panel.getCraftingInfo(craftingUpgradeSlot);
+        ICraftingUpgrade wrapper = panel.getOpenCraftingUpgradeWrapper();
+        if (wrapper == null) {
+            return recipeSlotList;
+        }
+
+        CraftingSlotInfo info = panel.getCraftingInfo(craftingUpgradeSlot, wrapper.getCraftingInfoKey());
         if (info == null) {
             return recipeSlotList;
         }
 
         ModularSlot[] matrix = info.getCraftingMatrixSlots();
 
-        int startX = 25;
-        int startY = 6;
-        int slotSize = 18;
-
         for (int i = 0; i < ingredients.size(); i++) {
 
             PositionedStack ps = ingredients.get(i);
             if (ps == null) continue;
 
-            int col = (ps.relx - startX) / slotSize;
-            int row = (ps.rely - startY) / slotSize;
-
-            int index = row * 3 + col;
+            int index = getSlotIndex(ps);
 
             if (index >= 0 && index < matrix.length) {
                 recipeSlotList[i] = new Slot[] { matrix[index] };
@@ -169,6 +182,18 @@ public class BackpackOverlay extends DefaultOverlayHandler {
         }
 
         return itemPresenceSlots;
+    }
+
+    private static int getSlotIndex(PositionedStack ps) {
+        int col, row;
+        if ((ps.relx - ARCANE_X0) % ARCANE_DX == 0 && (ps.rely - ARCANE_Y0) % ARCANE_DY == 0) {
+            col = (ps.relx - ARCANE_X0) / ARCANE_DX;
+            row = (ps.rely - ARCANE_Y0) / ARCANE_DY;
+        } else {
+            col = (ps.relx - CRAFTING_X0) / CRAFTING_SLOT_SIZE;
+            row = (ps.rely - CRAFTING_Y0) / CRAFTING_SLOT_SIZE;
+        }
+        return row * 3 + col;
     }
 
     private BackpackPanel getPanel(BackPackContainer container) {

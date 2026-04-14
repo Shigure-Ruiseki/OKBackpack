@@ -1,6 +1,7 @@
 package ruiseki.okbackpack.client.gui.widget.updateGroup;
 
 import ruiseki.okbackpack.api.widget.UpgradeSlotGroupRegistry;
+import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.init.IInitListener;
 
 public class UpgradeSlotGroupRegisters implements IInitListener {
@@ -21,6 +22,9 @@ public class UpgradeSlotGroupRegisters implements IInitListener {
             UpgradeSlotGroupRegistry.register(new TankSlotGroupFactory());
             UpgradeSlotGroupRegistry.register(new RefillFilterSlotGroupFactory());
             UpgradeSlotGroupRegistry.register(new AdvancedRefillFilterSlotGroupFactory());
+            if (Mods.Thaumcraft.isLoaded()) {
+                UpgradeSlotGroupRegistry.register(new ArcaneCraftingSlotGroupFactory());
+            }
         }
     }
 }

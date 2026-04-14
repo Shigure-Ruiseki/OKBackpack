@@ -58,6 +58,9 @@ gui.backpack.sorting_settings=忽略整理设置
 gui.backpack.sorting_settings.tooltip_detail=选择忽略整理的槽位\n打开标签页以修改此设置
 gui.backpack.sorting_settings.tooltip_open_detail=选择忽略整理的槽位\n全选/取消全选槽位=按钮\n选择槽位=左键单击/拖动\n取消选择槽位=右键单击/拖动
 gui.backpack.crafting_settings=合成
+gui.backpack.arcane_crafting_settings=奥术合成
+gui.backpack.insufficient_vis=要素不足
+gui.backpack.missing_research=缺失前置研究
 gui.backpack.void_settings=虚空
 gui.backpack.advanced_void_settings=高级虚空
 gui.backpack.compacting_settings=压制
@@ -293,6 +296,7 @@ item.battery_upgrade.name=电池升级
 item.tank_upgrade.name=储罐升级
 item.refill_upgrade.name=补货升级
 item.advanced_refill_upgrade.name=高级补货升级
+item.arcane_crafting_upgrade.name=奥术合成升级
 
 
 # Tooltips
@@ -364,6 +368,7 @@ tooltip.backpack.refill_upgrade=使所选物品在玩家物品栏中自动补充
 tooltip.backpack.advanced_refill_upgrade=使所选物品在玩家物品栏中自动补充至一组
 tooltip.backpack.advanced_refill_upgrade.1=更精准的目标槽位选择
 tooltip.backpack.advanced_refill_upgrade.2=可按[%s]从背包中选取方块
+tooltip.backpack.arcane_crafting_upgrade=在升级标签页中添加一个奥术工作台
 
 #Messages
 messages.backpack.cant.bag=无法放置睡袋！检查周围区域。

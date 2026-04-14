@@ -58,6 +58,9 @@ gui.backpack.sorting_settings=並び替えの除外設定
 gui.backpack.sorting_settings.tooltip_detail=選択したスロットを並び替え対象から除外します\n設定を変更するにはタブを開いてください
 gui.backpack.sorting_settings.tooltip_open_detail=左クリックまたはドラッグでスロットを選択\n右クリックまたはドラッグで選択解除\n全てのスロットを選択\n全てのスロットを解除\nハイライト色を切り替え
 gui.backpack.crafting_settings=作業台機能
+gui.backpack.arcane_crafting_settings=神秘の作業台
+gui.backpack.insufficient_vis=ヴィスが不足しています
+gui.backpack.missing_research=研究が不足しています
 gui.backpack.void_settings=ごみ箱機能
 gui.backpack.advanced_void_settings=ごみ箱機能・改
 gui.backpack.compacting_settings=圧縮機能
@@ -293,6 +296,7 @@ item.battery_upgrade.name=バッテリ
 item.tank_upgrade.name=タンク
 item.refill_upgrade.name=補充機能
 item.advanced_refill_upgrade.name=補充機能・改
+item.arcane_crafting_upgrade.name=神秘の作業台機能
 
 
 # Tooltips
@@ -364,6 +368,7 @@ tooltip.backpack.refill_upgrade=消費したアイテムをリュックから補
 tooltip.backpack.advanced_refill_upgrade=消費したアイテムをリュックから補充します。
 tooltip.backpack.advanced_refill_upgrade.1=対象スロットの選択が可能。
 tooltip.backpack.advanced_refill_upgrade.2=ミドルクリックで補充可能。
+tooltip.backpack.arcane_crafting_upgrade=リュック内で神秘の作業台が使えるようになります
 
 #メッセージ
 messages.backpack.cant.bag=寝袋を配置できません！周囲を確認してください。

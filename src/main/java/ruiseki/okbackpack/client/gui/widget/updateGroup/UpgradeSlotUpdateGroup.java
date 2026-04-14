@@ -6,6 +6,7 @@ import java.util.Map;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.widget.IUpgradeSlotGroupFactory;
 import ruiseki.okbackpack.api.widget.UpgradeSlotGroupRegistry;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
@@ -13,7 +14,7 @@ import ruiseki.okbackpack.common.block.BackpackWrapper;
 public class UpgradeSlotUpdateGroup {
 
     public final IStoragePanel<?> panel;
-    public final BackpackWrapper wrapper;
+    public final IStorageWrapper wrapper;
     public final int slotIndex;
     public final PanelSyncManager syncManager;
 

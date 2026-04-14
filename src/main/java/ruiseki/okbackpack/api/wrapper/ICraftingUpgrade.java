@@ -13,6 +13,8 @@ public interface ICraftingUpgrade extends IStorageUpgrade {
 
     void setUseBackpack(boolean used);
 
+    String getCraftingInfoKey();
+
     enum CraftingDestination {
         BACKPACK,
         INVENTORY;
