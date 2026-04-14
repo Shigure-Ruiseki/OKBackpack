@@ -40,12 +40,13 @@ dependencies {
     implementation('com.github.GTNewHorizons:Baubles-Expanded:2.2.11-GTNH:dev')
 
     devOnlyNonPublishable("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
-    devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.8.40-GTNH:dev")
+    devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.8.44-GTNH:dev")
     devOnlyNonPublishable("com.github.GTNewHorizons:waila:1.9.5:dev") { transitive = false }
     devOnlyNonPublishable('com.github.GTNewHorizons:TinkersConstruct:1.14.37-GTNH:dev')
     devOnlyNonPublishable("com.github.Roadhog360:Et-Futurum-Requiem:2.6.2:dev") { transitive = false }
     devOnlyNonPublishable("curse.maven:cofh-core-69162:2388751")
 
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:AspectRecipeIndex:1.0.13:dev")
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:Hodgepodge:2.7.27:dev") { transitive = false }
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:BetterCrashes:1.4.1-GTNH:dev")
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:ServerUtilities:2.2.20:dev")
