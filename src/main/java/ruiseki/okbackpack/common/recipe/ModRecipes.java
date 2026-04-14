@@ -5,6 +5,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.init.ModItems;
@@ -12,6 +13,10 @@ import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.color.EnumDye;
 import ruiseki.okcore.init.IInitListener;
+import thaumcraft.api.ThaumcraftApi;
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
+import thaumcraft.common.config.ConfigBlocks;
 
 public class ModRecipes implements IInitListener {
 
@@ -20,6 +25,9 @@ public class ModRecipes implements IInitListener {
         if (step == Step.POSTINIT) {
             blockRecipes();
             itemRecipes();
+            if (Mods.Thaumcraft.isLoaded()) {
+                thaumcraftRecipes();
+            }
         }
     }
 
@@ -785,6 +793,31 @@ public class ModRecipes implements IInitListener {
                     ModItems.SMOKING_UPGRADE.getItem()));
 
         }
+    }
+
+    @Optional.Method(modid = "Thaumcraft")
+    private static void thaumcraftRecipes() {
+        // Arcane Crafting Upgrade
+        ThaumcraftApi.addArcaneCraftingRecipe(
+            "ARCTABLE",
+            ModItems.ARCANE_CRAFTING_UPGRADE.newItemStack(),
+            new AspectList().add(Aspect.AIR, 10)
+                .add(Aspect.EARTH, 10)
+                .add(Aspect.FIRE, 10)
+                .add(Aspect.WATER, 10)
+                .add(Aspect.ORDER, 10)
+                .add(Aspect.ENTROPY, 10),
+            " A ",
+            "IUI",
+            " C ",
+            'A',
+            new ItemStack(ConfigBlocks.blockTable, 1, 15),
+            'C',
+            new ItemStack(Blocks.chest, 1, 0),
+            'I',
+            "ingotIron",
+            'U',
+            ModItems.BASE_UPGRADE.getItem());
     }
 
 }
