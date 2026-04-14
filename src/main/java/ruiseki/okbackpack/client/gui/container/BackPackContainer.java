@@ -83,10 +83,10 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
             // server-side compute recipe
             if (!getGuiData().isClient()) {
                 IndexedModularCraftingSlot slot = craftingSlotInstances.get(inventoryCrafting.getUpgradeSlotIndex());
-                if (slot instanceof IndexedModularArcaneSlot && Mods.Thaumcraft.isLoaded()) {
-                    result = findArcaneOrVanillaResult(inventoryCrafting, player);
-                } else if (Mods.TConstruct.isLoaded()) {
+                if (Mods.TConstruct.isLoaded()) {
                     result = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
+                } else if (slot instanceof IndexedModularArcaneSlot && Mods.Thaumcraft.isLoaded()) {
+                    result = findArcaneOrVanillaResult(inventoryCrafting, player);
                 } else {
                     result = CraftingManager.getInstance()
                         .findMatchingRecipe(inventoryCrafting, player.worldObj);
