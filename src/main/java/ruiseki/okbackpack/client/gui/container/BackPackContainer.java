@@ -23,14 +23,17 @@ import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
+import cpw.mods.fml.common.Optional;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.IStorageContainer;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
+import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
 import ruiseki.okbackpack.client.gui.slot.AnvilOutputModularSlot;
+import ruiseki.okbackpack.client.gui.slot.IndexedModularArcaneSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingMatrixSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
@@ -40,6 +43,7 @@ import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.compat.Mods;
+import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 
 public class BackPackContainer extends ModularContainer implements IStorageContainer<BackPackContainer> {
@@ -78,7 +82,10 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
 
             // server-side compute recipe
             if (!getGuiData().isClient()) {
-                if (Mods.TConstruct.isLoaded()) {
+                IndexedModularCraftingSlot slot = craftingSlotInstances.get(inventoryCrafting.getUpgradeSlotIndex());
+                if (slot instanceof IndexedModularArcaneSlot && Mods.Thaumcraft.isLoaded()) {
+                    result = findArcaneOrVanillaResult(inventoryCrafting, player);
+                } else if (Mods.TConstruct.isLoaded()) {
                     result = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
                 } else {
                     result = CraftingManager.getInstance()
@@ -86,7 +93,6 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                 }
 
                 // update result slot
-                IndexedModularCraftingSlot slot = craftingSlotInstances.get(inventoryCrafting.getUpgradeSlotIndex());
                 if (slot != null) {
                     slot.updateResult(result);
                 }
@@ -103,6 +109,32 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                 }
             }
         }
+    }
+
+    @Optional.Method(modid = "Thaumcraft")
+    private ItemStack findArcaneOrVanillaResult(IndexedInventoryCraftingWrapper inventoryCrafting,
+        EntityPlayer player) {
+        int upgradeSlotIndex = inventoryCrafting.getUpgradeSlotIndex();
+        var arcaneUpgrades = wrapper.gatherCapabilityUpgrades(IArcaneCraftingUpgrade.class);
+        var arcane = arcaneUpgrades.get(upgradeSlotIndex);
+        if (arcane != null) {
+            ItemStack wandStack = arcane.getStorage()
+                .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
+            if (ThaumcraftHelpers.isWand(wandStack)) {
+                var recipe = ThaumcraftHelpers.findArcaneRecipeIgnoringResearch(inventoryCrafting, player);
+                if (recipe != null) {
+                    String researchKey = recipe.getResearch();
+                    boolean researchDone = researchKey == null || researchKey.isEmpty()
+                        || ThaumcraftHelpers.isResearchComplete(player, researchKey);
+                    if (researchDone) {
+                        return recipe.getCraftingResult(inventoryCrafting);
+                    }
+                    return null;
+                }
+            }
+        }
+        return CraftingManager.getInstance()
+            .findMatchingRecipe(inventoryCrafting, player.worldObj);
     }
 
     @Override
@@ -179,7 +211,15 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
         ItemStack returnable = null;
 
         if (clickTypeIn == ClickType.QUICK_CRAFT || acc().getDragEvent() != 0) {
-            return super.slotClick(slotId, mouseButton, mode, player);
+            ItemStack result = super.slotClick(slotId, mouseButton, mode, player);
+            if (acc().getDragEvent() == 0) {
+                for (var entry : inventoryCraftingInstances.entrySet()) {
+                    entry.getValue()
+                        .detectChanges();
+                }
+                detectAndSendChanges();
+            }
+            return result;
         }
 
         // Handle click events in the inventory

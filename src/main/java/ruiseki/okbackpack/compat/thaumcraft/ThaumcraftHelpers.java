@@ -12,6 +12,7 @@ import java.util.Map;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.network.PacketBuffer;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
@@ -421,7 +422,35 @@ public class ThaumcraftHelpers {
                         } catch (IOException ignored) {}
                     });
                 }
+            } else {
+                ItemStack vanillaResult = CraftingManager.getInstance()
+                    .findMatchingRecipe(inventoryCrafting, player.worldObj);
+                handler.delegatedStackHandler.setStackInSlot(resultSlot, vanillaResult);
+                arcane.setRequiredAspects(null);
+                arcane.setMissingResearch(null);
+                arcane.setMissingResearchName(null);
+
+                handler.syncToClient(DelegatedStackHandlerSH.getId(UPDATE_ARCANE_CRAFTING), buffer -> {
+                    buffer.writeBoolean(true);
+                    buffer.writeItemStackToBuffer(vanillaResult);
+                    buffer.writeInt(0);
+                    buffer.writeBoolean(false);
+                });
             }
+        } else {
+            ItemStack vanillaResult = CraftingManager.getInstance()
+                .findMatchingRecipe(inventoryCrafting, player.worldObj);
+            handler.delegatedStackHandler.setStackInSlot(resultSlot, vanillaResult);
+            arcane.setRequiredAspects(null);
+            arcane.setMissingResearch(null);
+            arcane.setMissingResearchName(null);
+
+            handler.syncToClient(DelegatedStackHandlerSH.getId(UPDATE_ARCANE_CRAFTING), buffer -> {
+                buffer.writeBoolean(false);
+                buffer.writeItemStackToBuffer(vanillaResult);
+                buffer.writeInt(0);
+                buffer.writeBoolean(false);
+            });
         }
     }
 }

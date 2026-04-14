@@ -298,11 +298,11 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
     }
 
     private boolean canCraft() {
-        if (!wrapper.hasWand()) return false;
         String missingResearch = wrapper.getMissingResearch();
         if (missingResearch != null && !missingResearch.isEmpty()) return false;
         Map<String, Integer> required = wrapper.getRequiredAspects();
         if (required == null || required.isEmpty()) return true;
+        if (!wrapper.hasWand()) return false;
         return !hasInsufficientVis();
     }
 
