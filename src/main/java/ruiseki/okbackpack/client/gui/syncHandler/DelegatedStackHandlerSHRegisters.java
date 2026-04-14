@@ -20,7 +20,6 @@ import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okcore.init.IInitListener;
-import thaumcraft.api.crafting.IArcaneRecipe;
 
 public class DelegatedStackHandlerSHRegisters implements IInitListener {
 
@@ -138,61 +137,17 @@ public class DelegatedStackHandlerSHRegisters implements IInitListener {
 
                 if (handler.delegatedStackHandler.get() instanceof EmptyHandler) return;
 
+                if (Mods.Thaumcraft.isLoaded()) {
+                    ThaumcraftHelpers.handleArcaneCrafting(handler, inventoryCrafting);
+                    return;
+                }
+
                 IUpgradeWrapper wrapper = handler.getWrapper();
                 if (!(wrapper instanceof IArcaneCraftingUpgrade arcane)) return;
 
                 EntityPlayer player = handler.getSyncManager()
                     .getPlayer();
                 int resultSlot = inventoryCrafting.getSizeInventory() - 1;
-
-                ItemStack wandStack = handler.delegatedStackHandler.get()
-                    .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
-                boolean hasWand = Mods.Thaumcraft.isLoaded() && ThaumcraftHelpers.isWand(wandStack);
-
-                if (hasWand && Mods.Thaumcraft.isLoaded()) {
-                    IArcaneRecipe recipe = ThaumcraftHelpers
-                        .findArcaneRecipeIgnoringResearch(inventoryCrafting, player);
-                    if (recipe != null) {
-                        String researchKey = recipe.getResearch();
-                        boolean researchDone = researchKey == null || researchKey.isEmpty()
-                            || ThaumcraftHelpers.isResearchComplete(player, researchKey);
-                        Map<String, Integer> aspects = ThaumcraftHelpers.getArcaneRecipeAspects(recipe);
-
-                        if (researchDone) {
-                            ItemStack arcaneResult = recipe.getCraftingResult(inventoryCrafting);
-                            handler.delegatedStackHandler.setStackInSlot(resultSlot, arcaneResult);
-                            arcane.setRequiredAspects(aspects);
-                            arcane.setMissingResearch(null);
-                            arcane.setMissingResearchName(null);
-
-                            handler.syncToClient(DelegatedStackHandlerSH.getId(UPDATE_ARCANE_CRAFTING), buffer -> {
-                                buffer.writeBoolean(hasWand);
-                                buffer.writeItemStackToBuffer(arcaneResult);
-                                ThaumcraftHelpers.writeAspectMap(buffer, aspects);
-                                buffer.writeBoolean(false);
-                            });
-                        } else {
-                            String researchName = ThaumcraftHelpers.getResearchDisplayName(researchKey);
-
-                            handler.delegatedStackHandler.setStackInSlot(resultSlot, null);
-                            arcane.setRequiredAspects(aspects);
-                            arcane.setMissingResearch(researchKey);
-                            arcane.setMissingResearchName(researchName);
-
-                            handler.syncToClient(DelegatedStackHandlerSH.getId(UPDATE_ARCANE_CRAFTING), buffer -> {
-                                buffer.writeBoolean(hasWand);
-                                buffer.writeItemStackToBuffer(null);
-                                ThaumcraftHelpers.writeAspectMap(buffer, aspects);
-                                buffer.writeBoolean(true);
-                                try {
-                                    buffer.writeStringToBuffer(researchKey);
-                                    buffer.writeStringToBuffer(researchName);
-                                } catch (java.io.IOException ignored) {}
-                            });
-                        }
-                        return;
-                    }
-                }
 
                 ItemStack standardResult = CraftingManager.getInstance()
                     .findMatchingRecipe(inventoryCrafting, player.worldObj);

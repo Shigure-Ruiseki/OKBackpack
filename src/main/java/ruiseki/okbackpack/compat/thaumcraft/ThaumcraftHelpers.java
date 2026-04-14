@@ -1,5 +1,7 @@
 package ruiseki.okbackpack.compat.thaumcraft;
 
+import static ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters.UPDATE_ARCANE_CRAFTING;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -14,6 +16,9 @@ import net.minecraft.network.PacketBuffer;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
+import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
+import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
@@ -357,5 +362,66 @@ public class ThaumcraftHelpers {
             }
         }
         return total;
+    }
+
+    public static void handleArcaneCrafting(DelegatedStackHandlerSH handler,
+        IndexedInventoryCraftingWrapper inventoryCrafting) {
+        IUpgradeWrapper wrapper = handler.getWrapper();
+        if (!(wrapper instanceof IArcaneCraftingUpgrade arcane)) return;
+
+        EntityPlayer player = handler.getSyncManager()
+            .getPlayer();
+        int resultSlot = inventoryCrafting.getSizeInventory() - 1;
+
+        ItemStack wandStack = handler.delegatedStackHandler.get()
+            .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
+
+        boolean hasWand = ThaumcraftHelpers.isWand(wandStack);
+
+        if (hasWand) {
+            IArcaneRecipe recipe = ThaumcraftHelpers.findArcaneRecipeIgnoringResearch(inventoryCrafting, player);
+
+            if (recipe != null) {
+                String researchKey = recipe.getResearch();
+                boolean researchDone = researchKey == null || researchKey.isEmpty()
+                    || ThaumcraftHelpers.isResearchComplete(player, researchKey);
+
+                Map<String, Integer> aspects = ThaumcraftHelpers.getArcaneRecipeAspects(recipe);
+
+                if (researchDone) {
+                    ItemStack result = recipe.getCraftingResult(inventoryCrafting);
+
+                    handler.delegatedStackHandler.setStackInSlot(resultSlot, result);
+                    arcane.setRequiredAspects(aspects);
+                    arcane.setMissingResearch(null);
+                    arcane.setMissingResearchName(null);
+
+                    handler.syncToClient(DelegatedStackHandlerSH.getId(UPDATE_ARCANE_CRAFTING), buffer -> {
+                        buffer.writeBoolean(true);
+                        buffer.writeItemStackToBuffer(result);
+                        ThaumcraftHelpers.writeAspectMap(buffer, aspects);
+                        buffer.writeBoolean(false);
+                    });
+                } else {
+                    String researchName = ThaumcraftHelpers.getResearchDisplayName(researchKey);
+
+                    handler.delegatedStackHandler.setStackInSlot(resultSlot, null);
+                    arcane.setRequiredAspects(aspects);
+                    arcane.setMissingResearch(researchKey);
+                    arcane.setMissingResearchName(researchName);
+
+                    handler.syncToClient(DelegatedStackHandlerSH.getId(UPDATE_ARCANE_CRAFTING), buffer -> {
+                        buffer.writeBoolean(true);
+                        buffer.writeItemStackToBuffer(null);
+                        ThaumcraftHelpers.writeAspectMap(buffer, aspects);
+                        buffer.writeBoolean(true);
+                        try {
+                            buffer.writeStringToBuffer(researchKey);
+                            buffer.writeStringToBuffer(researchName);
+                        } catch (IOException ignored) {}
+                    });
+                }
+            }
+        }
     }
 }
