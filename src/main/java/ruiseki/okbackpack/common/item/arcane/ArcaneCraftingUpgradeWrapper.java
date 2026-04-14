@@ -127,4 +127,9 @@ public class ArcaneCraftingUpgradeWrapper extends UpgradeWrapperBase implements 
     public void setMissingResearchName(String name) {
         this.missingResearchName = name;
     }
+
+    @Override
+    public String getCraftingInfoKey() {
+        return "arcane_info";
+    }
 }

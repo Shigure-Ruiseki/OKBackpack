@@ -68,4 +68,9 @@ public class CraftingUpgradeWrapper extends UpgradeWrapperBase implements ICraft
         save();
     }
 
+    @Override
+    public String getCraftingInfoKey() {
+        return "crafting_info";
+    }
+
 }

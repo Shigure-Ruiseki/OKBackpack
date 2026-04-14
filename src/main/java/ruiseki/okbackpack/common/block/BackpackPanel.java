@@ -51,6 +51,7 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.SortType;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
+import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IDirtable;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
@@ -79,8 +80,6 @@ import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotGroupWidget;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
-import ruiseki.okbackpack.common.item.arcane.ArcaneCraftingUpgradeWrapper;
-import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 import ruiseki.okcore.helper.ItemStackHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -853,16 +852,40 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 .getWrapperInSlot(slotIndex);
             if (wrapper == null) continue;
 
-            if ((wrapper instanceof CraftingUpgradeWrapper || wrapper instanceof ArcaneCraftingUpgradeWrapper)
-                && wrapper.isTabOpened()) {
+            if (wrapper instanceof ICraftingUpgrade upgrade && wrapper.isTabOpened()) {
                 return slotIndex;
             }
         }
         return -1;
     }
 
-    public CraftingSlotInfo getCraftingInfo(int slotIndex) {
-        return upgradeSlotGroups[slotIndex].get("crafting_info");
+    public ICraftingUpgrade getOpenCraftingUpgradeWrapper() {
+        for (int slotIndex = 0; slotIndex < wrapper.getUpgradeHandler()
+            .getSlots(); slotIndex++) {
+            ItemSlot slot = upgradeSlotWidgets.get(slotIndex);
+            if (slot.getSlot() == null) continue;
+            ItemStack stack = slot.getSlot()
+                .getStack();
+            if (stack == null) continue;
+            Item item = stack.getItem();
+
+            if (!(item instanceof IUpgradeItem<?> && ((IUpgradeItem<?>) item).hasTab())) {
+                continue;
+            }
+
+            IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
+                .getWrapperInSlot(slotIndex);
+            if (wrapper == null) continue;
+
+            if (wrapper instanceof ICraftingUpgrade upgrade && wrapper.isTabOpened()) {
+                return upgrade;
+            }
+        }
+        return null;
+    }
+
+    public CraftingSlotInfo getCraftingInfo(int slotIndex, String key) {
+        return upgradeSlotGroups[slotIndex].get(key);
     }
 
     private boolean isTabDirty(int slotIndex, UpgradeSlotSH upgradeSlot) {

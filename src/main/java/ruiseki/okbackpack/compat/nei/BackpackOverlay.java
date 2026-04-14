@@ -18,6 +18,7 @@ import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.DefaultOverlayHandler;
 import codechicken.nei.recipe.GuiOverlayButton;
 import codechicken.nei.recipe.IRecipeHandler;
+import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.gui.slot.CraftingSlotInfo;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
@@ -56,7 +57,12 @@ public class BackpackOverlay extends DefaultOverlayHandler {
             return slots;
         }
 
-        CraftingSlotInfo info = panel.getCraftingInfo(craftingUpgradeSlot);
+        ICraftingUpgrade wrapper = panel.getOpenCraftingUpgradeWrapper();
+        if (wrapper == null) {
+            return slots;
+        }
+
+        CraftingSlotInfo info = panel.getCraftingInfo(craftingUpgradeSlot, wrapper.getCraftingInfoKey());
         if (info == null) {
             return slots;
         }
@@ -89,7 +95,12 @@ public class BackpackOverlay extends DefaultOverlayHandler {
             return recipeSlotList;
         }
 
-        CraftingSlotInfo info = panel.getCraftingInfo(craftingUpgradeSlot);
+        ICraftingUpgrade wrapper = panel.getOpenCraftingUpgradeWrapper();
+        if (wrapper == null) {
+            return recipeSlotList;
+        }
+
+        CraftingSlotInfo info = panel.getCraftingInfo(craftingUpgradeSlot, wrapper.getCraftingInfoKey());
         if (info == null) {
             return recipeSlotList;
         }

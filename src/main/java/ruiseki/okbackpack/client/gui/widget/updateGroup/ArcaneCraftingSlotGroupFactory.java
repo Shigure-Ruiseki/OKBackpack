@@ -108,7 +108,6 @@ public class ArcaneCraftingSlotGroupFactory implements IUpgradeSlotGroupFactory 
 
         CraftingSlotInfo craftingInfo = new CraftingSlotInfo(slots, arcaneOutputSlot);
         group.put("arcane_info", craftingInfo);
-        group.put("crafting_info", craftingInfo);
     }
 
     public void updateInventoryCrafting(DelegatedStackHandlerSH handler, IStoragePanel<?> panel) {
