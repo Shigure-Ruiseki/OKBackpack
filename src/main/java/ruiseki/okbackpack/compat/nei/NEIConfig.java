@@ -16,6 +16,9 @@ public class NEIConfig implements IConfigureNEI {
         API.addRecipeCatalyst(ModItems.CRAFTING_UPGRADE.newItemStack(), "crafting");
         if (Mods.Thaumcraft.isLoaded()) {
             API.addRecipeCatalyst(ModItems.ARCANE_CRAFTING_UPGRADE.newItemStack(), "crafting");
+            API.addRecipeCatalyst(ModItems.ARCANE_CRAFTING_UPGRADE.newItemStack(), "thaumcraft.wands");
+            API.addRecipeCatalyst(ModItems.ARCANE_CRAFTING_UPGRADE.newItemStack(), "thaumcraft.arcane.shaped");
+            API.addRecipeCatalyst(ModItems.ARCANE_CRAFTING_UPGRADE.newItemStack(), "thaumcraft.arcane.shapeless");
         }
     }
 
