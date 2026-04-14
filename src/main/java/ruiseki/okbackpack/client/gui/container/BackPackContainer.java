@@ -59,6 +59,7 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
 
     protected final Map<Integer, IndexedInventoryCraftingWrapper> inventoryCraftingInstances = new HashMap<>();
     protected final Map<Integer, IndexedModularCraftingSlot> craftingSlotInstances = new HashMap<>();
+    protected final Map<Integer, IndexedModularArcaneSlot> arcaneSlotInstances = new HashMap<>();
 
     public BackPackContainer(IBackpackWrapper wrapper, Integer backpackSlotIndex) {
         this.wrapper = wrapper;
@@ -68,7 +69,9 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
     @Override
     public void registerSlot(String panelName, ModularSlot slot) {
         super.registerSlot(panelName, slot);
-        if (slot instanceof IndexedModularCraftingSlot s) {
+        if (slot instanceof IndexedModularArcaneSlot a) {
+            arcaneSlotInstances.put(a.getUpgradeSlotIndex(), a);
+        } else if (slot instanceof IndexedModularCraftingSlot s) {
             registerCraftingSlot(s.getUpgradeSlotIndex(), s);
         }
     }
@@ -78,32 +81,35 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
         if (inventoryIn instanceof IndexedInventoryCraftingWrapper inventoryCrafting) {
 
             EntityPlayer player = getPlayer();
-            ItemStack result;
+            int upgradeSlotIndex = inventoryCrafting.getUpgradeSlotIndex();
 
             // server-side compute recipe
             if (!getGuiData().isClient()) {
-                IndexedModularCraftingSlot slot = craftingSlotInstances.get(inventoryCrafting.getUpgradeSlotIndex());
-                if (Mods.TConstruct.isLoaded()) {
-                    result = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
-                } else if (slot instanceof IndexedModularArcaneSlot && Mods.Thaumcraft.isLoaded()) {
-                    result = findArcaneOrVanillaResult(inventoryCrafting, player);
+                IndexedModularArcaneSlot arcaneSlot = arcaneSlotInstances.get(upgradeSlotIndex);
+                IndexedModularCraftingSlot slot = craftingSlotInstances.get(upgradeSlotIndex);
+
+                if (arcaneSlot != null && Mods.Thaumcraft.isLoaded()) {
+                    ItemStack result = findArcaneOrVanillaResult(inventoryCrafting, player);
+                    inventoryCrafting.setSlot(9, result, false);
                 } else {
-                    result = CraftingManager.getInstance()
-                        .findMatchingRecipe(inventoryCrafting, player.worldObj);
-                }
+                    ItemStack result;
+                    if (Mods.TConstruct.isLoaded()) {
+                        result = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
+                    } else {
+                        result = CraftingManager.getInstance()
+                            .findMatchingRecipe(inventoryCrafting, player.worldObj);
+                    }
 
-                // update result slot
-                if (slot != null) {
-                    slot.updateResult(result);
+                    if (slot != null) {
+                        slot.updateResult(result);
+                    }
+                    inventoryCrafting.setSlot(9, result, false);
                 }
-
-                // set crafting slot server-side
-                inventoryCrafting.setSlot(9, result, false);
 
                 detectAndSendChanges();
             } else {
                 // client: just display current result
-                IndexedModularCraftingSlot slot = craftingSlotInstances.get(inventoryCrafting.getUpgradeSlotIndex());
+                IndexedModularCraftingSlot slot = craftingSlotInstances.get(upgradeSlotIndex);
                 if (slot != null) {
                     slot.updateResult(inventoryCrafting.getStackInSlot(9));
                 }
@@ -132,6 +138,9 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                     return null;
                 }
             }
+        }
+        if (Mods.TConstruct.isLoaded()) {
+            return TinkersHelpers.getTinkersRecipe(inventoryCrafting);
         }
         return CraftingManager.getInstance()
             .findMatchingRecipe(inventoryCrafting, player.worldObj);
@@ -664,9 +673,13 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
         inventoryCraftingInstances.put(slotIndex, inventoryCrafting);
 
         IndexedModularCraftingSlot slot = craftingSlotInstances.get(slotIndex);
-
         if (slot != null) {
             slot.setCraftMatrix(inventoryCrafting);
+        }
+
+        IndexedModularArcaneSlot arcaneSlot = arcaneSlotInstances.get(slotIndex);
+        if (arcaneSlot != null) {
+            arcaneSlot.setCraftMatrix(inventoryCrafting);
         }
     }
 

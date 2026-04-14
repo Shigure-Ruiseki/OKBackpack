@@ -27,6 +27,7 @@ import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
+import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 import thaumcraft.api.crafting.IArcaneRecipe;
 
 public class ArcaneCraftingSlotGroupFactory implements IUpgradeSlotGroupFactory {
@@ -202,8 +203,13 @@ public class ArcaneCraftingSlotGroupFactory implements IUpgradeSlotGroupFactory 
             }
         }
 
-        ItemStack standardResult = CraftingManager.getInstance()
-            .findMatchingRecipe(inventoryCrafting, player.worldObj);
+        ItemStack standardResult;
+        if (Mods.TConstruct.isLoaded()) {
+            standardResult = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
+        } else {
+            standardResult = CraftingManager.getInstance()
+                .findMatchingRecipe(inventoryCrafting, player.worldObj);
+        }
         handler.delegatedStackHandler.setStackInSlot(resultSlot, standardResult);
 
         arcaneWrapper.setRequiredAspects(null);

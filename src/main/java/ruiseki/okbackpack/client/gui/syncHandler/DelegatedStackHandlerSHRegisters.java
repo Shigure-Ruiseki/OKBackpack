@@ -19,6 +19,7 @@ import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
+import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 import ruiseki.okcore.init.IInitListener;
 
 public class DelegatedStackHandlerSHRegisters implements IInitListener {
@@ -137,6 +138,8 @@ public class DelegatedStackHandlerSHRegisters implements IInitListener {
 
                 if (handler.delegatedStackHandler.get() instanceof EmptyHandler) return;
 
+                inventoryCrafting.detectChanges();
+
                 if (Mods.Thaumcraft.isLoaded()) {
                     ThaumcraftHelpers.handleArcaneCrafting(handler, inventoryCrafting);
                     return;
@@ -149,8 +152,13 @@ public class DelegatedStackHandlerSHRegisters implements IInitListener {
                     .getPlayer();
                 int resultSlot = inventoryCrafting.getSizeInventory() - 1;
 
-                ItemStack standardResult = CraftingManager.getInstance()
-                    .findMatchingRecipe(inventoryCrafting, player.worldObj);
+                ItemStack standardResult;
+                if (Mods.TConstruct.isLoaded()) {
+                    standardResult = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
+                } else {
+                    standardResult = CraftingManager.getInstance()
+                        .findMatchingRecipe(inventoryCrafting, player.worldObj);
+                }
                 handler.delegatedStackHandler.setStackInSlot(resultSlot, standardResult);
                 arcane.setRequiredAspects(null);
                 arcane.setMissingResearch(null);

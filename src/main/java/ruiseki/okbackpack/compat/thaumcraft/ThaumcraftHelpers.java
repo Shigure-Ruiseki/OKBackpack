@@ -20,6 +20,8 @@ import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
+import ruiseki.okbackpack.compat.Mods;
+import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
@@ -423,8 +425,13 @@ public class ThaumcraftHelpers {
                     });
                 }
             } else {
-                ItemStack vanillaResult = CraftingManager.getInstance()
-                    .findMatchingRecipe(inventoryCrafting, player.worldObj);
+                ItemStack vanillaResult;
+                if (Mods.TConstruct.isLoaded()) {
+                    vanillaResult = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
+                } else {
+                    vanillaResult = CraftingManager.getInstance()
+                        .findMatchingRecipe(inventoryCrafting, player.worldObj);
+                }
                 handler.delegatedStackHandler.setStackInSlot(resultSlot, vanillaResult);
                 arcane.setRequiredAspects(null);
                 arcane.setMissingResearch(null);
@@ -438,8 +445,13 @@ public class ThaumcraftHelpers {
                 });
             }
         } else {
-            ItemStack vanillaResult = CraftingManager.getInstance()
-                .findMatchingRecipe(inventoryCrafting, player.worldObj);
+            ItemStack vanillaResult;
+            if (Mods.TConstruct.isLoaded()) {
+                vanillaResult = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
+            } else {
+                vanillaResult = CraftingManager.getInstance()
+                    .findMatchingRecipe(inventoryCrafting, player.worldObj);
+            }
             handler.delegatedStackHandler.setStackInSlot(resultSlot, vanillaResult);
             arcane.setRequiredAspects(null);
             arcane.setMissingResearch(null);
