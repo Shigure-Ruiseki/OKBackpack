@@ -69,9 +69,12 @@ public class BackpackSettingsTemplate {
 
         for (int i = 0; i < wrapper.getSlots(); i++) {
             ItemStack memoryStack = i < memorizedStacks.size() ? memorizedStacks.get(i) : null;
-            wrapper.getStackHandler().setMemoryStack(i, memoryStack == null ? null : memoryStack.copy());
-            wrapper.getStackHandler().setRespectNBT(i, i < respectNbt.size() && respectNbt.get(i));
-            wrapper.getStackHandler().setSlotLocked(i, i < lockedSlots.size() && lockedSlots.get(i));
+            wrapper.getStackHandler()
+                .setMemoryStack(i, memoryStack == null ? null : memoryStack.copy());
+            wrapper.getStackHandler()
+                .setRespectNBT(i, i < respectNbt.size() && respectNbt.get(i));
+            wrapper.getStackHandler()
+                .setSlotLocked(i, i < lockedSlots.size() && lockedSlots.get(i));
         }
 
         wrapper.markDirty();

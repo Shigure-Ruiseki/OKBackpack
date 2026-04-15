@@ -14,13 +14,12 @@ import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
-import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.persist.nbt.INBTSerializable;
 
-public interface IStorageWrapper
-    extends IItemHandlerModifiable, IItemHandler, ITintable, INBTSerializable, IMemoryStorage, ILockedStorage, ISetting, ISleepable {
+public interface IStorageWrapper extends IItemHandlerModifiable, IItemHandler, ITintable, INBTSerializable,
+    IMemoryStorage, ILockedStorage, ISetting, ISleepable {
 
     String BACKPACK_NBT = "BackpackNBT";
 

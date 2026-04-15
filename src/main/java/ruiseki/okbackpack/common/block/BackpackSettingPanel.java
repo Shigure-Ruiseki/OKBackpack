@@ -535,9 +535,10 @@ public class BackpackSettingPanel extends ModularPanel {
 
         if (wrapper.loadSettingsPreset(presetIndex)) {
             syncLocalPlayerSettingsFromWrapper();
-            parent.getStorageSH().syncToServer(
-                BackpackSH.getId(BackpackSHRegisters.UPDATE_LOAD_SETTINGS_PRESET),
-                buffer -> buffer.writeInt(presetIndex));
+            parent.getStorageSH()
+                .syncToServer(
+                    BackpackSH.getId(BackpackSHRegisters.UPDATE_LOAD_SETTINGS_PRESET),
+                    buffer -> buffer.writeInt(presetIndex));
         }
     }
 
@@ -551,9 +552,10 @@ public class BackpackSettingPanel extends ModularPanel {
         boolean saveWasNewSlot = savePresetIndex >= oldPresetCount;
         int indexToDelete = deletePresetIndex;
         deletePresetIndex = wrapper.deleteSettingsPreset(indexToDelete);
-        parent.getStorageSH().syncToServer(
-            BackpackSH.getId(BackpackSHRegisters.UPDATE_DELETE_SETTINGS_PRESET),
-            buffer -> buffer.writeInt(indexToDelete));
+        parent.getStorageSH()
+            .syncToServer(
+                BackpackSH.getId(BackpackSHRegisters.UPDATE_DELETE_SETTINGS_PRESET),
+                buffer -> buffer.writeInt(indexToDelete));
 
         int newPresetCount = wrapper.getSettingsPresetCount();
         loadPresetIndex = adjustExistingPresetIndexAfterDelete(loadPresetIndex, indexToDelete, newPresetCount);

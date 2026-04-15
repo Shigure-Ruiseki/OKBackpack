@@ -20,5 +20,4 @@ public interface ISetting {
 
     int deleteSettingsPreset(int index);
 
-
 }
