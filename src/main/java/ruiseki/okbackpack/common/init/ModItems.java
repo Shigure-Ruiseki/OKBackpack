@@ -9,15 +9,21 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.common.item.anvil.ItemAnvilUpgrade;
 import ruiseki.okbackpack.common.item.arcane.ItemArcaneCraftingUpgrade;
+import ruiseki.okbackpack.common.item.bat.ItemBatUpgrade;
 import ruiseki.okbackpack.common.item.battery.ItemBatteryUpgrade;
+import ruiseki.okbackpack.common.item.bookshelf.ItemBookshelfUpgrade;
+import ruiseki.okbackpack.common.item.cactus.ItemCactusUpgrade;
+import ruiseki.okbackpack.common.item.cake.ItemCakeUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemAdvancedCompactingUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemCompactingUpgrade;
+import ruiseki.okbackpack.common.item.cow.ItemCowUpgrade;
 import ruiseki.okbackpack.common.item.crafting.ItemCraftingUpgrade;
 import ruiseki.okbackpack.common.item.everlasting.ItemEverlastingUpgrade;
 import ruiseki.okbackpack.common.item.feeding.ItemAdvancedFeedingUpgrade;
 import ruiseki.okbackpack.common.item.feeding.ItemFeedingUpgrade;
 import ruiseki.okbackpack.common.item.filter.ItemAdvancedFilterUpgrade;
 import ruiseki.okbackpack.common.item.filter.ItemFilterUpgrade;
+import ruiseki.okbackpack.common.item.glowstone.ItemGlowstoneUpgrade;
 import ruiseki.okbackpack.common.item.inception.ItemInceptionUpgrade;
 import ruiseki.okbackpack.common.item.infinity.ItemInfinityUpgrade;
 import ruiseki.okbackpack.common.item.infinity.ItemSurvivalInfinityUpgrade;
@@ -27,6 +33,8 @@ import ruiseki.okbackpack.common.item.magnet.ItemAdvancedMagnetUpgrade;
 import ruiseki.okbackpack.common.item.magnet.ItemMagnetUpgrade;
 import ruiseki.okbackpack.common.item.pickup.ItemAdvancedPickupUpgrade;
 import ruiseki.okbackpack.common.item.pickup.ItemPickupUpgrade;
+import ruiseki.okbackpack.common.item.rainbow.ItemRainbowUpgrade;
+import ruiseki.okbackpack.common.item.redstone.ItemRedstoneUpgrade;
 import ruiseki.okbackpack.common.item.refill.ItemAdvancedRefillUpgrade;
 import ruiseki.okbackpack.common.item.refill.ItemRefillUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemAutoBlastingUpgrade;
@@ -35,12 +43,14 @@ import ruiseki.okbackpack.common.item.smelter.ItemAutoSmokingUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemBlastingUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemSmeltingUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemSmokingUpgrade;
+import ruiseki.okbackpack.common.item.squid.ItemSquidUpgrade;
 import ruiseki.okbackpack.common.item.stack.ItemStackUpgrade;
 import ruiseki.okbackpack.common.item.tank.ItemTankUpgrade;
 import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgrade;
 import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgrade;
 import ruiseki.okbackpack.common.item.voiding.ItemAdvancedVoidUpgrade;
 import ruiseki.okbackpack.common.item.voiding.ItemVoidUpgrade;
+import ruiseki.okbackpack.common.item.wither.ItemWitherUpgrade;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.item.IItem;
 
@@ -83,6 +93,16 @@ public enum ModItems {
     INFINITY_UPGRADE(new ItemInfinityUpgrade()),
     SURVIVAL_INFINITY_UPGRADE(new ItemSurvivalInfinityUpgrade()),
     ARCANE_CRAFTING_UPGRADE(new ItemArcaneCraftingUpgrade(), Mods.Thaumcraft),
+    REDSTONE_UPGRADE(new ItemRedstoneUpgrade()),
+    GLOWSTONE_UPGRADE(new ItemGlowstoneUpgrade()),
+    RAINBOW_UPGRADE(new ItemRainbowUpgrade()),
+    CACTUS_UPGRADE(new ItemCactusUpgrade()),
+    COW_UPGRADE(new ItemCowUpgrade()),
+    BAT_UPGRADE(new ItemBatUpgrade()),
+    SQUID_UPGRADE(new ItemSquidUpgrade()),
+    WITHER_UPGRADE(new ItemWitherUpgrade()),
+    CAKE_UPGRADE(new ItemCakeUpgrade()),
+    BOOKSHELF_UPGRADE(new ItemBookshelfUpgrade()),
 
     //
     ;

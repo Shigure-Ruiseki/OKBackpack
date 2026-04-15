@@ -4,15 +4,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 
@@ -24,12 +31,15 @@ import baubles.api.BaublesApi;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import ruiseki.okbackpack.api.wrapper.IWitherUpgrade;
+import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okbackpack.common.init.ModBlocks;
+import ruiseki.okbackpack.common.item.rainbow.ItemRainbowUpgrade;
 
 public class BackpackEventHandler {
 
@@ -137,6 +147,90 @@ public class BackpackEventHandler {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onPlayerFall(LivingFallEvent event) {
+        if (!(event.entity instanceof EntityPlayer player)) return;
+        if (player.worldObj.isRemote) return;
+
+        if (hasRainbowUpgrade(player)) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onLivingHurt(LivingHurtEvent event) {
+        if (!(event.entityLiving instanceof EntityPlayer player)) return;
+        if (player.worldObj.isRemote) return;
+
+        if (event.source == DamageSource.wither && hasEnabledWitherUpgrade(player)) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onAttackEntity(AttackEntityEvent event) {
+        EntityPlayer player = event.entityPlayer;
+        if (player == null || player.worldObj.isRemote) return;
+        if (!(event.target instanceof EntityLivingBase livingTarget)) return;
+
+        if (hasEnabledWitherUpgrade(player)) {
+            livingTarget.addPotionEffect(new PotionEffect(Potion.wither.id, 60, 1, true));
+        }
+    }
+
+    private boolean hasRainbowUpgrade(EntityPlayer player) {
+        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+            ItemStack stack = player.inventory.getStackInSlot(i);
+            if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack)) continue;
+            BackpackWrapper wrapper = getWrapper(stack);
+            if (wrapper != null && IUpgradeItem.countUpgrades(wrapper, -1, ItemRainbowUpgrade.class) > 0) {
+                return true;
+            }
+        }
+        IInventory baubles = BaublesApi.getBaubles(player);
+        if (baubles != null) {
+            for (int i = 0; i < baubles.getSizeInventory(); i++) {
+                ItemStack stack = baubles.getStackInSlot(i);
+                if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack)) continue;
+                BackpackWrapper wrapper = getWrapper(stack);
+                if (wrapper != null && IUpgradeItem.countUpgrades(wrapper, -1, ItemRainbowUpgrade.class) > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean hasEnabledWitherUpgrade(EntityPlayer player) {
+        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+            ItemStack stack = player.inventory.getStackInSlot(i);
+            if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack)) continue;
+            BackpackWrapper wrapper = getWrapper(stack);
+            if (wrapper != null && wrapper.gatherCapabilityUpgrades(IWitherUpgrade.class)
+                .values()
+                .stream()
+                .anyMatch(IWitherUpgrade::isEnabled)) {
+                return true;
+            }
+        }
+
+        IInventory baubles = BaublesApi.getBaubles(player);
+        if (baubles != null) {
+            for (int i = 0; i < baubles.getSizeInventory(); i++) {
+                ItemStack stack = baubles.getStackInSlot(i);
+                if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack)) continue;
+                BackpackWrapper wrapper = getWrapper(stack);
+                if (wrapper != null && wrapper.gatherCapabilityUpgrades(IWitherUpgrade.class)
+                    .values()
+                    .stream()
+                    .anyMatch(IWitherUpgrade::isEnabled)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @SubscribeEvent

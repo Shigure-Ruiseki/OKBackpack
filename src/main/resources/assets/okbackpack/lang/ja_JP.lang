@@ -297,6 +297,16 @@ item.tank_upgrade.name=タンク
 item.refill_upgrade.name=補充機能
 item.advanced_refill_upgrade.name=補充機能・改
 item.arcane_crafting_upgrade.name=神秘の作業台機能
+item.redstone_upgrade.name=レッドストーン機能
+item.glowstone_upgrade.name=グロウストーン機能
+item.rainbow_upgrade.name=虹の機能
+item.cactus_upgrade.name=サボテン機能
+item.cow_upgrade.name=牛の機能
+item.bat_upgrade.name=コウモリ機能
+item.squid_upgrade.name=イカ機能
+item.wither_upgrade.name=ウィザー機能
+item.cake_upgrade.name=ケーキ機能
+item.bookshelf_upgrade.name=本棚機能
 
 
 # Tooltips
@@ -369,6 +379,18 @@ tooltip.backpack.advanced_refill_upgrade=消費したアイテムをリュック
 tooltip.backpack.advanced_refill_upgrade.1=対象スロットの選択が可能。
 tooltip.backpack.advanced_refill_upgrade.2=ミドルクリックで補充可能。
 tooltip.backpack.arcane_crafting_upgrade=リュック内で神秘の作業台が使えるようになります
+tooltip.backpack.redstone_upgrade=周囲にレッドストーン信号を発する
+tooltip.backpack.glowstone_upgrade=周囲に光を放つ
+tooltip.backpack.rainbow_upgrade=跳躍力上昇と移動速度上昇を付与
+tooltip.backpack.rainbow_upgrade.1=落下ダメージを無効化
+tooltip.backpack.cactus_upgrade=雨天時や水中で自動的に水を収集
+tooltip.backpack.cow_upgrade=すべての負の状態効果を除去
+tooltip.backpack.bat_upgrade=暗視効果を付与する
+tooltip.backpack.squid_upgrade=水中にいる間、 水中呼吸と暗視効果を付与する
+tooltip.backpack.wither_upgrade=ウィザー効果によるダメージを無効化する
+tooltip.backpack.wither_upgrade.1=エンティティ攻撃時にウィザー効果を付与する
+tooltip.backpack.cake_upgrade=空腹度、満腹度、および体力回復効果を付与する
+tooltip.backpack.bookshelf_upgrade=近くのエンチャントテーブルにエンチャントレベルのボーナスを提供する
 
 #メッセージ
 messages.backpack.cant.bag=寝袋を配置できません！周囲を確認してください。

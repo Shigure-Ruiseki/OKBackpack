@@ -1,0 +1,16 @@
+package ruiseki.okbackpack.common.item.bookshelf;
+
+import java.util.function.Consumer;
+
+import net.minecraft.item.ItemStack;
+
+import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IBookshelfUpgrade;
+import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
+
+public class BookshelfUpgradeWrapper extends UpgradeWrapperBase implements IBookshelfUpgrade {
+
+    public BookshelfUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage, Consumer<ItemStack> upgradeConsumer) {
+        super(upgrade, storage, upgradeConsumer);
+    }
+}

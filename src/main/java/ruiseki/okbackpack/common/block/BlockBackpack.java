@@ -46,6 +46,9 @@ import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IAdminProtectable;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
+import ruiseki.okbackpack.api.wrapper.IBookshelfUpgrade;
+import ruiseki.okbackpack.api.wrapper.ILightUpgrade;
+import ruiseki.okbackpack.api.wrapper.IRedstoneUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
@@ -240,6 +243,50 @@ public class BlockBackpack extends BlockOK {
             return backpack.onBlockActivated(worldIn, player, ForgeDirection.getOrientation(side), subX, subY, subZ);
         }
         return super.onBlockActivated(worldIn, x, y, z, player, side, subX, subY, subZ);
+    }
+
+    @Override
+    public int getLightValue(IBlockAccess world, int x, int y, int z) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof TEBackpack backpack) {
+            if (!backpack.getWrapper()
+                .gatherCapabilityUpgrades(ILightUpgrade.class)
+                .isEmpty()) {
+                return 15;
+            }
+        }
+        return super.getLightValue(world, x, y, z);
+    }
+
+    @Override
+    public boolean canProvidePower() {
+        return true;
+    }
+
+    @Override
+    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof TEBackpack backpack) {
+            if (!backpack.getWrapper()
+                .gatherCapabilityUpgrades(IRedstoneUpgrade.class)
+                .isEmpty()) {
+                return 15;
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public float getEnchantPowerBonus(World world, int x, int y, int z) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof TEBackpack backpack) {
+            if (!backpack.getWrapper()
+                .gatherCapabilityUpgrades(IBookshelfUpgrade.class)
+                .isEmpty()) {
+                return 10.0f;
+            }
+        }
+        return 0.0f;
     }
 
     public static class ItemBackpack extends ItemBlockBauble

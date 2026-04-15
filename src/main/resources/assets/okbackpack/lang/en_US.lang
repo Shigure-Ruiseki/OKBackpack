@@ -297,6 +297,16 @@ item.tank_upgrade.name=Tank Upgrade
 item.refill_upgrade.name=Refill Upgrade
 item.advanced_refill_upgrade.name=Advanced Refill Upgrade
 item.arcane_crafting_upgrade.name=Arcane Crafting Upgrade
+item.redstone_upgrade.name=Redstone Upgrade
+item.glowstone_upgrade.name=Glowstone Upgrade
+item.rainbow_upgrade.name=Rainbow Upgrade
+item.cactus_upgrade.name=Cactus Upgrade
+item.cow_upgrade.name=Cow Upgrade
+item.bat_upgrade.name=Bat Upgrade
+item.squid_upgrade.name=Squid Upgrade
+item.wither_upgrade.name=Wither Upgrade
+item.cake_upgrade.name=Cake Upgrade
+item.bookshelf_upgrade.name=Bookshelf Upgrade
 
 
 # Tooltips
@@ -369,6 +379,18 @@ tooltip.backpack.advanced_refill_upgrade=Keeps refilling stack of selected items
 tooltip.backpack.advanced_refill_upgrade.1=Allows for more precise target slot selection
 tooltip.backpack.advanced_refill_upgrade.2=Also allows middle click picking blocks from backpack
 tooltip.backpack.arcane_crafting_upgrade=Arcane workbench in an upgrade tab
+tooltip.backpack.redstone_upgrade=Emits redstone signal to surroundings
+tooltip.backpack.glowstone_upgrade=Emits light to surroundings
+tooltip.backpack.rainbow_upgrade=Grants Jump Boost and Speed effects
+tooltip.backpack.rainbow_upgrade.1=Immune to fall damage
+tooltip.backpack.cactus_upgrade=Automatically collects water in rain or water
+tooltip.backpack.cow_upgrade=Clears all negative status effects
+tooltip.backpack.bat_upgrade=Grants Night Vision
+tooltip.backpack.squid_upgrade=Grants Water Breathing and Night Vision while underwater
+tooltip.backpack.wither_upgrade=Immunity to damage caused by the Wither effect
+tooltip.backpack.wither_upgrade.1=Applies the Wither effect when attacking entities
+tooltip.backpack.cake_upgrade=Grants hunger, saturation, and health regeneration
+tooltip.backpack.bookshelf_upgrade=Provides an enchantment level bonus to nearby enchanting tables
 
 #Messages
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.
