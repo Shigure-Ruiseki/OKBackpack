@@ -40,6 +40,8 @@ import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.item.travelers.rainbow.ItemRainbowUpgrade;
+import ruiseki.okbackpack.common.item.travelers.slime.ItemSlimeUpgrade;
+import ruiseki.okbackpack.common.item.travelers.slime.SlimeUpgradeWrapper;
 
 public class BackpackEventHandler {
 
@@ -155,7 +157,25 @@ public class BackpackEventHandler {
         if (player.worldObj.isRemote) return;
 
         if (hasRainbowUpgrade(player)) {
+            player.fallDistance = 0F;
             event.setCanceled(true);
+            return;
+        }
+
+        if (hasSlimeUpgrade(player)) {
+            player.fallDistance = 0F;
+            event.setCanceled(true);
+            if (player.isSneaking()) return;
+
+            double bounceVelocity = SlimeUpgradeWrapper.calculateBounceVelocity(event.distance);
+            if (bounceVelocity <= 0D) return;
+
+            double deltaY = bounceVelocity - player.motionY;
+            player.addVelocity(0D, deltaY, 0D);
+            player.onGround = false;
+            player.isAirBorne = true;
+            player.velocityChanged = true;
+            return;
         }
     }
 
@@ -196,6 +216,29 @@ public class BackpackEventHandler {
                 if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack)) continue;
                 BackpackWrapper wrapper = getWrapper(stack);
                 if (wrapper != null && IUpgradeItem.countUpgrades(wrapper, -1, ItemRainbowUpgrade.class) > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean hasSlimeUpgrade(EntityPlayer player) {
+        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+            ItemStack stack = player.inventory.getStackInSlot(i);
+            if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack)) continue;
+            BackpackWrapper wrapper = getWrapper(stack);
+            if (wrapper != null && IUpgradeItem.countUpgrades(wrapper, -1, ItemSlimeUpgrade.class) > 0) {
+                return true;
+            }
+        }
+        IInventory baubles = BaublesApi.getBaubles(player);
+        if (baubles != null) {
+            for (int i = 0; i < baubles.getSizeInventory(); i++) {
+                ItemStack stack = baubles.getStackInSlot(i);
+                if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack)) continue;
+                BackpackWrapper wrapper = getWrapper(stack);
+                if (wrapper != null && IUpgradeItem.countUpgrades(wrapper, -1, ItemSlimeUpgrade.class) > 0) {
                     return true;
                 }
             }

@@ -392,8 +392,8 @@ tooltip.backpack.squid_upgrade=Grants Water Breathing and Night Vision while und
 tooltip.backpack.wither_upgrade=Immunity to damage caused by the Wither effect
 tooltip.backpack.wither_upgrade.1=Applies the Wither effect when attacking entities
 tooltip.backpack.cake_upgrade=Grants hunger, saturation, and health regeneration
-tooltip.backpack.slime_upgrade=Grants ice-walking effect
-tooltip.backpack.slime_upgrade.1=Grants a speed effect on full-moon nights
+tooltip.backpack.slime_upgrade=Bounce like a slime
+tooltip.backpack.slime_upgrade.1=Grants a speed effect on full-moon nights & immunity to fall damage
 tooltip.backpack.bookshelf_upgrade=Provides an enchantment level bonus to nearby enchanting tables
 
 #Messages

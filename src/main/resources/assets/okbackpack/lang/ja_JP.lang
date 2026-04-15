@@ -392,8 +392,8 @@ tooltip.backpack.squid_upgrade=水中にいる間、 水中呼吸と暗視効果
 tooltip.backpack.wither_upgrade=ウィザー効果によるダメージを無効化する
 tooltip.backpack.wither_upgrade.1=エンティティ攻撃時にウィザー効果を付与する
 tooltip.backpack.cake_upgrade=空腹度、満腹度、および体力回復効果を付与する
-tooltip.backpack.slime_upgrade=氷上歩行効果を付与する
-tooltip.backpack.slime_upgrade.1=満月の夜に速度効果を付与する
+tooltip.backpack.slime_upgrade=スライムのように弾む
+tooltip.backpack.slime_upgrade.1=満月の夜に速度効果を付与し、落下ダメージを無視する
 tooltip.backpack.bookshelf_upgrade=近くのエンチャントテーブルにエンチャントレベルのボーナスを提供する
 
 #メッセージ

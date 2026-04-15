@@ -392,8 +392,8 @@ tooltip.backpack.squid_upgrade=处于水下时给予水下呼吸与夜视效果
 tooltip.backpack.wither_upgrade=免疫凋零效果造成的伤害
 tooltip.backpack.wither_upgrade.1=攻击生物时附加凋零效果
 tooltip.backpack.cake_upgrade=给予饥饿值、饱和度与生命恢复效果
-tooltip.backpack.slime_upgrade=给予冰面行走效果
-tooltip.backpack.slime_upgrade.1=满月之夜给予速度效果
+tooltip.backpack.slime_upgrade=如同史莱姆一样弹跳
+tooltip.backpack.slime_upgrade.1=满月之夜给予速度效果及免疫摔落伤害
 tooltip.backpack.bookshelf_upgrade=为附近附魔台提供附魔等级加成
 
 #Messages

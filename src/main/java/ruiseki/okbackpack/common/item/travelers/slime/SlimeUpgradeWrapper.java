@@ -19,9 +19,9 @@ public class SlimeUpgradeWrapper extends UpgradeWrapperBase implements ITickable
 
     private static final int SPEED_DURATION = 40;
     private static final int SPEED_AMPLIFIER = 1;
-    // Counteracts normal ground friction closely enough to feel like ice without runaway acceleration.
-    private static final double SLIPPERY_MOTION_MULTIPLIER = 1.82D;
-    private static final double MAX_SLIPPERY_MOTION = 0.98D;
+    private static final double GRAVITY = 0.08D;
+    private static final double DRAG = 0.98D;
+    private static final int MAX_FALL_TICKS = 2000;
 
     public SlimeUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage, Consumer<ItemStack> upgradeConsumer) {
         super(upgrade, storage, upgradeConsumer);
@@ -31,23 +31,8 @@ public class SlimeUpgradeWrapper extends UpgradeWrapperBase implements ITickable
         return !isDaytime && moonPhase == 0;
     }
 
-    public static double adjustSlipperyMotion(double motion) {
-        if (motion == 0D) return 0D;
-
-        double boosted = motion * SLIPPERY_MOTION_MULTIPLIER;
-        if (motion > 0D) {
-            return Math.min(boosted, MAX_SLIPPERY_MOTION);
-        }
-        return Math.max(boosted, -MAX_SLIPPERY_MOTION);
-    }
-
     @Override
     public boolean tick(EntityPlayer player) {
-        if (player.onGround) {
-            player.motionX = adjustSlipperyMotion(player.motionX);
-            player.motionZ = adjustSlipperyMotion(player.motionZ);
-        }
-
         if (player.worldObj instanceof WorldServer worldServer && player.isSprinting()) {
             worldServer
                 .func_147487_a("slime", player.posX, player.posY + 0.1D, player.posZ, 2, 0.25D, 0.0D, 0.25D, 0.0D);
@@ -62,5 +47,19 @@ public class SlimeUpgradeWrapper extends UpgradeWrapperBase implements ITickable
     @Override
     public boolean tick(World world, BlockPos pos) {
         return false;
+    }
+
+    public static double calculateBounceVelocity(double fallDistance) {
+        if (fallDistance <= 0D) return 0D;
+
+        double remaining = fallDistance;
+        double velocityY = 0D;
+
+        for (int i = 0; i < MAX_FALL_TICKS && remaining > 0D; i++) {
+            velocityY = (velocityY - GRAVITY) * DRAG;
+            remaining += velocityY;
+        }
+
+        return Math.max(0D, -velocityY);
     }
 }
