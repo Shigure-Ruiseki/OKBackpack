@@ -31,10 +31,10 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
-import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.config.ModConfig;
 
 @SideOnly(Side.CLIENT)
@@ -227,7 +227,7 @@ public class BackpackContentHandler {
     /**
      * Prepares the expanded tooltip data. Called from addInformation() when shift is held.
      */
-    public static void prepareContents(BackpackWrapper wrapper) {
+    public static void prepareContents(IStorageWrapper wrapper) {
         upgradeInfos.clear();
         sortedContents.clear();
         upgradeTooltipLines.clear();
@@ -243,7 +243,7 @@ public class BackpackContentHandler {
         }
 
         // Gather inventory contents - compact and sort by count descending
-        sortedContents = getCompactedStacksSortedByCount(wrapper.backpackHandler);
+        sortedContents = getCompactedStacksSortedByCount(wrapper.getStackHandler());
     }
 
     public static String getUpgradeHandlerLine() {

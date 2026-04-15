@@ -4,6 +4,9 @@ import net.minecraft.item.ItemStack;
 
 public interface IMemoryStorage {
 
+    String MEMORY_STACK_ITEMS_TAG = "MemoryItems";
+    String MEMORY_STACK_RESPECT_NBT_TAG = "MemoryRespectNBT";
+
     boolean isSlotMemorized(int slotIndex);
 
     ItemStack getMemoryStack(int slotIndex);
