@@ -47,6 +47,7 @@ import ruiseki.okbackpack.common.item.travelers.cow.ItemCowUpgrade;
 import ruiseki.okbackpack.common.item.travelers.glowstone.ItemGlowstoneUpgrade;
 import ruiseki.okbackpack.common.item.travelers.rainbow.ItemRainbowUpgrade;
 import ruiseki.okbackpack.common.item.travelers.redstone.ItemRedstoneUpgrade;
+import ruiseki.okbackpack.common.item.travelers.slime.ItemSlimeUpgrade;
 import ruiseki.okbackpack.common.item.travelers.squid.ItemSquidUpgrade;
 import ruiseki.okbackpack.common.item.travelers.wither.ItemWitherUpgrade;
 import ruiseki.okbackpack.common.item.voiding.ItemAdvancedVoidUpgrade;
@@ -102,6 +103,7 @@ public enum ModItems {
     SQUID_UPGRADE(new ItemSquidUpgrade()),
     WITHER_UPGRADE(new ItemWitherUpgrade()),
     CAKE_UPGRADE(new ItemCakeUpgrade()),
+    SLIME_UPGRADE(new ItemSlimeUpgrade()),
     BOOKSHELF_UPGRADE(new ItemBookshelfUpgrade()),
 
     //

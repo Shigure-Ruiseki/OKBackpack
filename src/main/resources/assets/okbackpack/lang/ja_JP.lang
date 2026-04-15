@@ -307,6 +307,7 @@ item.bat_upgrade.name=コウモリ機能
 item.squid_upgrade.name=イカ機能
 item.wither_upgrade.name=ウィザー機能
 item.cake_upgrade.name=ケーキ機能
+item.slime_upgrade.name=スライム機能
 item.bookshelf_upgrade.name=本棚機能
 
 
@@ -391,6 +392,8 @@ tooltip.backpack.squid_upgrade=水中にいる間、 水中呼吸と暗視効果
 tooltip.backpack.wither_upgrade=ウィザー効果によるダメージを無効化する
 tooltip.backpack.wither_upgrade.1=エンティティ攻撃時にウィザー効果を付与する
 tooltip.backpack.cake_upgrade=空腹度、満腹度、および体力回復効果を付与する
+tooltip.backpack.slime_upgrade=氷上歩行効果を付与する
+tooltip.backpack.slime_upgrade.1=満月の夜に速度効果を付与する
 tooltip.backpack.bookshelf_upgrade=近くのエンチャントテーブルにエンチャントレベルのボーナスを提供する
 
 #メッセージ
