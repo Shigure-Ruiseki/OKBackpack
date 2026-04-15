@@ -6,6 +6,7 @@ import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import ruiseki.okbackpack.api.widget.IUpgradeSlotGroupFactory;
 import ruiseki.okbackpack.client.gui.slot.ModularFilterSlot;
+import ruiseki.okbackpack.client.gui.slot.ModularUpgradeWidgetSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.syncHandler.FilterSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedFloatSH;
@@ -24,13 +25,19 @@ public class SmeltingSlotGroupFactory implements IUpgradeSlotGroupFactory {
         group.put("smelting_inv_handler", smeltingInvHandler);
 
         // Input slot (index 0)
-        ModularSlot inputSlot = new ModularSlot(smeltingInvHandler.delegatedStackHandler, 0);
+        ModularUpgradeWidgetSlot inputSlot = new ModularUpgradeWidgetSlot(
+            group.slotIndex,
+            smeltingInvHandler.delegatedStackHandler,
+            0);
         inputSlot.slotGroup("smelting_slots_" + group.slotIndex);
         group.syncManager.syncValue("smelting_slot_" + group.slotIndex, 0, new ItemSlotSH(inputSlot));
         group.put("smelting_input", inputSlot);
 
         // Fuel slot (index 1)
-        ModularSlot fuelSlot = new ModularSlot(smeltingInvHandler.delegatedStackHandler, 1);
+        ModularUpgradeWidgetSlot fuelSlot = new ModularUpgradeWidgetSlot(
+            group.slotIndex,
+            smeltingInvHandler.delegatedStackHandler,
+            1);
         fuelSlot.slotGroup("smelting_slots_" + group.slotIndex);
         group.syncManager.syncValue("smelting_slot_" + group.slotIndex, 1, new ItemSlotSH(fuelSlot));
         group.put("smelting_fuel", fuelSlot);

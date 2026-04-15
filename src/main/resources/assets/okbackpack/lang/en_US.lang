@@ -58,6 +58,9 @@ gui.backpack.sorting_settings=No Sort Slot Settings
 gui.backpack.sorting_settings.tooltip_detail=Exclude selected slots from sorting\nOpen the tab to change this setting
 gui.backpack.sorting_settings.tooltip_open_detail=Left click or drag to select slots\nRight click or drag to unselect slots\nSelect all slots\nUnselect all slots\nCycle highlight color
 gui.backpack.crafting_settings=Crafting
+gui.backpack.arcane_crafting_settings=Arcane Crafting
+gui.backpack.insufficient_vis=Insufficient vis
+gui.backpack.missing_research=Missing Research
 gui.backpack.void_settings=Void Settings
 gui.backpack.advanced_void_settings=Advanced Void Settings
 gui.backpack.compacting_settings=Compacting Settings
@@ -293,6 +296,7 @@ item.battery_upgrade.name=Battery Upgrade
 item.tank_upgrade.name=Tank Upgrade
 item.refill_upgrade.name=Refill Upgrade
 item.advanced_refill_upgrade.name=Advanced Refill Upgrade
+item.arcane_crafting_upgrade.name=Arcane Crafting Upgrade
 
 
 # Tooltips
@@ -364,6 +368,7 @@ tooltip.backpack.refill_upgrade=Keeps refilling stack of selected items in playe
 tooltip.backpack.advanced_refill_upgrade=Keeps refilling stack of selected items in player's inventory
 tooltip.backpack.advanced_refill_upgrade.1=Allows for more precise target slot selection
 tooltip.backpack.advanced_refill_upgrade.2=Also allows middle click picking blocks from backpack
+tooltip.backpack.arcane_crafting_upgrade=Arcane workbench in an upgrade tab
 
 #Messages
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.

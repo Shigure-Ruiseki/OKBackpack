@@ -29,7 +29,7 @@ public class InventoryCraftingWrapper extends InventoryCrafting {
         int startIndex) {
         super(eventHandlerIn, width, height);
         this.size = width * height + 1;
-        if (startIndex + this.size < delegate.getSlots()) {
+        if (startIndex + this.size > delegate.getSlots()) {
             throw new IllegalArgumentException(
                 "Inventory does not have enough slots for given size. Requires " + (startIndex + this.size)
                     + " slots, but only has "

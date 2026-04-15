@@ -9,6 +9,7 @@ import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotSHRegistry;
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.api.wrapper.IAnvilUpgrade;
+import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.ICompactingUpgrade;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
@@ -54,6 +55,10 @@ public class UpgradeSlotSHRegisters implements IInitListener {
     public static final String UPDATE_TOOL_SWAPPER = "update_tool_swapper";
     public static final String UPDATE_ANVIL_NAME = "update_anvil_name";
     public static final String UPDATE_REFILL_TARGET_SLOT = "update_refill_target_slot";
+    public static final String UPDATE_ARCANE_CRAFTING_S = "update_arcane_crafting_s";
+    public static final String UPDATE_ARCANE_CRAFTING_R = "update_arcane_crafting_r";
+    public static final String UPDATE_ARCANE_CRAFTING_G = "update_arcane_crafting_g";
+    public static final String UPDATE_ARCANE_CRAFTING_C = "update_arcane_crafting_c";
 
     @Override
     public void onInit(Step step) {
@@ -228,6 +233,36 @@ public class UpgradeSlotSHRegisters implements IInitListener {
                 if (filterSlot >= 0 && filterSlot < refill.getFilterSlotCount()) {
                     refill.setTargetSlot(filterSlot, TargetSlot.fromOrdinal(ordinal));
                 }
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_ARCANE_CRAFTING_S, (slot, buf) -> {
+                IUpgradeWrapper wrapper = slot.getWrapper();
+                if (!(wrapper instanceof IArcaneCraftingUpgrade upgrade)) return;
+                upgrade.setCraftingDes(NetworkUtils.readEnumValue(buf, ICraftingUpgrade.CraftingDestination.class));
+                upgrade.setUseBackpack(buf.readBoolean());
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_ARCANE_CRAFTING_R, (slot, buf) -> {
+                IUpgradeWrapper wrapper = slot.getWrapper();
+                if (!(wrapper instanceof IArcaneCraftingUpgrade upgrade)) return;
+                boolean clockwise = buf.readBoolean();
+                BackpackInventoryHelpers.rotated(upgrade.getStorage(), clockwise);
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_ARCANE_CRAFTING_G, (slot, buf) -> {
+                IUpgradeWrapper wrapper = slot.getWrapper();
+                if (!(wrapper instanceof IArcaneCraftingUpgrade upgrade)) return;
+                boolean balance = buf.readBoolean();
+                if (balance) BackpackInventoryHelpers.balance(upgrade.getStorage());
+                else BackpackInventoryHelpers.spread(upgrade.getStorage());
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_ARCANE_CRAFTING_C, (slot, buf) -> {
+                IUpgradeWrapper wrapper = slot.getWrapper();
+                if (!(wrapper instanceof IArcaneCraftingUpgrade upgrade)) return;
+                int ordinal = buf.readInt();
+                BackpackInventoryHelpers.clear(slot.panel, upgrade.getStorage(), ordinal);
+                slot.panel.getPlayer().inventory.markDirty();
             });
 
         }

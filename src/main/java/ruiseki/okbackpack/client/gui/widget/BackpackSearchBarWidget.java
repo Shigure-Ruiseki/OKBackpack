@@ -64,7 +64,9 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
 
     @Override
     public void onInit() {
+        super.onInit();
         cacheOriginalOrder();
+        prevText = getText();
         doSearch(prevText);
     }
 

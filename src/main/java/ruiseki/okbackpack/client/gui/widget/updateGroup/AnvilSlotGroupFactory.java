@@ -1,11 +1,11 @@
 package ruiseki.okbackpack.client.gui.widget.updateGroup;
 
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
-import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import ruiseki.okbackpack.api.widget.IUpgradeSlotGroupFactory;
 import ruiseki.okbackpack.client.gui.slot.AnvilOutputModularSlot;
+import ruiseki.okbackpack.client.gui.slot.ModularUpgradeWidgetSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 
 public class AnvilSlotGroupFactory implements IUpgradeSlotGroupFactory {
@@ -22,13 +22,19 @@ public class AnvilSlotGroupFactory implements IUpgradeSlotGroupFactory {
         group.put("anvil_inv_handler", anvilInvHandler);
 
         // Left input slot (index 0)
-        ModularSlot leftInputSlot = new ModularSlot(anvilInvHandler.delegatedStackHandler, 0);
+        ModularUpgradeWidgetSlot leftInputSlot = new ModularUpgradeWidgetSlot(
+            group.slotIndex,
+            anvilInvHandler.delegatedStackHandler,
+            0);
         leftInputSlot.slotGroup("anvil_slots_" + group.slotIndex);
         group.syncManager.syncValue("anvil_slot_" + group.slotIndex, 0, new ItemSlotSH(leftInputSlot));
         group.put("anvil_left_input", leftInputSlot);
 
         // Right input slot (index 1)
-        ModularSlot rightInputSlot = new ModularSlot(anvilInvHandler.delegatedStackHandler, 1);
+        ModularUpgradeWidgetSlot rightInputSlot = new ModularUpgradeWidgetSlot(
+            group.slotIndex,
+            anvilInvHandler.delegatedStackHandler,
+            1);
         rightInputSlot.slotGroup("anvil_slots_" + group.slotIndex);
         group.syncManager.syncValue("anvil_slot_" + group.slotIndex, 1, new ItemSlotSH(rightInputSlot));
         group.put("anvil_right_input", rightInputSlot);

@@ -1,10 +1,10 @@
 package ruiseki.okbackpack.client.gui.widget.updateGroup;
 
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
-import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import ruiseki.okbackpack.api.widget.IUpgradeSlotGroupFactory;
+import ruiseki.okbackpack.client.gui.slot.ModularUpgradeWidgetSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedFloatSH;
 import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedIntSH;
@@ -23,13 +23,19 @@ public class BatterySlotGroupFactory implements IUpgradeSlotGroupFactory {
         group.put("battery_inv_handler", batteryInvHandler);
 
         // Input slot (index 0) - items that provide energy
-        ModularSlot inputSlot = new ModularSlot(batteryInvHandler.delegatedStackHandler, 0);
+        ModularUpgradeWidgetSlot inputSlot = new ModularUpgradeWidgetSlot(
+            group.slotIndex,
+            batteryInvHandler.delegatedStackHandler,
+            0);
         inputSlot.slotGroup("battery_slots_" + group.slotIndex);
         group.syncManager.syncValue("battery_slot_" + group.slotIndex, 0, new ItemSlotSH(inputSlot));
         group.put("battery_input", inputSlot);
 
         // Output slot (index 1) - items that receive energy
-        ModularSlot outputSlot = new ModularSlot(batteryInvHandler.delegatedStackHandler, 1);
+        ModularUpgradeWidgetSlot outputSlot = new ModularUpgradeWidgetSlot(
+            group.slotIndex,
+            batteryInvHandler.delegatedStackHandler,
+            1);
         outputSlot.slotGroup("battery_slots_" + group.slotIndex);
         group.syncManager.syncValue("battery_slot_" + group.slotIndex, 1, new ItemSlotSH(outputSlot));
         group.put("battery_output", outputSlot);

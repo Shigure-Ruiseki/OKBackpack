@@ -51,6 +51,7 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.SortType;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
+import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IDirtable;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
@@ -79,7 +80,6 @@ import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotGroupWidget;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
-import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 import ruiseki.okcore.helper.ItemStackHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -120,6 +120,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
     public final UpgradeSlotGroupWidget upgradeSlotGroupWidget;
     public final List<ItemSlot> upgradeSlotWidgets = new ArrayList<>();
     public final List<TabWidget> tabWidgets;
+    private int activeTabCount = 0;
     public final ItemStack[] lastUpgradeStacks;
 
     public int rowSize;
@@ -343,7 +344,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                         index++;
                     }
 
-                    int tabCount = tabWidgets.size();
+                    int tabCount = activeTabCount;
                     if (tabCount > 0) {
                         index = (index % tabCount + tabCount) % tabCount;
                     }
@@ -650,7 +651,14 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             tabCount++;
         }
 
+        this.activeTabCount = tabCount;
         int startIndex = wrapper.getTabStartIndex();
+        if (tabCount > 0) {
+            startIndex = ((startIndex % tabCount) + tabCount) % tabCount;
+            wrapper.setTabStartIndex(startIndex);
+        } else {
+            startIndex = 0;
+        }
         Integer openedRelIndex = null;
         int coveredSize = 0;
         for (int i = 0; i < tabCount; i++) {
@@ -852,15 +860,40 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 .getWrapperInSlot(slotIndex);
             if (wrapper == null) continue;
 
-            if (wrapper instanceof CraftingUpgradeWrapper && wrapper.isTabOpened()) {
+            if (wrapper instanceof ICraftingUpgrade upgrade && wrapper.isTabOpened()) {
                 return slotIndex;
             }
         }
         return -1;
     }
 
-    public CraftingSlotInfo getCraftingInfo(int slotIndex) {
-        return upgradeSlotGroups[slotIndex].get("crafting_info");
+    public ICraftingUpgrade getOpenCraftingUpgradeWrapper() {
+        for (int slotIndex = 0; slotIndex < wrapper.getUpgradeHandler()
+            .getSlots(); slotIndex++) {
+            ItemSlot slot = upgradeSlotWidgets.get(slotIndex);
+            if (slot.getSlot() == null) continue;
+            ItemStack stack = slot.getSlot()
+                .getStack();
+            if (stack == null) continue;
+            Item item = stack.getItem();
+
+            if (!(item instanceof IUpgradeItem<?> && ((IUpgradeItem<?>) item).hasTab())) {
+                continue;
+            }
+
+            IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
+                .getWrapperInSlot(slotIndex);
+            if (wrapper == null) continue;
+
+            if (wrapper instanceof ICraftingUpgrade upgrade && wrapper.isTabOpened()) {
+                return upgrade;
+            }
+        }
+        return null;
+    }
+
+    public CraftingSlotInfo getCraftingInfo(int slotIndex, String key) {
+        return upgradeSlotGroups[slotIndex].get(key);
     }
 
     private boolean isTabDirty(int slotIndex, UpgradeSlotSH upgradeSlot) {
