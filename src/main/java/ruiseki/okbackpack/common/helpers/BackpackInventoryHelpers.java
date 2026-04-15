@@ -381,6 +381,7 @@ public class BackpackInventoryHelpers {
         switch (type) {
             case INVENTORY:
                 for (int i = 0; i < stackHandler.getSlots() - 1; i++) {
+                    if (i == 9) continue;
                     ItemStack original = stackHandler.getStackInSlot(i);
                     if (original == null || original.stackSize <= 0) continue;
 
@@ -397,6 +398,7 @@ public class BackpackInventoryHelpers {
 
             case BACKPACK:
                 for (int i = 0; i < stackHandler.getSlots() - 1; i++) {
+                    if (i == 9) continue;
                     ItemStack original = stackHandler.getStackInSlot(i);
                     if (original == null || original.stackSize <= 0) continue;
 
