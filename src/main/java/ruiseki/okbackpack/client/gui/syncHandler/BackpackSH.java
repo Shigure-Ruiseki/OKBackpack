@@ -8,16 +8,16 @@ import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 
 import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.BackpackSHRegistry;
-import ruiseki.okbackpack.common.block.BackpackWrapper;
 
 public class BackpackSH extends SyncHandler {
 
     public final PlayerMainInvWrapper playerInv;
-    public final BackpackWrapper wrapper;
+    public final IStorageWrapper wrapper;
     public final IStoragePanel<?> panel;
 
-    public BackpackSH(PlayerMainInvWrapper playerInv, BackpackWrapper wrapper, IStoragePanel<?> panel) {
+    public BackpackSH(PlayerMainInvWrapper playerInv, IStorageWrapper wrapper, IStoragePanel<?> panel) {
         this.playerInv = playerInv;
         this.wrapper = wrapper;
         this.panel = panel;

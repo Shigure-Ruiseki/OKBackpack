@@ -29,7 +29,7 @@ import ruiseki.okcore.helper.ItemHandlerHelpers;
 
 public class BackpackInventoryHelpers {
 
-    public static void sortInventory(BackpackWrapper wrapper, boolean reverse) {
+    public static void sortInventory(IStorageWrapper wrapper, boolean reverse) {
 
         // Phase 1: memory slot
         for (int i = 0; i < wrapper.getSlots(); i++) {
@@ -134,7 +134,7 @@ public class BackpackInventoryHelpers {
             }
             if (b == null || b.stackSize <= 0) return -1;
 
-            switch (wrapper.sortType) {
+            switch (wrapper.getSortType()) {
                 case BY_NAME:
                     return reverse ? a.getDisplayName()
                         .compareTo(b.getDisplayName())
@@ -194,7 +194,7 @@ public class BackpackInventoryHelpers {
         return Integer.compare(a.size(), b.size());
     }
 
-    private static boolean hasMatchingSlot(BackpackWrapper wrapper, ItemStack stack) {
+    private static boolean hasMatchingSlot(IStorageWrapper wrapper, ItemStack stack) {
         for (int i = 0; i < wrapper.getSlots(); i++) {
             ItemStack inSlot = wrapper.getStackInSlot(i);
             if (ItemHandlerHelpers.canItemStacksStack(inSlot, stack)) {
@@ -204,7 +204,7 @@ public class BackpackInventoryHelpers {
         return false;
     }
 
-    public static void transferPlayerInventoryToBackpack(BackpackWrapper wrapper, PlayerMainInvWrapper playerInv,
+    public static void transferPlayerInventoryToBackpack(IStorageWrapper wrapper, PlayerMainInvWrapper playerInv,
         boolean transferMatched) {
         for (int i = 9; i < playerInv.getSlots(); i++) {
             ItemStack stack = playerInv.getStackInSlot(i);
@@ -226,7 +226,7 @@ public class BackpackInventoryHelpers {
         }
     }
 
-    public static void transferBackpackToPlayerInventory(BackpackWrapper wrapper, PlayerMainInvWrapper playerInv,
+    public static void transferBackpackToPlayerInventory(IStorageWrapper wrapper, PlayerMainInvWrapper playerInv,
         boolean transferMatched) {
         for (int i = 0; i < wrapper.getSlots(); i++) {
             ItemStack stack = wrapper.getStackInSlot(i);
@@ -381,6 +381,7 @@ public class BackpackInventoryHelpers {
         switch (type) {
             case INVENTORY:
                 for (int i = 0; i < stackHandler.getSlots() - 1; i++) {
+                    if (i == 9) continue;
                     ItemStack original = stackHandler.getStackInSlot(i);
                     if (original == null || original.stackSize <= 0) continue;
 
@@ -397,6 +398,7 @@ public class BackpackInventoryHelpers {
 
             case BACKPACK:
                 for (int i = 0; i < stackHandler.getSlots() - 1; i++) {
+                    if (i == 9) continue;
                     ItemStack original = stackHandler.getStackInSlot(i);
                     if (original == null || original.stackSize <= 0) continue;
 

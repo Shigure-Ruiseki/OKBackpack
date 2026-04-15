@@ -9,7 +9,6 @@ import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.widget.IUpgradeSlotGroupFactory;
 import ruiseki.okbackpack.api.widget.UpgradeSlotGroupRegistry;
-import ruiseki.okbackpack.common.block.BackpackWrapper;
 
 public class UpgradeSlotUpdateGroup {
 
@@ -20,7 +19,7 @@ public class UpgradeSlotUpdateGroup {
 
     final Map<String, Object> components = new HashMap<>();
 
-    public UpgradeSlotUpdateGroup(IStoragePanel<?> panel, BackpackWrapper wrapper, int slotIndex) {
+    public UpgradeSlotUpdateGroup(IStoragePanel<?> panel, IStorageWrapper wrapper, int slotIndex) {
         this.panel = panel;
         this.wrapper = wrapper;
         this.slotIndex = slotIndex;

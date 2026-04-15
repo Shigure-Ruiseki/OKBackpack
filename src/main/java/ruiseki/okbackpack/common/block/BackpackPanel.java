@@ -726,7 +726,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 continue;
             }
 
-            IUpgradeWrapper wrapper = this.wrapper.upgradeHandler.getWrapperInSlot(slotIndex);
+            IUpgradeWrapper wrapper = this.wrapper.getUpgradeHandler()
+                .getWrapperInSlot(slotIndex);
             if (wrapper == null) continue;
 
             column.size(36, slotsHeight);

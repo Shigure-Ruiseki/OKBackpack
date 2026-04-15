@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 
 public class BackpackSettingsTemplate {
@@ -39,7 +40,7 @@ public class BackpackSettingsTemplate {
         }
     }
 
-    public static BackpackSettingsTemplate fromWrapper(BackpackWrapper wrapper) {
+    public static BackpackSettingsTemplate fromWrapper(IStorageWrapper wrapper) {
         BackpackSettingsTemplate template = new BackpackSettingsTemplate(wrapper.getSlots());
         template.keepTab = wrapper.isKeepTab();
         template.shiftClickIntoOpenTab = wrapper.isShiftClickIntoOpenTab();
@@ -58,7 +59,7 @@ public class BackpackSettingsTemplate {
         return template;
     }
 
-    public void applyTo(BackpackWrapper wrapper) {
+    public void applyTo(IStorageWrapper wrapper) {
         wrapper.setKeepTab(keepTab);
         wrapper.setShiftClickIntoOpenTab(shiftClickIntoOpenTab);
         wrapper.setKeepSearchPhrase(keepSearchPhrase);
@@ -68,9 +69,12 @@ public class BackpackSettingsTemplate {
 
         for (int i = 0; i < wrapper.getSlots(); i++) {
             ItemStack memoryStack = i < memorizedStacks.size() ? memorizedStacks.get(i) : null;
-            wrapper.backpackHandler.setMemoryStack(i, memoryStack == null ? null : memoryStack.copy());
-            wrapper.backpackHandler.setRespectNBT(i, i < respectNbt.size() && respectNbt.get(i));
-            wrapper.backpackHandler.setSlotLocked(i, i < lockedSlots.size() && lockedSlots.get(i));
+            wrapper.getStackHandler()
+                .setMemoryStack(i, memoryStack == null ? null : memoryStack.copy());
+            wrapper.getStackHandler()
+                .setRespectNBT(i, i < respectNbt.size() && respectNbt.get(i));
+            wrapper.getStackHandler()
+                .setSlotLocked(i, i < lockedSlots.size() && lockedSlots.get(i));
         }
 
         wrapper.markDirty();
