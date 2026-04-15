@@ -143,4 +143,21 @@ public interface IUpgradeItem<W extends IUpgradeWrapper> {
             .mapToInt(Integer::intValue)
             .toArray();
     }
+
+    static int[] findConflictSlotsByWrapperType(IStorageWrapper wrapper, int excludeSlot,
+        Class<? extends IUpgradeWrapper> wrapperClass) {
+        UpgradeItemStackHandler handler = wrapper.getUpgradeHandler();
+        List<Integer> slots = new ArrayList<>();
+        for (int i = 0; i < handler.getSlots(); i++) {
+            if (i == excludeSlot) continue;
+
+            IUpgradeWrapper upgradeWrapper = handler.getWrapperInSlot(i);
+            if (upgradeWrapper != null && wrapperClass.isInstance(upgradeWrapper)) {
+                slots.add(i);
+            }
+        }
+        return slots.stream()
+            .mapToInt(Integer::intValue)
+            .toArray();
+    }
 }

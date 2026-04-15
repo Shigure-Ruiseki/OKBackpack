@@ -1,4 +1,4 @@
 package ruiseki.okbackpack.api.wrapper;
 
-public interface IBookshelfUpgrade {
+public interface IBookshelfUpgrade extends ITravelersUpgrade {
 }

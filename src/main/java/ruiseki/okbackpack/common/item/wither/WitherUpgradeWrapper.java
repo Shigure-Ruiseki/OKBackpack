@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.wither;
+package ruiseki.okbackpack.common.item.travelers.wither;
 
 import java.util.function.Consumer;
 

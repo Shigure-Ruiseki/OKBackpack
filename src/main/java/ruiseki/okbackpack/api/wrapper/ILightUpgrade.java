@@ -1,4 +1,4 @@
 package ruiseki.okbackpack.api.wrapper;
 
-public interface ILightUpgrade {
+public interface ILightUpgrade extends ITravelersUpgrade {
 }

@@ -254,6 +254,7 @@ tile.obsidian_backpack.name=Obsidian Backpack
 tile.sleeping_bag.name=Sleeping Bag
 
 item.upgrade_base.name=Upgrade Base
+item.travelers_upgrade.name=Travelers Upgrade
 item.stack_upgrade.name=Stack Upgrade
 item.stack_upgrade.iron.name=Stack Upgrade Tier 1
 item.stack_upgrade.gold.name=Stack Upgrade Tier 2

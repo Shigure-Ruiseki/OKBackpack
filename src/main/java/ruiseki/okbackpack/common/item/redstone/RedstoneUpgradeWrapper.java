@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.redstone;
+package ruiseki.okbackpack.common.item.travelers.redstone;
 
 import java.util.function.Consumer;
 

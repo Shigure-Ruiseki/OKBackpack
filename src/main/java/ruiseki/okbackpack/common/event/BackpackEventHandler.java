@@ -31,15 +31,15 @@ import baubles.api.BaublesApi;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import ruiseki.okbackpack.api.wrapper.IWitherUpgrade;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
+import ruiseki.okbackpack.api.wrapper.IWitherUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okbackpack.common.init.ModBlocks;
-import ruiseki.okbackpack.common.item.rainbow.ItemRainbowUpgrade;
+import ruiseki.okbackpack.common.item.travelers.rainbow.ItemRainbowUpgrade;
 
 public class BackpackEventHandler {
 

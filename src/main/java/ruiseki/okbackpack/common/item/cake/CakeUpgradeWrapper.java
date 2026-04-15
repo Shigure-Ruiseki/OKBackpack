@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.cake;
+package ruiseki.okbackpack.common.item.travelers.cake;
 
 import java.util.function.Consumer;
 
@@ -10,11 +10,12 @@ import net.minecraft.world.World;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.ITickable;
+import ruiseki.okbackpack.api.wrapper.ITravelersUpgrade;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
-public class CakeUpgradeWrapper extends UpgradeWrapperBase implements ITickable {
+public class CakeUpgradeWrapper extends UpgradeWrapperBase implements ITickable, ITravelersUpgrade {
 
     private static final String LAST_TRIGGER_TICK_TAG = "LastCakeTick";
     private static final int INTERVAL_TICKS = 6000;

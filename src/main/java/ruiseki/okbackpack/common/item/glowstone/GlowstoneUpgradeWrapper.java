@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.glowstone;
+package ruiseki.okbackpack.common.item.travelers.glowstone;
 
 import java.util.function.Consumer;
 

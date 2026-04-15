@@ -254,6 +254,7 @@ tile.obsidian_backpack.name=黑曜石背包
 tile.sleeping_bag.name=睡袋
 
 item.upgrade_base.name=空白升级
+item.travelers_upgrade.name=旅行升级
 item.stack_upgrade.name=堆叠升级
 item.stack_upgrade.iron.name=堆叠升级T1
 item.stack_upgrade.gold.name=堆叠升级T2

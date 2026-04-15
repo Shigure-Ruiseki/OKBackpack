@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.rainbow;
+package ruiseki.okbackpack.common.item.travelers.rainbow;
 
 import java.util.function.Consumer;
 
@@ -9,9 +9,10 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.WorldServer;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.ITravelersUpgrade;
 import ruiseki.okbackpack.common.item.PotionEffectUpgradeWrapper;
 
-public class RainbowUpgradeWrapper extends PotionEffectUpgradeWrapper {
+public class RainbowUpgradeWrapper extends PotionEffectUpgradeWrapper implements ITravelersUpgrade {
 
     private static final int EFFECT_DURATION = 40;
     private static final int EFFECT_AMPLIFIER = 1;

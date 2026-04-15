@@ -254,6 +254,7 @@ tile.obsidian_backpack.name=黒曜石のリュック
 tile.sleeping_bag.name=寝袋
 
 item.upgrade_base.name=リュックの強化素材
+item.travelers_upgrade.name=旅行アップグレード
 item.stack_upgrade.name=スタック数増加
 item.stack_upgrade.iron.name=スタック数増加x2
 item.stack_upgrade.gold.name=スタック数増加x4

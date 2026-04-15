@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.bookshelf;
+package ruiseki.okbackpack.common.item.travelers.bookshelf;
 
 import java.util.function.Consumer;
 

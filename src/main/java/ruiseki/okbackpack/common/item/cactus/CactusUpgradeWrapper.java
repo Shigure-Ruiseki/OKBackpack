@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.cactus;
+package ruiseki.okbackpack.common.item.travelers.cactus;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -14,11 +14,12 @@ import net.minecraftforge.fluids.FluidStack;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITickable;
+import ruiseki.okbackpack.api.wrapper.ITravelersUpgrade;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
-public class CactusUpgradeWrapper extends UpgradeWrapperBase implements ITickable {
+public class CactusUpgradeWrapper extends UpgradeWrapperBase implements ITickable, ITravelersUpgrade {
 
     private static final String TICK_COUNTER_TAG = "CactusTickCounter";
     private static final int COLLECTION_INTERVAL = 600;

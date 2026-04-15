@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.squid;
+package ruiseki.okbackpack.common.item.travelers.squid;
 
 import java.util.function.Consumer;
 
@@ -8,9 +8,10 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.ITravelersUpgrade;
 import ruiseki.okbackpack.common.item.PotionEffectUpgradeWrapper;
 
-public class SquidUpgradeWrapper extends PotionEffectUpgradeWrapper {
+public class SquidUpgradeWrapper extends PotionEffectUpgradeWrapper implements ITravelersUpgrade {
 
     private static final int EFFECT_DURATION = 40;
 

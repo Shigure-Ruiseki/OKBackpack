@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.cow;
+package ruiseki.okbackpack.common.item.travelers.cow;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,11 +13,12 @@ import net.minecraft.world.World;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.ITickable;
+import ruiseki.okbackpack.api.wrapper.ITravelersUpgrade;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
-public class CowUpgradeWrapper extends UpgradeWrapperBase implements ITickable {
+public class CowUpgradeWrapper extends UpgradeWrapperBase implements ITickable, ITravelersUpgrade {
 
     private static final String LAST_CLEAR_TICK_TAG = "LastClearTick";
     private static final int CLEAR_INTERVAL = 12000;

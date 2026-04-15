@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.wither;
+package ruiseki.okbackpack.common.item.travelers.wither;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -10,6 +10,7 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
+import ruiseki.okbackpack.api.wrapper.ITravelersUpgrade;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -29,10 +30,12 @@ public class ItemWitherUpgrade extends ItemUpgrade<WitherUpgradeWrapper> {
 
     @Override
     public UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper wrapper, ItemStack upgradeStack, int targetSlot) {
-        int[] conflicts = IUpgradeItem.findConflictSlots(wrapper, targetSlot, ItemWitherUpgrade.class);
+        int[] conflicts = IUpgradeItem.findConflictSlotsByWrapperType(wrapper, targetSlot, ITravelersUpgrade.class);
         if (conflicts.length >= 1) {
-            return UpgradeSlotChangeResult
-                .failOnlySingleAllowed(conflicts, upgradeStack.getDisplayName(), wrapper.getDisplayName());
+            return UpgradeSlotChangeResult.failOnlySingleAllowed(
+                conflicts,
+                LangHelpers.localize("item.travelers_upgrade.name"),
+                wrapper.getDisplayName());
         }
         return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
     }
