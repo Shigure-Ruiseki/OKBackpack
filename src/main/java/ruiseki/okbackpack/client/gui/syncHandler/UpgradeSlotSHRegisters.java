@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cleanroommc.modularui.network.NetworkUtils;
-import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotSHRegistry;
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
@@ -29,6 +28,7 @@ import ruiseki.okbackpack.common.item.jukebox.AdvancedJukeboxUpgradeWrapper;
 import ruiseki.okbackpack.common.item.refill.AdvancedRefillUpgradeWrapper;
 import ruiseki.okbackpack.common.item.refill.TargetSlot;
 import ruiseki.okcore.init.IInitListener;
+import ruiseki.okcore.item.ItemStackHandler;
 
 public class UpgradeSlotSHRegisters implements IInitListener {
 

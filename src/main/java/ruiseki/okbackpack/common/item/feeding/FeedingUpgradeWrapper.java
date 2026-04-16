@@ -10,8 +10,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import com.cleanroommc.modularui.utils.item.IItemHandler;
-
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
@@ -19,6 +17,7 @@ import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.item.BasicUpgradeWrapper;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
+import ruiseki.okcore.item.IItemHandler;
 
 public class FeedingUpgradeWrapper extends BasicUpgradeWrapper implements IFeedingUpgrade {
 

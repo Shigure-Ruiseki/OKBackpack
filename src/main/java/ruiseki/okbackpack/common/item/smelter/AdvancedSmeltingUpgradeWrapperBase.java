@@ -8,8 +8,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
 
-import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
-
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
@@ -19,6 +17,7 @@ import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.item.AdvancedUpgradeWrapper;
 import ruiseki.okcore.datastructure.BlockPos;
+import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgradeWrapper
@@ -207,7 +206,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                     input = getInput();
                     save();
                     break;
-                } else if (ItemHandlerHelper.canItemStacksStack(input, stack)) {
+                } else if (ItemHandlerHelpers.canItemStacksStack(input, stack)) {
                     int space = input.getMaxStackSize() - input.stackSize;
                     int take = Math.min(space, stack.stackSize);
                     if (take > 0) {
@@ -251,7 +250,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                     fuel = getFuel();
                     save();
                     break;
-                } else if (ItemHandlerHelper.canItemStacksStack(fuel, stack)) {
+                } else if (ItemHandlerHelpers.canItemStacksStack(fuel, stack)) {
                     int space = fuel.getMaxStackSize() - fuel.stackSize;
                     int take = Math.min(space, stack.stackSize);
                     if (take > 0) {
@@ -302,7 +301,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
             ItemStack result = getSmeltingResult(input);
             if (result != null) {
                 ItemStack output = getOutput();
-                boolean canOutput = output == null || (ItemHandlerHelper.canItemStacksStack(output, result)
+                boolean canOutput = output == null || (ItemHandlerHelpers.canItemStacksStack(output, result)
                     && output.stackSize + result.stackSize <= output.getMaxStackSize());
 
                 if (canOutput) {

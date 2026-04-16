@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.widgets.ProgressWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
-import com.cleanroommc.modularui.widgets.layout.Column;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import ruiseki.okbackpack.api.IStoragePanel;
@@ -70,7 +70,8 @@ public class AdvancedSmeltingUpgradeWidget<T extends AdvancedSmeltingUpgradeWrap
             fuelFilterGroup.child(fuelFilterSlot);
         }
 
-        Column column = (Column) new Column().pos(8, 28)
+        Flow column = Flow.column()
+            .pos(8, 28)
             .coverChildren()
             .childPadding(2)
             .child(filterWidget)

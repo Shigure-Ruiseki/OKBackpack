@@ -8,12 +8,12 @@ import com.cleanroommc.modularui.widget.scroll.ScrollArea;
 import com.cleanroommc.modularui.widget.scroll.ScrollData;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
 import com.cleanroommc.modularui.widgets.ListWidget;
-import com.cleanroommc.modularui.widgets.layout.Column;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import ruiseki.okbackpack.common.block.BackpackPanel;
 
-public class BackpackList extends ListWidget<Column, BackpackList> {
+public class BackpackList extends ListWidget<Flow, BackpackList> {
 
     private final BackpackPanel panel;
     private final int thickness = 4;
@@ -29,6 +29,7 @@ public class BackpackList extends ListWidget<Column, BackpackList> {
             this.pendingScroll = initialScroll;
         }
         width(panel.getUsableRowSize() * ItemSlot.SIZE + thickness * 2);
+        showScrollShadows(false);
     }
 
     public void clearPendingScroll() {

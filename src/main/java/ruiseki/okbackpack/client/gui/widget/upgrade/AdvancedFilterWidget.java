@@ -27,8 +27,7 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.ListWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.TextWidget;
-import com.cleanroommc.modularui.widgets.layout.Column;
-import com.cleanroommc.modularui.widgets.layout.Row;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import lombok.Getter;
@@ -75,9 +74,9 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
     private final CyclicVariantButtonWidget ignoreNBTButton;
 
     @Getter
-    private final Column itemBasedConfigurationGroup;
+    private final Flow itemBasedConfigurationGroup;
     @Getter
-    private final Column oreDictBasedConfigurationGroup;
+    private final Flow oreDictBasedConfigurationGroup;
     @Getter
     private final List<ItemSlot> filterSlots;
 
@@ -140,11 +139,13 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
         this.ignoreNBTButton.setInEffect(inEffect);
 
         // Add buttons to rows
-        Row buttonRow = (Row) new Row().leftRel(0.5f)
+        Flow buttonRow = Flow.row()
+            .leftRel(0.5f)
             .size(88, 20)
             .childPadding(2);
 
-        Row itemBasedConfigButtonRow = (Row) new Row().childPadding(2)
+        Flow itemBasedConfigButtonRow = Flow.row()
+            .childPadding(2)
             .size(44, 20)
             .left(44);
         itemBasedConfigButtonRow.child(ignoreDurabilityButton)
@@ -174,7 +175,8 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
         int filterSlotRows = (filterSlotCount + 3) / 4;
         int itemGroupHeight = filterSlotRows * 18 + 13;
 
-        this.itemBasedConfigurationGroup = (Column) new Column().size(88, itemGroupHeight)
+        this.itemBasedConfigurationGroup = Flow.column()
+            .size(88, itemGroupHeight)
             .leftRel(0.5f)
             .top(24)
             .child(slotGroup)
@@ -244,7 +246,8 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
             this.oreDictList.child(new OreDictEntryWidget(this, entry, 88));
         }
 
-        Row oreDictBasedConfigButtonRow = (Row) new Row().bottom(0)
+        Flow oreDictBasedConfigButtonRow = Flow.row()
+            .bottom(0)
             .leftRel(0.5f)
             .height(20)
             .coverChildrenWidth()
@@ -254,7 +257,8 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
             .child(removeOreDictEntryButton)
             .setEnabledIf(flow -> filterableWrapper.getMatchType() == IAdvancedFilterable.MatchType.ORE_DICT);
 
-        this.oreDictBasedConfigurationGroup = (Column) new Column().size(88, 85)
+        this.oreDictBasedConfigurationGroup = Flow.column()
+            .size(88, 85)
             .top(24)
             .child(oreDictList)
             .child(oreDictBasedConfigButtonRow)
@@ -432,7 +436,7 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
 
         @Override
         public void drawOverlay(ModularGuiContext context, WidgetThemeEntry widgetTheme) {
-            IDrawable overlay = getCurrentOverlay(context.getTheme(), widgetTheme);
+            IDrawable overlay = getCurrentOverlay(widgetTheme);
             if (!selected && !hovering && overlay != null) {
                 return;
             }

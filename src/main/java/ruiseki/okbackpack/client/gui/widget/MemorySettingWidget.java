@@ -6,7 +6,7 @@ import java.util.List;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
-import com.cleanroommc.modularui.widgets.layout.Row;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
@@ -38,7 +38,8 @@ public class MemorySettingWidget extends ExpandedTabWidget {
         this.settingPanel = settingPanel;
         this.parentTabWidget = parentTabWidget;
 
-        Row buttonRow = (Row) new Row().leftRel(0.5f)
+        Flow buttonRow = Flow.row()
+            .leftRel(0.5f)
             .height(20)
             .coverChildrenWidth()
             .childPadding(0);

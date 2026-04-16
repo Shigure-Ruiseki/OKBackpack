@@ -821,7 +821,7 @@ public class BackpackSettingPanel extends ModularPanel {
         public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {}
 
         public void drawBackgroundPost(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-            IDrawable bg = getCurrentBackground(getPanel().getTheme(), widgetTheme);
+            IDrawable bg = getCurrentBackground(widgetTheme);
             if (bg != null) {
                 bg.draw(
                     context,
