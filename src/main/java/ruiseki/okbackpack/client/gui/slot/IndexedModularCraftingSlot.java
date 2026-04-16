@@ -11,6 +11,7 @@ import com.cleanroommc.modularui.widgets.slot.ModularCraftingSlot;
 import cpw.mods.fml.common.FMLCommonHandler;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
+import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.gui.handler.InventoryCraftingWrapper;
 
 public class IndexedModularCraftingSlot extends ModularCraftingSlot {
@@ -29,6 +30,15 @@ public class IndexedModularCraftingSlot extends ModularCraftingSlot {
 
     @Override
     public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
+        if (craftMatrix == null) return;
+
+        if (craftMatrix.getContainer() instanceof BackPackContainer container && !container.getGuiData()
+            .isClient()) {
+            // Sync the emptied output slot first so the client observes a real state change
+            // before the recipe is recomputed back into the same result.
+            container.detectAndSendChanges();
+        }
+
         if (stack != null && stack.getItem() != null) {
             FMLCommonHandler.instance()
                 .firePlayerCraftingEvent(player, stack, craftMatrix);
