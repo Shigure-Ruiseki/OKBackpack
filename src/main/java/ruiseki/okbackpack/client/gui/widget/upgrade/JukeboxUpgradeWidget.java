@@ -10,8 +10,7 @@ import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
-import com.cleanroommc.modularui.widgets.layout.Column;
-import com.cleanroommc.modularui.widgets.layout.Row;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import ruiseki.okbackpack.api.IStoragePanel;
@@ -80,13 +79,15 @@ public class JukeboxUpgradeWidget extends ExpandedUpgradeTabWidget<JukeboxUpgrad
                 return false;
             });
 
-        Row buttonRow = (Row) new Row().coverChildrenHeight()
+        Flow buttonRow = Flow.row()
+            .coverChildrenHeight()
             .leftRel(0.5f)
             .childPadding(2)
             .child(stopButton)
             .child(playButton);
 
-        Column column = (Column) new Column().pos(8, 28)
+        Flow column = Flow.column()
+            .pos(8, 28)
             .coverChildren()
             .childPadding(2)
             .child(slotGroup)

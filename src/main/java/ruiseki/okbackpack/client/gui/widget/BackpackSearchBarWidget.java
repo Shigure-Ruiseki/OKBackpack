@@ -12,7 +12,7 @@ import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.value.StringValue;
-import com.cleanroommc.modularui.widgets.layout.Column;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
 import ruiseki.okbackpack.client.gui.slot.BackpackSlot;
@@ -71,7 +71,7 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
     }
 
     public void cacheOriginalOrder() {
-        Column backpackSlots = panel.backpackInvCol;
+        Flow backpackSlots = panel.backpackInvCol;
         if (backpackSlots == null) return;
 
         originalOrder = new ArrayList<>();
@@ -93,7 +93,7 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
     }
 
     public void doSearch(String search) {
-        Column backpackSlots = panel.backpackInvCol;
+        Flow backpackSlots = panel.backpackInvCol;
         if (backpackSlots == null) return;
 
         IWidget parent = backpackSlots.getParent();

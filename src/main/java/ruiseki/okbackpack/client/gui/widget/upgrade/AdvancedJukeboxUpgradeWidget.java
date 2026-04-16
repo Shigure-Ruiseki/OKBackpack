@@ -13,8 +13,7 @@ import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
-import com.cleanroommc.modularui.widgets.layout.Column;
-import com.cleanroommc.modularui.widgets.layout.Row;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import lombok.Getter;
@@ -131,7 +130,8 @@ public class AdvancedJukeboxUpgradeWidget extends ExpandedUpgradeTabWidget<Advan
                 return false;
             });
 
-        Row transportRow = (Row) new Row().coverChildrenHeight()
+        Flow transportRow = Flow.row()
+            .coverChildrenHeight()
             .leftRel(0.5f)
             .childPadding(0)
             .child(prevButton)
@@ -158,13 +158,15 @@ public class AdvancedJukeboxUpgradeWidget extends ExpandedUpgradeTabWidget<Advan
             }).size(18, 18)
                 .pos(44, 0);
 
-        Row modeRow = (Row) new Row().coverChildrenHeight()
+        Flow modeRow = Flow.row()
+            .coverChildrenHeight()
             .width(70)
             .leftRel(0.5f);
         modeRow.child(shuffleButton)
             .child(loopButton);
 
-        Column column = (Column) new Column().pos(8, 28)
+        Flow column = Flow.column()
+            .pos(8, 28)
             .coverChildren()
             .childPadding(2)
             .child(slotGroup)

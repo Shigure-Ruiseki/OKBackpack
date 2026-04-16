@@ -36,7 +36,7 @@
 dependencies {
     implementation("com.github.GTNewHorizons:GTNHLib:0.9.50:dev")
     implementation("com.github.GTNewHorizons:ModularUI2:2.3.56-1.7.10:dev")
-    implementation(rfg.deobf("curse.maven:ok-core-1475995:7934417"))
+    implementation(rfg.deobf("curse.maven:ok-core-1475995:7934451"))
     implementation('com.github.GTNewHorizons:Baubles-Expanded:2.2.11-GTNH:dev')
 
     devOnlyNonPublishable("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")

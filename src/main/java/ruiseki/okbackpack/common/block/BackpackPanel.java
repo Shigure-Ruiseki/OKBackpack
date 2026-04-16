@@ -31,15 +31,12 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetTheme;
 import com.cleanroommc.modularui.utils.GlStateManager;
-import com.cleanroommc.modularui.utils.item.PlayerInvWrapper;
-import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
-import com.cleanroommc.modularui.widgets.layout.Column;
-import com.cleanroommc.modularui.widgets.layout.Row;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
@@ -82,6 +79,8 @@ import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okcore.helper.ItemStackHelpers;
 import ruiseki.okcore.helper.LangHelpers;
+import ruiseki.okcore.item.PlayerInvWrapper;
+import ruiseki.okcore.item.PlayerMainInvWrapper;
 
 public class BackpackPanel extends ModularPanel implements IStoragePanel<BackpackPanel> {
 
@@ -125,10 +124,10 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
 
     public int rowSize;
     public int slotsHeight;
-    public Row slotRow;
+    public Flow slotRow;
     public BackpackList backpackList;
-    public Column backpackInvCol;
-    public List<Column> slotWidgets;
+    public Flow backpackInvCol;
+    public List<Flow> slotWidgets;
     public BackpackSearchBarWidget searchBarWidget;
 
     public final IPanelHandler settingPanel;
@@ -259,7 +258,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         backpackList.maxSize(slotsHeight);
         backpackList.scheduleResize();
 
-        for (Column column : slotWidgets) {
+        for (Flow column : slotWidgets) {
             if (column != null) {
                 column.height(slotsHeight);
                 column.getChildren()
@@ -457,7 +456,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
     }
 
     public void addMainWidget() {
-        slotRow = (Row) new Row().coverChildren()
+        slotRow = Flow.row()
+            .coverChildren()
             .top(18)
             .left(5);
 
@@ -481,7 +481,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         slotWidgets = new ArrayList<>();
         for (int i = 0; i < wrapper.getUpgradeHandler()
             .getSlots(); i++) {
-            Column colWidget = new Column();
+            Flow colWidget = Flow.column();
             colWidget.name("slot_widget_colum_" + i)
                 .size(0);
             slotWidgets.add(colWidget);
@@ -495,7 +495,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
 
     public void addInventorySlots() {
         int usableRowSize = getUsableRowSize();
-        backpackInvCol = (Column) new Column().coverChildren();
+        backpackInvCol = Flow.column()
+            .coverChildren();
 
         for (int i = 0; i < wrapper.getStackHandler()
             .getVisualSize(); i++) {
@@ -712,7 +713,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
 
             ItemStack stack = slotWidget.getSlot()
                 .getStack();
-            Column column = slotWidgets.get(slotIndex);
+            Flow column = slotWidgets.get(slotIndex);
 
             column.removeAll();
 

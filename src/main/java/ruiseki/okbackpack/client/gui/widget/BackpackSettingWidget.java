@@ -6,7 +6,7 @@ import java.util.List;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
-import com.cleanroommc.modularui.widgets.layout.Row;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
@@ -101,7 +101,8 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
                 tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
             });
 
-        Row buttonRow = (Row) new Row().pos(6, 48)
+        Flow buttonRow = Flow.row()
+            .pos(6, 48)
             .height(20)
             .coverChildrenWidth()
             .childPadding(0);

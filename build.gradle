@@ -10,3 +10,7 @@ minecraft {
     injectedTags.put("MOD_NAME", project.modName)
     injectedTags.put("MOD_GROUP", project.modGroup)
 }
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:deprecation"
+}

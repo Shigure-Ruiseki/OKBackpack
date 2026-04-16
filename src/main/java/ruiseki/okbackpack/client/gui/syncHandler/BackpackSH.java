@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import net.minecraft.network.PacketBuffer;
 
-import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.BackpackSHRegistry;
+import ruiseki.okcore.item.PlayerMainInvWrapper;
 
 public class BackpackSH extends SyncHandler {
 
