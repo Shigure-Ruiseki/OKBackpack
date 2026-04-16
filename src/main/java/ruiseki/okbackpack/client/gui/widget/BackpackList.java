@@ -29,6 +29,7 @@ public class BackpackList extends ListWidget<Flow, BackpackList> {
             this.pendingScroll = initialScroll;
         }
         width(panel.getUsableRowSize() * ItemSlot.SIZE + thickness * 2);
+        showScrollShadows(false);
     }
 
     public void clearPendingScroll() {
