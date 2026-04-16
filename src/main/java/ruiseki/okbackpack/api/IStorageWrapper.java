@@ -9,13 +9,12 @@ import net.minecraft.world.World;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.cleanroommc.modularui.utils.item.IItemHandler;
-import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
-
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
 import ruiseki.okcore.datastructure.BlockPos;
+import ruiseki.okcore.item.IItemHandler;
+import ruiseki.okcore.item.IItemHandlerModifiable;
 import ruiseki.okcore.persist.nbt.INBTSerializable;
 
 public interface IStorageWrapper extends IItemHandlerModifiable, IItemHandler, ITintable, INBTSerializable,

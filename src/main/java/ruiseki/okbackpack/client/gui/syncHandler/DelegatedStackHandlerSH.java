@@ -6,8 +6,6 @@ import java.util.function.Supplier;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.PacketBuffer;
 
-import com.cleanroommc.modularui.utils.item.EmptyHandler;
-import com.cleanroommc.modularui.utils.item.IItemHandler;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 
 import ruiseki.okbackpack.api.IStorageContainer;
@@ -15,6 +13,8 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.DelegatedStackHandlerSHRegistry;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.DelegatedItemHandler;
+import ruiseki.okcore.item.EmptyHandler;
+import ruiseki.okcore.item.IItemHandler;
 
 public class DelegatedStackHandlerSH extends SyncHandler {
 

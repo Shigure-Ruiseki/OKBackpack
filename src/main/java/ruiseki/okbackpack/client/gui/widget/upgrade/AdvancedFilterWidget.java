@@ -432,7 +432,7 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
 
         @Override
         public void drawOverlay(ModularGuiContext context, WidgetThemeEntry widgetTheme) {
-            IDrawable overlay = getCurrentOverlay(context.getTheme(), widgetTheme);
+            IDrawable overlay = getCurrentOverlay(widgetTheme);
             if (!selected && !hovering && overlay != null) {
                 return;
             }

@@ -8,9 +8,10 @@ import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.core.mixins.early.minecraft.InventoryCraftingAccessor;
 import com.cleanroommc.modularui.utils.Platform;
-import com.cleanroommc.modularui.utils.item.IItemHandler;
-import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
-import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
+
+import ruiseki.okcore.helper.ItemHandlerHelpers;
+import ruiseki.okcore.item.IItemHandler;
+import ruiseki.okcore.item.IItemHandlerModifiable;
 
 /**
  * A crafting inventory which wraps a {@link IItemHandlerModifiable}. This inventory creates a content list which is
@@ -67,7 +68,7 @@ public class InventoryCraftingWrapper extends InventoryCrafting {
                 this.delegate.setStackInSlot(i + this.startIndex, Platform.EMPTY_STACK);
             }
             if (Platform.isStackEmpty(stack) != Platform.isStackEmpty(current)
-                || (!Platform.isStackEmpty(stack) && !ItemHandlerHelper.canItemStacksStack(stack, current))) {
+                || (!Platform.isStackEmpty(stack) && !ItemHandlerHelpers.canItemStacksStack(stack, current))) {
                 updateSnapshot(i, current);
                 notify = true;
             }

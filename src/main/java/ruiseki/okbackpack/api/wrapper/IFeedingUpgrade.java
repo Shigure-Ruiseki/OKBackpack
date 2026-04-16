@@ -8,7 +8,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 
-import com.cleanroommc.modularui.utils.item.IItemHandler;
+import ruiseki.okcore.item.IItemHandler;
 
 public interface IFeedingUpgrade extends ITickable {
 

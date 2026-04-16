@@ -8,8 +8,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
 
-import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
-
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.wrapper.ISlotModifiable;
@@ -18,6 +16,7 @@ import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.datastructure.BlockPos;
+import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
@@ -161,7 +160,7 @@ public abstract class SmeltingUpgradeWrapperBase extends UpgradeWrapperBase
             ItemStack result = getSmeltingResult(input);
             if (result != null) {
                 ItemStack output = getOutput();
-                boolean canOutput = output == null || (ItemHandlerHelper.canItemStacksStack(output, result)
+                boolean canOutput = output == null || (ItemHandlerHelpers.canItemStacksStack(output, result)
                     && output.stackSize + result.stackSize <= output.getMaxStackSize());
 
                 if (canOutput) {

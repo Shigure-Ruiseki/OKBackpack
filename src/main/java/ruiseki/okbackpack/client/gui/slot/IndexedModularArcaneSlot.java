@@ -5,13 +5,12 @@ import java.util.Map;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import com.cleanroommc.modularui.utils.item.IItemHandler;
-
 import lombok.Setter;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
+import ruiseki.okcore.item.IItemHandler;
 
 public class IndexedModularArcaneSlot extends IndexedModularCraftingSlot {
 

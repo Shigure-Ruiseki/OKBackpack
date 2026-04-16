@@ -18,8 +18,6 @@ import com.cleanroommc.modularui.api.inventory.ClickType;
 import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.screen.NEAAnimationHandler;
 import com.cleanroommc.modularui.utils.Platform;
-import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
-import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
@@ -45,6 +43,8 @@ import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
+import ruiseki.okcore.helper.ItemHandlerHelpers;
+import ruiseki.okcore.item.IItemHandlerModifiable;
 
 public class BackPackContainer extends ModularContainer implements IStorageContainer<BackPackContainer> {
 
@@ -585,7 +585,7 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
             return true;
         }
 
-        return ItemHandlerHelper.canItemStacksStack(fromStack, toStack)
+        return ItemHandlerHelpers.canItemStacksStack(fromStack, toStack)
             && toStack.stackSize < stackLimit(toSlot, fromStack);
     }
 
@@ -623,7 +623,7 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
         // merge stack
         if (fromStack.stackSize > 0 && !fromSlot.isPhantom()
             && toStack != null
-            && ItemHandlerHelper.canItemStacksStack(fromStack, toStack)) {
+            && ItemHandlerHelpers.canItemStacksStack(fromStack, toStack)) {
 
             int j = toStack.stackSize + fromStack.stackSize;
 
@@ -690,6 +690,6 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
 
         ItemStack slotStack = slot.getStack();
 
-        return ItemHandlerHelper.canItemStacksStack(stack, slotStack);
+        return ItemHandlerHelpers.canItemStacksStack(stack, slotStack);
     }
 }

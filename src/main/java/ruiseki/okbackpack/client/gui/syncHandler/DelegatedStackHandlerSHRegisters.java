@@ -7,8 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
-import com.cleanroommc.modularui.utils.item.EmptyHandler;
-
 import ruiseki.okbackpack.api.upgrade.DelegatedStackHandlerSHRegistry;
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
@@ -21,6 +19,7 @@ import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 import ruiseki.okcore.init.IInitListener;
+import ruiseki.okcore.item.EmptyHandler;
 
 public class DelegatedStackHandlerSHRegisters implements IInitListener {
 

@@ -5,12 +5,11 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
-import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
-
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.handler.ILockedItemHandler;
 import ruiseki.okbackpack.api.handler.IMemoryItemHandler;
 import ruiseki.okbackpack.common.block.BlockBackpack;
+import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemStackHelpers;
 
 public class BackpackItemStackHandler extends BaseItemStackHandler implements IMemoryItemHandler, ILockedItemHandler {
@@ -89,7 +88,7 @@ public class BackpackItemStackHandler extends BaseItemStackHandler implements IM
         int limit = getStackLimit(slot, stack);
 
         if (existing != null) {
-            if (!ItemHandlerHelper.canItemStacksStack(stack, existing)) {
+            if (!ItemHandlerHelpers.canItemStacksStack(stack, existing)) {
                 return stack;
             }
             limit -= existing.stackSize;
@@ -103,14 +102,14 @@ public class BackpackItemStackHandler extends BaseItemStackHandler implements IM
 
         if (!simulate) {
             if (existing == null) {
-                stacks.set(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
+                stacks.set(slot, reachedLimit ? ItemHandlerHelpers.copyStackWithSize(stack, limit) : stack);
             } else {
                 existing.stackSize += (reachedLimit ? limit : stack.stackSize);
             }
             onContentsChanged(slot);
         }
 
-        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.stackSize - limit) : null;
+        return reachedLimit ? ItemHandlerHelpers.copyStackWithSize(stack, stack.stackSize - limit) : null;
     }
 
     @Override
@@ -135,9 +134,9 @@ public class BackpackItemStackHandler extends BaseItemStackHandler implements IM
                 onContentsChanged(slot);
             }
         } else {
-            extracted = ItemHandlerHelper.copyStackWithSize(existing, toExtract);
+            extracted = ItemHandlerHelpers.copyStackWithSize(existing, toExtract);
             if (!simulate) {
-                stacks.set(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.stackSize - toExtract));
+                stacks.set(slot, ItemHandlerHelpers.copyStackWithSize(existing, existing.stackSize - toExtract));
                 onContentsChanged(slot);
             }
         }

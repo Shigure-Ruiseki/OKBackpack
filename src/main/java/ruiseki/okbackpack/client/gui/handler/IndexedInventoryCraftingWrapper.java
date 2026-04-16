@@ -2,9 +2,8 @@ package ruiseki.okbackpack.client.gui.handler;
 
 import net.minecraft.inventory.Container;
 
-import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
-
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade.CraftingDestination;
+import ruiseki.okcore.item.IItemHandlerModifiable;
 
 public class IndexedInventoryCraftingWrapper extends InventoryCraftingWrapper {
 

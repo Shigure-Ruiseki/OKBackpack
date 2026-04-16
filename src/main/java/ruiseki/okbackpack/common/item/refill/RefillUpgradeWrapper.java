@@ -9,8 +9,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import com.cleanroommc.modularui.utils.item.IItemHandler;
-
 import lombok.Getter;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
@@ -20,6 +18,7 @@ import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.ItemStackHelpers;
+import ruiseki.okcore.item.IItemHandler;
 
 @Getter
 public class RefillUpgradeWrapper extends UpgradeWrapperBase implements IRefillUpgrade {
@@ -173,21 +172,19 @@ public class RefillUpgradeWrapper extends UpgradeWrapperBase implements IRefillU
         // Cap extraction so total doesn't exceed one full stack
         missingCount = Math.min(missingCount, maxStack - total);
 
-        IItemHandler backpackInv = storage;
-
         // Phase 1: Simulate extraction to find how much we can get
-        int extractable = simulateExtract(backpackInv, filter, missingCount);
+        int extractable = simulateExtract(storage, filter, missingCount);
         if (extractable <= 0) return false;
 
         // Phase 2: Actually extract and fill
-        ItemStack extracted = actualExtract(backpackInv, filter, extractable);
+        ItemStack extracted = actualExtract(storage, filter, extractable);
         if (extracted == null || extracted.stackSize <= 0) return false;
 
         ItemStack remaining = targetSlot.fill(player, extracted);
 
         // Phase 3: If any items couldn't be placed, put them back into the backpack
         if (remaining != null && remaining.stackSize > 0) {
-            insertBack(backpackInv, remaining);
+            insertBack(storage, remaining);
         }
 
         return true;
