@@ -11,7 +11,7 @@ import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widget.SingleChildWidget;
 import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.TextWidget;
-import com.cleanroommc.modularui.widgets.layout.Row;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import lombok.Getter;
 import ruiseki.okbackpack.Reference;
@@ -33,7 +33,7 @@ public abstract class ExpandedTabWidget extends ParentWidget<ExpandedTabWidget> 
 
     protected final PhantomTabWidget phantomTabWidget;
     protected final TextWidget<?> titleKeyWidget;
-    protected final Row upperTabRow;
+    protected final Flow upperTabRow;
 
     public ExpandedTabWidget(int coveredTabSize, IDrawable delegatedIcon, String titleKey) {
         this(coveredTabSize, delegatedIcon, titleKey, 75, ExpandDirection.RIGHT);
@@ -54,7 +54,8 @@ public abstract class ExpandedTabWidget extends ParentWidget<ExpandedTabWidget> 
             .paddingRight(2)
             .topRel(0.5f);
 
-        this.upperTabRow = (Row) new Row().coverChildrenHeight();
+        this.upperTabRow = Flow.row()
+            .coverChildrenHeight();
 
         switch (expandDirection) {
             case LEFT:

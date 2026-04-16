@@ -2,7 +2,7 @@ package ruiseki.okbackpack.client.gui.widget.upgrade;
 
 import net.minecraft.item.ItemStack;
 
-import com.cleanroommc.modularui.widgets.layout.Column;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import ruiseki.okbackpack.api.IStoragePanel;
@@ -33,7 +33,8 @@ public class BatteryUpgradeWidget extends ExpandedUpgradeTabWidget<BatteryUpgrad
             .pos(26, 0)
             .name("battery_output_" + slotIndex);
 
-        Column column = (Column) new Column().pos(4, 32)
+        Flow column = Flow.column()
+            .pos(4, 32)
             .coverChildren()
             .childPadding(2)
             .child(inputSlot)

@@ -8,7 +8,7 @@ import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.utils.GlStateManager;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
-import com.cleanroommc.modularui.widgets.layout.Row;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import lombok.Getter;
 import ruiseki.okbackpack.api.IStoragePanel;
@@ -59,7 +59,8 @@ public class SortingSettingWidget extends ExpandedTabWidget {
         this.parentTabWidget = parentTabWidget;
         this.currentColorIndex = wrapper.getNoSortColorIndex();
 
-        Row buttonRow = (Row) new Row().leftRel(0.5f)
+        Flow buttonRow = Flow.row()
+            .leftRel(0.5f)
             .height(20)
             .coverChildrenWidth()
             .childPadding(0);

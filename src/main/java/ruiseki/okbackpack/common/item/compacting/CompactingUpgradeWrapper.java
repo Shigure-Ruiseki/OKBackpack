@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
@@ -20,6 +19,7 @@ import ruiseki.okbackpack.common.item.BasicUpgradeWrapper;
 import ruiseki.okbackpack.common.recipe.CompactingRecipeCache;
 import ruiseki.okbackpack.common.recipe.CompactingRecipeCache.CompactingResult;
 import ruiseki.okcore.datastructure.BlockPos;
+import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class CompactingUpgradeWrapper extends BasicUpgradeWrapper implements ICompactingUpgrade {
@@ -95,7 +95,7 @@ public class CompactingUpgradeWrapper extends BasicUpgradeWrapper implements ICo
                 ItemStack stack = storage.getStackHandler()
                     .getStackInSlot(idx);
                 if (stack == null || stack.stackSize <= 0) continue;
-                if (!ItemHandlerHelper.canItemStacksStack(template, stack)) continue;
+                if (!ItemHandlerHelpers.canItemStacksStack(template, stack)) continue;
                 totalCount += stack.stackSize;
             }
 
@@ -138,12 +138,12 @@ public class CompactingUpgradeWrapper extends BasicUpgradeWrapper implements ICo
     private ItemStack tryInsertOutput(ItemStack output, BackpackItemStackHandler invHandler) {
         if (output == null) return null;
 
-        ItemStack remaining = ItemHandlerHelper.copyStackWithSize(output, output.stackSize);
+        ItemStack remaining = ItemHandlerHelpers.copyStackWithSize(output, output.stackSize);
 
         for (int i = 0; i < invHandler.getSlots() && remaining != null; i++) {
             ItemStack existing = invHandler.getStackInSlot(i);
             if (existing == null) continue;
-            if (!ItemHandlerHelper.canItemStacksStack(existing, remaining)) continue;
+            if (!ItemHandlerHelpers.canItemStacksStack(existing, remaining)) continue;
 
             int limit = invHandler.getSlotLimit(i);
             int space = limit - existing.stackSize;

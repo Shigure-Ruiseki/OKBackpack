@@ -12,7 +12,7 @@ import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.value.StringValue;
-import com.cleanroommc.modularui.widgets.layout.Column;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
 import ruiseki.okbackpack.client.gui.slot.BackpackSlot;
@@ -40,7 +40,7 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
 
     @Override
     public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        IDrawable bg = getCurrentBackground(context.getTheme(), widgetTheme);
+        IDrawable bg = getCurrentBackground(widgetTheme);
         if (bg != null) {
             bg.draw(context, 2, -1, getArea().width - 4, getArea().height + 1, widgetTheme.getTheme());
         }
@@ -71,7 +71,7 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
     }
 
     public void cacheOriginalOrder() {
-        Column backpackSlots = panel.backpackInvCol;
+        Flow backpackSlots = panel.backpackInvCol;
         if (backpackSlots == null) return;
 
         originalOrder = new ArrayList<>();
@@ -93,7 +93,7 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
     }
 
     public void doSearch(String search) {
-        Column backpackSlots = panel.backpackInvCol;
+        Flow backpackSlots = panel.backpackInvCol;
         if (backpackSlots == null) return;
 
         IWidget parent = backpackSlots.getParent();

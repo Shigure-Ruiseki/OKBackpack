@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
-import com.cleanroommc.modularui.utils.item.IItemHandler;
 import com.cleanroommc.modularui.widgets.slot.ModularCraftingSlot;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -13,6 +12,7 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.gui.handler.InventoryCraftingWrapper;
+import ruiseki.okcore.item.IItemHandler;
 
 public class IndexedModularCraftingSlot extends ModularCraftingSlot {
 

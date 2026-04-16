@@ -10,8 +10,7 @@ import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.network.NetworkUtils;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
-import com.cleanroommc.modularui.widgets.layout.Column;
-import com.cleanroommc.modularui.widgets.layout.Row;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import ruiseki.okbackpack.api.IStoragePanel;
@@ -65,7 +64,8 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
                 updateWrapper();
             }).size(20, 20);
 
-        Row buttonRow = (Row) new Row().height(20)
+        Flow buttonRow = Flow.row()
+            .height(20)
             .child(craftingDesButton)
             .child(usedBackpackButton);
 
@@ -145,18 +145,21 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
             .name("crafting_result_" + slotIndex);
         craftingGroupsWidget.child(craftingResult);
 
-        Row craftingRow = (Row) new Row().coverChildrenHeight()
+        Flow craftingRow = Flow.row()
+            .coverChildrenHeight()
             .childPadding(2);
         craftingRow.child(craftingGroupsWidget)
             .child(
-                new Column().coverChildren()
+                Flow.column()
+                    .coverChildren()
                     .childPadding(2)
                     .top(1)
                     .child(rotated)
                     .child(grid)
                     .child(clear));
 
-        Column column = (Column) new Column().pos(8, 28)
+        Flow column = Flow.column()
+            .pos(8, 28)
             .coverChildren()
             .childPadding(2)
             .child(buttonRow)

@@ -1,6 +1,6 @@
 package ruiseki.okbackpack.client.gui.slot;
 
-import com.cleanroommc.modularui.utils.item.IItemHandler;
+import ruiseki.okcore.item.IItemHandler;
 
 public class IndexedModularCraftingMatrixSlot extends ModularUpgradeWidgetSlot {
 

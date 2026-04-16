@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
-import com.cleanroommc.modularui.widgets.layout.Column;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import ruiseki.okbackpack.api.IStoragePanel;
@@ -47,7 +47,8 @@ public class RefillUpgradeWidget extends ExpandedUpgradeTabWidget<RefillUpgradeW
             slotGroup.child(slot);
         }
 
-        Column column = (Column) new Column().pos(8, 32)
+        Flow column = Flow.column()
+            .pos(8, 32)
             .coverChildren()
             .childPadding(2)
             .child(slotGroup);

@@ -8,8 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
-import com.cleanroommc.modularui.utils.item.EmptyHandler;
-import com.cleanroommc.modularui.utils.item.IItemHandler;
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
@@ -28,6 +26,8 @@ import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegister
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
+import ruiseki.okcore.item.EmptyHandler;
+import ruiseki.okcore.item.IItemHandler;
 import thaumcraft.api.crafting.IArcaneRecipe;
 
 public class ArcaneCraftingSlotGroupFactory implements IUpgradeSlotGroupFactory {

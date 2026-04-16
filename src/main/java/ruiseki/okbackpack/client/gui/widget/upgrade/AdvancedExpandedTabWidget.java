@@ -2,8 +2,7 @@ package ruiseki.okbackpack.client.gui.widget.upgrade;
 
 import net.minecraft.item.ItemStack;
 
-import com.cleanroommc.modularui.widgets.layout.Column;
-import com.cleanroommc.modularui.widgets.layout.Row;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
@@ -13,7 +12,7 @@ public class AdvancedExpandedTabWidget<T extends UpgradeWrapperBase & IAdvancedF
     extends ExpandedUpgradeTabWidget<T> {
 
     protected final T wrapper;
-    protected final Row startingRow;
+    protected final Flow startingRow;
     protected final AdvancedFilterWidget filterWidget;
 
     public AdvancedExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, IStoragePanel<?> panel,
@@ -22,14 +21,16 @@ public class AdvancedExpandedTabWidget<T extends UpgradeWrapperBase & IAdvancedF
 
         this.wrapper = wrapper;
 
-        this.startingRow = (Row) new Row().height(0)
+        this.startingRow = Flow.row()
+            .height(0)
             .name("starting_row");
 
         this.filterWidget = new AdvancedFilterWidget(slotIndex, wrapper, filterSyncKey).width(88)
             .coverChildrenHeight()
             .name("adv_filter_widget");
 
-        Column column = (Column) new Column().pos(8, 28)
+        Flow column = Flow.column()
+            .pos(8, 28)
             .coverChildren()
             .childPadding(2)
             .child(this.startingRow)

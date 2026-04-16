@@ -14,9 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
-import com.cleanroommc.modularui.utils.item.IItemHandler;
-import com.cleanroommc.modularui.utils.item.ItemStackHandler;
-import com.cleanroommc.modularui.utils.item.PlayerMainInvWrapper;
 
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IStoragePanel;
@@ -26,6 +23,9 @@ import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
+import ruiseki.okcore.item.IItemHandler;
+import ruiseki.okcore.item.ItemStackHandler;
+import ruiseki.okcore.item.PlayerMainInvWrapper;
 
 public class BackpackInventoryHelpers {
 

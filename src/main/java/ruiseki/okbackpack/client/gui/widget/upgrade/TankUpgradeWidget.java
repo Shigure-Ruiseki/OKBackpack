@@ -3,8 +3,7 @@ package ruiseki.okbackpack.client.gui.widget.upgrade;
 import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.widget.Widget;
-import com.cleanroommc.modularui.widgets.layout.Column;
-import com.cleanroommc.modularui.widgets.layout.Row;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import ruiseki.okbackpack.api.IStoragePanel;
@@ -34,8 +33,8 @@ public class TankUpgradeWidget extends ExpandedUpgradeTabWidget<TankUpgradeWrapp
             .syncHandler("tank_slot_" + slotIndex, 1)
             .name("tank_output_" + slotIndex);
 
-        Row firstRow = new Row();
-        firstRow.coverChildren()
+        Flow firstRow = Flow.row()
+            .coverChildren()
             .childPadding(4)
             .child(inputSlot)
             .child(outputSlot);
@@ -47,8 +46,8 @@ public class TankUpgradeWidget extends ExpandedUpgradeTabWidget<TankUpgradeWrapp
         Widget<?> rightArrow = new Widget<>().size(15, 8)
             .background(OKBGuiTextures.TANK_SLOT_ARROW);
 
-        Row secondRow = new Row();
-        secondRow.coverChildren()
+        Flow secondRow = Flow.row()
+            .coverChildren()
             .childPadding(8)
             .child(leftArrow)
             .child(rightArrow);
@@ -61,15 +60,14 @@ public class TankUpgradeWidget extends ExpandedUpgradeTabWidget<TankUpgradeWrapp
         ItemSlot outputResultSlot = new ItemSlot().syncHandler("tank_slot_" + slotIndex, 3)
             .name("tank_output_result_" + slotIndex);
 
-        Row thirdRow = new Row();
-        thirdRow.coverChildren()
+        Flow thirdRow = Flow.row()
+            .coverChildren()
             .childPadding(4)
             .child(inputResultSlot)
             .child(outputResultSlot);
 
-        Column column = new Column();
-
-        column.pos(8, 32)
+        Flow column = Flow.column()
+            .pos(8, 32)
             .coverChildren()
             .childPadding(3)
             .child(firstRow)

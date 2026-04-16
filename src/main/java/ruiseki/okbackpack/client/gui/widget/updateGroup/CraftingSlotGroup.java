@@ -4,8 +4,6 @@ import java.util.function.Supplier;
 
 import net.minecraft.item.ItemStack;
 
-import com.cleanroommc.modularui.utils.item.EmptyHandler;
-import com.cleanroommc.modularui.utils.item.IItemHandler;
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.widgets.slot.ModularCraftingSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
@@ -20,6 +18,8 @@ import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingMatrixSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
+import ruiseki.okcore.item.EmptyHandler;
+import ruiseki.okcore.item.IItemHandler;
 
 public class CraftingSlotGroup implements IUpgradeSlotGroupFactory {
 

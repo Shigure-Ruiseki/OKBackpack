@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
-import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 import com.github.bsideup.jabel.Desugar;
 
 import baubles.api.BaublesApi;
@@ -51,6 +50,7 @@ import ruiseki.okbackpack.common.helpers.BackpackSettingsTemplate;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.network.PacketJukeboxPlaybackState;
 import ruiseki.okcore.datastructure.BlockPos;
+import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 
@@ -301,7 +301,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     public @Nullable ItemStack insertItem(@Nullable ItemStack stack, boolean simulate) {
         if (stack == null || stack.stackSize <= 0) return null;
 
-        ItemStack remaining = ItemHandlerHelper.copyStackWithSize(stack, stack.stackSize);
+        ItemStack remaining = ItemHandlerHelpers.copyStackWithSize(stack, stack.stackSize);
 
         for (int i = 0; i < backpackHandler.getSlots() && remaining != null; i++) {
             remaining = insertItem(i, remaining, simulate);

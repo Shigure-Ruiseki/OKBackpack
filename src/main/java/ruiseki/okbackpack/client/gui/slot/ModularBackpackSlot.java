@@ -3,10 +3,10 @@ package ruiseki.okbackpack.client.gui.slot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okcore.helper.ItemHandlerHelpers;
 
 public class ModularBackpackSlot extends ModularSlot {
 
@@ -29,7 +29,7 @@ public class ModularBackpackSlot extends ModularSlot {
             if (cursor != null) {
                 // Different item and oversized stack → block swap
                 if (current.stackSize > current.getMaxStackSize()
-                    && !ItemHandlerHelper.canItemStacksStack(current, cursor)) {
+                    && !ItemHandlerHelpers.canItemStacksStack(current, cursor)) {
                     return false;
                 }
             }
@@ -42,7 +42,7 @@ public class ModularBackpackSlot extends ModularSlot {
         ItemStack current = getStack();
         if (current != null && current.stackSize > current.getMaxStackSize()) {
             // Allow stacking same item, block placing different item
-            if (!ItemHandlerHelper.canItemStacksStack(current, stack)) {
+            if (!ItemHandlerHelpers.canItemStacksStack(current, stack)) {
                 return false;
             }
         }
