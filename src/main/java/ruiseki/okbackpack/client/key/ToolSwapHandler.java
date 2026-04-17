@@ -90,6 +90,7 @@ public class ToolSwapHandler implements IKeyHandler {
                     ctx.backpack.wrapper()
                         .insertItem(currentHand, false);
                 }
+                BackpackEntityHelper.persistBackpack(ctx.backpack);
                 OKBackpack.instance.getPacketHandler()
                     .sendToServer(
                         new PacketBackpackNBT(

@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.ISlotModifiable;
+import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 
@@ -41,6 +42,17 @@ public class InceptionUpgradeWrapper extends UpgradeWrapperBase implements ISlot
 
     @Override
     public boolean canAddStack(int slot, ItemStack stack) {
-        return BackpackEntityHelper.isBackpackStack(stack, false);
+        if (!BackpackEntityHelper.isBackpackStack(stack, false)) {
+            return true;
+        }
+
+        if (storage instanceof BackpackWrapper wrapper) {
+            if (stack == wrapper.getBackpack()) {
+                return false;
+            }
+            return !BackpackEntityHelper.isSameBackpack(stack, wrapper.uuid);
+        }
+
+        return true;
     }
 }
