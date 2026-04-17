@@ -67,7 +67,7 @@ public class ClientProxy extends ClientProxyComponent {
         keyToggleUpgrade5 = KeyRegistry.newKeyBinding(getMod(), "toggle_upgrade_5", Keyboard.KEY_NONE);
         keyRegistry.addKeyHandler(keyToggleUpgrade5, new ToggleUpgradeHandler(4));
 
-        if (Mods.NotEnoughItems.isLoaded()) {
+        if (Mods.NotEnoughItems.isModLoaded()) {
             new BackpackGuiOpener(keyOpenBackpack);
         }
     }
@@ -77,7 +77,7 @@ public class ClientProxy extends ClientProxyComponent {
         super.registerEventHooks();;
         MinecraftForge.EVENT_BUS.register(new ItemRenderEvent());
         MinecraftForge.EVENT_BUS.register(BackpackJukeboxSoundManager.getInstance());
-        if (Mods.CodeChickenCore.isLoaded()) {
+        if (Mods.CodeChickenCore.isModLoaded()) {
             MinecraftForge.EVENT_BUS.register(new BackpackContentHandler());
         }
     }

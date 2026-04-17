@@ -22,7 +22,7 @@ public class UpgradeSlotGroupRegisters implements IInitListener {
             UpgradeSlotGroupRegistry.register(new TankSlotGroupFactory());
             UpgradeSlotGroupRegistry.register(new RefillFilterSlotGroupFactory());
             UpgradeSlotGroupRegistry.register(new AdvancedRefillFilterSlotGroupFactory());
-            if (Mods.Thaumcraft.isLoaded()) {
+            if (Mods.Thaumcraft.isModLoaded()) {
                 UpgradeSlotGroupRegistry.register(new ArcaneCraftingSlotGroupFactory());
             }
         }

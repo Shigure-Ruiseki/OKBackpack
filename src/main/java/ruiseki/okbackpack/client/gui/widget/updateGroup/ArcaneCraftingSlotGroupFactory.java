@@ -93,7 +93,7 @@ public class ArcaneCraftingSlotGroupFactory implements IUpgradeSlotGroupFactory 
                 return ThaumcraftHelpers.isWand(stack);
             }
         };
-        wandSlot.filter(stack -> Mods.Thaumcraft.isLoaded() && ThaumcraftHelpers.isWand(stack));
+        wandSlot.filter(stack -> Mods.Thaumcraft.isModLoaded() && ThaumcraftHelpers.isWand(stack));
         wandSlot.slotGroup("arcane_wand_" + group.slotIndex);
         group.syncManager.syncValue("arcane_wand_" + group.slotIndex, 0, new ItemSlotSH(wandSlot));
         group.put("arcane_wand_slot", wandSlot);
@@ -153,9 +153,9 @@ public class ArcaneCraftingSlotGroupFactory implements IUpgradeSlotGroupFactory 
 
         ItemStack wandStack = handler.delegatedStackHandler.get()
             .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
-        boolean hasWand = Mods.Thaumcraft.isLoaded() && ThaumcraftHelpers.isWand(wandStack);
+        boolean hasWand = Mods.Thaumcraft.isModLoaded() && ThaumcraftHelpers.isWand(wandStack);
 
-        if (hasWand && Mods.Thaumcraft.isLoaded()) {
+        if (hasWand && Mods.Thaumcraft.isModLoaded()) {
             IArcaneRecipe recipe = ThaumcraftHelpers.findArcaneRecipeIgnoringResearch(inventoryCrafting, player);
             if (recipe != null) {
                 String researchKey = recipe.getResearch();
@@ -204,7 +204,7 @@ public class ArcaneCraftingSlotGroupFactory implements IUpgradeSlotGroupFactory 
         }
 
         ItemStack standardResult;
-        if (Mods.TConstruct.isLoaded()) {
+        if (Mods.TConstruct.isModLoaded()) {
             standardResult = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
         } else {
             standardResult = CraftingManager.getInstance()

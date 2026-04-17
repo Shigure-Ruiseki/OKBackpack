@@ -25,7 +25,7 @@ public class ModRecipes implements IInitListener {
         if (step == Step.POSTINIT) {
             blockRecipes();
             itemRecipes();
-            if (Mods.Thaumcraft.isLoaded()) {
+            if (Mods.Thaumcraft.isModLoaded()) {
                 thaumcraftRecipes();
             }
         }
@@ -210,7 +210,7 @@ public class ModRecipes implements IInitListener {
                 ModItems.STACK_UPGRADE.newItemStack(1, 1)));
 
         // Stack Upgrade Tier 4
-        if (!Mods.EtFuturum.isLoaded()) {
+        if (!Mods.EtFuturum.isModLoaded()) {
             GameRegistry.addRecipe(
                 new ShapedOreRecipe(
                     ModItems.STACK_UPGRADE.newItemStack(1, 3),
@@ -701,7 +701,7 @@ public class ModRecipes implements IInitListener {
                 ModItems.SMELTING_UPGRADE.getItem()));
 
         // Everlasting Upgrade
-        if (!Mods.EtFuturum.isLoaded()) {
+        if (!Mods.EtFuturum.isModLoaded()) {
             GameRegistry.addRecipe(
                 new ShapedOreRecipe(
                     ModItems.EVERLASTING_UPGRADE.getItem(),

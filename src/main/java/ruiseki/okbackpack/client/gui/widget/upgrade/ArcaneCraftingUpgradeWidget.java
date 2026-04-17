@@ -198,7 +198,7 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
 
             @Override
             public void draw(ModularGuiContext context, WidgetThemeEntry widgetTheme) {
-                if (!Mods.Thaumcraft.isLoaded()) return;
+                if (!Mods.Thaumcraft.isModLoaded()) return;
                 if (!wrapper.hasWand()) return;
                 if (!hasInsufficientVis()) return;
                 String missingResearch = wrapper.getMissingResearch();
@@ -228,7 +228,7 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
 
             @Override
             public void draw(ModularGuiContext context, WidgetThemeEntry widgetTheme) {
-                if (!Mods.Thaumcraft.isLoaded()) return;
+                if (!Mods.Thaumcraft.isModLoaded()) return;
                 if (!wrapper.hasWand()) return;
                 String missingResearch = wrapper.getMissingResearch();
                 if (missingResearch == null || missingResearch.isEmpty()) return;
@@ -283,7 +283,7 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
     }
 
     private boolean hasInsufficientVis() {
-        if (!Mods.Thaumcraft.isLoaded()) return false;
+        if (!Mods.Thaumcraft.isModLoaded()) return false;
 
         Map<String, Integer> required = wrapper.getRequiredAspects();
         if (required == null || required.isEmpty()) return false;
@@ -334,7 +334,7 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
 
         @Override
         public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-            if (!Mods.Thaumcraft.isLoaded()) return;
+            if (!Mods.Thaumcraft.isModLoaded()) return;
 
             Map<String, Integer> requiredAspects = wrapper.getRequiredAspects();
             String missingResearch = wrapper.getMissingResearch();

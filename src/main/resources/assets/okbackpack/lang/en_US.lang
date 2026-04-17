@@ -309,6 +309,20 @@ item.wither_upgrade.name=Wither Upgrade
 item.cake_upgrade.name=Cake Upgrade
 item.slime_upgrade.name=Slime Upgrade
 item.bookshelf_upgrade.name=Bookshelf Upgrade
+item.wolf_upgrade.name=Wolf Upgrade
+item.ocelot_upgrade.name=Ocelot Upgrade
+item.quiver_upgrade.name=Quiver Upgrade
+item.chicken_upgrade.name=Chicken Upgrade
+item.magma_cube_upgrade.name=Magma Cube Upgrade
+item.dragon_upgrade.name=Dragon Upgrade
+item.blaze_upgrade.name=Blaze Upgrade
+item.sponge_upgrade.name=Sponge Upgrade
+item.creeper_upgrade.name=Creeper Upgrade
+item.ghast_upgrade.name=Ghast Upgrade
+item.spider_upgrade.name=Spider Upgrade
+item.lapis_upgrade.name=Lapis Upgrade
+item.quartz_upgrade.name=Quartz Upgrade
+item.hay_upgrade.name=Hay Upgrade
 
 
 # Tooltips
@@ -395,6 +409,22 @@ tooltip.backpack.cake_upgrade=Grants hunger, saturation, and health regeneration
 tooltip.backpack.slime_upgrade=Bounce like a slime
 tooltip.backpack.slime_upgrade.1=Grants a speed effect on full-moon nights
 tooltip.backpack.bookshelf_upgrade=Provides an enchantment level bonus to nearby enchanting tables
+tooltip.backpack.wolf_upgrade=Calms nearby angry wolves and dogs
+tooltip.backpack.wolf_upgrade.1=Grants Strength on full-moon nights
+tooltip.backpack.ocelot_upgrade=Grants Speed while hostile mobs are nearby
+tooltip.backpack.quiver_upgrade=Prioritizes arrows stored in the backpack when firing a bow
+tooltip.backpack.chicken_upgrade=Generates eggs from time to time
+tooltip.backpack.magma_cube_upgrade=Grants Fire Resistance
+tooltip.backpack.dragon_upgrade=Grants Fire Resistance, Strength, Water Breathing, and Regeneration
+tooltip.backpack.blaze_upgrade=Immunity to fall damage and blaze fireballs
+tooltip.backpack.sponge_upgrade=Automatically absorbs nearby water source blocks
+tooltip.backpack.creeper_upgrade=Triggers an explosion at near death and grants Absorption, Regeneration, and Fire Resistance
+tooltip.backpack.ghast_upgrade=Makes ghasts neutral
+tooltip.backpack.spider_upgrade=Allows climbing walls
+tooltip.backpack.lapis_upgrade=Has a chance to double experience gained
+tooltip.backpack.quartz_upgrade=Grants Haste
+tooltip.backpack.hay_upgrade=Has a chance to double crop drops
+tooltip.backpack.hay_upgrade.1=Has a chance to obtain edible crops from grass
 
 #Messages
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.

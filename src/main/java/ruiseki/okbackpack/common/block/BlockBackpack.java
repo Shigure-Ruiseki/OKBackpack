@@ -593,10 +593,10 @@ public class BlockBackpack extends BlockOK {
                 String shiftKey = "\u00a7b" + LangHelpers.localize("tooltip.backpack.contents.shift")
                     + "\u00a7r\u00a77";
                 list.add("\u00a77" + LangHelpers.localize("tooltip.backpack.contents.press_for_contents", shiftKey));
-                if (Mods.CodeChickenCore.isLoaded()) {
+                if (Mods.CodeChickenCore.isModLoaded()) {
                     BackpackContentHandler.reset();
                 }
-            } else if (Mods.CodeChickenCore.isLoaded()) {
+            } else if (Mods.CodeChickenCore.isModLoaded()) {
                 // Expanded tooltip with upgrade/inventory info
                 BackpackWrapper wrapper = new BackpackWrapper(stack, this);
                 BackpackContentHandler.prepareContents(wrapper);

@@ -40,16 +40,30 @@ import ruiseki.okbackpack.common.item.tank.ItemTankUpgrade;
 import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgrade;
 import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgrade;
 import ruiseki.okbackpack.common.item.travelers.bat.ItemBatUpgrade;
+import ruiseki.okbackpack.common.item.travelers.blaze.ItemBlazeUpgrade;
 import ruiseki.okbackpack.common.item.travelers.bookshelf.ItemBookshelfUpgrade;
 import ruiseki.okbackpack.common.item.travelers.cactus.ItemCactusUpgrade;
 import ruiseki.okbackpack.common.item.travelers.cake.ItemCakeUpgrade;
+import ruiseki.okbackpack.common.item.travelers.chicken.ItemChickenUpgrade;
 import ruiseki.okbackpack.common.item.travelers.cow.ItemCowUpgrade;
+import ruiseki.okbackpack.common.item.travelers.creeper.ItemCreeperUpgrade;
+import ruiseki.okbackpack.common.item.travelers.dragon.ItemDragonUpgrade;
+import ruiseki.okbackpack.common.item.travelers.ghast.ItemGhastUpgrade;
 import ruiseki.okbackpack.common.item.travelers.glowstone.ItemGlowstoneUpgrade;
+import ruiseki.okbackpack.common.item.travelers.hay.ItemHayUpgrade;
+import ruiseki.okbackpack.common.item.travelers.lapis.ItemLapisUpgrade;
+import ruiseki.okbackpack.common.item.travelers.magma.ItemMagmaCubeUpgrade;
+import ruiseki.okbackpack.common.item.travelers.ocelot.ItemOcelotUpgrade;
+import ruiseki.okbackpack.common.item.travelers.quartz.ItemQuartzUpgrade;
+import ruiseki.okbackpack.common.item.travelers.quiver.ItemQuiverUpgrade;
 import ruiseki.okbackpack.common.item.travelers.rainbow.ItemRainbowUpgrade;
 import ruiseki.okbackpack.common.item.travelers.redstone.ItemRedstoneUpgrade;
 import ruiseki.okbackpack.common.item.travelers.slime.ItemSlimeUpgrade;
+import ruiseki.okbackpack.common.item.travelers.spider.ItemSpiderUpgrade;
+import ruiseki.okbackpack.common.item.travelers.sponge.ItemSpongeUpgrade;
 import ruiseki.okbackpack.common.item.travelers.squid.ItemSquidUpgrade;
 import ruiseki.okbackpack.common.item.travelers.wither.ItemWitherUpgrade;
+import ruiseki.okbackpack.common.item.travelers.wolf.ItemWolfUpgrade;
 import ruiseki.okbackpack.common.item.voiding.ItemAdvancedVoidUpgrade;
 import ruiseki.okbackpack.common.item.voiding.ItemVoidUpgrade;
 import ruiseki.okbackpack.compat.Mods;
@@ -105,6 +119,20 @@ public enum ModItems {
     CAKE_UPGRADE(new ItemCakeUpgrade()),
     SLIME_UPGRADE(new ItemSlimeUpgrade()),
     BOOKSHELF_UPGRADE(new ItemBookshelfUpgrade()),
+    WOLF_UPGRADE(new ItemWolfUpgrade()),
+    OCELOT_UPGRADE(new ItemOcelotUpgrade()),
+    QUIVER_UPGRADE(new ItemQuiverUpgrade()),
+    CHICKEN_UPGRADE(new ItemChickenUpgrade()),
+    MAGMA_CUBE_UPGRADE(new ItemMagmaCubeUpgrade()),
+    DRAGON_UPGRADE(new ItemDragonUpgrade()),
+    BLAZE_UPGRADE(new ItemBlazeUpgrade()),
+    SPONGE_UPGRADE(new ItemSpongeUpgrade()),
+    CREEPER_UPGRADE(new ItemCreeperUpgrade()),
+    GHAST_UPGRADE(new ItemGhastUpgrade()),
+    SPIDER_UPGRADE(new ItemSpiderUpgrade()),
+    LAPIS_UPGRADE(new ItemLapisUpgrade()),
+    QUARTZ_UPGRADE(new ItemQuartzUpgrade()),
+    HAY_UPGRADE(new ItemHayUpgrade()),
 
     //
     ;
@@ -115,7 +143,7 @@ public enum ModItems {
     public static void preInit() {
         for (ModItems item : VALUES) {
             try {
-                if (item.requiredMod != null && !item.requiredMod.isLoaded()) {
+                if (item.requiredMod != null && !item.requiredMod.isModLoaded()) {
                     OKBackpack
                         .okLog(Level.INFO, "Skipping " + item.name() + " (requires " + item.requiredMod.modid + ")");
                     continue;

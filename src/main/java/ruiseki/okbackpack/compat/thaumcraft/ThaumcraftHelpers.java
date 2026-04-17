@@ -426,7 +426,7 @@ public class ThaumcraftHelpers {
                 }
             } else {
                 ItemStack vanillaResult;
-                if (Mods.TConstruct.isLoaded()) {
+                if (Mods.TConstruct.isModLoaded()) {
                     vanillaResult = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
                 } else {
                     vanillaResult = CraftingManager.getInstance()
@@ -446,7 +446,7 @@ public class ThaumcraftHelpers {
             }
         } else {
             ItemStack vanillaResult;
-            if (Mods.TConstruct.isLoaded()) {
+            if (Mods.TConstruct.isModLoaded()) {
                 vanillaResult = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
             } else {
                 vanillaResult = CraftingManager.getInstance()

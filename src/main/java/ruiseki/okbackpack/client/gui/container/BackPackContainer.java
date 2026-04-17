@@ -88,12 +88,12 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                 IndexedModularArcaneSlot arcaneSlot = arcaneSlotInstances.get(upgradeSlotIndex);
                 IndexedModularCraftingSlot slot = craftingSlotInstances.get(upgradeSlotIndex);
 
-                if (arcaneSlot != null && Mods.Thaumcraft.isLoaded()) {
+                if (arcaneSlot != null && Mods.Thaumcraft.isModLoaded()) {
                     ItemStack result = findArcaneOrVanillaResult(inventoryCrafting, player);
                     inventoryCrafting.setSlot(9, result, false);
                 } else {
                     ItemStack result;
-                    if (Mods.TConstruct.isLoaded()) {
+                    if (Mods.TConstruct.isModLoaded()) {
                         result = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
                     } else {
                         result = CraftingManager.getInstance()
@@ -139,7 +139,7 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                 }
             }
         }
-        if (Mods.TConstruct.isLoaded()) {
+        if (Mods.TConstruct.isModLoaded()) {
             return TinkersHelpers.getTinkersRecipe(inventoryCrafting);
         }
         return CraftingManager.getInstance()
