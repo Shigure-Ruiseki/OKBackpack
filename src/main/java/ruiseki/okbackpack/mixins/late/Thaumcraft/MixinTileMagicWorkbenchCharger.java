@@ -1,25 +1,34 @@
 package ruiseki.okbackpack.mixins.late.Thaumcraft;
 
+import net.minecraft.tileentity.TileEntity;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
+import ruiseki.okbackpack.compat.thaumcraft.IVisChargeTarget;
+import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftChargeHelper;
 import thaumcraft.common.tiles.TileMagicWorkbenchCharger;
+import thaumcraft.common.tiles.TileVisRelay;
 
 @Mixin(value = TileMagicWorkbenchCharger.class, remap = false)
-public class MixinTileMagicWorkbenchCharger {
+public abstract class MixinTileMagicWorkbenchCharger extends TileVisRelay {
 
-    @WrapOperation(
-        method = "updateEntity",
-        at = @At(value = "CONSTANT", args = "classValue=thaumcraft/common/tiles/TileMagicWorkbench"))
-    private boolean wrapInstanceOfAEBaseTile(Object obj, Operation<Boolean> original) {
-        if (obj instanceof xxxx) {
-
-            return false;
+    @Inject(method = "updateEntity", at = @At("HEAD"), cancellable = true)
+    private void okbackpack$updateEntity(CallbackInfo ci) {
+        super.updateEntity();
+        if (!this.worldObj.isRemote) {
+            TileEntity tile = this.worldObj.getTileEntity(this.xCoord, this.yCoord - 1, this.zCoord);
+            if (tile instanceof IVisChargeTarget chargeTarget) {
+                boolean charged = ThaumcraftChargeHelper
+                    .chargeStacks(chargeTarget.getVisChargeableStacks(), this::consumeVis);
+                if (charged) {
+                    chargeTarget.onVisCharged();
+                }
+            }
         }
 
-        return original.call(obj);
+        ci.cancel();
     }
 }

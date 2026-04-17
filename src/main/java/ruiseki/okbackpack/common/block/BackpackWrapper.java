@@ -12,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -22,10 +21,8 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
-import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.github.bsideup.jabel.Desugar;
 
-import baubles.api.BaublesApi;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
@@ -45,8 +42,10 @@ import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
 import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackSettingsTemplate;
+import ruiseki.okbackpack.common.helpers.UpgradeFeatureHelper;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.network.PacketJukeboxPlaybackState;
 import ruiseki.okcore.datastructure.BlockPos;
@@ -463,7 +462,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public boolean canAddStack(int slot, ItemStack stack) {
         Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
-        if (stack != null && stack.getItem() instanceof BlockBackpack.ItemBackpack) {
+        if (BackpackEntityHelper.isBackpackStack(stack, false)) {
 
             for (ISlotModifiable mod : gathered.values()) {
                 if (mod.canAddStack(slot, stack)) {
@@ -698,38 +697,10 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     public ItemStack findStackByUUID(EntityPlayer player) {
-        if (player == null || uuid == null || type == null) return backpack;
+        if (player == null || uuid == null || uuid.isEmpty()) return backpack;
 
-        // Check held item first (fastest)
-        ItemStack held = player.getHeldItem();
-        if (isSameBackpack(held)) return held;
-
-        // Check player inventory
-        if (type == InventoryTypes.PLAYER) {
-            for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                ItemStack stack = player.inventory.getStackInSlot(i);
-                if (isSameBackpack(stack)) return stack;
-            }
-        }
-
-        // Check Baubles if loaded
-        if (type == InventoryTypes.BAUBLES) {
-            IInventory baubles = BaublesApi.getBaubles(player);
-            if (baubles != null) {
-                for (int i = 0; i < baubles.getSizeInventory(); i++) {
-                    ItemStack stack = baubles.getStackInSlot(i);
-                    if (isSameBackpack(stack)) return stack;
-                }
-            }
-        }
-        return backpack; // Fallback
-    }
-
-    private boolean isSameBackpack(ItemStack stack) {
-        if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack)) return false;
-        NBTTagCompound tag = stack.getTagCompound();
-        NBTTagCompound backpackTag = tag.getCompoundTag(BACKPACK_NBT);
-        return backpackTag != null && uuid.equals(backpackTag.getString(UUID_TAG));
+        ItemStack found = BackpackEntityHelper.findBackpackByUuid(player, uuid, type);
+        return found != null ? found : backpack;
     }
 
     @Override
@@ -969,6 +940,7 @@ public class BackpackWrapper implements IBackpackWrapper {
             IUpgradeWrapper wrapper = this.getUpgradeHandler()
                 .getWrapperInSlot(i);
             if (wrapper == null) continue;
+            if (!UpgradeFeatureHelper.isUpgradeRuntimeEnabled(wrapper)) continue;
             if (capabilityClass.isAssignableFrom(wrapper.getClass())) {
                 result.put(i, capabilityClass.cast(wrapper));
             }

@@ -1,7 +1,6 @@
 package ruiseki.okbackpack.common.event;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +42,6 @@ import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.github.bsideup.jabel.Desugar;
-import com.gtnewhorizon.gtnhlib.concurrent.ThreadsafeCache;
 
 import baubles.api.BaublesApi;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -52,9 +50,9 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import ruiseki.okbackpack.api.wrapper.IWitherUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.item.travelers.blaze.BlazeUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.creeper.CreeperUpgradeWrapper;
@@ -141,46 +139,27 @@ public class BackpackEventHandler {
         EntityPlayer player = event.player;
         if (player.worldObj.isRemote || player.isDead) return;
 
-        tickInventory(player);
-        tickBaubles(player);
+        tickBackpacks(player);
         neutralizeNearbyGhasts(player);
     }
 
-    private void tickInventory(EntityPlayer player) {
-        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-            ItemStack stack = player.inventory.getStackInSlot(i);
-            if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack item)) continue;
-
-            if (!stack.getTagCompound()
-                .hasKey(BackpackWrapper.BACKPACK_NBT)) {
-                BackpackWrapper wrapper = getWrapper(stack);
-                wrapper.writeToItem();
-                continue;
-            }
-
-            if (!(player.openContainer instanceof BackPackContainer)) {
-                BackpackWrapper wrapper = getWrapper(stack);
-                if (wrapper.tick(player)) {
-                    wrapper.writeToItem();
+    private void tickBackpacks(EntityPlayer player) {
+        boolean backpackOpen = player.openContainer instanceof BackPackContainer;
+        BackpackEntityHelper
+            .visitPlayerBackpacks(player, BackpackEntityHelper.SearchOrder.PLAYER_THEN_BAUBLES, context -> {
+                ItemStack stack = context.getStack();
+                if (stack.getTagCompound() == null || !stack.getTagCompound()
+                    .hasKey(BackpackWrapper.BACKPACK_NBT)) {
+                    BackpackEntityHelper.persistBackpack(context);
+                    return false;
                 }
-            }
-        }
-    }
 
-    private void tickBaubles(EntityPlayer player) {
-        IInventory baubles = BaublesApi.getBaubles(player);
-        if (baubles == null) return;
-
-        for (int i = 0; i < baubles.getSizeInventory(); i++) {
-            ItemStack stack = baubles.getStackInSlot(i);
-            if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack item)) continue;
-            if (!(player.openContainer instanceof BackPackContainer)) {
-                BackpackWrapper wrapper = getWrapper(stack);
-                if (wrapper.tick(player)) {
-                    wrapper.writeToItem();
+                if (!backpackOpen && context.getWrapper()
+                    .tick(player)) {
+                    BackpackEntityHelper.persistBackpack(context);
                 }
-            }
-        }
+                return false;
+            });
     }
 
     @SubscribeEvent
@@ -278,7 +257,7 @@ public class BackpackEventHandler {
         if (player.capabilities.isCreativeMode) return;
         if (EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, event.bow) > 0) return;
 
-        PlayerBackpackContext quiverSource = findQuiverSource(player);
+        BackpackEntityHelper.BackpackContext quiverSource = findQuiverSource(player);
         if (quiverSource == null) return;
 
         event.setCanceled(true);
@@ -356,7 +335,7 @@ public class BackpackEventHandler {
             player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 100, 1, true));
             player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 2400, 0, true));
             playRescueExplosion(player);
-            persistBackpack(player, ctx.backpack);
+            BackpackEntityHelper.persistBackpack(ctx.backpack);
             return true;
         });
     }
@@ -427,22 +406,28 @@ public class BackpackEventHandler {
             .equals(data.getString(GHAST_ANGER_PLAYER_TAG));
     }
 
-    private PlayerBackpackContext findQuiverSource(EntityPlayer player) {
-        final PlayerBackpackContext[] result = new PlayerBackpackContext[1];
-        visitPlayerBackpacks(player, ctx -> {
-            if (ctx.wrapper.gatherCapabilityUpgrades(QuiverUpgradeWrapper.class)
-                .isEmpty()) {
-                return false;
-            }
-            ItemStack extracted = ctx.wrapper.extractItem(SINGLE_ARROW, 1, true);
-            if (extracted == null || extracted.stackSize <= 0) return false;
-            result[0] = ctx;
-            return true;
-        });
+    private BackpackEntityHelper.BackpackContext findQuiverSource(EntityPlayer player) {
+        final BackpackEntityHelper.BackpackContext[] result = new BackpackEntityHelper.BackpackContext[1];
+        BackpackEntityHelper
+            .visitPlayerBackpacks(player, BackpackEntityHelper.SearchOrder.PLAYER_THEN_BAUBLES, context -> {
+                if (context.getWrapper()
+                    .gatherCapabilityUpgrades(QuiverUpgradeWrapper.class)
+                    .isEmpty()) {
+                    return false;
+                }
+
+                ItemStack extracted = context.getWrapper()
+                    .extractItem(SINGLE_ARROW, 1, true);
+                if (extracted == null || extracted.stackSize <= 0) return false;
+
+                result[0] = context;
+                return true;
+            });
         return result[0];
     }
 
-    private void shootArrowFromQuiver(EntityPlayer player, ItemStack bow, int charge, PlayerBackpackContext source) {
+    private void shootArrowFromQuiver(EntityPlayer player, ItemStack bow, int charge,
+        BackpackEntityHelper.BackpackContext source) {
         float velocity = getArrowVelocity(charge);
         if ((double) velocity < 0.1D) return;
 
@@ -466,8 +451,9 @@ public class BackpackEventHandler {
         }
 
         bow.damageItem(1, player);
-        source.wrapper.extractItem(SINGLE_ARROW, 1, false);
-        persistBackpack(player, source);
+        source.getWrapper()
+            .extractItem(SINGLE_ARROW, 1, false);
+        BackpackEntityHelper.persistBackpack(source);
 
         player.worldObj.playSoundAtEntity(
             player,
@@ -496,63 +482,17 @@ public class BackpackEventHandler {
     }
 
     private <T> boolean visitUpgrades(EntityPlayer player, Class<T> upgradeClass, UpgradeContextVisitor<T> visitor) {
-        return visitPlayerBackpacks(player, backpack -> {
-            Map<Integer, T> upgrades = backpack.wrapper.gatherCapabilityUpgrades(upgradeClass);
-            for (Map.Entry<Integer, T> entry : upgrades.entrySet()) {
-                if (visitor.visit(new PlayerUpgradeContext<>(backpack, entry.getKey(), entry.getValue()))) {
-                    return true;
+        return BackpackEntityHelper
+            .visitPlayerBackpacks(player, BackpackEntityHelper.SearchOrder.PLAYER_THEN_BAUBLES, backpack -> {
+                Map<Integer, T> upgrades = backpack.getWrapper()
+                    .gatherCapabilityUpgrades(upgradeClass);
+                for (Map.Entry<Integer, T> entry : upgrades.entrySet()) {
+                    if (visitor.visit(new PlayerUpgradeContext<>(backpack, entry.getKey(), entry.getValue()))) {
+                        return true;
+                    }
                 }
-            }
-            return false;
-        });
-    }
-
-    private boolean visitPlayerBackpacks(EntityPlayer player, BackpackContextVisitor visitor) {
-        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-            ItemStack stack = player.inventory.getStackInSlot(i);
-            if (!(stack != null && stack.getItem() instanceof BlockBackpack.ItemBackpack)) continue;
-            PlayerBackpackContext ctx = new PlayerBackpackContext(
-                resolveWrapper(player, stack, InventoryTypes.PLAYER, i),
-                InventoryTypes.PLAYER,
-                i);
-            if (ctx.wrapper != null && visitor.visit(ctx)) {
-                return true;
-            }
-        }
-
-        IInventory baubles = BaublesApi.getBaubles(player);
-        if (baubles == null) return false;
-
-        for (int i = 0; i < baubles.getSizeInventory(); i++) {
-            ItemStack stack = baubles.getStackInSlot(i);
-            if (!(stack != null && stack.getItem() instanceof BlockBackpack.ItemBackpack)) continue;
-            PlayerBackpackContext ctx = new PlayerBackpackContext(
-                resolveWrapper(player, stack, InventoryTypes.BAUBLES, i),
-                InventoryTypes.BAUBLES,
-                i);
-            if (ctx.wrapper != null && visitor.visit(ctx)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private BackpackWrapper resolveWrapper(EntityPlayer player, ItemStack stack, InventoryType type, int slotIndex) {
-        if (player.openContainer instanceof BackPackContainer container && type == container.wrapper.getType()
-            && slotIndex == container.wrapper.getSlotIndex()) {
-            return (BackpackWrapper) container.wrapper;
-        }
-        return getWrapper(stack);
-    }
-
-    private void persistBackpack(EntityPlayer player, PlayerBackpackContext ctx) {
-        ctx.wrapper.writeToItem(player);
-        if (player.openContainer instanceof BackPackContainer container && ctx.wrapper == container.wrapper
-            && ctx.type == container.wrapper.getType()
-            && ctx.slotIndex == container.wrapper.getSlotIndex()) {
-            container.detectAndSendChanges();
-        }
+                return false;
+            });
     }
 
     @SubscribeEvent
@@ -598,46 +538,28 @@ public class BackpackEventHandler {
             newItem.delayBeforeCanPickup = 0;
             world.spawnEntityInWorld(newItem);
         }
-
     }
 
     private static ItemStack attemptPickup(EntityPlayer player, IInventory targetInventory, ItemStack pickupStack,
         InventoryType type) {
-
         if (targetInventory == null) return pickupStack;
 
         for (int i = 0; i < targetInventory.getSizeInventory(); i++) {
-            ItemStack stack = targetInventory.getStackInSlot(i);
-            if (stack == null || stack.stackSize <= 0) continue;
-            if (!(stack.getItem() instanceof BlockBackpack.ItemBackpack backpack)) continue;
-
-            BackpackWrapper wrapper;
-            if (player.openContainer instanceof BackPackContainer container && type == container.wrapper.getType()
-                && i == container.wrapper.getSlotIndex()) {
-                wrapper = (BackpackWrapper) container.wrapper;
-            } else {
-                wrapper = getWrapper(stack);
-            }
-
-            if (!wrapper.canPickupItem(pickupStack)) continue;
+            BackpackEntityHelper.BackpackContext context = BackpackEntityHelper.getBackpack(player, type, i);
+            if (context == null) continue;
+            if (!context.getWrapper()
+                .canPickupItem(pickupStack)) continue;
 
             ItemStack before = pickupStack.copy();
-
-            ItemStack result = wrapper.insertItem(pickupStack, false);
-
+            ItemStack result = context.getWrapper()
+                .insertItem(pickupStack, false);
             boolean changed = result == null || result.stackSize != before.stackSize;
 
             if (changed) {
-                wrapper.writeToItem();
-                if (player.openContainer instanceof BackPackContainer container && wrapper == container.wrapper
-                    && type == container.wrapper.getType()
-                    && i == container.wrapper.getSlotIndex()) {
-                    container.detectAndSendChanges();
-                }
+                BackpackEntityHelper.persistBackpack(context);
             }
 
             pickupStack = result;
-
             if (pickupStack == null || pickupStack.stackSize <= 0) {
                 return null;
             }
@@ -646,115 +568,12 @@ public class BackpackEventHandler {
         return pickupStack;
     }
 
-    private interface BackpackContextVisitor {
-
-        boolean visit(PlayerBackpackContext context);
-    }
-
     private interface UpgradeContextVisitor<T> {
 
         boolean visit(PlayerUpgradeContext<T> context);
     }
 
     @Desugar
-    private record PlayerBackpackContext(BackpackWrapper wrapper, InventoryType type, int slotIndex) {
-
-    }
-
-    @Desugar
-    private record PlayerUpgradeContext<T> (PlayerBackpackContext backpack, int upgradeSlot, T upgrade) {
-
-    }
-
-    private static final int MAX_CACHE_SIZE = 256;
-
-    private static final ThreadsafeCache<BackpackKey, BackpackWrapper> WRAPPER_CACHE = new ThreadsafeCache<>(
-        MAX_CACHE_SIZE,
-        key -> {
-            BackpackKey k = (BackpackKey) key;
-            ItemStack stack = k.getStack();
-            if (stack == null) return null;
-            if (!(stack.getItem() instanceof BlockBackpack.ItemBackpack item)) return null;
-
-            return new BackpackWrapper(stack, item);
-        },
-        false);
-
-    private static BackpackWrapper getWrapper(ItemStack stack) {
-        if (stack == null) return null;
-        return WRAPPER_CACHE.get(new BackpackKey(stack));
-    }
-
-    private static final class BackpackKey {
-
-        private final ItemStack stack;
-        private final int nbtHash;
-
-        public BackpackKey(ItemStack stack) {
-            this.stack = stack;
-            this.nbtHash = computeNBTSignature(stack);
-        }
-
-        public ItemStack getStack() {
-            return stack;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof BackpackKey other)) return false;
-            return stack == other.stack && nbtHash == other.nbtHash;
-        }
-
-        @Override
-        public int hashCode() {
-            return System.identityHashCode(stack) * 31 + nbtHash;
-        }
-    }
-
-    private static int computeNBTSignature(ItemStack stack) {
-        if (stack == null || !stack.hasTagCompound()) return 0;
-
-        NBTTagCompound tag = stack.getTagCompound();
-
-        if (!tag.hasKey(BackpackWrapper.BACKPACK_NBT)) return 0;
-
-        NBTTagCompound bp = tag.getCompoundTag(BackpackWrapper.BACKPACK_NBT);
-
-        return deepHash(bp);
-    }
-
-    private static int deepHash(NBTTagCompound tag) {
-        int hash = 1;
-
-        List<String> keys = new ArrayList<>(tag.func_150296_c());
-        Collections.sort(keys);
-
-        for (String key : keys) {
-            hash = 31 * hash + key.hashCode();
-
-            switch (tag.func_150299_b(key)) {
-                case 3:
-                    hash = 31 * hash + tag.getInteger(key);
-                    break;
-                case 8:
-                    hash = 31 * hash + tag.getString(key)
-                        .hashCode();
-                    break;
-                case 10:
-                    hash = 31 * hash + deepHash(tag.getCompoundTag(key));
-                    break;
-                case 9:
-                    hash = 31 * hash + tag.getTagList(key, 10)
-                        .tagCount();
-                    break;
-                default:
-                    hash = 31 * hash + tag.getTag(key)
-                        .toString()
-                        .hashCode();
-            }
-        }
-
-        return hash;
-    }
+    private record PlayerUpgradeContext<T> (BackpackEntityHelper.BackpackContext backpack, int upgradeSlot,
+        T upgrade) {}
 }

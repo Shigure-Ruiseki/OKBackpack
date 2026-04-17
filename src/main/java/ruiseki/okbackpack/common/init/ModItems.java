@@ -1,5 +1,7 @@
 package ruiseki.okbackpack.common.init;
 
+import java.util.function.BooleanSupplier;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -67,6 +69,7 @@ import ruiseki.okbackpack.common.item.travelers.wolf.ItemWolfUpgrade;
 import ruiseki.okbackpack.common.item.voiding.ItemAdvancedVoidUpgrade;
 import ruiseki.okbackpack.common.item.voiding.ItemVoidUpgrade;
 import ruiseki.okbackpack.compat.Mods;
+import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.item.IItem;
 
 public enum ModItems {
@@ -107,32 +110,32 @@ public enum ModItems {
     TANK_UPGRADE(new ItemTankUpgrade()),
     INFINITY_UPGRADE(new ItemInfinityUpgrade()),
     SURVIVAL_INFINITY_UPGRADE(new ItemSurvivalInfinityUpgrade()),
-    ARCANE_CRAFTING_UPGRADE(new ItemArcaneCraftingUpgrade(), Mods.Thaumcraft),
-    REDSTONE_UPGRADE(new ItemRedstoneUpgrade()),
-    GLOWSTONE_UPGRADE(new ItemGlowstoneUpgrade()),
-    RAINBOW_UPGRADE(new ItemRainbowUpgrade()),
-    CACTUS_UPGRADE(new ItemCactusUpgrade()),
-    COW_UPGRADE(new ItemCowUpgrade()),
-    BAT_UPGRADE(new ItemBatUpgrade()),
-    SQUID_UPGRADE(new ItemSquidUpgrade()),
-    WITHER_UPGRADE(new ItemWitherUpgrade()),
-    CAKE_UPGRADE(new ItemCakeUpgrade()),
-    SLIME_UPGRADE(new ItemSlimeUpgrade()),
-    BOOKSHELF_UPGRADE(new ItemBookshelfUpgrade()),
-    WOLF_UPGRADE(new ItemWolfUpgrade()),
-    OCELOT_UPGRADE(new ItemOcelotUpgrade()),
-    QUIVER_UPGRADE(new ItemQuiverUpgrade()),
-    CHICKEN_UPGRADE(new ItemChickenUpgrade()),
-    MAGMA_CUBE_UPGRADE(new ItemMagmaCubeUpgrade()),
-    DRAGON_UPGRADE(new ItemDragonUpgrade()),
-    BLAZE_UPGRADE(new ItemBlazeUpgrade()),
-    SPONGE_UPGRADE(new ItemSpongeUpgrade()),
-    CREEPER_UPGRADE(new ItemCreeperUpgrade()),
-    GHAST_UPGRADE(new ItemGhastUpgrade()),
-    SPIDER_UPGRADE(new ItemSpiderUpgrade()),
-    LAPIS_UPGRADE(new ItemLapisUpgrade()),
-    QUARTZ_UPGRADE(new ItemQuartzUpgrade()),
-    HAY_UPGRADE(new ItemHayUpgrade()),
+    ARCANE_CRAFTING_UPGRADE(new ItemArcaneCraftingUpgrade(), Mods.Thaumcraft, ModItems::arcaneCraftingEnabled),
+    REDSTONE_UPGRADE(new ItemRedstoneUpgrade(), ModItems::travelersUpgradesEnabled),
+    GLOWSTONE_UPGRADE(new ItemGlowstoneUpgrade(), ModItems::travelersUpgradesEnabled),
+    RAINBOW_UPGRADE(new ItemRainbowUpgrade(), ModItems::travelersUpgradesEnabled),
+    CACTUS_UPGRADE(new ItemCactusUpgrade(), ModItems::travelersUpgradesEnabled),
+    COW_UPGRADE(new ItemCowUpgrade(), ModItems::travelersUpgradesEnabled),
+    BAT_UPGRADE(new ItemBatUpgrade(), ModItems::travelersUpgradesEnabled),
+    SQUID_UPGRADE(new ItemSquidUpgrade(), ModItems::travelersUpgradesEnabled),
+    WITHER_UPGRADE(new ItemWitherUpgrade(), ModItems::travelersUpgradesEnabled),
+    CAKE_UPGRADE(new ItemCakeUpgrade(), ModItems::travelersUpgradesEnabled),
+    SLIME_UPGRADE(new ItemSlimeUpgrade(), ModItems::travelersUpgradesEnabled),
+    BOOKSHELF_UPGRADE(new ItemBookshelfUpgrade(), ModItems::travelersUpgradesEnabled),
+    WOLF_UPGRADE(new ItemWolfUpgrade(), ModItems::travelersUpgradesEnabled),
+    OCELOT_UPGRADE(new ItemOcelotUpgrade(), ModItems::travelersUpgradesEnabled),
+    QUIVER_UPGRADE(new ItemQuiverUpgrade(), ModItems::travelersUpgradesEnabled),
+    CHICKEN_UPGRADE(new ItemChickenUpgrade(), ModItems::travelersUpgradesEnabled),
+    MAGMA_CUBE_UPGRADE(new ItemMagmaCubeUpgrade(), ModItems::travelersUpgradesEnabled),
+    DRAGON_UPGRADE(new ItemDragonUpgrade(), ModItems::travelersUpgradesEnabled),
+    BLAZE_UPGRADE(new ItemBlazeUpgrade(), ModItems::travelersUpgradesEnabled),
+    SPONGE_UPGRADE(new ItemSpongeUpgrade(), ModItems::travelersUpgradesEnabled),
+    CREEPER_UPGRADE(new ItemCreeperUpgrade(), ModItems::travelersUpgradesEnabled),
+    GHAST_UPGRADE(new ItemGhastUpgrade(), ModItems::travelersUpgradesEnabled),
+    SPIDER_UPGRADE(new ItemSpiderUpgrade(), ModItems::travelersUpgradesEnabled),
+    LAPIS_UPGRADE(new ItemLapisUpgrade(), ModItems::travelersUpgradesEnabled),
+    QUARTZ_UPGRADE(new ItemQuartzUpgrade(), ModItems::travelersUpgradesEnabled),
+    HAY_UPGRADE(new ItemHayUpgrade(), ModItems::travelersUpgradesEnabled),
 
     //
     ;
@@ -143,6 +146,10 @@ public enum ModItems {
     public static void preInit() {
         for (ModItems item : VALUES) {
             try {
+                if (!item.isEnabled()) {
+                    OKBackpack.okLog(Level.INFO, "Skipping " + item.name() + " (disabled by config)");
+                    continue;
+                }
                 if (item.requiredMod != null && !item.requiredMod.isModLoaded()) {
                     OKBackpack
                         .okLog(Level.INFO, "Skipping " + item.name() + " (requires " + item.requiredMod.modid + ")");
@@ -158,14 +165,24 @@ public enum ModItems {
 
     private final IItem item;
     private final Mods requiredMod;
+    private final BooleanSupplier enabledCheck;
 
     ModItems(IItem item) {
-        this(item, null);
+        this(item, null, () -> true);
+    }
+
+    ModItems(IItem item, BooleanSupplier enabledCheck) {
+        this(item, null, enabledCheck);
     }
 
     ModItems(IItem item, Mods requiredMod) {
+        this(item, requiredMod, () -> true);
+    }
+
+    ModItems(IItem item, Mods requiredMod, BooleanSupplier enabledCheck) {
         this.item = item;
         this.requiredMod = requiredMod;
+        this.enabledCheck = enabledCheck == null ? () -> true : enabledCheck;
     }
 
     public Item getItem() {
@@ -188,6 +205,18 @@ public enum ModItems {
 
     public ItemStack newItemStack(int count, int meta) {
         return new ItemStack(this.getItem(), count, meta);
+    }
+
+    public boolean isEnabled() {
+        return enabledCheck.getAsBoolean();
+    }
+
+    public static boolean travelersUpgradesEnabled() {
+        return ModConfig.enableTravelersUpgrades;
+    }
+
+    public static boolean arcaneCraftingEnabled() {
+        return ModConfig.enableArcaneCraftingUpgrade;
     }
 
 }

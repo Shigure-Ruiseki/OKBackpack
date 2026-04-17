@@ -179,7 +179,7 @@ public class BackpackInventoryHelpers {
 
     private static List<String> oreNames(ItemStack stack) {
         int[] ids = OreDictionary.getOreIDs(stack);
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (int id : ids) names.add(OreDictionary.getOreName(id));
         return names;
     }
@@ -209,9 +209,9 @@ public class BackpackInventoryHelpers {
         for (int i = 9; i < playerInv.getSlots(); i++) {
             ItemStack stack = playerInv.getStackInSlot(i);
             if (stack == null) continue;
-            if (stack.getItem() instanceof BlockBackpack.ItemBackpack backpack) {
+            if (BackpackEntityHelper.isBackpackStack(stack, false)) {
 
-                BackpackWrapper other = new BackpackWrapper(stack, backpack);
+                BackpackWrapper other = new BackpackWrapper(stack, (BlockBackpack.ItemBackpack) stack.getItem());
                 if (other.equals(wrapper)) continue;
                 if (!wrapper.canAddStack(i, stack)) continue;
             }
@@ -373,7 +373,7 @@ public class BackpackInventoryHelpers {
         }
     }
 
-    public static void clear(IStoragePanel panel, ItemStackHandler stackHandler, int ordinal) {
+    public static void clear(IStoragePanel<?> panel, ItemStackHandler stackHandler, int ordinal) {
         ICraftingUpgrade.CraftingDestination type = ICraftingUpgrade.CraftingDestination.values()[ordinal];
         PlayerMainInvWrapper playerInv = new PlayerMainInvWrapper(panel.getPlayer().inventory);
         IStorageWrapper wrapper = panel.getWrapper();
@@ -413,10 +413,11 @@ public class BackpackInventoryHelpers {
     public static ItemStack getQuickDrawStack(IInventory inventory, ItemStack wanted, InventoryType type) {
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack backpackStack = inventory.getStackInSlot(i);
-            if (backpackStack == null || backpackStack.stackSize <= 0) continue;
-            if (!(backpackStack.getItem() instanceof BlockBackpack.ItemBackpack backpack)) continue;
+            if (!BackpackEntityHelper.isBackpackStack(backpackStack)) continue;
 
-            BackpackWrapper wrapper = new BackpackWrapper(backpackStack, backpack);
+            BackpackWrapper wrapper = new BackpackWrapper(
+                backpackStack,
+                (BlockBackpack.ItemBackpack) backpackStack.getItem());
             ItemStack extracted = wrapper.extractItem(wanted, wanted.getMaxStackSize(), false);
 
             OKBackpack.instance.getPacketHandler()

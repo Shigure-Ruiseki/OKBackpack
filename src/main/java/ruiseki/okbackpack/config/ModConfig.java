@@ -93,6 +93,14 @@ public class ModConfig {
     @Config.DefaultInt(5)
     public static int magnetRange;
 
+    @Config.Comment("Enable all travelers upgrade items, recipes, runtime behaviors, and related mixins")
+    @Config.DefaultBoolean(true)
+    public static boolean enableTravelersUpgrades;
+
+    @Config.Comment("Enable the arcane crafting upgrade item, recipes, runtime behaviors, and Thaumcraft mixins")
+    @Config.DefaultBoolean(true)
+    public static boolean enableArcaneCraftingUpgrade;
+
     @Config.Comment("Maximum number of item stacks to display per row in the backpack tooltip")
     @Config.DefaultInt(9)
     @Config.RangeInt(min = 1)

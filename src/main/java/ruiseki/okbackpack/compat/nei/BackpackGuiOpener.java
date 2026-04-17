@@ -18,7 +18,7 @@ import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerInputHandler;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.block.BlockBackpack;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.common.network.PacketSyncCarriedItem;
 
@@ -57,7 +57,7 @@ public class BackpackGuiOpener implements IContainerInputHandler {
         if (player.capabilities.isCreativeMode) return false;
 
         ItemStack stack = slot.getStack();
-        if (!(stack.getItem() instanceof BlockBackpack.ItemBackpack)) return false;
+        if (!BackpackEntityHelper.isBackpackStack(stack, false)) return false;
         int slotIndex = slot.getSlotIndex();
 
         if (slot.inventory instanceof InventoryPlayer) {
@@ -91,7 +91,7 @@ public class BackpackGuiOpener implements IContainerInputHandler {
         if (carried == null) return false;
 
         ItemStack stack = slot.getStack();
-        if (!(stack.getItem() instanceof BlockBackpack.ItemBackpack)) return false;
+        if (!BackpackEntityHelper.isBackpackStack(stack, false)) return false;
 
         BackpackWrapper wrapper = new BackpackWrapper(stack);
         ItemStack remain = wrapper.insertItem(carried, false);

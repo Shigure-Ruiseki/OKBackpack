@@ -1,6 +1,8 @@
 package ruiseki.okbackpack.common.block;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,16 +25,18 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import lombok.experimental.Delegate;
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.common.init.ModBlocks;
+import ruiseki.okbackpack.compat.thaumcraft.IVisChargeTarget;
 import ruiseki.okcore.energy.IOKEnergyIO;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileEntityOK;
 import ruiseki.okcore.tileentity.TileSideCapability;
 
-public class TEBackpack extends TileSideCapability
-    implements ISidedInventory, IGuiHolder<SidedPosGuiData>, TileEntityOK.ITickingTile, IOKEnergyIO, IFluidHandler {
+public class TEBackpack extends TileSideCapability implements ISidedInventory, IGuiHolder<SidedPosGuiData>,
+    TileEntityOK.ITickingTile, IOKEnergyIO, IFluidHandler, IVisChargeTarget {
 
     private int[] allSlots;
 
@@ -440,6 +444,25 @@ public class TEBackpack extends TileSideCapability
             info[i++] = new FluidTankInfo(tank.getContents(), tank.getTankCapacity());
         }
         return info;
+    }
+
+    @Override
+    public Iterable<ItemStack> getVisChargeableStacks() {
+        List<ItemStack> stacks = new ArrayList<>();
+        for (IArcaneCraftingUpgrade upgrade : wrapper.gatherCapabilityUpgrades(IArcaneCraftingUpgrade.class)
+            .values()) {
+            ItemStack stack = upgrade.getStorage()
+                .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
+            if (stack != null) {
+                stacks.add(stack);
+            }
+        }
+        return stacks;
+    }
+
+    @Override
+    public void onVisCharged() {
+        markDirty();
     }
 
 }

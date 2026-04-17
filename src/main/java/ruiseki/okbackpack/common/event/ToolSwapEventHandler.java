@@ -9,7 +9,6 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S09PacketHeldItemChange;
@@ -17,20 +16,16 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import com.cleanroommc.modularui.factory.inventory.InventoryType;
-import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.github.bsideup.jabel.Desugar;
 import com.google.common.collect.Multimap;
 
-import baubles.api.BaublesApi;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade.ToolSwapMode;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade.WeaponSwapMode;
-import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.block.BlockBackpack;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
 
 public class ToolSwapEventHandler {
 
@@ -48,7 +43,6 @@ public class ToolSwapEventHandler {
         if (event.entityPlayer.worldObj.isRemote) return;
 
         EntityPlayer player = event.entityPlayer;
-
         PlayerSwapState state = getState(player);
         long now = player.worldObj.getTotalWorldTime();
         if (now - state.lastToolSwapTick < COOLDOWN_TICKS) return;
@@ -58,7 +52,6 @@ public class ToolSwapEventHandler {
 
         ItemStack currentHand = player.inventory.getStackInSlot(player.inventory.currentItem);
         int handItemId = getItemIdentity(currentHand);
-
         if (Block.getIdFromBlock(block) == state.lastBlockId && meta == state.lastBlockMeta
             && handItemId == state.lastToolHandId) {
             return;
@@ -77,14 +70,12 @@ public class ToolSwapEventHandler {
         if (event.entityPlayer.worldObj.isRemote) return;
 
         EntityPlayer player = event.entityPlayer;
-
         PlayerSwapState state = getState(player);
         long now = player.worldObj.getTotalWorldTime();
         if (now - state.lastWeaponSwapTick < COOLDOWN_TICKS) return;
 
         ItemStack currentHand = player.inventory.getStackInSlot(player.inventory.currentItem);
         int handItemId = getItemIdentity(currentHand);
-
         if (handItemId == state.lastWeaponHandId) {
             return;
         }
@@ -100,10 +91,7 @@ public class ToolSwapEventHandler {
         ItemStack currentHand = player.inventory.getStackInSlot(currentSlot);
         PlayerSwapState state = getState(player);
 
-        UpgradeContext ctx = findActiveUpgrade(BaublesApi.getBaubles(player), InventoryTypes.BAUBLES);
-        if (ctx == null) {
-            ctx = findActiveUpgrade(player.inventory, InventoryTypes.PLAYER);
-        }
+        UpgradeContext ctx = findActiveUpgrade(player);
         if (ctx == null) {
             state.resetToolState();
             return;
@@ -120,11 +108,9 @@ public class ToolSwapEventHandler {
         Candidate best = null;
         best = searchBackpackForTool(ctx, block, meta, best);
         best = searchPlayerInventoryForTool(player, block, meta, ctx, best, currentSlot);
-
         if (best == null || best.score <= Math.max(currentScore, 0)) return;
 
         performSwap(player, ctx, best, currentSlot);
-
         state.lastToolHandId = getItemIdentity(best.stack);
     }
 
@@ -133,10 +119,7 @@ public class ToolSwapEventHandler {
         ItemStack currentHand = player.inventory.getStackInSlot(currentSlot);
         PlayerSwapState state = getState(player);
 
-        UpgradeContext ctx = findActiveUpgrade(BaublesApi.getBaubles(player), InventoryTypes.BAUBLES);
-        if (ctx == null) {
-            ctx = findActiveUpgrade(player.inventory, InventoryTypes.PLAYER);
-        }
+        UpgradeContext ctx = findActiveUpgrade(player);
         if (ctx == null) {
             state.resetWeaponState();
             return;
@@ -153,11 +136,9 @@ public class ToolSwapEventHandler {
         Candidate best = null;
         best = searchBackpackForWeapon(ctx, best);
         best = searchPlayerInventoryForWeapon(player, ctx, best, currentSlot);
-
         if (best == null || best.score <= Math.max(currentScore, 0)) return;
 
         performSwap(player, ctx, best, currentSlot);
-
         state.lastWeaponHandId = getItemIdentity(best.stack);
     }
 
@@ -176,77 +157,72 @@ public class ToolSwapEventHandler {
                 player.inventory.setInventorySlotContents(best.playerSlot, currentHand);
                 break;
             case BACKPACK:
-                ItemStack extracted = ctx.wrapper.extractItem(best.backpackInternalSlot, best.stack.stackSize, false);
+                ItemStack extracted = ctx.backpack.getWrapper()
+                    .extractItem(best.backpackInternalSlot, best.stack.stackSize, false);
                 if (extracted == null) break;
                 if (currentHand != null) {
-                    ctx.wrapper.insertItem(currentHand, false);
+                    ctx.backpack.getWrapper()
+                        .insertItem(currentHand, false);
                 }
-                ctx.wrapper.writeToItem();
+                BackpackEntityHelper.persistBackpack(ctx.backpack);
                 player.inventory.setInventorySlotContents(currentSlot, extracted);
                 break;
         }
     }
 
-    private UpgradeContext findActiveUpgrade(IInventory inventory, InventoryType type) {
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            ItemStack stack = inventory.getStackInSlot(i);
-            if (stack == null || stack.stackSize <= 0) continue;
-            if (!(stack.getItem() instanceof BlockBackpack.ItemBackpack backpack)) continue;
+    private UpgradeContext findActiveUpgrade(EntityPlayer player) {
+        final UpgradeContext[] result = new UpgradeContext[1];
+        BackpackEntityHelper
+            .visitPlayerBackpacks(player, BackpackEntityHelper.SearchOrder.BAUBLES_THEN_PLAYER, context -> {
+                Map<Integer, IToolSwapperUpgrade> upgrades = context.getWrapper()
+                    .gatherCapabilityUpgrades(IToolSwapperUpgrade.class);
+                for (IToolSwapperUpgrade upgrade : upgrades.values()) {
+                    if (upgrade instanceof IToggleable toggleable && !toggleable.isEnabled()) {
+                        continue;
+                    }
 
-            BackpackWrapper wrapper = new BackpackWrapper(stack, backpack);
-            Map<Integer, IToolSwapperUpgrade> upgrades = wrapper.gatherCapabilityUpgrades(IToolSwapperUpgrade.class);
-
-            for (IToolSwapperUpgrade upgrade : upgrades.values()) {
-                if (upgrade instanceof IToggleable toggleable && !toggleable.isEnabled()) continue;
-                return new UpgradeContext(wrapper, i, type, upgrade);
-            }
-        }
-        return null;
+                    result[0] = new UpgradeContext(context, upgrade);
+                    return true;
+                }
+                return false;
+            });
+        return result[0];
     }
 
-    /**
-     * Raw tool score for current hand — no filter applied, only checks mode and dig speed.
-     */
     private float rawToolScore(ItemStack stack, Block block, int meta, ToolSwapMode mode) {
-        if (mode == ToolSwapMode.ONLY_TOOL_SWAP_TOOL) {
-            if (stack.getItem()
-                .getToolClasses(stack)
-                .isEmpty()) return -1;
+        if (mode == ToolSwapMode.ONLY_TOOL_SWAP_TOOL && stack.getItem()
+            .getToolClasses(stack)
+            .isEmpty()) {
+            return -1;
         }
+
         float speed = stack.getItem()
             .getDigSpeed(stack, block, meta);
         return speed > 1.0f ? speed : -1;
     }
 
-    /**
-     * Raw weapon score for current hand — no filter applied, only checks attack damage.
-     */
     private float rawWeaponScore(ItemStack stack) {
         float damage = getAttackDamage(stack);
         return damage > 0 ? damage : -1;
     }
 
-    /**
-     * Candidate tool score — applies filter and mode checks.
-     */
     private float scoreToolForBlock(ItemStack stack, Block block, int meta, UpgradeContext ctx) {
         ToolSwapMode mode = ctx.upgrade.getToolSwapMode();
-        if (mode == ToolSwapMode.ONLY_TOOL_SWAP_TOOL) {
-            if (stack.getItem()
-                .getToolClasses(stack)
-                .isEmpty()) return -1;
+        if (mode == ToolSwapMode.ONLY_TOOL_SWAP_TOOL && stack.getItem()
+            .getToolClasses(stack)
+            .isEmpty()) {
+            return -1;
         }
         if (!passesFilter(stack, ctx.upgrade)) return -1;
+
         float speed = stack.getItem()
             .getDigSpeed(stack, block, meta);
         return speed > 1.0f ? speed : -1;
     }
 
-    /**
-     * Candidate weapon score — applies filter check.
-     */
     private float scoreWeapon(ItemStack stack, UpgradeContext ctx) {
         if (!passesFilter(stack, ctx.upgrade)) return -1;
+
         float damage = getAttackDamage(stack);
         return damage > 0 ? damage : -1;
     }
@@ -259,14 +235,15 @@ public class ToolSwapEventHandler {
     }
 
     private Candidate searchBackpackForTool(UpgradeContext ctx, Block block, int meta, Candidate currentBest) {
-        BackpackWrapper wrapper = ctx.wrapper;
-        for (int s = 0; s < wrapper.getSlots(); s++) {
-            ItemStack stack = wrapper.getStackInSlot(s);
+        for (int slot = 0; slot < ctx.backpack.getWrapper()
+            .getSlots(); slot++) {
+            ItemStack stack = ctx.backpack.getWrapper()
+                .getStackInSlot(slot);
             if (stack == null) continue;
 
             float score = scoreToolForBlock(stack, block, meta, ctx);
             if (score > 0 && (currentBest == null || score > currentBest.score)) {
-                currentBest = new Candidate(stack, score, Location.BACKPACK, -1, s);
+                currentBest = new Candidate(stack, score, Location.BACKPACK, -1, slot);
             }
         }
         return currentBest;
@@ -274,29 +251,31 @@ public class ToolSwapEventHandler {
 
     private Candidate searchPlayerInventoryForTool(EntityPlayer player, Block block, int meta, UpgradeContext ctx,
         Candidate currentBest, int skipSlot) {
-        for (int s = 0; s < 36; s++) {
-            if (s == skipSlot) continue;
-            ItemStack stack = player.inventory.getStackInSlot(s);
+        for (int slot = 0; slot < 36; slot++) {
+            if (slot == skipSlot) continue;
+
+            ItemStack stack = player.inventory.getStackInSlot(slot);
             if (stack == null) continue;
 
             float score = scoreToolForBlock(stack, block, meta, ctx);
             if (score > 0 && (currentBest == null || score > currentBest.score)) {
-                Location loc = s < 9 ? Location.HOTBAR : Location.PLAYER_INVENTORY;
-                currentBest = new Candidate(stack, score, loc, s, -1);
+                Location location = slot < 9 ? Location.HOTBAR : Location.PLAYER_INVENTORY;
+                currentBest = new Candidate(stack, score, location, slot, -1);
             }
         }
         return currentBest;
     }
 
     private Candidate searchBackpackForWeapon(UpgradeContext ctx, Candidate currentBest) {
-        BackpackWrapper wrapper = ctx.wrapper;
-        for (int s = 0; s < wrapper.getSlots(); s++) {
-            ItemStack stack = wrapper.getStackInSlot(s);
+        for (int slot = 0; slot < ctx.backpack.getWrapper()
+            .getSlots(); slot++) {
+            ItemStack stack = ctx.backpack.getWrapper()
+                .getStackInSlot(slot);
             if (stack == null) continue;
 
             float score = scoreWeapon(stack, ctx);
             if (score > 0 && (currentBest == null || score > currentBest.score)) {
-                currentBest = new Candidate(stack, score, Location.BACKPACK, -1, s);
+                currentBest = new Candidate(stack, score, Location.BACKPACK, -1, slot);
             }
         }
         return currentBest;
@@ -304,15 +283,16 @@ public class ToolSwapEventHandler {
 
     private Candidate searchPlayerInventoryForWeapon(EntityPlayer player, UpgradeContext ctx, Candidate currentBest,
         int skipSlot) {
-        for (int s = 0; s < 36; s++) {
-            if (s == skipSlot) continue;
-            ItemStack stack = player.inventory.getStackInSlot(s);
+        for (int slot = 0; slot < 36; slot++) {
+            if (slot == skipSlot) continue;
+
+            ItemStack stack = player.inventory.getStackInSlot(slot);
             if (stack == null) continue;
 
             float score = scoreWeapon(stack, ctx);
             if (score > 0 && (currentBest == null || score > currentBest.score)) {
-                Location loc = s < 9 ? Location.HOTBAR : Location.PLAYER_INVENTORY;
-                currentBest = new Candidate(stack, score, loc, s, -1);
+                Location location = slot < 9 ? Location.HOTBAR : Location.PLAYER_INVENTORY;
+                currentBest = new Candidate(stack, score, location, slot, -1);
             }
         }
         return currentBest;
@@ -334,7 +314,7 @@ public class ToolSwapEventHandler {
     }
 
     private PlayerSwapState getState(EntityPlayer player) {
-        return playerStates.computeIfAbsent(player.getEntityId(), k -> new PlayerSwapState());
+        return playerStates.computeIfAbsent(player.getEntityId(), key -> new PlayerSwapState());
     }
 
     public static class PlayerSwapState {
@@ -366,13 +346,9 @@ public class ToolSwapEventHandler {
     }
 
     @Desugar
-    public record UpgradeContext(BackpackWrapper wrapper, int backpackSlot, InventoryType inventoryType,
-        IToolSwapperUpgrade upgrade) {
-
-    }
+    public record UpgradeContext(BackpackEntityHelper.BackpackContext backpack, IToolSwapperUpgrade upgrade) {}
 
     @Desugar
-    public record Candidate(ItemStack stack, float score, Location location, int playerSlot, int backpackInternalSlot) {
-
-    }
+    public record Candidate(ItemStack stack, float score, Location location, int playerSlot,
+        int backpackInternalSlot) {}
 }

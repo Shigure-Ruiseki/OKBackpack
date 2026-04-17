@@ -7,6 +7,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
+import ruiseki.okbackpack.common.helpers.UpgradeFeatureHelper;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.init.ModItems;
 import ruiseki.okbackpack.compat.Mods;
@@ -25,7 +26,7 @@ public class ModRecipes implements IInitListener {
         if (step == Step.POSTINIT) {
             blockRecipes();
             itemRecipes();
-            if (Mods.Thaumcraft.isModLoaded()) {
+            if (Mods.Thaumcraft.isModLoaded() && UpgradeFeatureHelper.isArcaneCraftingUpgradeEnabled()) {
                 thaumcraftRecipes();
             }
         }
