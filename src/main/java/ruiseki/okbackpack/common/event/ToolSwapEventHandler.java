@@ -26,6 +26,7 @@ import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade.ToolSwapMode;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade.WeaponSwapMode;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackHandSwapHelper;
 
 public class ToolSwapEventHandler {
 
@@ -157,6 +158,13 @@ public class ToolSwapEventHandler {
                 player.inventory.setInventorySlotContents(best.playerSlot, currentHand);
                 break;
             case BACKPACK:
+                if (!BackpackHandSwapHelper.canReplaceHandWithBackpackItem(
+                    ctx.backpack.getWrapper(),
+                    best.backpackInternalSlot,
+                    best.stack.stackSize,
+                    currentHand)) {
+                    break;
+                }
                 ItemStack extracted = ctx.backpack.getWrapper()
                     .extractItem(best.backpackInternalSlot, best.stack.stackSize, false);
                 if (extracted == null) break;

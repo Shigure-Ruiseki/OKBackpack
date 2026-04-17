@@ -17,6 +17,7 @@ import baubles.api.BaublesApi;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.wrapper.IRefillUpgrade;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackHandSwapHelper;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.common.network.PacketQuickDraw;
 import ruiseki.okcore.client.key.IKeyHandler;
@@ -65,6 +66,10 @@ public class PickBlockHandler implements IKeyHandler {
 
         RefillPickContext ctx = findRefillUpgrade(player);
         if (ctx == null) return;
+        if (!BackpackHandSwapHelper
+            .canReplaceHandWithBackpackItem(ctx.backpack.getWrapper(), wanted, wanted.getMaxStackSize(), held)) {
+            return;
+        }
 
         ItemStack extracted = ctx.backpack.getWrapper()
             .extractItem(wanted, wanted.getMaxStackSize(), false);
