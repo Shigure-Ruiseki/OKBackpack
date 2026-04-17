@@ -244,6 +244,7 @@ gui.backpack.error.add.needs_occupied_inventory_slots=There's an item in at leas
 gui.backpack.error.remove.infinity_upgrade_only_admin=Only admins can remove Infinity Upgrade
 gui.backpack.error.remove.banned_item=This item must be removed before the upgrade can be
 gui.backpack.error.remove.stack_low_multiplier=There's at least one slot or upgrade that requires multiplier higher than %s
+gui.backpack.error.remove.inception_sub_backpack=There's one or more backpacks in the backpack
 
 # Items
 tile.leather_backpack.name=Leather Backpack
@@ -336,6 +337,7 @@ tooltip.backpack.contents.stack_multiplier=Stack Size Multiplier: %s
 tooltip.backpack.contents.energy=%s RF
 tooltip.backpack.contents.fluid=%s mB %s
 tooltip.backpack.contents.fluid_empty=Empty tank
+tooltip.backpack.inventory_interaction.right_click_add=Right-click to add
 tooltip.backpack.contents.upgrades=Upgrades
 tooltip.backpack.contents.inventory=Inventory
 tooltip.backpack.contents.empty=No Upgrades or Inventory Contents

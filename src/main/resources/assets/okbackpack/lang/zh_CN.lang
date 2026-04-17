@@ -244,6 +244,7 @@ gui.backpack.error.add.needs_occupied_inventory_slots=物品至多在最后%s格
 gui.backpack.error.remove.infinity_upgrade_only_admin=只有管理员可移除无限升级
 gui.backpack.error.remove.banned_item=移除升级前必须先移除该物品
 gui.backpack.error.remove.stack_low_multiplier=堆叠倍数必须大于%s
+gui.backpack.error.remove.inception_sub_backpack=该背包中有一个或多个背包
 
 # Items
 tile.leather_backpack.name=皮革背包
@@ -336,6 +337,7 @@ tooltip.backpack.contents.stack_multiplier=堆叠倍数：%s
 tooltip.backpack.contents.energy=%s RF
 tooltip.backpack.contents.fluid=%s mB %s
 tooltip.backpack.contents.fluid_empty=空罐
+tooltip.backpack.inventory_interaction.right_click_add=右键添加
 tooltip.backpack.contents.upgrades=升级
 tooltip.backpack.contents.inventory=物品
 tooltip.backpack.contents.empty=未加装升级或物品存储

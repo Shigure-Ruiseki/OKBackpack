@@ -50,6 +50,7 @@ import ruiseki.okbackpack.api.wrapper.IBookshelfUpgrade;
 import ruiseki.okbackpack.api.wrapper.ILightUpgrade;
 import ruiseki.okbackpack.api.wrapper.IRedstoneUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
+import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionTooltipHelper;
 import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
@@ -596,44 +597,10 @@ public class BlockBackpack extends BlockOK {
                 if (Mods.CodeChickenCore.isModLoaded()) {
                     BackpackContentHandler.reset();
                 }
-            } else if (Mods.CodeChickenCore.isModLoaded()) {
-                // Expanded tooltip with upgrade/inventory info
+            } else {
                 BackpackWrapper wrapper = new BackpackWrapper(stack, this);
-                BackpackContentHandler.prepareContents(wrapper);
-
-                boolean hasUpgrades = !BackpackContentHandler.upgradeInfos.isEmpty();
-                boolean hasContents = !BackpackContentHandler.sortedContents.isEmpty();
-
-                if (!hasUpgrades && !hasContents) {
-                    // Empty backpack
-                    list.add("\u00a7e" + LangHelpers.localize("tooltip.backpack.contents.empty"));
-                } else {
-                    // Stack multiplier
-                    double multiplier = wrapper.applyStackLimitModifiers();
-                    if (multiplier > 1 && multiplier != Integer.MAX_VALUE) {
-                        list.add(
-                            "\u00a7a" + LangHelpers.localize(
-                                "tooltip.backpack.contents.stack_multiplier",
-                                String.format("%.1f", multiplier)));
-                    } else if (multiplier == Integer.MAX_VALUE) {
-                        list.add(
-                            "\u00a7a" + LangHelpers.localize("tooltip.backpack.contents.stack_multiplier", "\u221E"));
-                    }
-
-                    if (hasUpgrades) {
-                        list.addAll(BackpackContentHandler.upgradeTooltipLines);
-                        list.add("\u00a7e" + LangHelpers.localize("tooltip.backpack.contents.upgrades"));
-                        list.add(BackpackContentHandler.getUpgradeHandlerLine());
-                    }
-
-                    if (hasContents) {
-                        list.add("\u00a7e" + LangHelpers.localize("tooltip.backpack.contents.inventory"));
-                        list.add(BackpackContentHandler.getContentsHandlerLine());
-                    }
-                }
+                list.addAll(BackpackInventoryInteractionTooltipHelper.buildExpandedTooltipLines(stack, wrapper));
             }
-            list.add(LangHelpers.localize("tooltip.backpack.inventory_size", backpackSlots));
-            list.add(LangHelpers.localize("tooltip.backpack.upgrade_slots_size", upgradeSlots));
             super.addInformation(stack, player, list, flag);
         }
 

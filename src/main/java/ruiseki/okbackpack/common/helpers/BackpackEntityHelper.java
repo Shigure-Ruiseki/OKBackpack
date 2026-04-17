@@ -112,6 +112,17 @@ public final class BackpackEntityHelper {
         return WRAPPER_CACHE.get(new BackpackKey(stack));
     }
 
+    public static BackpackWrapper getInteractionWrapper(EntityPlayer player, ItemStack stack) {
+        if (!isBackpackStack(stack)) return null;
+
+        BackpackWrapper openWrapper = getOpenBackpackWrapper(player, stack);
+        if (openWrapper != null) {
+            return openWrapper;
+        }
+
+        return getWrapper(stack);
+    }
+
     public static boolean isBackpackStack(ItemStack stack) {
         return isBackpackStack(stack, true);
     }
@@ -198,6 +209,20 @@ public final class BackpackEntityHelper {
         }
 
         return getWrapper(stack);
+    }
+
+    public static BackpackWrapper getOpenBackpackWrapper(EntityPlayer player, ItemStack stack) {
+        if (player == null || stack == null
+            || !(player.openContainer instanceof BackPackContainer container)
+            || !(container.wrapper instanceof BackpackWrapper wrapper)) {
+            return null;
+        }
+
+        if (wrapper.getBackpack() == stack || isSameBackpack(stack, wrapper.uuid)) {
+            return wrapper;
+        }
+
+        return null;
     }
 
     private static IInventory getInventory(EntityPlayer player, InventoryType type) {

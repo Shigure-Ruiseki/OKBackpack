@@ -244,6 +244,7 @@ gui.backpack.error.add.needs_occupied_inventory_slots=%sスロットの空きが
 gui.backpack.error.remove.infinity_upgrade_only_admin=管理者のみが無限アップグレードを取り外せます
 gui.backpack.error.remove.banned_item=アップグレードを取り外す前にこのアイテムを取り除く必要があります
 gui.backpack.error.remove.stack_low_multiplier=%s倍以上にスタックされているアイテムがあるので外せません。
+gui.backpack.error.remove.inception_sub_backpack=入れ子になっているリュックがあるので外せません。
 
 # Items
 tile.leather_backpack.name=革のリュック
@@ -336,6 +337,7 @@ tooltip.backpack.contents.stack_multiplier=スタック数: %s倍
 tooltip.backpack.contents.energy=%s RF
 tooltip.backpack.contents.fluid=%s mB %s
 tooltip.backpack.contents.fluid_empty=空のタンク
+tooltip.backpack.inventory_interaction.right_click_add=右クリックで追加
 tooltip.backpack.contents.upgrades=アップグレード
 tooltip.backpack.contents.inventory=インベントリ
 tooltip.backpack.contents.empty=からっぽ

@@ -139,7 +139,7 @@ public class UpgradeItemStackHandler extends BaseItemStackHandler {
     public <T> List<T> getListOfWrappersThatImplement(Class<T> uc) {
         List<T> ret = new ArrayList<>();
         for (IUpgradeWrapper wrapper : slotWrappers.values()) {
-            if (wrapper instanceof IToggleable toggleable && toggleable.isEnabled()) continue;
+            if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) continue;
             if (uc.isInstance(wrapper)) {
                 // noinspection unchecked
                 ret.add((T) wrapper);

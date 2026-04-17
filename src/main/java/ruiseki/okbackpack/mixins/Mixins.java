@@ -21,6 +21,16 @@ public enum Mixins implements IMixins {
         .setApplyIf(() -> ModConfig.enableArcaneCraftingUpgrade)
         .addRequiredMod(Mods.Thaumcraft)),
 
+    INVENTORY_INTERACTION(new MixinBuilder("Backpack inventory interaction")
+        .addCommonMixins("Minecraft.MixinNetHandlerPlayServerBackpackInteraction")
+        .addSidedMixins(
+            Side.CLIENT,
+            "ModularUI2.MixinItemSlotBackpackInteraction",
+            "Minecraft.MixinGuiContainerBackpackInteraction",
+            "Minecraft.MixinPlayerControllerMPBackpackInteraction")
+        .setApplyIf(() -> ModConfig.enableBackpackInventoryInteraction)
+        .setPhase(Phase.EARLY)),
+
     ;
 
     @Getter

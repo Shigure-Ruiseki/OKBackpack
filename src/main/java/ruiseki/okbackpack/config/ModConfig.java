@@ -101,6 +101,10 @@ public class ModConfig {
     @Config.DefaultBoolean(true)
     public static boolean enableArcaneCraftingUpgrade;
 
+    @Config.Comment("Enable Backpack inventory interaction mixins, runtime logic, and GUI rendering. Requires restart")
+    @Config.DefaultBoolean(true)
+    public static boolean enableBackpackInventoryInteraction;
+
     @Config.Comment("Maximum number of item stacks to display per row in the backpack tooltip")
     @Config.DefaultInt(9)
     @Config.RangeInt(min = 1)

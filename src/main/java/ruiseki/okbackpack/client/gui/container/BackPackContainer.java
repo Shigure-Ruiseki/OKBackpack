@@ -249,6 +249,9 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
 
                 // If the slot cannot be taken from, return empty
                 if (!fromSlot.canTakeStack(player)) {
+                    if (fromSlot instanceof ModularUpgradeSlot modularUpgradeSlot) {
+                        modularUpgradeSlot.setLastChangeResult(modularUpgradeSlot.getBlockedTakeResult(player));
+                    }
                     return Platform.EMPTY_STACK;
                 }
 
@@ -285,6 +288,9 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                             if (heldStack.stackSize == 0) {
                                 playerInventory.setItemStack(null);
                             }
+                        } else if (heldStack != null && clickedSlot instanceof ModularUpgradeSlot modularUpgradeSlot) {
+                            modularUpgradeSlot
+                                .setLastChangeResult(modularUpgradeSlot.getBlockedInsertResult(heldStack));
                         }
 
                     } else if (clickedSlot.canTakeStack(player)) { // Slot has items and can be taken
@@ -348,6 +354,9 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
 
                                 playerInventory.setItemStack(slotStack);
                             }
+                        } else if (clickedSlot instanceof ModularUpgradeSlot modularUpgradeSlot) {
+                            modularUpgradeSlot
+                                .setLastChangeResult(modularUpgradeSlot.getBlockedInsertResult(heldStack));
                         } else if (slotStack.getItem() == heldStack.getItem() && heldStack.getMaxStackSize() > 1
                             && (!slotStack.getHasSubtypes() || slotStack.getItemDamage() == heldStack.getItemDamage())
                             && ItemStack.areItemStackTagsEqual(slotStack, heldStack)) {
@@ -366,6 +375,8 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                                     clickedSlot.onPickupFromSlot(player, playerInventory.getItemStack());
                                 }
                             }
+                    } else if (clickedSlot instanceof ModularUpgradeSlot modularUpgradeSlot) {
+                        modularUpgradeSlot.setLastChangeResult(modularUpgradeSlot.getBlockedTakeResult(player));
                     }
 
                     clickedSlot.onSlotChanged();

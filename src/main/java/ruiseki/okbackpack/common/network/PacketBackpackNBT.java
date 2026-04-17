@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
 
+import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
 import ruiseki.okcore.network.CodecField;
@@ -49,6 +50,7 @@ public class PacketBackpackNBT extends PacketCodec {
         ItemStack stack = BackpackEntityHelper.findBackpackByUuid(player, uuid, type);
         if (stack != null) {
             stack.setTagCompound(nbt);
+            refreshOpenBackpack(player, stack, uuid);
         }
     }
 
@@ -67,5 +69,20 @@ public class PacketBackpackNBT extends PacketCodec {
         if (stack != null) {
             stack.setTagCompound(nbt);
         }
+    }
+
+    private void refreshOpenBackpack(EntityPlayer player, ItemStack stack, String uuid) {
+        if (!(player.openContainer instanceof BackPackContainer container)
+            || !(container.wrapper instanceof BackpackWrapper wrapper)) {
+            return;
+        }
+
+        if (!BackpackEntityHelper.isSameBackpack(stack, uuid)
+            || !BackpackEntityHelper.isSameBackpack(wrapper.getBackpack(), uuid)) {
+            return;
+        }
+
+        wrapper.setBackpackStack(stack);
+        wrapper.readFromItem();
     }
 }

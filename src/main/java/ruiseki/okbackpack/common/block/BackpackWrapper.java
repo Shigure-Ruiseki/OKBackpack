@@ -30,6 +30,7 @@ import ruiseki.okbackpack.api.SortType;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.api.wrapper.IEntityApplicable;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
+import ruiseki.okbackpack.api.wrapper.IInceptionUpgrade;
 import ruiseki.okbackpack.api.wrapper.IInfinityUpgrade;
 import ruiseki.okbackpack.api.wrapper.IInventoryModifiable;
 import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade;
@@ -461,11 +462,17 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public boolean canAddStack(int slot, ItemStack stack) {
-        Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
         if (BackpackEntityHelper.isBackpackStack(stack, false)) {
+            for (int i = 0; i < upgradeSlots; i++) {
+                ItemStack upgradeStack = upgradeHandler.getStackInSlot(i);
+                if (upgradeStack == null) continue;
 
-            for (ISlotModifiable mod : gathered.values()) {
-                if (mod.canAddStack(slot, stack)) {
+                IUpgradeWrapper wrapper = this.getUpgradeHandler()
+                    .getWrapperInSlot(i);
+                if (!(wrapper instanceof IInceptionUpgrade inception)) continue;
+                if (!UpgradeFeatureHelper.isUpgradeRuntimeEnabled(wrapper) || !inception.isEnabled()) continue;
+
+                if (((ISlotModifiable) inception).canAddStack(slot, stack)) {
                     return true;
                 }
             }
@@ -473,8 +480,18 @@ public class BackpackWrapper implements IBackpackWrapper {
             return false;
         }
 
-        for (ISlotModifiable mod : gathered.values()) {
-            if (!mod.canAddStack(slot, stack)) return false;
+        for (int i = 0; i < upgradeSlots; i++) {
+            ItemStack upgradeStack = upgradeHandler.getStackInSlot(i);
+            if (upgradeStack == null) continue;
+
+            IUpgradeWrapper wrapper = this.getUpgradeHandler()
+                .getWrapperInSlot(i);
+            if (wrapper == null || !UpgradeFeatureHelper.isUpgradeRuntimeEnabled(wrapper)) continue;
+            if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) continue;
+
+            if (wrapper instanceof ISlotModifiable modifiable && !modifiable.canAddStack(slot, stack)) {
+                return false;
+            }
         }
 
         return true;
@@ -493,8 +510,8 @@ public class BackpackWrapper implements IBackpackWrapper {
         IUpgradeWrapper wrapper = this.getUpgradeHandler()
             .getWrapperInSlot(slot);
         if (wrapper == null) return UpgradeSlotChangeResult.success();
-        if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled())
-            return UpgradeSlotChangeResult.success();
+        if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()
+            && !(wrapper instanceof IInceptionUpgrade)) return UpgradeSlotChangeResult.success();
 
         if (wrapper instanceof ISlotModifiable modifiable) {
             return modifiable.getRemoveUpgradeResult(slot);
@@ -516,8 +533,8 @@ public class BackpackWrapper implements IBackpackWrapper {
         IUpgradeWrapper wrapper = this.getUpgradeHandler()
             .getWrapperInSlot(slot);
         if (wrapper == null) return UpgradeSlotChangeResult.success();
-        if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled())
-            return UpgradeSlotChangeResult.success();
+        if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()
+            && !(wrapper instanceof IInceptionUpgrade)) return UpgradeSlotChangeResult.success();
 
         if (wrapper instanceof ISlotModifiable modifiable) {
             return modifiable.getReplaceUpgradeResult(slot, replacement);
