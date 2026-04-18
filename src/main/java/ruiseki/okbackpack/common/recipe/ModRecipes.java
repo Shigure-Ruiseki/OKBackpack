@@ -26,7 +26,7 @@ public class ModRecipes implements IInitListener {
         if (step == Step.POSTINIT) {
             blockRecipes();
             itemRecipes();
-            if (Mods.Thaumcraft.isModLoaded() && UpgradeFeatureHelper.isArcaneCraftingUpgradeEnabled()) {
+            if (Mods.Thaumcraft.isModLoaded()) {
                 thaumcraftRecipes();
             }
         }
@@ -793,30 +793,82 @@ public class ModRecipes implements IInitListener {
                     'U',
                     ModItems.SMOKING_UPGRADE.getItem()));
 
+            // Tank Upgrade
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.TANK_UPGRADE.getItem(),
+                    "GGG",
+                    "GUG",
+                    "GGG",
+                    'G',
+                    "blockGlass",
+                    'U',
+                    ModItems.BASE_UPGRADE.getItem()));
+
+            // Battery Upgrade
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.BATTERY_UPGRADE.getItem(),
+                    "GRG",
+                    "RUR",
+                    "GRG",
+                    'G',
+                    "ingotGold",
+                    'R',
+                    "blockRedstone",
+                    'U',
+                    ModItems.BASE_UPGRADE.getItem()));
+
         }
     }
 
     @Optional.Method(modid = "Thaumcraft")
     private static void thaumcraftRecipes() {
-        // Arcane Crafting Upgrade
+        if (UpgradeFeatureHelper.isArcaneCraftingUpgradeEnabled()) {
+            // Arcane Crafting Upgrade
+            ThaumcraftApi.addArcaneCraftingRecipe(
+                "ARCTABLE",
+                ModItems.ARCANE_CRAFTING_UPGRADE.newItemStack(),
+                new AspectList().add(Aspect.AIR, 10)
+                    .add(Aspect.EARTH, 10)
+                    .add(Aspect.FIRE, 10)
+                    .add(Aspect.WATER, 10)
+                    .add(Aspect.ORDER, 10)
+                    .add(Aspect.ENTROPY, 10),
+                " A ",
+                "IUI",
+                " C ",
+                'A',
+                new ItemStack(ConfigBlocks.blockTable, 1, 15),
+                'C',
+                new ItemStack(Blocks.chest, 1, 0),
+                'I',
+                "ingotIron",
+                'U',
+                ModItems.BASE_UPGRADE.getItem());
+        }
+
+        // Energized Node Upgrade
         ThaumcraftApi.addArcaneCraftingRecipe(
-            "ARCTABLE",
-            ModItems.ARCANE_CRAFTING_UPGRADE.newItemStack(),
-            new AspectList().add(Aspect.AIR, 10)
-                .add(Aspect.EARTH, 10)
-                .add(Aspect.FIRE, 10)
-                .add(Aspect.WATER, 10)
-                .add(Aspect.ORDER, 10)
-                .add(Aspect.ENTROPY, 10),
-            " A ",
-            "IUI",
-            " C ",
-            'A',
-            new ItemStack(ConfigBlocks.blockTable, 1, 15),
+            "VISPOWER",
+            ModItems.ENERGIZED_NODE_UPGRADE.newItemStack(),
+            new AspectList().add(Aspect.AIR, 50)
+                .add(Aspect.EARTH, 50)
+                .add(Aspect.FIRE, 50)
+                .add(Aspect.WATER, 50)
+                .add(Aspect.ORDER, 50)
+                .add(Aspect.ENTROPY, 50),
+            " T ",
+            "RUC",
+            " S ",
+            'T',
+            new ItemStack(ConfigBlocks.blockStoneDevice, 1, 11),
+            'R',
+            new ItemStack(ConfigBlocks.blockMetalDevice, 1, 14),
             'C',
-            new ItemStack(Blocks.chest, 1, 0),
-            'I',
-            "ingotIron",
+            new ItemStack(ConfigBlocks.blockMetalDevice, 1, 2),
+            'S',
+            new ItemStack(ConfigBlocks.blockStoneDevice, 1, 10),
             'U',
             ModItems.BASE_UPGRADE.getItem());
     }

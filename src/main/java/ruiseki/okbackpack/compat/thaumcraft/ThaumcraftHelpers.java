@@ -14,6 +14,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
@@ -34,6 +36,8 @@ import thaumcraft.api.research.ResearchItem;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumcraft.common.lib.crafting.ThaumcraftCraftingManager;
 import thaumcraft.common.tiles.TileMagicWorkbench;
+import thaumcraft.common.tiles.TileNodeConverter;
+import thaumcraft.common.tiles.TileNodeEnergized;
 
 public class ThaumcraftHelpers {
 
@@ -125,6 +129,32 @@ public class ThaumcraftHelpers {
     public static int getAspectColor(String aspectTag) {
         Aspect aspect = Aspect.getAspect(aspectTag);
         return aspect != null ? aspect.getColor() : 0xFFFFFF;
+    }
+
+    public static LinkedHashMap<Aspect, Integer> getPrimalAspectValues(AspectList aspectList) {
+        LinkedHashMap<Aspect, Integer> result = new LinkedHashMap<>();
+        for (Aspect aspect : Aspect.getPrimalAspects()) {
+            if (aspect != null) {
+                result.put(aspect, aspectList == null ? 0 : Math.max(0, aspectList.getAmount(aspect)));
+            }
+        }
+        return result;
+    }
+
+    public static LinkedHashMap<Aspect, Integer> getEnergizedNodeAspectValues(TileNodeEnergized node) {
+        return getPrimalAspectValues(node == null ? null : node.getAspects());
+    }
+
+    public static void resetNodeConverterAbove(World world, int x, int y, int z) {
+        if (world == null) return;
+
+        TileEntity tile = world.getTileEntity(x, y + 1, z);
+        if (tile instanceof TileNodeConverter converter) {
+            converter.status = 0;
+            converter.count = -1;
+            converter.markDirty();
+            world.markBlockForUpdate(x, y + 1, z);
+        }
     }
 
     public static void writeAspectMap(PacketBuffer buf, Map<String, Integer> aspects) {

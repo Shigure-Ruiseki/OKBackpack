@@ -49,6 +49,7 @@ import ruiseki.okbackpack.common.helpers.BackpackSettingsTemplate;
 import ruiseki.okbackpack.common.helpers.UpgradeFeatureHelper;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.network.PacketJukeboxPlaybackState;
+import ruiseki.okbackpack.compat.thaumcraft.IUpgradeVisChargeTarget;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemNBTHelpers;
@@ -99,6 +100,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     public int sleepingBagZ;
 
     private final Set<Integer> pendingJukeboxStops = new HashSet<>();
+    private List<VisChargeTargetEntry> visChargeTargetsCache = null;
 
     public int slotIndex = -1;
     public InventoryType type = null;
@@ -685,6 +687,56 @@ public class BackpackWrapper implements IBackpackWrapper {
         return false;
     }
 
+    public Iterable<ItemStack> getVisChargeableStacks() {
+        return collectVisChargeableStacks(-1);
+    }
+
+    public Iterable<ItemStack> getVisChargeableStacksExcluding(int excludedUpgradeSlot) {
+        return collectVisChargeableStacks(excludedUpgradeSlot);
+    }
+
+    public Iterable<ItemStack> collectVisChargeableStacks(int excludedUpgradeSlot) {
+        List<ItemStack> stacks = new ArrayList<>();
+        for (VisChargeTargetEntry entry : getVisChargeTargetEntries()) {
+            if (entry.slotIndex() == excludedUpgradeSlot) continue;
+
+            for (ItemStack stack : entry.target()
+                .getVisChargeableStacks()) {
+                if (stack != null) {
+                    stacks.add(stack);
+                }
+            }
+        }
+        return stacks;
+    }
+
+    public List<VisChargeTargetEntry> getVisChargeTargetEntries() {
+        if (visChargeTargetsCache != null) {
+            return visChargeTargetsCache;
+        }
+
+        List<VisChargeTargetEntry> entries = new ArrayList<>();
+        for (int i = 0; i < upgradeSlots; i++) {
+            ItemStack stack = upgradeHandler.getStackInSlot(i);
+            if (stack == null) continue;
+
+            IUpgradeWrapper wrapper = this.getUpgradeHandler()
+                .getWrapperInSlot(i);
+            if (wrapper == null || !UpgradeFeatureHelper.isUpgradeRuntimeEnabled(wrapper)) continue;
+            if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) continue;
+            if (wrapper instanceof IUpgradeVisChargeTarget target) {
+                entries.add(new VisChargeTargetEntry(i, target));
+            }
+        }
+
+        visChargeTargetsCache = entries;
+        return visChargeTargetsCache;
+    }
+
+    public void invalidateVisChargeTargetCache() {
+        visChargeTargetsCache = null;
+    }
+
     @Override
     public void applyContainerEntity(World world, Entity selfEntity) {
         Map<Integer, IEntityApplicable> gathered = gatherCapabilityUpgrades(IEntityApplicable.class);
@@ -1168,6 +1220,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public void markDirty() {
         this.isDirty = true;
+        invalidateVisChargeTargetCache();
         if (onInventoryHandlerRefresh != null) {
             onInventoryHandlerRefresh.run();
         }
@@ -1209,6 +1262,9 @@ public class BackpackWrapper implements IBackpackWrapper {
     public ItemStack getBackpack() {
         return backpack;
     }
+
+    @Desugar
+    public record VisChargeTargetEntry(int slotIndex, IUpgradeVisChargeTarget target) {}
 
     @Desugar
     public record SettingsPreset(String name, BackpackSettingsTemplate template) {

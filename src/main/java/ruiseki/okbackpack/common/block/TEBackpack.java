@@ -1,8 +1,6 @@
 package ruiseki.okbackpack.common.block;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,7 +24,6 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.experimental.Delegate;
-import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
@@ -451,16 +448,7 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
 
     @Override
     public Iterable<ItemStack> getVisChargeableStacks() {
-        List<ItemStack> stacks = new ArrayList<>();
-        for (IArcaneCraftingUpgrade upgrade : wrapper.gatherCapabilityUpgrades(IArcaneCraftingUpgrade.class)
-            .values()) {
-            ItemStack stack = upgrade.getStorage()
-                .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
-            if (stack != null) {
-                stacks.add(stack);
-            }
-        }
-        return stacks;
+        return wrapper.getVisChargeableStacks();
     }
 
     @Override

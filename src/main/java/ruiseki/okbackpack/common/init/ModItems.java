@@ -15,6 +15,7 @@ import ruiseki.okbackpack.common.item.battery.ItemBatteryUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemAdvancedCompactingUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemCompactingUpgrade;
 import ruiseki.okbackpack.common.item.crafting.ItemCraftingUpgrade;
+import ruiseki.okbackpack.common.item.energizednode.ItemEnergizedNodeUpgrade;
 import ruiseki.okbackpack.common.item.everlasting.ItemEverlastingUpgrade;
 import ruiseki.okbackpack.common.item.feeding.ItemAdvancedFeedingUpgrade;
 import ruiseki.okbackpack.common.item.feeding.ItemFeedingUpgrade;
@@ -111,6 +112,7 @@ public enum ModItems {
     INFINITY_UPGRADE(new ItemInfinityUpgrade()),
     SURVIVAL_INFINITY_UPGRADE(new ItemSurvivalInfinityUpgrade()),
     ARCANE_CRAFTING_UPGRADE(new ItemArcaneCraftingUpgrade(), Mods.Thaumcraft, ModItems::arcaneCraftingEnabled),
+    ENERGIZED_NODE_UPGRADE(new ItemEnergizedNodeUpgrade(), Mods.Thaumcraft),
     REDSTONE_UPGRADE(new ItemRedstoneUpgrade(), ModItems::travelersUpgradesEnabled),
     GLOWSTONE_UPGRADE(new ItemGlowstoneUpgrade(), ModItems::travelersUpgradesEnabled),
     RAINBOW_UPGRADE(new ItemRainbowUpgrade(), ModItems::travelersUpgradesEnabled),

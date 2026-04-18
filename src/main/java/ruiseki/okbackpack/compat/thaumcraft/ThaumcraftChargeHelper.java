@@ -1,18 +1,15 @@
 package ruiseki.okbackpack.compat.thaumcraft;
 
-import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.item.ItemStack;
 
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
+import thaumcraft.common.items.wands.ItemWandCasting;
 
 public final class ThaumcraftChargeHelper {
-
-    private static final Map<Class<?>, ChargeMethods> METHOD_CACHE = new ConcurrentHashMap<>();
-    private static final ChargeMethods NO_METHODS = new ChargeMethods(null, null, null, null);
 
     private ThaumcraftChargeHelper() {}
 
@@ -27,55 +24,62 @@ public final class ThaumcraftChargeHelper {
     }
 
     public static boolean chargeStack(ItemStack stack, VisConsumer consumer) {
-        if (stack == null || stack.getItem() == null || consumer == null) return false;
-
-        ChargeMethods methods = resolveMethods(stack);
-        if (methods == NO_METHODS) return false;
-
-        try {
-            AspectList aspectsWithRoom = (AspectList) methods.getAspectsWithRoom.invoke(stack.getItem(), stack);
-            if (aspectsWithRoom == null || aspectsWithRoom.size() <= 0) return false;
-
-            boolean charged = false;
-            int maxVis = ((Number) methods.getMaxVis.invoke(stack.getItem(), stack)).intValue();
-
-            for (Aspect aspect : aspectsWithRoom.getAspects()) {
-                if (aspect == null) continue;
-
-                int currentVis = ((Number) methods.getVis.invoke(stack.getItem(), stack, aspect)).intValue();
-                int requested = Math.min(5, maxVis - currentVis);
-                if (requested <= 0) continue;
-
-                int drained = consumer.consume(aspect, requested);
-                if (drained <= 0) continue;
-
-                methods.addRealVis.invoke(stack.getItem(), stack, aspect, drained, true);
-                charged = true;
-            }
-
-            return charged;
-        } catch (ReflectiveOperationException ignored) {
-            return false;
-        }
+        return chargeStackInternal(stack, consumer, 5);
     }
 
-    private static ChargeMethods resolveMethods(ItemStack stack) {
-        return METHOD_CACHE.computeIfAbsent(
-            stack.getItem()
-                .getClass(),
-            ThaumcraftChargeHelper::findMethods);
+    public static boolean canChargeStack(ItemStack stack) {
+        return ThaumcraftHelpers.isWand(stack);
     }
 
-    private static ChargeMethods findMethods(Class<?> itemClass) {
-        try {
-            return new ChargeMethods(
-                itemClass.getMethod("getAspectsWithRoom", ItemStack.class),
-                itemClass.getMethod("getMaxVis", ItemStack.class),
-                itemClass.getMethod("getVis", ItemStack.class, Aspect.class),
-                itemClass.getMethod("addRealVis", ItemStack.class, Aspect.class, int.class, boolean.class));
-        } catch (NoSuchMethodException ignored) {
-            return NO_METHODS;
+    public static AspectBudget createPrimalBudget(int amountPerAspect) {
+        return new AspectBudget(amountPerAspect);
+    }
+
+    public static AspectBudget createBudget(Map<Aspect, Integer> amountByAspect) {
+        return new AspectBudget(amountByAspect);
+    }
+
+    public static boolean chargeStacks(Iterable<ItemStack> stacks, AspectBudget budget) {
+        if (stacks == null || budget == null || budget.isExhausted()) return false;
+
+        boolean chargedAny = false;
+        for (ItemStack stack : stacks) {
+            if (budget.isExhausted()) break;
+            chargedAny |= chargeStack(stack, budget);
         }
+        return chargedAny;
+    }
+
+    public static boolean chargeStack(ItemStack stack, AspectBudget budget) {
+        if (budget == null || budget.isExhausted()) return false;
+        return chargeStackInternal(stack, budget::consume, Integer.MAX_VALUE);
+    }
+
+    public static boolean chargeStackInternal(ItemStack stack, VisConsumer consumer, int maxRequestPerAspect) {
+        if (!ThaumcraftHelpers.isWand(stack) || consumer == null) return false;
+
+        ItemWandCasting wand = (ItemWandCasting) stack.getItem();
+        AspectList aspectsWithRoom = wand.getAspectsWithRoom(stack);
+        if (aspectsWithRoom == null || aspectsWithRoom.size() <= 0) return false;
+
+        boolean charged = false;
+        int maxVis = wand.getMaxVis(stack);
+
+        for (Aspect aspect : aspectsWithRoom.getAspects()) {
+            if (aspect == null) continue;
+
+            int currentVis = wand.getVis(stack, aspect);
+            int requested = Math.min(maxRequestPerAspect, maxVis - currentVis);
+            if (requested <= 0) continue;
+
+            int drained = consumer.consume(aspect, requested);
+            if (drained <= 0) continue;
+
+            wand.addRealVis(stack, aspect, drained, true);
+            charged = true;
+        }
+
+        return charged;
     }
 
     @FunctionalInterface
@@ -84,18 +88,47 @@ public final class ThaumcraftChargeHelper {
         int consume(Aspect aspect, int amount);
     }
 
-    private static final class ChargeMethods {
+    public static final class AspectBudget {
 
-        private final Method getAspectsWithRoom;
-        private final Method getMaxVis;
-        private final Method getVis;
-        private final Method addRealVis;
+        public final Map<Aspect, Integer> remainingByAspect = new LinkedHashMap<>();
 
-        private ChargeMethods(Method getAspectsWithRoom, Method getMaxVis, Method getVis, Method addRealVis) {
-            this.getAspectsWithRoom = getAspectsWithRoom;
-            this.getMaxVis = getMaxVis;
-            this.getVis = getVis;
-            this.addRealVis = addRealVis;
+        public AspectBudget(int amountPerAspect) {
+            int normalized = Math.max(0, amountPerAspect);
+            for (Aspect aspect : Aspect.getPrimalAspects()) {
+                if (aspect != null) {
+                    remainingByAspect.put(aspect, normalized);
+                }
+            }
+        }
+
+        public AspectBudget(Map<Aspect, Integer> amountByAspect) {
+            for (Aspect aspect : Aspect.getPrimalAspects()) {
+                if (aspect != null) {
+                    int amount = amountByAspect == null ? 0 : amountByAspect.getOrDefault(aspect, 0);
+                    remainingByAspect.put(aspect, Math.max(0, amount));
+                }
+            }
+        }
+
+        public int consume(Aspect aspect, int amount) {
+            if (aspect == null || amount <= 0) return 0;
+
+            int remaining = remainingByAspect.getOrDefault(aspect, 0);
+            if (remaining <= 0) return 0;
+
+            int drained = Math.min(remaining, amount);
+            remainingByAspect.put(aspect, remaining - drained);
+            return drained;
+        }
+
+        public boolean isExhausted() {
+            for (int remaining : remainingByAspect.values()) {
+                if (remaining > 0) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
+
 }
