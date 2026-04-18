@@ -465,6 +465,15 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
     }
 
     @Override
+    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+        ModularSlot slot = getModularSlot(index);
+        if (!slot.canTakeStack(playerIn)) {
+            return Platform.EMPTY_STACK;
+        }
+        return super.transferStackInSlot(playerIn, index);
+    }
+
+    @Override
     public ItemStack transferItem(ModularSlot fromSlot, ItemStack fromStack) {
         if (fromStack == null || fromStack.stackSize <= 0) return null;
         int originalSize = fromStack.stackSize;
