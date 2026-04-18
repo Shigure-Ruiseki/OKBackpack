@@ -23,6 +23,8 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lombok.experimental.Delegate;
 import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
@@ -113,6 +115,7 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public ModularScreen createScreen(SidedPosGuiData data, ModularPanel mainPanel) {
         return new BackpackModularScreen(mainPanel);
     }

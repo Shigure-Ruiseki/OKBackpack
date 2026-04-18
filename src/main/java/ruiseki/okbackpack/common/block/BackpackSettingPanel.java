@@ -29,6 +29,8 @@ import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
@@ -746,6 +748,7 @@ public class BackpackSettingPanel extends ModularPanel {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void onOpen(ModularScreen screen) {
         super.onOpen(screen);
         syncSettingModeState();

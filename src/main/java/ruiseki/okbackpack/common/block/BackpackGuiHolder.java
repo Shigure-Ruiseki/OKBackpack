@@ -13,6 +13,8 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
 
 public abstract class BackpackGuiHolder {
@@ -57,6 +59,7 @@ public abstract class BackpackGuiHolder {
         }
 
         @Override
+        @SideOnly(Side.CLIENT)
         public ModularScreen createScreen(SidedPosGuiData data, ModularPanel mainPanel) {
             return new BackpackModularScreen(mainPanel);
         }
@@ -83,6 +86,7 @@ public abstract class BackpackGuiHolder {
         }
 
         @Override
+        @SideOnly(Side.CLIENT)
         public ModularScreen createScreen(PlayerInventoryGuiData data, ModularPanel mainPanel) {
             return new BackpackModularScreen(mainPanel);
         }

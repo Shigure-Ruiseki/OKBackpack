@@ -570,6 +570,7 @@ public class BlockBackpack extends BlockOK {
         }
 
         @Override
+        @SideOnly(Side.CLIENT)
         public ModularScreen createScreen(PlayerInventoryGuiData data, ModularPanel mainPanel) {
             return new BackpackModularScreen(mainPanel);
         }
