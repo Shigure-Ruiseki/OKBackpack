@@ -24,10 +24,10 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import lombok.experimental.Delegate;
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
+import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.compat.thaumcraft.IVisChargeTarget;
 import ruiseki.okcore.energy.IOKEnergyIO;
@@ -114,7 +114,7 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
 
     @Override
     public ModularScreen createScreen(SidedPosGuiData data, ModularPanel mainPanel) {
-        return new ModularScreen(Reference.MOD_ID, mainPanel);
+        return new BackpackModularScreen(mainPanel);
     }
 
     @Override

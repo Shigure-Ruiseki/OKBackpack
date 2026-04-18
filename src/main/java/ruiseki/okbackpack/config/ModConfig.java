@@ -105,6 +105,10 @@ public class ModConfig {
     @Config.DefaultBoolean(true)
     public static boolean enableBackpackInventoryInteraction;
 
+    @Config.Comment("When a backpack is opened from the player inventory, including opening another backpack from a backpack GUI, closing it returns to the inventory screen")
+    @Config.DefaultBoolean(true)
+    public static boolean enableInventoryBackpackCloseReturnsToInventory;
+
     @Config.Comment("Maximum number of item stacks to display per row in the backpack tooltip")
     @Config.DefaultInt(9)
     @Config.RangeInt(min = 1)

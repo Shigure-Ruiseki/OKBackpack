@@ -13,7 +13,6 @@ import ruiseki.okbackpack.client.key.ToolSwapHandler;
 import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.common.event.ItemRenderEvent;
 import ruiseki.okbackpack.compat.Mods;
-import ruiseki.okbackpack.compat.nei.BackpackGuiOpener;
 import ruiseki.okcore.client.key.IKeyRegistry;
 import ruiseki.okcore.client.key.KeyRegistry;
 import ruiseki.okcore.init.ModBase;
@@ -66,10 +65,6 @@ public class ClientProxy extends ClientProxyComponent {
 
         keyToggleUpgrade5 = KeyRegistry.newKeyBinding(getMod(), "toggle_upgrade_5", Keyboard.KEY_NONE);
         keyRegistry.addKeyHandler(keyToggleUpgrade5, new ToggleUpgradeHandler(4));
-
-        if (Mods.NotEnoughItems.isModLoaded()) {
-            new BackpackGuiOpener(keyOpenBackpack);
-        }
     }
 
     @Override

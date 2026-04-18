@@ -43,13 +43,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
 import ruiseki.okbackpack.OKBCreativeTab;
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IAdminProtectable;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.api.wrapper.IBookshelfUpgrade;
 import ruiseki.okbackpack.api.wrapper.ILightUpgrade;
 import ruiseki.okbackpack.api.wrapper.IRedstoneUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
+import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
 import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionTooltipHelper;
 import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
@@ -571,7 +571,7 @@ public class BlockBackpack extends BlockOK {
 
         @Override
         public ModularScreen createScreen(PlayerInventoryGuiData data, ModularPanel mainPanel) {
-            return new ModularScreen(Reference.MOD_ID, mainPanel);
+            return new BackpackModularScreen(mainPanel);
         }
 
         @Override
