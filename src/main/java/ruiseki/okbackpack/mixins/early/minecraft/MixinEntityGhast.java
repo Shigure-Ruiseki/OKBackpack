@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import ruiseki.okbackpack.common.item.travelers.ghast.GhastUpgradeSupport;
+import ruiseki.okbackpack.common.item.travelers.ghast.GhastUpgradeHelpers;
 
 @Mixin(EntityGhast.class)
 public abstract class MixinEntityGhast {
@@ -22,6 +22,6 @@ public abstract class MixinEntityGhast {
     private EntityPlayer okbackpack$findClosestValidTarget(World world, Entity entity, double maxDistance) {
         var ghast = (EntityGhast) entity;
         ghast.aggroCooldown = 20;
-        return GhastUpgradeSupport.findClosestValidTarget(ghast, maxDistance);
+        return GhastUpgradeHelpers.findClosestValidTarget(ghast, maxDistance);
     }
 }

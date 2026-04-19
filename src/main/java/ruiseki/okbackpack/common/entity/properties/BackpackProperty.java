@@ -9,7 +9,7 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 
 public class BackpackProperty implements IExtendedEntityProperties {
 
@@ -162,8 +162,8 @@ public class BackpackProperty implements IExtendedEntityProperties {
             return;
         }
 
-        BackpackEntityHelper
-            .visitPlayerBackpacks(player, BackpackEntityHelper.SearchOrder.PLAYER_THEN_BAUBLES, context -> {
+        BackpackEntityHelpers
+            .visitPlayerBackpacks(player, BackpackEntityHelpers.SearchOrder.PLAYER_THEN_BAUBLES, context -> {
                 BackpackWrapper wrapper = context.wrapper();
                 if (!wrapper.isUsePlayerSettings()) {
                     return false;
@@ -173,7 +173,7 @@ public class BackpackProperty implements IExtendedEntityProperties {
                 wrapper.setPlayerUUID(
                     player.getUniqueID()
                         .toString());
-                BackpackEntityHelper.persistBackpack(context);
+                BackpackEntityHelpers.persistBackpack(context);
                 return false;
             });
     }

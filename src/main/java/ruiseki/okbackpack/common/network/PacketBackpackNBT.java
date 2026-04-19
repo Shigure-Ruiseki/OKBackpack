@@ -10,7 +10,7 @@ import com.cleanroommc.modularui.factory.inventory.InventoryType;
 
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okcore.network.CodecField;
 import ruiseki.okcore.network.PacketCodec;
 
@@ -47,7 +47,7 @@ public class PacketBackpackNBT extends PacketCodec {
         String uuid = bp.getString(BackpackWrapper.UUID_TAG);
         if (uuid == null || uuid.isEmpty()) return;
 
-        ItemStack stack = BackpackEntityHelper.findBackpackByUuid(player, uuid, type);
+        ItemStack stack = BackpackEntityHelpers.findBackpackByUuid(player, uuid, type);
         if (stack != null) {
             stack.setTagCompound(nbt);
             refreshOpenBackpack(player, stack, uuid);
@@ -65,7 +65,7 @@ public class PacketBackpackNBT extends PacketCodec {
         String uuid = bp.getString(BackpackWrapper.UUID_TAG);
         if (uuid == null || uuid.isEmpty()) return;
 
-        ItemStack stack = BackpackEntityHelper.findBackpackByUuid(player, uuid, type);
+        ItemStack stack = BackpackEntityHelpers.findBackpackByUuid(player, uuid, type);
         if (stack != null) {
             stack.setTagCompound(nbt);
         }
@@ -77,8 +77,8 @@ public class PacketBackpackNBT extends PacketCodec {
             return;
         }
 
-        if (!BackpackEntityHelper.isSameBackpack(stack, uuid)
-            || !BackpackEntityHelper.isSameBackpack(wrapper.getBackpack(), uuid)) {
+        if (!BackpackEntityHelpers.isSameBackpack(stack, uuid)
+            || !BackpackEntityHelpers.isSameBackpack(wrapper.getBackpack(), uuid)) {
             return;
         }
 

@@ -7,9 +7,9 @@ import org.jetbrains.annotations.Nullable;
 
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 
-public final class BackpackHandSwapHelper {
+public final class BackpackHandSwapHelpers {
 
-    private BackpackHandSwapHelper() {}
+    private BackpackHandSwapHelpers() {}
 
     public static boolean canReplaceHandWithBackpackItem(BackpackWrapper wrapper, int slot, int extractCount,
         @Nullable ItemStack currentHand) {

@@ -11,7 +11,7 @@ import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.api.wrapper.IInceptionUpgrade;
 import ruiseki.okbackpack.api.wrapper.ISlotModifiable;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
@@ -65,7 +65,7 @@ public class InceptionUpgradeWrapper extends UpgradeWrapperBase implements ISlot
 
     @Override
     public boolean canAddStack(int slot, ItemStack stack) {
-        if (!BackpackEntityHelper.isBackpackStack(stack, false)) {
+        if (!BackpackEntityHelpers.isBackpackStack(stack, false)) {
             return true;
         }
 
@@ -77,7 +77,7 @@ public class InceptionUpgradeWrapper extends UpgradeWrapperBase implements ISlot
             if (stack == wrapper.getBackpack()) {
                 return false;
             }
-            return !BackpackEntityHelper.isSameBackpack(stack, wrapper.uuid);
+            return !BackpackEntityHelpers.isSameBackpack(stack, wrapper.uuid);
         }
 
         return true;
@@ -87,7 +87,7 @@ public class InceptionUpgradeWrapper extends UpgradeWrapperBase implements ISlot
         List<Integer> nestedBackpackSlots = new ArrayList<>();
         for (int slot = 0; slot < storage.getSlots(); slot++) {
             ItemStack stack = storage.getStackInSlot(slot);
-            if (BackpackEntityHelper.isBackpackStack(stack, false)) {
+            if (BackpackEntityHelpers.isBackpackStack(stack, false)) {
                 nestedBackpackSlots.add(slot);
             }
         }

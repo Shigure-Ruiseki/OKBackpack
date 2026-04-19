@@ -1,21 +1,26 @@
 package ruiseki.okbackpack.common.item.travelers.spider;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 
 import ruiseki.okbackpack.api.wrapper.ISpiderUpgrade;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 
-public final class SpiderUpgradeSupport {
+public final class SpiderUpgradeHelpers {
 
-    private SpiderUpgradeSupport() {}
+    private SpiderUpgradeHelpers() {}
 
     public static boolean shouldTreatAsOnLadder(EntityLivingBase entity) {
         if (entity == null || !entity.isCollidedHorizontally) {
             return false;
         }
 
-        return BackpackEntityHelper.visitBackpacks(
-            entity,
+        if (!(entity instanceof EntityPlayer player)) {
+            return false;
+        }
+
+        return BackpackEntityHelpers.visitWornBackpacks(
+            player,
             context -> hasEnabledSpiderUpgrade(
                 context.wrapper()
                     .gatherCapabilityUpgrades(ISpiderUpgrade.class)

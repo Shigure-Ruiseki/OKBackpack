@@ -7,7 +7,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.config.ModConfig;
 
 public final class BackpackInventoryInteractionExecutor {
@@ -55,11 +55,11 @@ public final class BackpackInventoryInteractionExecutor {
 
     private static boolean executeSlotIntoCarriedBackpack(Container container, EntityPlayer player, Slot slot,
         ItemStack backpackStack, BackpackInventoryInteractionResult result) {
-        if (backpackStack == null || !BackpackEntityHelper.isBackpackStack(backpackStack, false)) {
+        if (backpackStack == null || !BackpackEntityHelpers.isBackpackStack(backpackStack, false)) {
             return false;
         }
 
-        BackpackWrapper wrapper = BackpackEntityHelper.getInteractionWrapper(player, backpackStack);
+        BackpackWrapper wrapper = BackpackEntityHelpers.getInteractionWrapper(player, backpackStack);
         if (wrapper == null || !wrapper.canPlayerAccess(player.getUniqueID())) {
             return false;
         }
@@ -100,11 +100,11 @@ public final class BackpackInventoryInteractionExecutor {
         ItemStack cursorStack) {
         ItemStack backpackStack = slot.getStack();
         if (cursorStack == null || backpackStack == null
-            || !BackpackEntityHelper.isBackpackStack(backpackStack, false)) {
+            || !BackpackEntityHelpers.isBackpackStack(backpackStack, false)) {
             return false;
         }
 
-        BackpackWrapper wrapper = BackpackEntityHelper.getInteractionWrapper(player, backpackStack);
+        BackpackWrapper wrapper = BackpackEntityHelpers.getInteractionWrapper(player, backpackStack);
         if (wrapper == null || !wrapper.canPlayerAccess(player.getUniqueID())) {
             return false;
         }

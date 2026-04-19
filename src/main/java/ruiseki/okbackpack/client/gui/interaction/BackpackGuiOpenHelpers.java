@@ -10,20 +10,20 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
 import baubles.common.container.InventoryBaubles;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 
-public final class BackpackGuiOpenHelper {
+public final class BackpackGuiOpenHelpers {
 
     private static final String PLAYER_INVENTORY_SLOT_GROUP = "player_inventory";
 
-    private BackpackGuiOpenHelper() {}
+    private BackpackGuiOpenHelpers() {}
 
-    public static boolean openFirstClient(EntityPlayer player, BackpackEntityHelper.SearchOrder order) {
+    public static boolean openFirstClient(EntityPlayer player, BackpackEntityHelpers.SearchOrder order) {
         if (player == null || player.capabilities.isCreativeMode) {
             return false;
         }
 
-        return BackpackEntityHelper.visitPlayerBackpacks(player, order, BackpackGuiOpenHelper::openClient);
+        return BackpackEntityHelpers.visitPlayerBackpacks(player, order, BackpackGuiOpenHelpers::openClient);
     }
 
     public static boolean openClient(EntityPlayer player, Slot slot) {
@@ -31,14 +31,14 @@ public final class BackpackGuiOpenHelper {
     }
 
     public static boolean tryOpenClient(EntityPlayer player, Slot slot) {
-        BackpackEntityHelper.BackpackContext context = getSlotBackpackContext(player, slot);
+        BackpackEntityHelpers.BackpackContext context = getSlotBackpackContext(player, slot);
         if (context == null || isCurrentOpenBackpack(player, context)) {
             return false;
         }
         return openClient(context);
     }
 
-    public static boolean openClient(BackpackEntityHelper.BackpackContext context) {
+    public static boolean openClient(BackpackEntityHelpers.BackpackContext context) {
         if (context == null || context.getInventoryType() == null || context.getSlotIndex() < 0) {
             return false;
         }
@@ -48,30 +48,30 @@ public final class BackpackGuiOpenHelper {
         return true;
     }
 
-    public static BackpackEntityHelper.BackpackContext getSlotBackpackContext(EntityPlayer player, Slot slot) {
+    public static BackpackEntityHelpers.BackpackContext getSlotBackpackContext(EntityPlayer player, Slot slot) {
         if (player == null || slot == null
             || !slot.getHasStack()
-            || !BackpackEntityHelper.isBackpackStack(slot.getStack(), false)) {
+            || !BackpackEntityHelpers.isBackpackStack(slot.getStack(), false)) {
             return null;
         }
 
         if (slot.inventory instanceof InventoryPlayer) {
-            return BackpackEntityHelper.getBackpack(player, InventoryTypes.PLAYER, slot.getSlotIndex());
+            return BackpackEntityHelpers.getBackpack(player, InventoryTypes.PLAYER, slot.getSlotIndex());
         }
 
         if (slot.inventory instanceof InventoryBaubles) {
-            return BackpackEntityHelper.getBackpack(player, InventoryTypes.BAUBLES, slot.getSlotIndex());
+            return BackpackEntityHelpers.getBackpack(player, InventoryTypes.BAUBLES, slot.getSlotIndex());
         }
 
         if (slot instanceof ModularSlot modularSlot
             && PLAYER_INVENTORY_SLOT_GROUP.equals(modularSlot.getSlotGroupName())) {
-            return BackpackEntityHelper.getBackpack(player, InventoryTypes.PLAYER, modularSlot.getSlotIndex());
+            return BackpackEntityHelpers.getBackpack(player, InventoryTypes.PLAYER, modularSlot.getSlotIndex());
         }
 
         return null;
     }
 
-    public static boolean isCurrentOpenBackpack(EntityPlayer player, BackpackEntityHelper.BackpackContext context) {
+    public static boolean isCurrentOpenBackpack(EntityPlayer player, BackpackEntityHelpers.BackpackContext context) {
         if (player == null || context == null || !(player.openContainer instanceof BackPackContainer container)) {
             return false;
         }

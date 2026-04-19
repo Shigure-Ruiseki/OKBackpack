@@ -21,7 +21,7 @@ import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockBackpack;
 
-public final class BackpackEntityHelper {
+public final class BackpackEntityHelpers {
 
     private static final int MAX_CACHE_SIZE = 256;
 
@@ -35,7 +35,7 @@ public final class BackpackEntityHelper {
         },
         false);
 
-    private BackpackEntityHelper() {}
+    private BackpackEntityHelpers() {}
 
     public static boolean visitBackpacks(Entity entity, BackpackVisitor visitor) {
         return visitBackpacks(entity, SearchOrder.PLAYER_THEN_BAUBLES, visitor);
@@ -65,6 +65,42 @@ public final class BackpackEntityHelper {
 
         return visitInventory(player, player.inventory, InventoryTypes.PLAYER, visitor)
             || visitInventory(player, BaublesApi.getBaubles(player), InventoryTypes.BAUBLES, visitor);
+    }
+
+    public static boolean visitWornBackpacks(EntityPlayer player, BackpackVisitor visitor) {
+        if (player == null || visitor == null) return false;
+
+        if (visitInventory(player, BaublesApi.getBaubles(player), InventoryTypes.BAUBLES, visitor)) {
+            return true;
+        }
+
+        int inventorySize = player.inventory.getSizeInventory();
+        for (int armorSlot = inventorySize - 4; armorSlot < inventorySize; armorSlot++) {
+            ItemStack stack = player.inventory.getStackInSlot(armorSlot);
+            if (!isBackpackStack(stack)) continue;
+
+            BackpackContext context = new BackpackContext(
+                player,
+                stack,
+                resolveWrapper(player, stack, InventoryTypes.PLAYER, armorSlot),
+                InventoryTypes.PLAYER,
+                armorSlot);
+            if (visitor.visit(context)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean isWornContext(EntityPlayer player, BackpackContext context) {
+        if (context == null || player == null) return false;
+        if (context.inventoryType() == InventoryTypes.BAUBLES) return true;
+        if (context.inventoryType() == InventoryTypes.PLAYER) {
+            int inventorySize = player.inventory.getSizeInventory();
+            return context.slotIndex() >= inventorySize - 4;
+        }
+        return false;
     }
 
     public static BackpackContext getBackpack(EntityPlayer player, InventoryType type, int slotIndex) {

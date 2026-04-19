@@ -10,11 +10,11 @@ import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.helper.LangHelpers;
 
-public final class BackpackInventoryInteractionTooltipHelper {
+public final class BackpackInventoryInteractionTooltipHelpers {
 
     public static final String RIGHT_CLICK_ADD_KEY = "tooltip.backpack.inventory_interaction.right_click_add";
 
-    private BackpackInventoryInteractionTooltipHelper() {}
+    private BackpackInventoryInteractionTooltipHelpers() {}
 
     public static List<String> prependInteractionLine(List<String> lines) {
         List<String> result = new ArrayList<>();

@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.config.ModConfig;
 
@@ -83,12 +83,12 @@ public final class BackpackInventoryInteractionOverlay {
             return Collections.emptyList();
         }
 
-        BackpackWrapper wrapper = BackpackEntityHelper.getInteractionWrapper(player, result.getBackpackStack());
+        BackpackWrapper wrapper = BackpackEntityHelpers.getInteractionWrapper(player, result.getBackpackStack());
         if (wrapper == null || player == null || !wrapper.canPlayerAccess(player.getUniqueID())) {
             return Collections.emptyList();
         }
 
-        return BackpackInventoryInteractionTooltipHelper
+        return BackpackInventoryInteractionTooltipHelpers
             .buildInteractionTooltipLines(result.getBackpackStack(), wrapper);
     }
 

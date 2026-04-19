@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import ruiseki.okbackpack.ClientProxy;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
-import ruiseki.okbackpack.client.gui.interaction.BackpackGuiOpenHelper;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.client.gui.interaction.BackpackGuiOpenHelpers;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 
 @Mixin(GuiContainer.class)
 public abstract class MixinGuiContainerBackpackOpener extends GuiScreen {
@@ -38,11 +38,11 @@ public abstract class MixinGuiContainerBackpackOpener extends GuiScreen {
             return;
         }
 
-        if (!BackpackEntityHelper.isBackpackStack(hoveredSlot.getStack(), false)) {
+        if (!BackpackEntityHelpers.isBackpackStack(hoveredSlot.getStack(), false)) {
             return;
         }
 
-        if (!BackpackGuiOpenHelper.tryOpenClient(mc.thePlayer, hoveredSlot)) {
+        if (!BackpackGuiOpenHelpers.tryOpenClient(mc.thePlayer, hoveredSlot)) {
             return;
         }
 
@@ -62,7 +62,7 @@ public abstract class MixinGuiContainerBackpackOpener extends GuiScreen {
             return;
         }
 
-        if (!BackpackGuiOpenHelper.tryOpenClient(mc.thePlayer, theSlot)) {
+        if (!BackpackGuiOpenHelpers.tryOpenClient(mc.thePlayer, theSlot)) {
             return;
         }
 

@@ -8,7 +8,7 @@ import com.cleanroommc.modularui.factory.inventory.InventoryType;
 
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okcore.network.CodecField;
 import ruiseki.okcore.network.PacketCodec;
 
@@ -42,7 +42,7 @@ public class PacketToggleUpgrade extends PacketCodec {
         InventoryType type = InventoryType.getFromId(typeId);
         if (type == null) return;
 
-        BackpackEntityHelper.BackpackContext context = BackpackEntityHelper.getBackpack(player, type, backpackSlot);
+        BackpackEntityHelpers.BackpackContext context = BackpackEntityHelpers.getBackpack(player, type, backpackSlot);
         if (context == null) return;
 
         if (upgradeSlot < 0 || upgradeSlot >= context.wrapper().upgradeSlots) return;
@@ -52,7 +52,7 @@ public class PacketToggleUpgrade extends PacketCodec {
             .getWrapperInSlot(upgradeSlot);
         if (upgradeWrapper instanceof IToggleable toggleable) {
             toggleable.toggle();
-            BackpackEntityHelper.persistBackpack(context);
+            BackpackEntityHelpers.persistBackpack(context);
         }
     }
 }

@@ -21,7 +21,7 @@ import net.minecraft.util.EnumChatFormatting;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockBackpack;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackJsonReader;
 import ruiseki.okbackpack.common.helpers.BackpackJsonWriter;
 import ruiseki.okbackpack.common.helpers.BackpackMaterial;
@@ -179,7 +179,7 @@ public class CommandBackpack extends CommandMod {
             EntityPlayer player = CommandBase.getCommandSenderAsPlayer(sender);
             ItemStack held = player.getHeldItem();
 
-            if (!BackpackEntityHelper.isBackpackStack(held, false)) {
+            if (!BackpackEntityHelpers.isBackpackStack(held, false)) {
                 throw new CommandException("You must hold a backpack to export it!");
             }
 
@@ -216,7 +216,7 @@ public class CommandBackpack extends CommandMod {
             EntityPlayer player = CommandBase.getCommandSenderAsPlayer(sender);
             ItemStack held = player.getHeldItem();
 
-            if (!BackpackEntityHelper.isBackpackStack(held, false)) {
+            if (!BackpackEntityHelpers.isBackpackStack(held, false)) {
                 throw new CommandException("You must hold a backpack to import to it!");
             }
 

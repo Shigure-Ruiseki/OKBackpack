@@ -1,4 +1,6 @@
 package ruiseki.okbackpack.api.wrapper;
 
-public interface IBookshelfUpgrade extends ITravelersUpgrade {
+public interface IBookshelfUpgrade extends IUpgradeWrapper {
+
+    float getEnchantPowerBonus();
 }

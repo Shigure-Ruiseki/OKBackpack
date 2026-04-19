@@ -54,11 +54,11 @@ import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.item.travelers.blaze.BlazeUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.creeper.CreeperUpgradeWrapper;
-import ruiseki.okbackpack.common.item.travelers.ghast.GhastUpgradeSupport;
+import ruiseki.okbackpack.common.item.travelers.ghast.GhastUpgradeHelpers;
 import ruiseki.okbackpack.common.item.travelers.hay.HayUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.lapis.LapisUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.quiver.QuiverUpgradeWrapper;
@@ -144,18 +144,24 @@ public class BackpackEventHandler {
 
     private void tickBackpacks(EntityPlayer player) {
         boolean backpackOpen = player.openContainer instanceof BackPackContainer;
-        BackpackEntityHelper
-            .visitPlayerBackpacks(player, BackpackEntityHelper.SearchOrder.PLAYER_THEN_BAUBLES, context -> {
+        BackpackEntityHelpers
+            .visitPlayerBackpacks(player, BackpackEntityHelpers.SearchOrder.PLAYER_THEN_BAUBLES, context -> {
                 ItemStack stack = context.getStack();
                 if (stack.getTagCompound() == null || !stack.getTagCompound()
                     .hasKey(BackpackWrapper.BACKPACK_NBT)) {
-                    BackpackEntityHelper.persistBackpack(context);
+                    BackpackEntityHelpers.persistBackpack(context);
                     return false;
                 }
 
-                if (!backpackOpen && context.getWrapper()
-                    .tick(player)) {
-                    BackpackEntityHelper.persistBackpack(context);
+                if (!backpackOpen) {
+                    boolean isWorn = BackpackEntityHelpers.isWornContext(player, context);
+                    boolean dirty = isWorn ? context.getWrapper()
+                        .tick(player)
+                        : context.getWrapper()
+                            .tickNonTravelers(player);
+                    if (dirty) {
+                        BackpackEntityHelpers.persistBackpack(context);
+                    }
                 }
                 return false;
             });
@@ -166,13 +172,13 @@ public class BackpackEventHandler {
         if (!(event.entity instanceof EntityPlayer player)) return;
         if (player.worldObj.isRemote) return;
 
-        if (hasUpgrade(player, RainbowUpgradeWrapper.class)) {
+        if (hasTravelersUpgrade(player, RainbowUpgradeWrapper.class)) {
             player.fallDistance = 0F;
             event.setCanceled(true);
             return;
         }
 
-        if (hasUpgrade(player, SlimeUpgradeWrapper.class)) {
+        if (hasTravelersUpgrade(player, SlimeUpgradeWrapper.class)) {
             player.fallDistance = 0F;
             event.setCanceled(true);
             if (player.isSneaking()) return;
@@ -188,7 +194,7 @@ public class BackpackEventHandler {
             return;
         }
 
-        if (hasUpgrade(player, BlazeUpgradeWrapper.class)) {
+        if (hasTravelersUpgrade(player, BlazeUpgradeWrapper.class)) {
             player.fallDistance = 0F;
             event.setCanceled(true);
         }
@@ -198,15 +204,15 @@ public class BackpackEventHandler {
     public void onLivingHurt(LivingHurtEvent event) {
         if (event.entityLiving instanceof EntityGhast ghast && !ghast.worldObj.isRemote) {
             EntityPlayer attacker = getAttackingPlayer(event.source);
-            if (GhastUpgradeSupport.hasGhastUpgrade(attacker)) {
-                GhastUpgradeSupport.markGhastRetaliation(ghast, attacker);
+            if (GhastUpgradeHelpers.hasGhastUpgrade(attacker)) {
+                GhastUpgradeHelpers.markGhastRetaliation(ghast, attacker);
             }
         }
 
         if (!(event.entityLiving instanceof EntityPlayer player)) return;
         if (player.worldObj.isRemote) return;
 
-        if (isBlazeFireballDamage(event) && hasUpgrade(player, BlazeUpgradeWrapper.class)) {
+        if (isBlazeFireballDamage(event) && hasTravelersUpgrade(player, BlazeUpgradeWrapper.class)) {
             event.setCanceled(true);
             return;
         }
@@ -227,8 +233,8 @@ public class BackpackEventHandler {
         if (player == null || player.worldObj.isRemote) return;
         if (!(event.target instanceof EntityLivingBase livingTarget)) return;
 
-        if (livingTarget instanceof EntityGhast ghast && GhastUpgradeSupport.hasGhastUpgrade(player)) {
-            GhastUpgradeSupport.markGhastRetaliation(ghast, player);
+        if (livingTarget instanceof EntityGhast ghast && GhastUpgradeHelpers.hasGhastUpgrade(player)) {
+            GhastUpgradeHelpers.markGhastRetaliation(ghast, player);
         }
 
         if (hasEnabledWitherUpgrade(player)) {
@@ -242,7 +248,7 @@ public class BackpackEventHandler {
         if (player == null) return;
         if (player.capabilities.isCreativeMode) return;
         if (player.inventory.hasItem(Items.arrow)) return;
-        if (!hasUpgrade(player, QuiverUpgradeWrapper.class)) return;
+        if (!hasTravelersUpgrade(player, QuiverUpgradeWrapper.class)) return;
         if (findQuiverSource(player) == null) return;
 
         player.setItemInUse(event.result, event.result.getMaxItemUseDuration());
@@ -253,11 +259,11 @@ public class BackpackEventHandler {
     public void onArrowLoose(ArrowLooseEvent event) {
         EntityPlayer player = event.entityPlayer;
         if (player == null) return;
-        if (!hasUpgrade(player, QuiverUpgradeWrapper.class)) return;
+        if (!hasTravelersUpgrade(player, QuiverUpgradeWrapper.class)) return;
         if (player.capabilities.isCreativeMode) return;
         if (EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, event.bow) > 0) return;
 
-        BackpackEntityHelper.BackpackContext quiverSource = findQuiverSource(player);
+        BackpackEntityHelpers.BackpackContext quiverSource = findQuiverSource(player);
         if (quiverSource == null) return;
 
         event.setCanceled(true);
@@ -269,7 +275,7 @@ public class BackpackEventHandler {
     @SubscribeEvent
     public void onPlayerPickupXp(PlayerPickupXpEvent event) {
         if (event.entityPlayer == null || event.entityPlayer.worldObj.isRemote) return;
-        if (!hasUpgrade(event.entityPlayer, LapisUpgradeWrapper.class)) return;
+        if (!hasTravelersUpgrade(event.entityPlayer, LapisUpgradeWrapper.class)) return;
         if (event.entityPlayer.getRNG()
             .nextFloat() < LUCKY_LAPIS_CHANCE) {
             event.orb.xpValue *= 2;
@@ -279,7 +285,7 @@ public class BackpackEventHandler {
     @SubscribeEvent
     public void onHarvestDrops(HarvestDropsEvent event) {
         if (event.harvester == null || event.world.isRemote) return;
-        if (!hasUpgrade(event.harvester, HayUpgradeWrapper.class)) return;
+        if (!hasTravelersUpgrade(event.harvester, HayUpgradeWrapper.class)) return;
 
         if (isCropBlock(event.block) && event.world.rand.nextFloat() < HAY_DOUBLE_CROP_CHANCE) {
             List<ItemStack> extraDrops = new ArrayList<>();
@@ -296,24 +302,24 @@ public class BackpackEventHandler {
         }
     }
 
-    private boolean isCropBlock(Block block) {
+    public boolean isCropBlock(Block block) {
         return block instanceof BlockCrops || block instanceof BlockNetherWart
             || block == Blocks.carrots
             || block == Blocks.potatoes;
     }
 
-    private ItemStack getRandomGrassCrop(World world) {
+    public ItemStack getRandomGrassCrop(World world) {
         ItemStack[] candidates = new ItemStack[] { new ItemStack(Items.carrot), new ItemStack(Items.potato),
             new ItemStack(Items.wheat) };
         return candidates[world.rand.nextInt(candidates.length)].copy();
     }
 
-    private boolean isBlazeFireballDamage(LivingHurtEvent event) {
+    public boolean isBlazeFireballDamage(LivingHurtEvent event) {
         return event.source.getSourceOfDamage() instanceof EntitySmallFireball
             && event.source.getEntity() instanceof EntityBlaze;
     }
 
-    private EntityPlayer getAttackingPlayer(DamageSource source) {
+    public EntityPlayer getAttackingPlayer(DamageSource source) {
         if (source == null) return null;
 
         Entity attacker = source.getEntity();
@@ -338,13 +344,13 @@ public class BackpackEventHandler {
         return null;
     }
 
-    private boolean wouldBeFatal(EntityPlayer player, LivingHurtEvent event) {
+    public boolean wouldBeFatal(EntityPlayer player, LivingHurtEvent event) {
         return player.getHealth() - event.ammount <= 0.0F;
     }
 
-    private boolean triggerCreeperRescue(EntityPlayer player) {
+    public boolean triggerCreeperRescue(EntityPlayer player) {
         long worldTime = player.worldObj.getTotalWorldTime();
-        return visitUpgrades(player, CreeperUpgradeWrapper.class, ctx -> {
+        return visitTravelersUpgrades(player, CreeperUpgradeWrapper.class, ctx -> {
             if (!ctx.upgrade.isReady(worldTime)) return false;
 
             ctx.upgrade.trigger(worldTime);
@@ -355,12 +361,12 @@ public class BackpackEventHandler {
             player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 100, 1, true));
             player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 2400, 0, true));
             playRescueExplosion(player);
-            BackpackEntityHelper.persistBackpack(ctx.backpack);
+            BackpackEntityHelpers.persistBackpack(ctx.backpack);
             return true;
         });
     }
 
-    private void playRescueExplosion(EntityPlayer player) {
+    public void playRescueExplosion(EntityPlayer player) {
         player.worldObj.playSoundAtEntity(player, "random.explode", 1.0F, 1.0F);
         if (player.worldObj instanceof WorldServer worldServer) {
             worldServer.func_147487_a(
@@ -376,14 +382,14 @@ public class BackpackEventHandler {
         }
     }
 
-    private void neutralizeNearbyGhasts(EntityPlayer player) {
-        if (!GhastUpgradeSupport.hasGhastUpgrade(player)) return;
+    public void neutralizeNearbyGhasts(EntityPlayer player) {
+        if (!GhastUpgradeHelpers.hasGhastUpgrade(player)) return;
 
         long worldTime = player.worldObj.getTotalWorldTime();
         List<EntityGhast> ghasts = player.worldObj
             .getEntitiesWithinAABB(EntityGhast.class, player.boundingBox.expand(GHAST_RANGE, 32.0D, GHAST_RANGE));
         for (EntityGhast ghast : ghasts) {
-            if (!GhastUpgradeSupport.isGhastAggressiveToPlayer(ghast, player, worldTime)) {
+            if (!GhastUpgradeHelpers.isGhastAggressiveToPlayer(ghast, player, worldTime)) {
                 if (ghast.targetedEntity == player) {
                     ghast.targetedEntity = null;
                 }
@@ -394,28 +400,27 @@ public class BackpackEventHandler {
         }
     }
 
-    private BackpackEntityHelper.BackpackContext findQuiverSource(EntityPlayer player) {
-        final BackpackEntityHelper.BackpackContext[] result = new BackpackEntityHelper.BackpackContext[1];
-        BackpackEntityHelper
-            .visitPlayerBackpacks(player, BackpackEntityHelper.SearchOrder.PLAYER_THEN_BAUBLES, context -> {
-                if (context.getWrapper()
-                    .gatherCapabilityUpgrades(QuiverUpgradeWrapper.class)
-                    .isEmpty()) {
-                    return false;
-                }
+    public BackpackEntityHelpers.BackpackContext findQuiverSource(EntityPlayer player) {
+        final BackpackEntityHelpers.BackpackContext[] result = new BackpackEntityHelpers.BackpackContext[1];
+        BackpackEntityHelpers.visitWornBackpacks(player, context -> {
+            if (context.getWrapper()
+                .gatherCapabilityUpgrades(QuiverUpgradeWrapper.class)
+                .isEmpty()) {
+                return false;
+            }
 
-                ItemStack extracted = context.getWrapper()
-                    .extractItem(SINGLE_ARROW, 1, true);
-                if (extracted == null || extracted.stackSize <= 0) return false;
+            ItemStack extracted = context.getWrapper()
+                .extractItem(SINGLE_ARROW, 1, true);
+            if (extracted == null || extracted.stackSize <= 0) return false;
 
-                result[0] = context;
-                return true;
-            });
+            result[0] = context;
+            return true;
+        });
         return result[0];
     }
 
-    private void shootArrowFromQuiver(EntityPlayer player, ItemStack bow, int charge,
-        BackpackEntityHelper.BackpackContext source) {
+    public void shootArrowFromQuiver(EntityPlayer player, ItemStack bow, int charge,
+        BackpackEntityHelpers.BackpackContext source) {
         float velocity = getArrowVelocity(charge);
         if ((double) velocity < 0.1D) return;
 
@@ -441,7 +446,7 @@ public class BackpackEventHandler {
         bow.damageItem(1, player);
         source.getWrapper()
             .extractItem(SINGLE_ARROW, 1, false);
-        BackpackEntityHelper.persistBackpack(source);
+        BackpackEntityHelpers.persistBackpack(source);
 
         player.worldObj.playSoundAtEntity(
             player,
@@ -452,7 +457,7 @@ public class BackpackEventHandler {
         player.worldObj.spawnEntityInWorld(arrow);
     }
 
-    private float getArrowVelocity(int charge) {
+    public float getArrowVelocity(int charge) {
         float velocity = charge / 20.0F;
         velocity = (velocity * velocity + velocity * 2.0F) / 3.0F;
         if (velocity > 1.0F) {
@@ -461,17 +466,21 @@ public class BackpackEventHandler {
         return velocity;
     }
 
-    private boolean hasUpgrade(EntityPlayer player, Class<?> upgradeClass) {
+    public boolean hasUpgrade(EntityPlayer player, Class<?> upgradeClass) {
         return visitUpgrades(player, upgradeClass, ctx -> true);
     }
 
-    private boolean hasEnabledWitherUpgrade(EntityPlayer player) {
+    public boolean hasTravelersUpgrade(EntityPlayer player, Class<?> upgradeClass) {
+        return visitTravelersUpgrades(player, upgradeClass, ctx -> true);
+    }
+
+    public boolean hasEnabledWitherUpgrade(EntityPlayer player) {
         return visitUpgrades(player, IWitherUpgrade.class, ctx -> ctx.upgrade.isEnabled());
     }
 
-    private <T> boolean visitUpgrades(EntityPlayer player, Class<T> upgradeClass, UpgradeContextVisitor<T> visitor) {
-        return BackpackEntityHelper
-            .visitPlayerBackpacks(player, BackpackEntityHelper.SearchOrder.PLAYER_THEN_BAUBLES, backpack -> {
+    public <T> boolean visitUpgrades(EntityPlayer player, Class<T> upgradeClass, UpgradeContextVisitor<T> visitor) {
+        return BackpackEntityHelpers
+            .visitPlayerBackpacks(player, BackpackEntityHelpers.SearchOrder.PLAYER_THEN_BAUBLES, backpack -> {
                 Map<Integer, T> upgrades = backpack.getWrapper()
                     .gatherCapabilityUpgrades(upgradeClass);
                 for (Map.Entry<Integer, T> entry : upgrades.entrySet()) {
@@ -481,6 +490,20 @@ public class BackpackEventHandler {
                 }
                 return false;
             });
+    }
+
+    public <T> boolean visitTravelersUpgrades(EntityPlayer player, Class<T> upgradeClass,
+        UpgradeContextVisitor<T> visitor) {
+        return BackpackEntityHelpers.visitWornBackpacks(player, backpack -> {
+            Map<Integer, T> upgrades = backpack.getWrapper()
+                .gatherCapabilityUpgrades(upgradeClass);
+            for (Map.Entry<Integer, T> entry : upgrades.entrySet()) {
+                if (visitor.visit(new PlayerUpgradeContext<>(backpack, entry.getKey(), entry.getValue()))) {
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
     @SubscribeEvent
@@ -514,7 +537,6 @@ public class BackpackEventHandler {
                     - player.getRNG()
                         .nextFloat())
                     * 0.7F + 1.0F) * 2.0F);
-            return;
         } else if (stack.stackSize != event.item.getEntityItem().stackSize) {
             event.item.setDead();
             event.setCanceled(true);
@@ -528,12 +550,12 @@ public class BackpackEventHandler {
         }
     }
 
-    private static ItemStack attemptPickup(EntityPlayer player, IInventory targetInventory, ItemStack pickupStack,
+    public static ItemStack attemptPickup(EntityPlayer player, IInventory targetInventory, ItemStack pickupStack,
         InventoryType type) {
         if (targetInventory == null) return pickupStack;
 
         for (int i = 0; i < targetInventory.getSizeInventory(); i++) {
-            BackpackEntityHelper.BackpackContext context = BackpackEntityHelper.getBackpack(player, type, i);
+            BackpackEntityHelpers.BackpackContext context = BackpackEntityHelpers.getBackpack(player, type, i);
             if (context == null) continue;
             if (!context.getWrapper()
                 .canPickupItem(pickupStack)) continue;
@@ -544,7 +566,7 @@ public class BackpackEventHandler {
             boolean changed = result == null || result.stackSize != before.stackSize;
 
             if (changed) {
-                BackpackEntityHelper.persistBackpack(context);
+                BackpackEntityHelpers.persistBackpack(context);
             }
 
             pickupStack = result;
@@ -556,12 +578,12 @@ public class BackpackEventHandler {
         return pickupStack;
     }
 
-    private interface UpgradeContextVisitor<T> {
+    public interface UpgradeContextVisitor<T> {
 
         boolean visit(PlayerUpgradeContext<T> context);
     }
 
     @Desugar
-    private record PlayerUpgradeContext<T> (BackpackEntityHelper.BackpackContext backpack, int upgradeSlot,
+    public record PlayerUpgradeContext<T> (BackpackEntityHelpers.BackpackContext backpack, int upgradeSlot,
         T upgrade) {}
 }

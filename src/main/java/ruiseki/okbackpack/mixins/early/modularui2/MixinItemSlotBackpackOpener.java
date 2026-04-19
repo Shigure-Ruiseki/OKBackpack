@@ -12,7 +12,7 @@ import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
-import ruiseki.okbackpack.client.gui.interaction.BackpackGuiOpenHelper;
+import ruiseki.okbackpack.client.gui.interaction.BackpackGuiOpenHelpers;
 
 @Mixin(ItemSlot.class)
 public abstract class MixinItemSlotBackpackOpener {
@@ -36,7 +36,7 @@ public abstract class MixinItemSlotBackpackOpener {
         }
 
         ItemSlot self = (ItemSlot) (Object) this;
-        if (!BackpackGuiOpenHelper.tryOpenClient(minecraft.thePlayer, self.getSlot())) {
+        if (!BackpackGuiOpenHelpers.tryOpenClient(minecraft.thePlayer, self.getSlot())) {
             return;
         }
 

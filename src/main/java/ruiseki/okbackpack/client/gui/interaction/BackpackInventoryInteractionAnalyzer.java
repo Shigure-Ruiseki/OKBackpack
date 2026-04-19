@@ -10,7 +10,7 @@ import ruiseki.okbackpack.client.gui.slot.AnvilOutputModularSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularArcaneSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 
@@ -27,12 +27,12 @@ public final class BackpackInventoryInteractionAnalyzer {
             return BackpackInventoryInteractionResult.NONE;
         }
 
-        if (BackpackEntityHelper.isBackpackStack(cursorStack, false)) {
+        if (BackpackEntityHelpers.isBackpackStack(cursorStack, false)) {
             return analyzeSlotIntoCarriedBackpack(player, slot, cursorStack);
         }
 
         ItemStack slotStack = slot.getStack();
-        if (BackpackEntityHelper.isBackpackStack(slotStack, false)) {
+        if (BackpackEntityHelpers.isBackpackStack(slotStack, false)) {
             return analyzeCursorIntoSlottedBackpack(player, slot, cursorStack, slotStack);
         }
 
@@ -74,7 +74,7 @@ public final class BackpackInventoryInteractionAnalyzer {
         }
 
         ItemStack slotStack = slot.getStack();
-        BackpackWrapper wrapper = BackpackEntityHelper.getInteractionWrapper(player, backpackStack);
+        BackpackWrapper wrapper = BackpackEntityHelpers.getInteractionWrapper(player, backpackStack);
         if (wrapper == null || !wrapper.canPlayerAccess(player.getUniqueID())) {
             return BackpackInventoryInteractionResult.NONE;
         }
@@ -96,7 +96,7 @@ public final class BackpackInventoryInteractionAnalyzer {
 
     private static BackpackInventoryInteractionResult analyzeCursorIntoSlottedBackpack(EntityPlayer player, Slot slot,
         ItemStack cursorStack, ItemStack backpackStack) {
-        BackpackWrapper wrapper = BackpackEntityHelper.getInteractionWrapper(player, backpackStack);
+        BackpackWrapper wrapper = BackpackEntityHelpers.getInteractionWrapper(player, backpackStack);
         if (wrapper == null || !wrapper.canPlayerAccess(player.getUniqueID())) {
             return BackpackInventoryInteractionResult.NONE;
         }

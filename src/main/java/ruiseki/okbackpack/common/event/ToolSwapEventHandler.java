@@ -25,8 +25,8 @@ import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade.ToolSwapMode;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade.WeaponSwapMode;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
-import ruiseki.okbackpack.common.helpers.BackpackHandSwapHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
+import ruiseki.okbackpack.common.helpers.BackpackHandSwapHelpers;
 
 public class ToolSwapEventHandler {
 
@@ -158,7 +158,7 @@ public class ToolSwapEventHandler {
                 player.inventory.setInventorySlotContents(best.playerSlot, currentHand);
                 break;
             case BACKPACK:
-                if (!BackpackHandSwapHelper.canReplaceHandWithBackpackItem(
+                if (!BackpackHandSwapHelpers.canReplaceHandWithBackpackItem(
                     ctx.backpack.getWrapper(),
                     best.backpackInternalSlot,
                     best.stack.stackSize,
@@ -172,7 +172,7 @@ public class ToolSwapEventHandler {
                     ctx.backpack.getWrapper()
                         .insertItem(currentHand, false);
                 }
-                BackpackEntityHelper.persistBackpack(ctx.backpack);
+                BackpackEntityHelpers.persistBackpack(ctx.backpack);
                 player.inventory.setInventorySlotContents(currentSlot, extracted);
                 break;
         }
@@ -180,8 +180,8 @@ public class ToolSwapEventHandler {
 
     private UpgradeContext findActiveUpgrade(EntityPlayer player) {
         final UpgradeContext[] result = new UpgradeContext[1];
-        BackpackEntityHelper
-            .visitPlayerBackpacks(player, BackpackEntityHelper.SearchOrder.BAUBLES_THEN_PLAYER, context -> {
+        BackpackEntityHelpers
+            .visitPlayerBackpacks(player, BackpackEntityHelpers.SearchOrder.BAUBLES_THEN_PLAYER, context -> {
                 Map<Integer, IToolSwapperUpgrade> upgrades = context.getWrapper()
                     .gatherCapabilityUpgrades(IToolSwapperUpgrade.class);
                 for (IToolSwapperUpgrade upgrade : upgrades.values()) {
@@ -354,7 +354,7 @@ public class ToolSwapEventHandler {
     }
 
     @Desugar
-    public record UpgradeContext(BackpackEntityHelper.BackpackContext backpack, IToolSwapperUpgrade upgrade) {}
+    public record UpgradeContext(BackpackEntityHelpers.BackpackContext backpack, IToolSwapperUpgrade upgrade) {}
 
     @Desugar
     public record Candidate(ItemStack stack, float score, Location location, int playerSlot,

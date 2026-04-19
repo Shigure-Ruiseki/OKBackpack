@@ -209,7 +209,7 @@ public class BackpackInventoryHelpers {
         for (int i = 9; i < playerInv.getSlots(); i++) {
             ItemStack stack = playerInv.getStackInSlot(i);
             if (stack == null) continue;
-            if (BackpackEntityHelper.isBackpackStack(stack, false)) {
+            if (BackpackEntityHelpers.isBackpackStack(stack, false)) {
 
                 BackpackWrapper other = new BackpackWrapper(stack, (BlockBackpack.ItemBackpack) stack.getItem());
                 if (other.equals(wrapper)) continue;
@@ -413,7 +413,7 @@ public class BackpackInventoryHelpers {
     public static ItemStack getQuickDrawStack(IInventory inventory, ItemStack wanted, InventoryType type) {
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack backpackStack = inventory.getStackInSlot(i);
-            if (!BackpackEntityHelper.isBackpackStack(backpackStack)) continue;
+            if (!BackpackEntityHelpers.isBackpackStack(backpackStack)) continue;
 
             BackpackWrapper wrapper = new BackpackWrapper(
                 backpackStack,

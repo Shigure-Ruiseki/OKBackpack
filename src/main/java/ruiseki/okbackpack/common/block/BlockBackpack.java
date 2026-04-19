@@ -50,7 +50,7 @@ import ruiseki.okbackpack.api.wrapper.ILightUpgrade;
 import ruiseki.okbackpack.api.wrapper.IRedstoneUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
-import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionTooltipHelper;
+import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionTooltipHelpers;
 import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
@@ -250,11 +250,13 @@ public class BlockBackpack extends BlockOK {
     public int getLightValue(IBlockAccess world, int x, int y, int z) {
         TileEntity te = world.getTileEntity(x, y, z);
         if (te instanceof TEBackpack backpack) {
-            if (!backpack.getWrapper()
+            return backpack.getWrapper()
                 .gatherCapabilityUpgrades(ILightUpgrade.class)
-                .isEmpty()) {
-                return 15;
-            }
+                .values()
+                .stream()
+                .mapToInt(ILightUpgrade::getLightLevel)
+                .max()
+                .orElseGet(() -> super.getLightValue(world, x, y, z));
         }
         return super.getLightValue(world, x, y, z);
     }
@@ -268,11 +270,13 @@ public class BlockBackpack extends BlockOK {
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side) {
         TileEntity te = world.getTileEntity(x, y, z);
         if (te instanceof TEBackpack backpack) {
-            if (!backpack.getWrapper()
+            return backpack.getWrapper()
                 .gatherCapabilityUpgrades(IRedstoneUpgrade.class)
-                .isEmpty()) {
-                return 15;
-            }
+                .values()
+                .stream()
+                .mapToInt(IRedstoneUpgrade::getRedstonePower)
+                .max()
+                .orElse(0);
         }
         return 0;
     }
@@ -281,11 +285,12 @@ public class BlockBackpack extends BlockOK {
     public float getEnchantPowerBonus(World world, int x, int y, int z) {
         TileEntity te = world.getTileEntity(x, y, z);
         if (te instanceof TEBackpack backpack) {
-            if (!backpack.getWrapper()
+            return (float) backpack.getWrapper()
                 .gatherCapabilityUpgrades(IBookshelfUpgrade.class)
-                .isEmpty()) {
-                return 10.0f;
-            }
+                .values()
+                .stream()
+                .mapToDouble(IBookshelfUpgrade::getEnchantPowerBonus)
+                .sum();
         }
         return 0.0f;
     }
@@ -600,7 +605,7 @@ public class BlockBackpack extends BlockOK {
                 }
             } else {
                 BackpackWrapper wrapper = new BackpackWrapper(stack, this);
-                list.addAll(BackpackInventoryInteractionTooltipHelper.buildExpandedTooltipLines(stack, wrapper));
+                list.addAll(BackpackInventoryInteractionTooltipHelpers.buildExpandedTooltipLines(stack, wrapper));
             }
             super.addInformation(stack, player, list, flag);
         }

@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.handler.ILockedItemHandler;
 import ruiseki.okbackpack.api.handler.IMemoryItemHandler;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemStackHelpers;
 
@@ -39,7 +39,7 @@ public class BackpackItemStackHandler extends BaseItemStackHandler implements IM
     public boolean isItemValid(int slot, ItemStack stack) {
         if (!isVisualSlot(slot)) return false;
         if (memorizedSlotStack.get(slot) == null) {
-            return !BackpackEntityHelper.isBackpackStack(stack, false) || wrapper.canAddStack(slot, stack);
+            return !BackpackEntityHelpers.isBackpackStack(stack, false) || wrapper.canAddStack(slot, stack);
         }
         if (memorizedSlotRespectNbtList.get(slot)) {
             return ItemStack.areItemStacksEqual(stack, memorizedSlotStack.get(slot));

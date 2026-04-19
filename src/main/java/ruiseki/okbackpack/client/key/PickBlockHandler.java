@@ -16,8 +16,8 @@ import com.github.bsideup.jabel.Desugar;
 import baubles.api.BaublesApi;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.wrapper.IRefillUpgrade;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
-import ruiseki.okbackpack.common.helpers.BackpackHandSwapHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
+import ruiseki.okbackpack.common.helpers.BackpackHandSwapHelpers;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.common.network.PacketQuickDraw;
 import ruiseki.okcore.client.key.IKeyHandler;
@@ -66,7 +66,7 @@ public class PickBlockHandler implements IKeyHandler {
 
         RefillPickContext ctx = findRefillUpgrade(player);
         if (ctx == null) return;
-        if (!BackpackHandSwapHelper
+        if (!BackpackHandSwapHelpers
             .canReplaceHandWithBackpackItem(ctx.backpack.getWrapper(), wanted, wanted.getMaxStackSize(), held)) {
             return;
         }
@@ -121,8 +121,8 @@ public class PickBlockHandler implements IKeyHandler {
 
     private QuickDrawResult findQuickDrawResult(EntityClientPlayerMP player, ItemStack wanted) {
         final QuickDrawResult[] result = new QuickDrawResult[1];
-        BackpackEntityHelper
-            .visitPlayerBackpacks(player, BackpackEntityHelper.SearchOrder.BAUBLES_THEN_PLAYER, context -> {
+        BackpackEntityHelpers
+            .visitPlayerBackpacks(player, BackpackEntityHelpers.SearchOrder.BAUBLES_THEN_PLAYER, context -> {
                 ItemStack extracted = context.getWrapper()
                     .extractItem(wanted, wanted.getMaxStackSize(), false);
                 if (extracted == null || extracted.stackSize <= 0) {
@@ -137,8 +137,8 @@ public class PickBlockHandler implements IKeyHandler {
 
     private RefillPickContext findRefillUpgrade(EntityClientPlayerMP player) {
         final RefillPickContext[] result = new RefillPickContext[1];
-        BackpackEntityHelper
-            .visitPlayerBackpacks(player, BackpackEntityHelper.SearchOrder.BAUBLES_THEN_PLAYER, context -> {
+        BackpackEntityHelpers
+            .visitPlayerBackpacks(player, BackpackEntityHelpers.SearchOrder.BAUBLES_THEN_PLAYER, context -> {
                 Map<Integer, IRefillUpgrade> upgrades = context.getWrapper()
                     .gatherCapabilityUpgrades(IRefillUpgrade.class);
                 for (IRefillUpgrade upgrade : upgrades.values()) {
@@ -153,8 +153,8 @@ public class PickBlockHandler implements IKeyHandler {
     }
 
     @Desugar
-    public record QuickDrawResult(BackpackEntityHelper.BackpackContext backpack, ItemStack stack) {}
+    public record QuickDrawResult(BackpackEntityHelpers.BackpackContext backpack, ItemStack stack) {}
 
     @Desugar
-    public record RefillPickContext(BackpackEntityHelper.BackpackContext backpack) {}
+    public record RefillPickContext(BackpackEntityHelpers.BackpackContext backpack) {}
 }

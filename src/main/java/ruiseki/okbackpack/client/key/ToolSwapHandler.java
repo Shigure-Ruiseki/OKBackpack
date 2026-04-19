@@ -18,8 +18,8 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade.ToolSwapMode;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade.WeaponSwapMode;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
-import ruiseki.okbackpack.common.helpers.BackpackHandSwapHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
+import ruiseki.okbackpack.common.helpers.BackpackHandSwapHelpers;
 import ruiseki.okbackpack.common.item.toolswapper.AdvancedToolSwapperUpgradeWrapper;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.common.network.PacketQuickDraw;
@@ -76,7 +76,7 @@ public class ToolSwapHandler implements IKeyHandler {
 
             case BACKPACK:
                 // Target tool is in backpack — extract tool, store hand item back
-                if (!BackpackHandSwapHelper.canReplaceHandWithBackpackItem(
+                if (!BackpackHandSwapHelpers.canReplaceHandWithBackpackItem(
                     ctx.backpack.getWrapper(),
                     best.backpackInternalSlot,
                     best.stack.stackSize,
@@ -90,7 +90,7 @@ public class ToolSwapHandler implements IKeyHandler {
                     ctx.backpack.wrapper()
                         .insertItem(currentHand, false);
                 }
-                BackpackEntityHelper.persistBackpack(ctx.backpack);
+                BackpackEntityHelpers.persistBackpack(ctx.backpack);
                 OKBackpack.instance.getPacketHandler()
                     .sendToServer(
                         new PacketBackpackNBT(
@@ -106,8 +106,8 @@ public class ToolSwapHandler implements IKeyHandler {
 
     private UpgradeContext findActiveUpgrade(EntityClientPlayerMP player) {
         final UpgradeContext[] result = new UpgradeContext[1];
-        BackpackEntityHelper
-            .visitPlayerBackpacks(player, BackpackEntityHelper.SearchOrder.BAUBLES_THEN_PLAYER, context -> {
+        BackpackEntityHelpers
+            .visitPlayerBackpacks(player, BackpackEntityHelpers.SearchOrder.BAUBLES_THEN_PLAYER, context -> {
                 Map<Integer, IToolSwapperUpgrade> upgrades = context.wrapper()
                     .gatherCapabilityUpgrades(IToolSwapperUpgrade.class);
                 for (IToolSwapperUpgrade upgrade : upgrades.values()) {
@@ -197,10 +197,10 @@ public class ToolSwapHandler implements IKeyHandler {
 
     private static class UpgradeContext {
 
-        final BackpackEntityHelper.BackpackContext backpack;
+        final BackpackEntityHelpers.BackpackContext backpack;
         final AdvancedToolSwapperUpgradeWrapper upgrade;
 
-        UpgradeContext(BackpackEntityHelper.BackpackContext backpack, AdvancedToolSwapperUpgradeWrapper upgrade) {
+        UpgradeContext(BackpackEntityHelpers.BackpackContext backpack, AdvancedToolSwapperUpgradeWrapper upgrade) {
             this.backpack = backpack;
             this.upgrade = upgrade;
         }

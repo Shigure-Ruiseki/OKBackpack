@@ -40,10 +40,11 @@ import ruiseki.okbackpack.api.wrapper.ISmeltingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IStackSizeUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITickable;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
+import ruiseki.okbackpack.api.wrapper.ITravelersUpgrade;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackSettingsTemplate;
 import ruiseki.okbackpack.common.helpers.UpgradeFeatureHelper;
@@ -464,7 +465,7 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public boolean canAddStack(int slot, ItemStack stack) {
-        if (BackpackEntityHelper.isBackpackStack(stack, false)) {
+        if (BackpackEntityHelpers.isBackpackStack(stack, false)) {
             for (int i = 0; i < upgradeSlots; i++) {
                 ItemStack upgradeStack = upgradeHandler.getStackInSlot(i);
                 if (upgradeStack == null) continue;
@@ -563,6 +564,35 @@ public class BackpackWrapper implements IBackpackWrapper {
             IUpgradeWrapper wrapper2 = this.getUpgradeHandler()
                 .getWrapperInSlot(i);
             if (wrapper2 instanceof ITickable tickable) {
+                dirty |= tickable.tick(player);
+            }
+        }
+
+        // Process removed jukebox upgrades that were playing
+        processPendingJukeboxStops(player);
+
+        return dirty;
+    }
+
+    public boolean tickNonTravelers(EntityPlayer player) {
+        Map<Integer, ITickable> gathered = gatherCapabilityUpgrades(ITickable.class);
+
+        boolean dirty = false;
+
+        for (ITickable wrapper : gathered.values()) {
+            if (wrapper instanceof ITravelersUpgrade) continue;
+            dirty |= wrapper.tick(player);
+        }
+
+        // Process disabled jukebox upgrades that have a pending stop sync
+        for (int i = 0; i < upgradeSlots; i++) {
+            if (gathered.containsKey(i)) continue;
+            ItemStack stack = upgradeHandler.getStackInSlot(i);
+            if (stack == null) continue;
+            if (!ItemNBTHelpers.getBoolean(stack, IJukeboxUpgrade.PENDING_STOP_SYNC_TAG, false)) continue;
+            IUpgradeWrapper wrapper2 = this.getUpgradeHandler()
+                .getWrapperInSlot(i);
+            if (wrapper2 instanceof ITickable tickable && !(wrapper2 instanceof ITravelersUpgrade)) {
                 dirty |= tickable.tick(player);
             }
         }
@@ -768,7 +798,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     public ItemStack findStackByUUID(EntityPlayer player) {
         if (player == null || uuid == null || uuid.isEmpty()) return backpack;
 
-        ItemStack found = BackpackEntityHelper.findBackpackByUuid(player, uuid, type);
+        ItemStack found = BackpackEntityHelpers.findBackpackByUuid(player, uuid, type);
         return found != null ? found : backpack;
     }
 

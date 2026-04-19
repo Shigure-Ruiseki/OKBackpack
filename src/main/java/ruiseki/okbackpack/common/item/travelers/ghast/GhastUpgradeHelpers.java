@@ -6,18 +6,18 @@ import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 
-public final class GhastUpgradeSupport {
+public final class GhastUpgradeHelpers {
 
     private static final int GHAST_RETALIATE_TICKS = 200;
     private static final String GHAST_ANGER_PLAYER_TAG = "OKBGhastAngerPlayer";
     private static final String GHAST_ANGER_UNTIL_TAG = "OKBGhastAngerUntil";
 
-    private GhastUpgradeSupport() {}
+    private GhastUpgradeHelpers() {}
 
     public static boolean hasGhastUpgrade(EntityPlayer player) {
-        return BackpackEntityHelper.visitBackpacks(
+        return BackpackEntityHelpers.visitWornBackpacks(
             player,
             context -> !context.wrapper()
                 .gatherCapabilityUpgrades(GhastUpgradeWrapper.class)

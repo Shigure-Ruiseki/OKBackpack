@@ -8,7 +8,7 @@ import net.minecraft.util.EnumChatFormatting;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.network.PacketToggleUpgrade;
 import ruiseki.okcore.client.key.IKeyHandler;
 import ruiseki.okcore.helper.LangHelpers;
@@ -29,8 +29,8 @@ public class ToggleUpgradeHandler implements IKeyHandler {
         EntityClientPlayerMP player = mc.thePlayer;
         if (player == null) return;
 
-        BackpackEntityHelper
-            .visitPlayerBackpacks(player, BackpackEntityHelper.SearchOrder.BAUBLES_THEN_PLAYER, context -> {
+        BackpackEntityHelpers
+            .visitPlayerBackpacks(player, BackpackEntityHelpers.SearchOrder.BAUBLES_THEN_PLAYER, context -> {
                 if (upgradeSlot >= context.wrapper().upgradeSlots) return false;
 
                 IUpgradeWrapper upgradeWrapper = context.wrapper()
@@ -38,7 +38,7 @@ public class ToggleUpgradeHandler implements IKeyHandler {
                     .getWrapperInSlot(upgradeSlot);
                 if (upgradeWrapper instanceof IToggleable toggleable) {
                     toggleable.toggle();
-                    BackpackEntityHelper.persistBackpack(context);
+                    BackpackEntityHelpers.persistBackpack(context);
 
                     String upgradeName = EnumChatFormatting.getTextWithoutFormattingCodes(
                         upgradeWrapper.getUpgradeStack()
