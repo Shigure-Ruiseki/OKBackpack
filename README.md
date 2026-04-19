@@ -38,9 +38,9 @@
 - [X] Tank upgrade — stores fluids
 - [X] Battery upgrade — stores energy
 
-##### Integration
+#### Integration
 
-###### Travelers Upgrades
+##### Travelers Upgrades
 
 - [X] Rainbow upgrade — Grants Jump Boost and Speed effects; Immune to fall damage
 - [X] Cactus upgrade — Automatically collects water in rain or water
@@ -63,7 +63,7 @@
 - [X] Lapis upgrade — Has a chance to double experience gained
 - [X] Hay upgrade — Has a chance to double crop drops; Has a chance to obtain edible crops from grass
 
-###### Thaumcraft Integration
+##### Thaumcraft Integration
 
 - [X] Arcane Crafting upgrade — Arcane workbench in an upgrade tab
 - [X] Energized Node upgrade — Slowly charges wands in the backpack
