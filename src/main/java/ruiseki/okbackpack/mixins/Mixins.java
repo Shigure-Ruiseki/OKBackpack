@@ -15,6 +15,10 @@ public enum Mixins implements IMixins {
         .setApplyIf(() -> ModConfig.enableTravelersUpgrades)
         .setPhase(Phase.EARLY)),
 
+    GHAST_NEUTRAL(new MixinBuilder("Ghast neutral mixin").addCommonMixins("Minecraft.MixinEntityGhast")
+        .setApplyIf(() -> ModConfig.enableTravelersUpgrades)
+        .setPhase(Phase.EARLY)),
+
     THAUMCRAFT(new MixinBuilder("Thaumcraft Mixin")
         .addCommonMixins("Thaumcraft.MixinTileMagicWorkbench", "Thaumcraft.MixinTileMagicWorkbenchCharger")
         .setPhase(Phase.LATE)

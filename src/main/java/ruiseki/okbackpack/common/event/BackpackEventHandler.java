@@ -9,18 +9,20 @@ import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockNetherWart;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.entity.projectile.EntitySmallFireball;
+import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChunkCoordinates;
@@ -56,7 +58,7 @@ import ruiseki.okbackpack.common.helpers.BackpackEntityHelper;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.item.travelers.blaze.BlazeUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.creeper.CreeperUpgradeWrapper;
-import ruiseki.okbackpack.common.item.travelers.ghast.GhastUpgradeWrapper;
+import ruiseki.okbackpack.common.item.travelers.ghast.GhastUpgradeSupport;
 import ruiseki.okbackpack.common.item.travelers.hay.HayUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.lapis.LapisUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.quiver.QuiverUpgradeWrapper;
@@ -69,10 +71,7 @@ public class BackpackEventHandler {
     private static final float LUCKY_LAPIS_CHANCE = 0.15F;
     private static final float HAY_DOUBLE_CROP_CHANCE = 0.40F;
     private static final float HAY_GRASS_DROP_CHANCE = 0.15F;
-    private static final double GHAST_RANGE = 20.0D;
-    private static final int GHAST_RETALIATE_TICKS = 200;
-    private static final String GHAST_ANGER_PLAYER_TAG = "OKBGhastAngerPlayer";
-    private static final String GHAST_ANGER_UNTIL_TAG = "OKBGhastAngerUntil";
+    private static final double GHAST_RANGE = 32.0D;
 
     public BackpackEventHandler() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -197,6 +196,13 @@ public class BackpackEventHandler {
 
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
+        if (event.entityLiving instanceof EntityGhast ghast && !ghast.worldObj.isRemote) {
+            EntityPlayer attacker = getAttackingPlayer(event.source);
+            if (GhastUpgradeSupport.hasGhastUpgrade(attacker)) {
+                GhastUpgradeSupport.markGhastRetaliation(ghast, attacker);
+            }
+        }
+
         if (!(event.entityLiving instanceof EntityPlayer player)) return;
         if (player.worldObj.isRemote) return;
 
@@ -206,12 +212,6 @@ public class BackpackEventHandler {
         }
 
         if (event.source == DamageSource.wither && hasEnabledWitherUpgrade(player)) {
-            event.setCanceled(true);
-            return;
-        }
-
-        if (isGhastDamage(event) && hasUpgrade(player, GhastUpgradeWrapper.class)
-            && !isPlayerProvokingGhasts(player, player.worldObj.getTotalWorldTime())) {
             event.setCanceled(true);
             return;
         }
@@ -227,8 +227,8 @@ public class BackpackEventHandler {
         if (player == null || player.worldObj.isRemote) return;
         if (!(event.target instanceof EntityLivingBase livingTarget)) return;
 
-        if (livingTarget instanceof EntityGhast ghast && hasUpgrade(player, GhastUpgradeWrapper.class)) {
-            markGhastRetaliation(ghast, player);
+        if (livingTarget instanceof EntityGhast ghast && GhastUpgradeSupport.hasGhastUpgrade(player)) {
+            GhastUpgradeSupport.markGhastRetaliation(ghast, player);
         }
 
         if (hasEnabledWitherUpgrade(player)) {
@@ -313,9 +313,29 @@ public class BackpackEventHandler {
             && event.source.getEntity() instanceof EntityBlaze;
     }
 
-    private boolean isGhastDamage(LivingHurtEvent event) {
-        return event.source.getSourceOfDamage() instanceof EntitySmallFireball
-            && event.source.getEntity() instanceof EntityGhast;
+    private EntityPlayer getAttackingPlayer(DamageSource source) {
+        if (source == null) return null;
+
+        Entity attacker = source.getEntity();
+        if (attacker instanceof EntityPlayer player) {
+            return player;
+        }
+
+        Entity directDamage = source.getSourceOfDamage();
+        if (directDamage instanceof EntityArrow arrow && arrow.shootingEntity instanceof EntityPlayer player) {
+            return player;
+        }
+
+        if (directDamage instanceof EntityThrowable throwable
+            && throwable.getThrower() instanceof EntityPlayer player) {
+            return player;
+        }
+
+        if (directDamage instanceof EntityFireball fireball && fireball.shootingEntity instanceof EntityPlayer player) {
+            return player;
+        }
+
+        return null;
     }
 
     private boolean wouldBeFatal(EntityPlayer player, LivingHurtEvent event) {
@@ -357,53 +377,21 @@ public class BackpackEventHandler {
     }
 
     private void neutralizeNearbyGhasts(EntityPlayer player) {
-        if (!hasUpgrade(player, GhastUpgradeWrapper.class)) return;
+        if (!GhastUpgradeSupport.hasGhastUpgrade(player)) return;
 
         long worldTime = player.worldObj.getTotalWorldTime();
         List<EntityGhast> ghasts = player.worldObj
-            .getEntitiesWithinAABB(EntityGhast.class, player.boundingBox.expand(GHAST_RANGE, 8.0D, GHAST_RANGE));
+            .getEntitiesWithinAABB(EntityGhast.class, player.boundingBox.expand(GHAST_RANGE, 32.0D, GHAST_RANGE));
         for (EntityGhast ghast : ghasts) {
-            if (!isGhastAggressiveToPlayer(ghast, player, worldTime) && ghast.getAttackTarget() == player) {
-                ghast.setAttackTarget(null);
-                ghast.setRevengeTarget(null);
+            if (!GhastUpgradeSupport.isGhastAggressiveToPlayer(ghast, player, worldTime)) {
+                if (ghast.targetedEntity == player) {
+                    ghast.targetedEntity = null;
+                }
+                if (ghast.getAITarget() == player) {
+                    ghast.setRevengeTarget(null);
+                }
             }
         }
-    }
-
-    private void markGhastRetaliation(EntityGhast ghast, EntityPlayer player) {
-        ghast.getEntityData()
-            .setString(
-                GHAST_ANGER_PLAYER_TAG,
-                player.getUniqueID()
-                    .toString());
-        ghast.getEntityData()
-            .setLong(GHAST_ANGER_UNTIL_TAG, player.worldObj.getTotalWorldTime() + GHAST_RETALIATE_TICKS);
-        ghast.setAttackTarget(player);
-        ghast.setRevengeTarget(player);
-    }
-
-    private boolean isPlayerProvokingGhasts(EntityPlayer player, long worldTime) {
-        List<EntityGhast> ghasts = player.worldObj
-            .getEntitiesWithinAABB(EntityGhast.class, player.boundingBox.expand(GHAST_RANGE, 8.0D, GHAST_RANGE));
-        for (EntityGhast ghast : ghasts) {
-            if (isGhastAggressiveToPlayer(ghast, player, worldTime)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isGhastAggressiveToPlayer(EntityGhast ghast, EntityPlayer player, long worldTime) {
-        NBTTagCompound data = ghast.getEntityData();
-        long angerUntil = data.getLong(GHAST_ANGER_UNTIL_TAG);
-        if (angerUntil <= worldTime) {
-            data.removeTag(GHAST_ANGER_PLAYER_TAG);
-            data.removeTag(GHAST_ANGER_UNTIL_TAG);
-            return false;
-        }
-        return player.getUniqueID()
-            .toString()
-            .equals(data.getString(GHAST_ANGER_PLAYER_TAG));
     }
 
     private BackpackEntityHelper.BackpackContext findQuiverSource(EntityPlayer player) {
