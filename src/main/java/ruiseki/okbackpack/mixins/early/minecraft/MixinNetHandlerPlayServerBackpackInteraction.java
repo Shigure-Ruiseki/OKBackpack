@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.mixins.early.Minecraft;
+package ruiseki.okbackpack.mixins.early.minecraft;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;

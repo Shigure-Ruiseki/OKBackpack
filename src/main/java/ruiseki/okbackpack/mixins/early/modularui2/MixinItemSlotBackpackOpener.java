@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.mixins.early.ModularUI2;
+package ruiseki.okbackpack.mixins.early.modularui2;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;

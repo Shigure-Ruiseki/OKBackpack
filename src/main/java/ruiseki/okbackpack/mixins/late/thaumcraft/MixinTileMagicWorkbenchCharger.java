@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.mixins.late.Thaumcraft;
+package ruiseki.okbackpack.mixins.late.thaumcraft;
 
 import net.minecraft.tileentity.TileEntity;
 

@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.mixins.early.ModularUI2;
+package ruiseki.okbackpack.mixins.early.modularui2;
 
 import java.util.List;
 

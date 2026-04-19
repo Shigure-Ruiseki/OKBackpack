@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.coremod;
+package ruiseki.okbackpack.mixins;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +10,6 @@ import com.gtnewhorizon.gtnhmixins.builders.IMixins;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import ruiseki.okbackpack.config.ModConfig;
-import ruiseki.okbackpack.mixins.Mixins;
 
 @IFMLLoadingPlugin.MCVersion("1.7.10")
 public class OKBackpackCoreMod implements IFMLLoadingPlugin, IEarlyMixinLoader {

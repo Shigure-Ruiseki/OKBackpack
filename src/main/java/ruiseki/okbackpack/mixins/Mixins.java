@@ -11,16 +11,16 @@ import ruiseki.okbackpack.config.ModConfig;
 @RequiredArgsConstructor
 public enum Mixins implements IMixins {
 
-    SPIDER_CLIMB(new MixinBuilder("Spider climb mixin").addCommonMixins("Minecraft.MixinEntityLivingBase")
+    SPIDER_CLIMB(new MixinBuilder("Spider climb mixin").addCommonMixins("minecraft.MixinEntityLivingBase")
         .setApplyIf(() -> ModConfig.enableTravelersUpgrades)
         .setPhase(Phase.EARLY)),
 
-    GHAST_NEUTRAL(new MixinBuilder("Ghast neutral mixin").addCommonMixins("Minecraft.MixinEntityGhast")
+    GHAST_NEUTRAL(new MixinBuilder("Ghast neutral mixin").addCommonMixins("minecraft.MixinEntityGhast")
         .setApplyIf(() -> ModConfig.enableTravelersUpgrades)
         .setPhase(Phase.EARLY)),
 
     THAUMCRAFT(new MixinBuilder("Thaumcraft Mixin")
-        .addCommonMixins("Thaumcraft.MixinTileMagicWorkbench", "Thaumcraft.MixinTileMagicWorkbenchCharger")
+        .addCommonMixins("thaumcraft.MixinTileMagicWorkbench", "thaumcraft.MixinTileMagicWorkbenchCharger")
         .setPhase(Phase.LATE)
         .setApplyIf(() -> ModConfig.enableArcaneCraftingUpgrade)
         .addRequiredMod(Mods.Thaumcraft)),
@@ -28,17 +28,17 @@ public enum Mixins implements IMixins {
     GUI_BACKPACK_OPENER(new MixinBuilder("Backpack GUI opener")
         .addSidedMixins(
             Side.CLIENT,
-            "Minecraft.MixinGuiContainerBackpackOpener",
-            "ModularUI2.MixinItemSlotBackpackOpener")
+            "minecraft.MixinGuiContainerBackpackOpener",
+            "modularui2.MixinItemSlotBackpackOpener")
         .setPhase(Phase.EARLY)),
 
     INVENTORY_INTERACTION(new MixinBuilder("Backpack inventory interaction")
-        .addCommonMixins("Minecraft.MixinNetHandlerPlayServerBackpackInteraction")
+        .addCommonMixins("minecraft.MixinNetHandlerPlayServerBackpackInteraction")
         .addSidedMixins(
             Side.CLIENT,
-            "ModularUI2.MixinItemSlotBackpackInteraction",
-            "Minecraft.MixinGuiContainerBackpackInteraction",
-            "Minecraft.MixinPlayerControllerMPBackpackInteraction")
+            "modularui2.MixinItemSlotBackpackInteraction",
+            "minecraft.MixinGuiContainerBackpackInteraction",
+            "minecraft.MixinPlayerControllerMPBackpackInteraction")
         .setApplyIf(() -> ModConfig.enableBackpackInventoryInteraction)
         .setPhase(Phase.EARLY)),
 
