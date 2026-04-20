@@ -15,6 +15,8 @@ import ruiseki.okbackpack.common.item.battery.ItemBatteryUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemAdvancedCompactingUpgrade;
 import ruiseki.okbackpack.common.item.compacting.ItemCompactingUpgrade;
 import ruiseki.okbackpack.common.item.crafting.ItemCraftingUpgrade;
+import ruiseki.okbackpack.common.item.deposit.ItemAdvancedDepositUpgrade;
+import ruiseki.okbackpack.common.item.deposit.ItemDepositUpgrade;
 import ruiseki.okbackpack.common.item.energizednode.ItemEnergizedNodeUpgrade;
 import ruiseki.okbackpack.common.item.everlasting.ItemEverlastingUpgrade;
 import ruiseki.okbackpack.common.item.feeding.ItemAdvancedFeedingUpgrade;
@@ -32,6 +34,8 @@ import ruiseki.okbackpack.common.item.pickup.ItemAdvancedPickupUpgrade;
 import ruiseki.okbackpack.common.item.pickup.ItemPickupUpgrade;
 import ruiseki.okbackpack.common.item.refill.ItemAdvancedRefillUpgrade;
 import ruiseki.okbackpack.common.item.refill.ItemRefillUpgrade;
+import ruiseki.okbackpack.common.item.restock.ItemAdvancedRestockUpgrade;
+import ruiseki.okbackpack.common.item.restock.ItemRestockUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemAutoBlastingUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemAutoSmeltingUpgrade;
 import ruiseki.okbackpack.common.item.smelter.ItemAutoSmokingUpgrade;
@@ -106,6 +110,10 @@ public enum ModItems {
     ADVANCED_TOOL_SWAPPER_UPGRADE(new ItemAdvancedToolSwapperUpgrade()),
     REFILL_UPGRADE(new ItemRefillUpgrade()),
     ADVANCED_REFILL_UPGRADE(new ItemAdvancedRefillUpgrade()),
+    DEPOSIT_UPGRADE(new ItemDepositUpgrade()),
+    ADVANCED_DEPOSIT_UPGRADE(new ItemAdvancedDepositUpgrade()),
+    RESTOCK_UPGRADE(new ItemRestockUpgrade()),
+    ADVANCED_RESTOCK_UPGRADE(new ItemAdvancedRestockUpgrade()),
     ANVIL_UPGRADE(new ItemAnvilUpgrade()),
     BATTERY_UPGRADE(new ItemBatteryUpgrade()),
     TANK_UPGRADE(new ItemTankUpgrade()),

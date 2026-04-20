@@ -17,6 +17,7 @@ public interface IAdvancedFilterable extends IBasicFilterable {
     String IGNORE_NBT_TAG = "IgnoreNbt";
     String ORE_DICT_LIST_TAG = "OreDict";
     String ORE_DICT_ITEMS_TAG = "OreDictItem";
+    String MATCH_ALL_ORE_DICTS_TAG = "MatchAllOreDicts";
 
     BaseItemStackHandler getOreDictItem();
 
@@ -35,6 +36,10 @@ public interface IAdvancedFilterable extends IBasicFilterable {
     boolean isIgnoreNBT();
 
     void setIgnoreNBT(boolean ignore);
+
+    boolean isMatchAllOreDicts();
+
+    void setMatchAllOreDicts(boolean matchAll);
 
     default boolean checkFilter(ItemStack stack) {
         switch (getMatchType()) {
@@ -124,14 +129,27 @@ public interface IAdvancedFilterable extends IBasicFilterable {
             stackOreDicts.add(OreDictionary.getOreName(id));
         }
 
-        for (String entry : getOreDictEntries()) {
-            if (stackOreDicts.stream()
-                .anyMatch(s -> s.matches(entry))) {
-                return getFilterType() == IBasicFilterable.FilterType.WHITELIST;
-            }
+        List<String> entries = getOreDictEntries();
+        if (entries.isEmpty()) {
+            return getFilterType() == FilterType.BLACKLIST;
         }
 
-        return getFilterType() == FilterType.BLACKLIST;
+        if (isMatchAllOreDicts()) {
+            for (String entry : entries) {
+                boolean found = stackOreDicts.stream()
+                    .anyMatch(s -> s.matches(entry));
+                if (!found) return getFilterType() == FilterType.BLACKLIST;
+            }
+            return getFilterType() == FilterType.WHITELIST;
+        } else {
+            for (String entry : entries) {
+                if (stackOreDicts.stream()
+                    .anyMatch(s -> s.matches(entry))) {
+                    return getFilterType() == FilterType.WHITELIST;
+                }
+            }
+            return getFilterType() == FilterType.BLACKLIST;
+        }
     }
 
     default boolean matchItemInfo(ItemStack stack, ItemStack filterStack) {

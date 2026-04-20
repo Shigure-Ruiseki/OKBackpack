@@ -822,6 +822,74 @@ public class ModRecipes implements IInitListener {
                     'U',
                     ModItems.BASE_UPGRADE.getItem()));
 
+            // Deposit Upgrade
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.DEPOSIT_UPGRADE.getItem(),
+                    " P ",
+                    "IUI",
+                    "RCR",
+                    'P',
+                    Blocks.piston,
+                    'C',
+                    Blocks.chest,
+                    'R',
+                    "dustRedstone",
+                    'I',
+                    "ingotIron",
+                    'U',
+                    ModItems.BASE_UPGRADE.getItem()));
+
+            // Advanced Deposit Upgrade
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.ADVANCED_DEPOSIT_UPGRADE.getItem(),
+                    " D ",
+                    "GUG",
+                    "RRR",
+                    'D',
+                    "gemDiamond",
+                    'R',
+                    "dustRedstone",
+                    'G',
+                    "ingotGold",
+                    'U',
+                    ModItems.DEPOSIT_UPGRADE.getItem()));
+
+            // Restock Upgrade
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.RESTOCK_UPGRADE.getItem(),
+                    " P ",
+                    "IUI",
+                    "RCR",
+                    'P',
+                    Blocks.sticky_piston,
+                    'C',
+                    Blocks.chest,
+                    'R',
+                    "dustRedstone",
+                    'I',
+                    "ingotIron",
+                    'U',
+                    ModItems.BASE_UPGRADE.getItem()));
+
+            // Advanced Restock Upgrade
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.ADVANCED_RESTOCK_UPGRADE.getItem(),
+                    " D ",
+                    "GUG",
+                    "RRR",
+                    'D',
+                    "gemDiamond",
+                    'R',
+                    "dustRedstone",
+                    'G',
+                    "ingotGold",
+                    'U',
+                    ModItems.RESTOCK_UPGRADE.getItem()));
+
         }
     }
 

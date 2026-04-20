@@ -109,6 +109,16 @@ gui.backpack.ignore_exp_magnet=Do Not Pickup Experience
 
 gui.backpack.add_ore_dict_entry=Add Ore Dict.
 gui.backpack.remove_ore_dict_entry=Remove Ore Dict.
+gui.backpack.ore_dict_list.title=Ore Dict
+gui.backpack.add_ore_dict=Add Ore Dict
+gui.backpack.add_ore_dict.no_item=<- Click an Item into slot to start adding its ore dicts
+gui.backpack.add_ore_dict.no_additional=All Item's ore dicts are already added
+gui.backpack.add_ore_dict.controls=Scroll to Select, Click to Add
+gui.backpack.remove_ore_dict=Remove Ore Dict
+gui.backpack.remove_ore_dict.empty=No ore dicts to remove
+gui.backpack.remove_ore_dict.controls=Scroll to Select, Click to Remove
+gui.backpack.match_any_ore_dict=Match Any Ore Dict
+gui.backpack.match_all_ore_dict=Match All Ore Dicts
 gui.backpack.ore_dict_input_help=You can input ore dictionary here, regex is supported
 
 gui.backpack.complete_hunger=Only feed when player is hungry enough\nto not waste any hunger points of the food at all
@@ -431,6 +441,30 @@ tooltip.backpack.lapis_upgrade=Has a chance to double experience gained
 tooltip.backpack.quartz_upgrade=Grants Haste
 tooltip.backpack.hay_upgrade=Has a chance to double crop drops
 tooltip.backpack.hay_upgrade.1=Has a chance to obtain edible crops from grass
+tooltip.backpack.deposit_upgrade=Sneak right-click a container while holding a backpack to deposit items
+tooltip.backpack.advanced_deposit_upgrade=Sneak right-click a container while holding a backpack to deposit items
+tooltip.backpack.advanced_deposit_upgrade.1=More filter options
+tooltip.backpack.restock_upgrade=Sneak right-click a container while holding a backpack to restock items
+tooltip.backpack.advanced_restock_upgrade=Sneak right-click a container while holding a backpack to restock items
+tooltip.backpack.advanced_restock_upgrade.1=More filter options
+item.deposit_upgrade.name=Deposit Upgrade
+item.advanced_deposit_upgrade.name=Advanced Deposit Upgrade
+item.restock_upgrade.name=Restock Upgrade
+item.advanced_restock_upgrade.name=Advanced Restock Upgrade
+gui.backpack.deposit_settings=Deposit
+gui.backpack.advanced_deposit_settings=Advanced Deposit
+gui.backpack.restock_settings=Restock
+gui.backpack.advanced_restock_settings=Advanced Restock
+gui.backpack.deposit_filter_allow=Allow
+gui.backpack.deposit_filter_block=Block
+gui.backpack.deposit_filter_inventory=Match Inventory Contents
+gui.backpack.restock_filter_allow=Allow
+gui.backpack.restock_filter_block=Block
+gui.backpack.restock_filter_storage=Match Backpack Contents
+gui.okbackpack.status.stacks_deposited=%d stacks deposited
+gui.okbackpack.status.nothing_to_deposit=Nothing to deposit
+gui.okbackpack.status.stacks_restocked=%d stacks restocked
+gui.okbackpack.status.nothing_to_restock=Nothing to restock
 
 #Messages
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.

@@ -3,13 +3,16 @@ package ruiseki.okbackpack.client.gui.widget.upgrade;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.regex.Pattern;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.cleanroommc.modularui.api.UpOrDown;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.value.ISyncOrValue;
@@ -35,6 +38,7 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.drawble.Outline;
+import ruiseki.okbackpack.client.gui.slot.DisableablePhantomItemSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
@@ -64,14 +68,24 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.match_nbt"), OKBGuiTextures.MATCH_NBT_ICON),
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.ignore_nbt"), OKBGuiTextures.IGNORE_NBT_ICON) };
 
+    private static final CyclicVariantButtonWidget.Variant[] MATCH_ALL_ORE_DICT_VARIANTS = new CyclicVariantButtonWidget.Variant[] {
+        new CyclicVariantButtonWidget.Variant(
+            IKey.lang("gui.backpack.match_any_ore_dict"),
+            OKBGuiTextures.ONE_IN_FOUR_SLOT_ICON),
+        new CyclicVariantButtonWidget.Variant(
+            IKey.lang("gui.backpack.match_all_ore_dict"),
+            OKBGuiTextures.ALL_FOUR_SLOT_ICON) };
+
     @Getter
-    private final CyclicVariantButtonWidget filterTypeButton;
+    private CyclicVariantButtonWidget filterTypeButton;
     @Getter
     private final CyclicVariantButtonWidget matchTypeButton;
     @Getter
     private final CyclicVariantButtonWidget ignoreDurabilityButton;
     @Getter
     private final CyclicVariantButtonWidget ignoreNBTButton;
+    @Getter
+    private final CyclicVariantButtonWidget matchAllOreDictButton;
 
     @Getter
     private final Flow itemBasedConfigurationGroup;
@@ -81,12 +95,18 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
     private final List<ItemSlot> filterSlots;
 
     private final OreDictRegexListWidget oreDictList;
-    private OreDictEntryWidget focusedOreDictEntry = null;
 
     @Getter
     private UpgradeSlotSH slotSyncHandler = null;
 
     private final IAdvancedFilterable filterableWrapper;
+    private final Flow buttonRow;
+
+    private BooleanSupplier slotsDisabled = () -> false;
+
+    // State for ore dict add/remove scroll selection
+    private int addScrollIndex = 0;
+    private int removeScrollIndex = -1;
 
     public AdvancedFilterWidget(int slotIndex, IAdvancedFilterable filterableWrapper, String syncKey) {
         this(slotIndex, filterableWrapper, syncKey, 16);
@@ -138,8 +158,16 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
             });
         this.ignoreNBTButton.setInEffect(inEffect);
 
+        this.matchAllOreDictButton = new CyclicVariantButtonWidget(
+            Arrays.asList(MATCH_ALL_ORE_DICT_VARIANTS),
+            filterableWrapper.isMatchAllOreDicts() ? 1 : 0,
+            index -> {
+                filterableWrapper.setMatchAllOreDicts(index == 1);
+                updateWrapper();
+            }).size(18);
+
         // Add buttons to rows
-        Flow buttonRow = Flow.row()
+        this.buttonRow = Flow.row()
             .leftRel(0.5f)
             .size(88, 20)
             .childPadding(2);
@@ -163,7 +191,7 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
 
         this.filterSlots = new ArrayList<>();
         for (int i = 0; i < filterSlotCount; i++) {
-            ItemSlot slot = ItemSlot.create(true);
+            ItemSlot slot = new DisableablePhantomItemSlot(() -> this.slotsDisabled.getAsBoolean());
             slot.name(syncKey + "_" + slotIndex)
                 .syncHandler(syncKey + "_" + slotIndex, i)
                 .pos(i % 4 * 18, i / 4 * 18);
@@ -183,83 +211,194 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
             .setEnabledIf(flow -> filterableWrapper.getMatchType() != IAdvancedFilterable.MatchType.ORE_DICT);
 
         // OreDict widgets
-        this.oreDictList = new OreDictRegexListWidget(88, 63);
+        this.oreDictList = new OreDictRegexListWidget(filterableWrapper, 88, 49);
 
-        // OreDict Slot
+        // OreDict Slot - reject items without any ore dict
         ItemSlot oreDictSlot = ItemSlot.create(true);
-        oreDictSlot.name(syncKey + "_" + slotIndex)
-            .syncHandler(syncKey + "_" + slotIndex, 0);
+        oreDictSlot.name("ore_dict_" + slotIndex)
+            .syncHandler("ore_dict_" + slotIndex, 0)
+            .size(18, 18);
 
-        // OreDict buttons
-        ButtonWidget<?> addOreDictEntryButton = new ButtonWidget<>();
-        addOreDictEntryButton.size(20, 20);
-        addOreDictEntryButton.overlay(OKBGuiTextures.ADD_ICON);
-        addOreDictEntryButton.onMousePressed(mouseButton -> {
-            ItemStack stack = oreDictSlot.getSlot()
-                .getStack();
-            if (stack == null) return false;
+        // + button with scroll and tooltip
+        ScrollableButton addOreDictEntryButton = new ScrollableButton() {
 
-            int[] ids = OreDictionary.getOreIDs(stack);
-            if (ids.length == 0) return false;
-
-            List<String> list = new ArrayList<>(filterableWrapper.getOreDictEntries());
-
-            boolean changed = false;
-
-            for (int id : ids) {
-                String oreName = OreDictionary.getOreName(id);
-
-                if (!list.contains(oreName)) {
-                    list.add(oreName);
-                    oreDictList.child(new OreDictEntryWidget(this, oreName, 77));
-                    changed = true;
+            @Override
+            public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
+                List<String> available = getAvailableOreDicts(oreDictSlot);
+                if (available.isEmpty()) return true;
+                if (scrollDirection == UpOrDown.UP) {
+                    addScrollIndex = (addScrollIndex - 1 + available.size()) % available.size();
+                } else {
+                    addScrollIndex = (addScrollIndex + 1) % available.size();
                 }
+                markTooltipDirty();
+                return true;
+            }
+        };
+        addOreDictEntryButton.size(18, 18);
+        addOreDictEntryButton.overlay(OKBGuiTextures.ADD_ICON);
+        addOreDictEntryButton.tooltipAutoUpdate(true);
+        addOreDictEntryButton.tooltipDynamic(tooltip -> {
+            tooltip.addLine(IKey.lang("gui.backpack.add_ore_dict"));
+            tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+
+            ItemStack stack = oreDictSlot.isSynced() ? oreDictSlot.getSlot()
+                .getStack() : null;
+            if (stack == null) {
+                tooltip.addLine(
+                    IKey.lang("gui.backpack.add_ore_dict.no_item")
+                        .style(IKey.GRAY, IKey.ITALIC));
+                return;
             }
 
-            if (changed) {
+            List<String> available = getAvailableOreDicts(oreDictSlot);
+            if (available.isEmpty()) {
+                tooltip.addLine(
+                    IKey.lang("gui.backpack.add_ore_dict.no_additional")
+                        .style(IKey.YELLOW, IKey.ITALIC));
+                return;
+            }
+
+            if (addScrollIndex >= available.size()) addScrollIndex = 0;
+            for (int i = 0; i < available.size(); i++) {
+                String entry = available.get(i);
+                if (i == addScrollIndex) {
+                    tooltip.addLine(
+                        IKey.str("-> " + entry)
+                            .style(EnumChatFormatting.GREEN));
+                } else {
+                    tooltip.addLine(
+                        IKey.str("> " + entry)
+                            .style(EnumChatFormatting.GRAY));
+                }
+            }
+            tooltip.addLine(
+                IKey.lang("gui.backpack.add_ore_dict.controls")
+                    .style(IKey.GRAY, IKey.ITALIC));
+        });
+        addOreDictEntryButton.onMousePressed(mouseButton -> {
+            List<String> available = getAvailableOreDicts(oreDictSlot);
+            if (available.isEmpty()) return false;
+
+            if (addScrollIndex >= available.size()) addScrollIndex = 0;
+            String selected = available.get(addScrollIndex);
+
+            List<String> list = new ArrayList<>(filterableWrapper.getOreDictEntries());
+            if (!list.contains(selected)) {
+                list.add(selected);
+                oreDictList.child(new OreDictEntryWidget(this, selected, 88));
                 filterableWrapper.setOreDictEntries(list);
                 updateWrapper();
                 oreDictList.scheduleResize();
             }
 
+            addOreDictEntryButton.markTooltipDirty();
             return true;
         });
 
-        ButtonWidget<?> removeOreDictEntryButton = new ButtonWidget<>();
-        removeOreDictEntryButton.size(20, 20);
+        // - button with scroll and tooltip
+        ScrollableButton removeOreDictEntryButton = new ScrollableButton() {
+
+            @Override
+            public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
+                List<String> entries = filterableWrapper.getOreDictEntries();
+                if (entries.isEmpty()) return true;
+                if (removeScrollIndex < 0) {
+                    removeScrollIndex = scrollDirection == UpOrDown.DOWN ? 0 : entries.size() - 1;
+                } else if (scrollDirection == UpOrDown.UP) {
+                    removeScrollIndex = (removeScrollIndex - 1 + entries.size()) % entries.size();
+                } else {
+                    removeScrollIndex = (removeScrollIndex + 1) % entries.size();
+                }
+                markTooltipDirty();
+                return true;
+            }
+        };
+        removeOreDictEntryButton.size(18, 18);
         removeOreDictEntryButton.overlay(OKBGuiTextures.REMOVE_ICON);
+        removeOreDictEntryButton.tooltipAutoUpdate(true);
+        removeOreDictEntryButton.tooltipDynamic(tooltip -> {
+            tooltip.addLine(IKey.lang("gui.backpack.remove_ore_dict"));
+            tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+
+            List<String> entries = filterableWrapper.getOreDictEntries();
+            if (entries.isEmpty()) {
+                tooltip.addLine(
+                    IKey.lang("gui.backpack.remove_ore_dict.empty")
+                        .style(EnumChatFormatting.RED));
+                return;
+            }
+
+            for (int i = 0; i < entries.size(); i++) {
+                String entry = entries.get(i);
+                if (i == removeScrollIndex) {
+                    tooltip.addLine(
+                        IKey.str("-> " + entry)
+                            .style(EnumChatFormatting.RED));
+                } else {
+                    tooltip.addLine(
+                        IKey.str("> " + entry)
+                            .style(EnumChatFormatting.GRAY));
+                }
+            }
+            tooltip.addLine(
+                IKey.lang("gui.backpack.remove_ore_dict.controls")
+                    .style(IKey.GRAY, IKey.ITALIC));
+        });
         removeOreDictEntryButton.onMousePressed(mouseButton -> {
-            if (this.focusedOreDictEntry == null) return false;
+            List<String> entries = filterableWrapper.getOreDictEntries();
+            if (entries.isEmpty() || removeScrollIndex < 0) return false;
 
-            List<String> list = new ArrayList<>(filterableWrapper.getOreDictEntries());
-            list.remove(focusedOreDictEntry.getText());
+            if (removeScrollIndex >= entries.size()) removeScrollIndex = 0;
+            String selected = entries.get(removeScrollIndex);
 
+            List<String> list = new ArrayList<>(entries);
+            list.remove(selected);
             filterableWrapper.setOreDictEntries(list);
 
-            this.oreDictList.removeChild(focusedOreDictEntry);
-            updateWrapper();
-            this.oreDictList.scheduleResize();
+            // Remove matching child widget from list
+            for (IWidget child : new ArrayList<>(oreDictList.getChildren())) {
+                if (child instanceof OreDictEntryWidget entryWidget && entryWidget.getText()
+                    .equals(selected)) {
+                    oreDictList.removeChild(entryWidget);
+                    break;
+                }
+            }
 
+            updateWrapper();
+            oreDictList.scheduleResize();
+
+            if (list.isEmpty()) {
+                removeScrollIndex = -1;
+            } else if (removeScrollIndex >= list.size()) {
+                removeScrollIndex = list.size() - 1;
+            }
+
+            removeOreDictEntryButton.markTooltipDirty();
             return true;
         });
+
         for (String entry : filterableWrapper.getOreDictEntries()) {
             this.oreDictList.child(new OreDictEntryWidget(this, entry, 88));
         }
 
+        // OreDict button row: slot + add + remove + matchAll, size 18, padding 0
         Flow oreDictBasedConfigButtonRow = Flow.row()
             .bottom(0)
-            .leftRel(0.5f)
-            .height(20)
+            .left(0)
+            .height(18)
             .coverChildrenWidth()
-            .childPadding(2)
+            .childPadding(0)
             .child(oreDictSlot)
             .child(addOreDictEntryButton)
             .child(removeOreDictEntryButton)
+            .child(matchAllOreDictButton)
             .setEnabledIf(flow -> filterableWrapper.getMatchType() == IAdvancedFilterable.MatchType.ORE_DICT);
 
         this.oreDictBasedConfigurationGroup = Flow.column()
-            .size(88, 85)
+            .size(88, 69)
             .top(24)
+            .left(0)
             .child(oreDictList)
             .child(oreDictBasedConfigButtonRow)
             .setEnabledIf(flow -> filterableWrapper.getMatchType() == IAdvancedFilterable.MatchType.ORE_DICT);
@@ -267,6 +406,37 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
         // Add all children
         child(buttonRow).child(this.itemBasedConfigurationGroup)
             .child(this.oreDictBasedConfigurationGroup);
+    }
+
+    private List<String> getAvailableOreDicts(ItemSlot oreDictSlot) {
+        ItemStack stack = oreDictSlot.isSynced() ? oreDictSlot.getSlot()
+            .getStack() : null;
+        if (stack == null) return List.of();
+
+        int[] ids = OreDictionary.getOreIDs(stack);
+        if (ids.length == 0) return List.of();
+
+        List<String> existing = filterableWrapper.getOreDictEntries();
+        List<String> available = new ArrayList<>();
+        for (int id : ids) {
+            String oreName = OreDictionary.getOreName(id);
+            if (!existing.contains(oreName)) {
+                available.add(oreName);
+            }
+        }
+        return available;
+    }
+
+    public void replaceFilterTypeButton(CyclicVariantButtonWidget newButton) {
+        buttonRow.getChildren()
+            .remove(this.filterTypeButton);
+        this.filterTypeButton = newButton;
+        buttonRow.getChildren()
+            .add(0, newButton);
+    }
+
+    public void setSlotsDisabled(BooleanSupplier disabled) {
+        this.slotsDisabled = disabled;
     }
 
     private void updateWrapper() {
@@ -277,6 +447,7 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
                     NetworkUtils.writeEnumValue(writer, filterableWrapper.getMatchType());
                     writer.writeBoolean(filterableWrapper.isIgnoreDurability());
                     writer.writeBoolean(filterableWrapper.isIgnoreNBT());
+                    writer.writeBoolean(filterableWrapper.isMatchAllOreDicts());
 
                     List<String> oreList = filterableWrapper.getOreDictEntries();
                     writer.writeInt(oreList.size());
@@ -305,9 +476,26 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
             .tiled()
             .build();
 
-        public OreDictRegexListWidget(int width, int height) {
+        private final IAdvancedFilterable filterableWrapper;
+
+        public OreDictRegexListWidget(IAdvancedFilterable filterableWrapper, int width, int height) {
+            this.filterableWrapper = filterableWrapper;
             background(BACKGROUND_TILE_TEXTURE);
             size(width, height);
+            left(0);
+
+            tooltipAutoUpdate(true);
+            tooltipDynamic(tooltip -> {
+                tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+                List<String> entries = filterableWrapper.getOreDictEntries();
+                if (entries.isEmpty()) return;
+                tooltip.addLine(IKey.lang("gui.backpack.ore_dict_list.title"));
+                for (String entry : entries) {
+                    tooltip.addLine(
+                        IKey.str("> " + entry)
+                            .style(EnumChatFormatting.GRAY));
+                }
+            });
         }
 
         public void removeChild(OreDictEntryWidget widget) {
@@ -328,7 +516,11 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
         private int scroll = 0;
         private boolean hovering = false;
         private int pauseTimer = 0;
-        private boolean selected = false;
+
+        private boolean isSelected() {
+            return parent.removeScrollIndex == parent.filterableWrapper.getOreDictEntries()
+                .indexOf(text);
+        }
 
         public OreDictEntryWidget(AdvancedFilterWidget parent, String text, int width) {
             super(IKey.str(" " + text));
@@ -368,7 +560,7 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
             super.onMouseStartHover();
             hovering = true;
             markTooltipDirty();
-            if (!selected) {
+            if (!isSelected()) {
                 overlay(new Outline(Color.GREY.main));
             }
         }
@@ -401,18 +593,12 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
 
         @Override
         public @NotNull Result onMousePressed(int mouseButton) {
-            for (IWidget child : parent.oreDictList.getChildren()) {
-                if (child != this && child instanceof OreDictEntryWidget widget) {
-                    widget.selected = false;
-                }
-            }
-
-            if (selected) {
-                selected = false;
-                parent.focusedOreDictEntry = null;
+            int myIndex = parent.filterableWrapper.getOreDictEntries()
+                .indexOf(text);
+            if (parent.removeScrollIndex == myIndex) {
+                parent.removeScrollIndex = -1;
             } else {
-                selected = true;
-                parent.focusedOreDictEntry = this;
+                parent.removeScrollIndex = myIndex;
             }
             return Result.SUCCESS;
         }
@@ -437,7 +623,7 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
         @Override
         public void drawOverlay(ModularGuiContext context, WidgetThemeEntry widgetTheme) {
             IDrawable overlay = getCurrentOverlay(widgetTheme);
-            if (!selected && !hovering && overlay != null) {
+            if (!isSelected() && !hovering && overlay != null) {
                 return;
             }
             overlay.drawAtZero(context, getArea().width + 2, getArea().height + 2, widgetTheme.getTheme());
@@ -454,5 +640,10 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
             }
             return s;
         }
+    }
+
+    public static abstract class ScrollableButton extends ButtonWidget<ScrollableButton> {
+
+        public abstract boolean onMouseScroll(UpOrDown scrollDirection, int amount);
     }
 }

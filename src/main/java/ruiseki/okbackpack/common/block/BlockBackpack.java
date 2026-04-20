@@ -58,6 +58,7 @@ import ruiseki.okbackpack.client.renderer.player.IArmorRender;
 import ruiseki.okbackpack.client.renderer.player.IBaubleRender;
 import ruiseki.okbackpack.client.renderer.player.PlayerRenderContext;
 import ruiseki.okbackpack.common.entity.EntityBackpack;
+import ruiseki.okbackpack.common.helpers.InventoryInteractionHelpers;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.block.BlockOK;
 import ruiseki.okcore.energy.IOKEnergyItem;
@@ -547,9 +548,19 @@ public class BlockBackpack extends BlockOK {
             float hitX, float hitY, float hitZ) {
             if (stack == null) return false;
 
-            if (player.isSneaking() && !(world.getBlock(x, y, z) instanceof BlockBackpack)) {
+            if (player.isSneaking()) {
                 if (stack.getTagCompound() == null) {
                     new BackpackWrapper(stack, this).writeToItem();
+                }
+
+                if (InventoryInteractionHelpers
+                    .tryInventoryInteraction(stack, player, world, x, y, z, ForgeDirection.getOrientation(side))) {
+                    return true;
+                }
+                // If the target is a placed backpack, don't attempt block placement —
+                // fall through so onBlockActivated can open its GUI instead.
+                if (world.getBlock(x, y, z) instanceof BlockBackpack) {
+                    return false;
                 }
                 return super.onItemUse(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
             } else return tryInteractWithFluidHandler(stack, player, world, x, y, z, side, !world.isRemote);

@@ -109,6 +109,16 @@ gui.backpack.ignore_exp_magnet=経験値を回収しない
 
 gui.backpack.add_ore_dict_entry=鉱石辞書を追加
 gui.backpack.remove_ore_dict_entry=鉱石辞書を削除
+gui.backpack.ore_dict_list.title=鉱石辞書
+gui.backpack.add_ore_dict=鉱石辞書を追加
+gui.backpack.add_ore_dict.no_item=<- スロットにアイテムをマークして鉱石辞書の追加を開始
+gui.backpack.add_ore_dict.no_additional=このアイテムの全ての鉱石辞書が追加済み
+gui.backpack.add_ore_dict.controls=スクロールで選択、クリックで追加
+gui.backpack.remove_ore_dict=鉱石辞書を削除
+gui.backpack.remove_ore_dict.empty=削除できる鉱石辞書がありません
+gui.backpack.remove_ore_dict.controls=スクロールで選択、クリックで削除
+gui.backpack.match_any_ore_dict=任意の鉱石辞書にマッチ
+gui.backpack.match_all_ore_dict=全ての鉱石辞書にマッチ
 gui.backpack.ore_dict_input_help=鉱石辞書名を入力（正規表現OK）
 
 gui.backpack.complete_hunger=食料が全く無駄にならないように食べます。
@@ -431,6 +441,30 @@ tooltip.backpack.lapis_upgrade=獲得経験値が倍になることがある
 tooltip.backpack.quartz_upgrade=採掘速度上昇を付与する
 tooltip.backpack.hay_upgrade=作物ドロップが倍になることがある
 tooltip.backpack.hay_upgrade.1=草から食用作物を得られることがある
+tooltip.backpack.deposit_upgrade=バックパックを持ってスニーク右クリックでコンテナにアイテムを預ける
+tooltip.backpack.advanced_deposit_upgrade=バックパックを持ってスニーク右クリックでコンテナにアイテムを預ける
+tooltip.backpack.advanced_deposit_upgrade.1=より多くのフィルタオプション
+tooltip.backpack.restock_upgrade=バックパックを持ってスニーク右クリックでコンテナからアイテムを補充する
+tooltip.backpack.advanced_restock_upgrade=バックパックを持ってスニーク右クリックでコンテナからアイテムを補充する
+tooltip.backpack.advanced_restock_upgrade.1=より多くのフィルタオプション
+item.deposit_upgrade.name=預け入れアップグレード
+item.advanced_deposit_upgrade.name=上級預け入れアップグレード
+item.restock_upgrade.name=補充アップグレード
+item.advanced_restock_upgrade.name=上級補充アップグレード
+gui.backpack.deposit_settings=預け入れ
+gui.backpack.advanced_deposit_settings=上級預け入れ
+gui.backpack.restock_settings=補充
+gui.backpack.advanced_restock_settings=上級補充
+gui.backpack.deposit_filter_allow=許可
+gui.backpack.deposit_filter_block=ブロック
+gui.backpack.deposit_filter_inventory=インベントリ内容にマッチ
+gui.backpack.restock_filter_allow=許可
+gui.backpack.restock_filter_block=ブロック
+gui.backpack.restock_filter_storage=バックパック内容にマッチ
+gui.okbackpack.status.stacks_deposited=%d スタックを預け入れました
+gui.okbackpack.status.nothing_to_deposit=預け入れるアイテムがありません
+gui.okbackpack.status.stacks_restocked=%d スタックを補充しました
+gui.okbackpack.status.nothing_to_restock=補充するアイテムがありません
 
 #メッセージ
 messages.backpack.cant.bag=寝袋を配置できません！周囲を確認してください。
