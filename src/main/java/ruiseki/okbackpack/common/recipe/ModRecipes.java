@@ -26,6 +26,9 @@ public class ModRecipes implements IInitListener {
         if (step == Step.POSTINIT) {
             blockRecipes();
             itemRecipes();
+            if (ModConfig.enableTravelersUpgrades) {
+                travelersRecipes();
+            }
             if (Mods.Thaumcraft.isModLoaded()) {
                 thaumcraftRecipes();
             }
@@ -820,6 +823,398 @@ public class ModRecipes implements IInitListener {
                     ModItems.BASE_UPGRADE.getItem()));
 
         }
+    }
+
+    private static void travelersRecipes() {
+        // Redstone Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.REDSTONE_UPGRADE.getItem(),
+                "DBD",
+                "BUB",
+                "DBD",
+                'D',
+                "dustRedstone",
+                'B',
+                "blockRedstone",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Glowstone Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.GLOWSTONE_UPGRADE.getItem(),
+                "DBD",
+                "BUB",
+                "DBD",
+                'D',
+                "dustGlowstone",
+                'B',
+                "glowstone",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Rainbow Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.RAINBOW_UPGRADE.getItem(),
+                "RTP",
+                "OUB",
+                "YGC",
+                'R',
+                "dyeRed",
+                'T',
+                Items.record_cat,
+                'P',
+                "dyePurple",
+                'O',
+                "dyeOrange",
+                'B',
+                "dyeBlue",
+                'Y',
+                "dyeYellow",
+                'G',
+                "dyeGreen",
+                'C',
+                "dyeCyan",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Cactus Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.CACTUS_UPGRADE.getItem(),
+                "CGC",
+                "CUC",
+                "SSS",
+                'C',
+                Blocks.cactus,
+                'G',
+                "dyeGreen",
+                'S',
+                "sand",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Cow Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.COW_UPGRADE.getItem(),
+                "BLB",
+                "BUB",
+                "LML",
+                'B',
+                Items.beef,
+                'L',
+                Items.leather,
+                'M',
+                Items.milk_bucket,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Bat Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.BAT_UPGRADE.getItem(),
+                "SNS",
+                "SUS",
+                "SRS",
+                'S',
+                "stone",
+                'R',
+                Items.golden_carrot,
+                'N',
+                new ItemStack(Items.potionitem, 1, 8262),
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Squid Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.SQUID_UPGRADE.getItem(),
+                "INI",
+                "BUB",
+                "IWI",
+                'B',
+                Items.water_bucket,
+                'I',
+                Items.dye,
+                'W',
+                new ItemStack(Items.potionitem, 1, 8269),
+                'N',
+                new ItemStack(Items.potionitem, 1, 8262),
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Wither Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.WITHER_UPGRADE.getItem(),
+                "BWB",
+                "SUS",
+                "BSB",
+                'B',
+                "coal",
+                'W',
+                new ItemStack(Items.skull, 1, 1),
+                'S',
+                "soulSand",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Cake Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.CAKE_UPGRADE.getItem(),
+                "ECE",
+                "WUW",
+                "SMS",
+                'E',
+                Items.egg,
+                'C',
+                Items.cake,
+                'W',
+                Items.wheat,
+                'S',
+                Items.sugar,
+                'M',
+                Items.milk_bucket,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Slime Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.SLIME_UPGRADE.getItem(),
+                "SDS",
+                "SUS",
+                "SPS",
+                'S',
+                "slimeball",
+                'D',
+                new ItemStack(Items.potionitem, 1, 8194),
+                'P',
+                Blocks.sticky_piston,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Bookshelf Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.BOOKSHELF_UPGRADE.getItem(),
+                "S S",
+                "SUS",
+                "BBB",
+                'S',
+                Blocks.bookshelf,
+                'B',
+                Items.book,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Wolf Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.WOLF_UPGRADE.getItem(),
+                "BWB",
+                "WUW",
+                "BWB",
+                'B',
+                Items.bone,
+                'W',
+                Blocks.wool,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Ocelot Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.OCELOT_UPGRADE.getItem(),
+                "WFW",
+                "FUF",
+                "WFW",
+                'F',
+                Items.fish,
+                'W',
+                new ItemStack(Blocks.wool, 1, 4),
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Quiver Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.QUIVER_UPGRADE.getItem(),
+                "AL ",
+                "LUL",
+                " LS",
+                'A',
+                Items.arrow,
+                'L',
+                Items.leather,
+                'S',
+                Items.string,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Chicken Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.CHICKEN_UPGRADE.getItem(),
+                "EEE",
+                "EUE",
+                "EEE",
+                'E',
+                Items.egg,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Magma Cube Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.MAGMA_CUBE_UPGRADE.getItem(),
+                "MLM",
+                "MUM",
+                "MLM",
+                'M',
+                Items.magma_cream,
+                'L',
+                Items.lava_bucket,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Dragon Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.DRAGON_UPGRADE.getItem(),
+                "EDE",
+                "OUO",
+                "POP",
+                'E',
+                Blocks.end_stone,
+                'D',
+                Blocks.dragon_egg,
+                'O',
+                Blocks.obsidian,
+                'P',
+                Items.ender_pearl,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Blaze Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.BLAZE_UPGRADE.getItem(),
+                "RFR",
+                "RUR",
+                "PLP",
+                'R',
+                Items.blaze_rod,
+                'F',
+                Items.fire_charge,
+                'P',
+                Items.blaze_powder,
+                'L',
+                Items.lava_bucket,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Sponge Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.SPONGE_UPGRADE.getItem(),
+                "SSS",
+                "SUS",
+                "SSS",
+                'S',
+                Blocks.sponge,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Creeper Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.CREEPER_UPGRADE.getItem(),
+                "GCG",
+                "GUG",
+                "TTT",
+                'G',
+                Items.gunpowder,
+                'C',
+                new ItemStack(Items.skull, 1, 4),
+                'T',
+                Blocks.tnt,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Ghast Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.GHAST_UPGRADE.getItem(),
+                "TFT",
+                "GUG",
+                "TGT",
+                'T',
+                Items.ghast_tear,
+                'G',
+                Items.gunpowder,
+                'F',
+                Items.fire_charge,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Spider Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.SPIDER_UPGRADE.getItem(),
+                "ESE",
+                "SUS",
+                "ESE",
+                'E',
+                Items.spider_eye,
+                'S',
+                Items.string,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Lapis Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.LAPIS_UPGRADE.getItem(),
+                "BGB",
+                "GUG",
+                "BGB",
+                'B',
+                "blockLapis",
+                'G',
+                "gemLapis",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Quartz Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.QUARTZ_UPGRADE.getItem(),
+                "BGB",
+                "GUG",
+                "BGB",
+                'B',
+                "blockQuartz",
+                'G',
+                "gemQuartz",
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
+
+        // Hay Upgrade
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                ModItems.HAY_UPGRADE.getItem(),
+                "WWW",
+                "WUW",
+                "WWW",
+                'W',
+                Items.wheat,
+                'U',
+                ModItems.BASE_UPGRADE.getItem()));
     }
 
     @Optional.Method(modid = "Thaumcraft")

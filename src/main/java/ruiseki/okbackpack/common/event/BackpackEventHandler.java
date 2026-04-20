@@ -475,7 +475,7 @@ public class BackpackEventHandler {
     }
 
     public boolean hasEnabledWitherUpgrade(EntityPlayer player) {
-        return visitUpgrades(player, IWitherUpgrade.class, ctx -> ctx.upgrade.isEnabled());
+        return visitTravelersUpgrades(player, IWitherUpgrade.class, ctx -> ctx.upgrade.isEnabled());
     }
 
     public <T> boolean visitUpgrades(EntityPlayer player, Class<T> upgradeClass, UpgradeContextVisitor<T> visitor) {
