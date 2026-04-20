@@ -109,6 +109,16 @@ gui.backpack.ignore_exp_magnet=不吸取经验
 
 gui.backpack.add_ore_dict_entry=添加矿物词典
 gui.backpack.remove_ore_dict_entry=移除矿物词典
+gui.backpack.ore_dict_list.title=矿辞
+gui.backpack.add_ore_dict=添加矿辞
+gui.backpack.add_ore_dict.no_item=<- 向插槽中标记物品来开始添加矿辞
+gui.backpack.add_ore_dict.no_additional=已添加该物品的所有矿辞
+gui.backpack.add_ore_dict.controls=滚轮选择，单击添加
+gui.backpack.remove_ore_dict=移除矿辞
+gui.backpack.remove_ore_dict.empty=没有可移除的矿辞
+gui.backpack.remove_ore_dict.controls=滚轮选择，单击移除
+gui.backpack.match_any_ore_dict=匹配任意矿辞
+gui.backpack.match_all_ore_dict=匹配所有矿辞
 gui.backpack.ore_dict_input_help=可在此输入矿物词典（支持正则表达式）
 
 gui.backpack.complete_hunger=仅在玩家足够饥饿时喂食\n不会浪费食物提供的任何饥饿值
@@ -431,6 +441,30 @@ tooltip.backpack.lapis_upgrade=有几率使获得的经验值翻倍
 tooltip.backpack.quartz_upgrade=给予急迫效果
 tooltip.backpack.hay_upgrade=有几率使作物掉落翻倍
 tooltip.backpack.hay_upgrade.1=有几率从草中获得可食用作物
+tooltip.backpack.deposit_upgrade=手持背包潜行右击容器卸载物品
+tooltip.backpack.advanced_deposit_upgrade=手持背包潜行右击容器卸载物品
+tooltip.backpack.advanced_deposit_upgrade.1=更多的过滤选项
+tooltip.backpack.restock_upgrade=手持背包潜行右击容器提取物品
+tooltip.backpack.advanced_restock_upgrade=手持背包潜行右击容器提取物品
+tooltip.backpack.advanced_restock_upgrade.1=更多的过滤选项
+item.deposit_upgrade.name=卸货升级
+item.advanced_deposit_upgrade.name=高级卸货升级
+item.restock_upgrade.name=取货升级
+item.advanced_restock_upgrade.name=高级取货升级
+gui.backpack.deposit_settings=卸货
+gui.backpack.advanced_deposit_settings=高级卸货
+gui.backpack.restock_settings=取货
+gui.backpack.advanced_restock_settings=高级取货
+gui.backpack.deposit_filter_allow=允许
+gui.backpack.deposit_filter_block=阻止
+gui.backpack.deposit_filter_inventory=匹配容器已有物品
+gui.backpack.restock_filter_allow=允许
+gui.backpack.restock_filter_block=阻止
+gui.backpack.restock_filter_storage=匹配背包已有物品
+gui.okbackpack.status.stacks_deposited=已卸载 %d 个堆叠
+gui.okbackpack.status.nothing_to_deposit=没有可卸载的物品
+gui.okbackpack.status.stacks_restocked=已取货 %d 个堆叠
+gui.okbackpack.status.nothing_to_restock=没有可取货的物品
 
 #Messages
 messages.backpack.cant.bag=无法放置睡袋！检查周围区域。

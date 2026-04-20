@@ -132,6 +132,17 @@ public class AdvancedUpgradeWrapper extends UpgradeWrapperBase implements IAdvan
     }
 
     @Override
+    public boolean isMatchAllOreDicts() {
+        return ItemNBTHelpers.getBoolean(upgrade, MATCH_ALL_ORE_DICTS_TAG, false);
+    }
+
+    @Override
+    public void setMatchAllOreDicts(boolean matchAll) {
+        ItemNBTHelpers.setBoolean(upgrade, MATCH_ALL_ORE_DICTS_TAG, matchAll);
+        save();
+    }
+
+    @Override
     public boolean checkFilter(ItemStack check) {
         return isEnabled() && IAdvancedFilterable.super.checkFilter(check);
     }

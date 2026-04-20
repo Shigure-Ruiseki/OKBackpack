@@ -1,8 +1,11 @@
 package ruiseki.okbackpack.api.wrapper;
 
-import net.minecraft.item.ItemStack;
+/**
+ * Deposit upgrade marker interface. Transfers items from backpack to target container.
+ */
+public interface IDepositUpgrade extends IInventoryInteractionUpgrade {
 
-public interface IDepositUpgrade {
-
-    boolean canDeposit(ItemStack stack);
+    default boolean canDeposit() {
+        return true;
+    }
 }

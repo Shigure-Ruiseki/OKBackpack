@@ -35,6 +35,8 @@
 - [X] JukeBox upgrade — play music disc
 - [X] Smelting upgrade — smelt item
 - [X] Refill upgrade — automatically refills items
+- [X] Deposit upgrade — deposits backpack items into containers
+- [X] Restock upgrade — restocks backpack items from containers
 - [X] Tank upgrade — stores fluids
 - [X] Battery upgrade — stores energy
 

@@ -13,7 +13,6 @@ import com.google.gson.JsonPrimitive;
 
 import lombok.Getter;
 import lombok.Setter;
-import ruiseki.okbackpack.common.helpers.BackpackMaterial.SettingsSection.MemorySlotEntry;
 import ruiseki.okcore.helper.JsonNBTHelpers;
 import ruiseki.okcore.json.AbstractJsonMaterial;
 import ruiseki.okcore.json.ItemJson;

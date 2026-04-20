@@ -1,8 +1,8 @@
 package ruiseki.okbackpack.common.block;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1030,7 +1030,7 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public <T> Map<Integer, T> gatherCapabilityUpgrades(Class<T> capabilityClass) {
-        Map<Integer, T> result = new HashMap<>();
+        Map<Integer, T> result = new LinkedHashMap<>();
 
         for (int i = 0; i < upgradeSlots; i++) {
             ItemStack stack = upgradeHandler.getStackInSlot(i);
