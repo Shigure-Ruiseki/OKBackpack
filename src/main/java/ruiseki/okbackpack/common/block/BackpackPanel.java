@@ -220,7 +220,11 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
 
         syncManager.onServerTick(() -> {
             if (tile != null) return;
-            if (wrapper.tick(player)) {
+            InventoryType type = wrapper.getType();
+            boolean isWorn = type == InventoryTypes.BAUBLES
+                || (type == InventoryTypes.PLAYER && wrapper.getSlotIndex() >= player.inventory.getSizeInventory() - 4);
+            boolean dirty = isWorn ? wrapper.tick(player) : wrapper.tickNonTravelers(player);
+            if (dirty) {
                 syncManager.getContainer()
                     .detectAndSendChanges();
             }

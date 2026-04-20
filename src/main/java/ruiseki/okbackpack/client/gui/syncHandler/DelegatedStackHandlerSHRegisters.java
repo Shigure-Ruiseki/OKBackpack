@@ -112,7 +112,7 @@ public class DelegatedStackHandlerSHRegisters implements IInitListener {
                     }
                     upgrade.getStorage()
                         .setStackInSlot(9, result);
-                    if (Mods.Thaumcraft.isLoaded() && wrapper instanceof IArcaneCraftingUpgrade arcane) {
+                    if (Mods.Thaumcraft.isModLoaded() && wrapper instanceof IArcaneCraftingUpgrade arcane) {
                         Map<String, Integer> aspects = ThaumcraftHelpers.readAspectMap(buf);
                         arcane.setRequiredAspects(aspects);
                         arcane.setHasWand(hasWand);
@@ -139,7 +139,7 @@ public class DelegatedStackHandlerSHRegisters implements IInitListener {
 
                 inventoryCrafting.detectChanges();
 
-                if (Mods.Thaumcraft.isLoaded()) {
+                if (Mods.Thaumcraft.isModLoaded()) {
                     ThaumcraftHelpers.handleArcaneCrafting(handler, inventoryCrafting);
                     return;
                 }
@@ -152,7 +152,7 @@ public class DelegatedStackHandlerSHRegisters implements IInitListener {
                 int resultSlot = inventoryCrafting.getSizeInventory() - 1;
 
                 ItemStack standardResult;
-                if (Mods.TConstruct.isLoaded()) {
+                if (Mods.TConstruct.isModLoaded()) {
                     standardResult = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
                 } else {
                     standardResult = CraftingManager.getInstance()

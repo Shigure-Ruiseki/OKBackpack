@@ -9,21 +9,17 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 
-import com.cleanroommc.modularui.factory.inventory.InventoryType;
-import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.google.common.collect.Multimap;
 
-import baubles.api.BaublesApi;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade.ToolSwapMode;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade.WeaponSwapMode;
-import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.block.BlockBackpack;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
+import ruiseki.okbackpack.common.helpers.BackpackHandSwapHelpers;
 import ruiseki.okbackpack.common.item.toolswapper.AdvancedToolSwapperUpgradeWrapper;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.common.network.PacketQuickDraw;
@@ -50,10 +46,7 @@ public class ToolSwapHandler implements IKeyHandler {
         int currentSlot = player.inventory.currentItem;
 
         // Find the first backpack with an active advanced tool swapper upgrade
-        UpgradeContext ctx = findActiveUpgrade(BaublesApi.getBaubles(player), InventoryTypes.BAUBLES);
-        if (ctx == null) {
-            ctx = findActiveUpgrade(player.inventory, InventoryTypes.PLAYER);
-        }
+        UpgradeContext ctx = findActiveUpgrade(player);
         if (ctx == null) return;
 
         // Score the currently held item
@@ -83,41 +76,54 @@ public class ToolSwapHandler implements IKeyHandler {
 
             case BACKPACK:
                 // Target tool is in backpack — extract tool, store hand item back
-                ItemStack extracted = ctx.wrapper.extractItem(best.backpackInternalSlot, best.stack.stackSize, false);
+                if (!BackpackHandSwapHelpers.canReplaceHandWithBackpackItem(
+                    ctx.backpack.getWrapper(),
+                    best.backpackInternalSlot,
+                    best.stack.stackSize,
+                    currentHand)) {
+                    break;
+                }
+                ItemStack extracted = ctx.backpack.getWrapper()
+                    .extractItem(best.backpackInternalSlot, best.stack.stackSize, false);
                 if (extracted == null) break;
                 if (currentHand != null) {
-                    ctx.wrapper.insertItem(currentHand, false);
+                    ctx.backpack.wrapper()
+                        .insertItem(currentHand, false);
                 }
+                BackpackEntityHelpers.persistBackpack(ctx.backpack);
                 OKBackpack.instance.getPacketHandler()
                     .sendToServer(
-                        new PacketBackpackNBT(ctx.backpackSlot, ctx.wrapper.getBackpackNBT(), ctx.inventoryType));
+                        new PacketBackpackNBT(
+                            ctx.backpack.slotIndex(),
+                            ctx.backpack.wrapper()
+                                .getBackpackNBT(),
+                            ctx.backpack.inventoryType()));
                 OKBackpack.instance.getPacketHandler()
                     .sendToServer(new PacketQuickDraw(currentSlot, extracted));
                 break;
         }
     }
 
-    private UpgradeContext findActiveUpgrade(IInventory inventory, InventoryType type) {
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            ItemStack stack = inventory.getStackInSlot(i);
-            if (stack == null || stack.stackSize <= 0) continue;
-            if (!(stack.getItem() instanceof BlockBackpack.ItemBackpack backpack)) continue;
-
-            BackpackWrapper wrapper = new BackpackWrapper(stack, backpack);
-            Map<Integer, IToolSwapperUpgrade> upgrades = wrapper.gatherCapabilityUpgrades(IToolSwapperUpgrade.class);
-
-            for (IToolSwapperUpgrade upgrade : upgrades.values()) {
-                if (upgrade instanceof AdvancedToolSwapperUpgradeWrapper adv && adv.isEnabled()) {
-                    return new UpgradeContext(wrapper, i, type, adv);
+    private UpgradeContext findActiveUpgrade(EntityClientPlayerMP player) {
+        final UpgradeContext[] result = new UpgradeContext[1];
+        BackpackEntityHelpers
+            .visitPlayerBackpacks(player, BackpackEntityHelpers.SearchOrder.BAUBLES_THEN_PLAYER, context -> {
+                Map<Integer, IToolSwapperUpgrade> upgrades = context.wrapper()
+                    .gatherCapabilityUpgrades(IToolSwapperUpgrade.class);
+                for (IToolSwapperUpgrade upgrade : upgrades.values()) {
+                    if (upgrade instanceof AdvancedToolSwapperUpgradeWrapper adv && adv.isEnabled()) {
+                        result[0] = new UpgradeContext(context, adv);
+                        return true;
+                    }
                 }
-            }
-        }
-        return null;
+                return false;
+            });
+        return result[0];
     }
 
     private ToolCandidate searchBackpack(UpgradeContext ctx, EntityClientPlayerMP player, MovingObjectPosition mop,
         boolean targetingBlock, ToolCandidate currentBest) {
-        BackpackWrapper wrapper = ctx.wrapper;
+        var wrapper = ctx.backpack.wrapper();
         for (int s = 0; s < wrapper.getSlots(); s++) {
             ItemStack stack = wrapper.getStackInSlot(s);
             if (stack == null) continue;
@@ -191,16 +197,11 @@ public class ToolSwapHandler implements IKeyHandler {
 
     private static class UpgradeContext {
 
-        final BackpackWrapper wrapper;
-        final int backpackSlot;
-        final InventoryType inventoryType;
+        final BackpackEntityHelpers.BackpackContext backpack;
         final AdvancedToolSwapperUpgradeWrapper upgrade;
 
-        UpgradeContext(BackpackWrapper wrapper, int backpackSlot, InventoryType inventoryType,
-            AdvancedToolSwapperUpgradeWrapper upgrade) {
-            this.wrapper = wrapper;
-            this.backpackSlot = backpackSlot;
-            this.inventoryType = inventoryType;
+        UpgradeContext(BackpackEntityHelpers.BackpackContext backpack, AdvancedToolSwapperUpgradeWrapper upgrade) {
+            this.backpack = backpack;
             this.upgrade = upgrade;
         }
     }

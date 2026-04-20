@@ -21,18 +21,21 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lombok.experimental.Delegate;
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
+import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
 import ruiseki.okbackpack.common.init.ModBlocks;
+import ruiseki.okbackpack.compat.thaumcraft.IVisChargeTarget;
 import ruiseki.okcore.energy.IOKEnergyIO;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileEntityOK;
 import ruiseki.okcore.tileentity.TileSideCapability;
 
-public class TEBackpack extends TileSideCapability
-    implements ISidedInventory, IGuiHolder<SidedPosGuiData>, TileEntityOK.ITickingTile, IOKEnergyIO, IFluidHandler {
+public class TEBackpack extends TileSideCapability implements ISidedInventory, IGuiHolder<SidedPosGuiData>,
+    TileEntityOK.ITickingTile, IOKEnergyIO, IFluidHandler, IVisChargeTarget {
 
     private int[] allSlots;
 
@@ -109,8 +112,9 @@ public class TEBackpack extends TileSideCapability
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public ModularScreen createScreen(SidedPosGuiData data, ModularPanel mainPanel) {
-        return new ModularScreen(Reference.MOD_ID, mainPanel);
+        return new BackpackModularScreen(mainPanel);
     }
 
     @Override
@@ -440,6 +444,16 @@ public class TEBackpack extends TileSideCapability
             info[i++] = new FluidTankInfo(tank.getContents(), tank.getTankCapacity());
         }
         return info;
+    }
+
+    @Override
+    public Iterable<ItemStack> getVisChargeableStacks() {
+        return wrapper.getVisChargeableStacks();
+    }
+
+    @Override
+    public void onVisCharged() {
+        markDirty();
     }
 
 }

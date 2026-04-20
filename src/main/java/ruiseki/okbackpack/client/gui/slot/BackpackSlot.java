@@ -37,6 +37,8 @@ import lombok.Getter;
 import lombok.Setter;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionOverlay;
+import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionResult;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.upgrade.SortingSettingWidget;
@@ -217,6 +219,8 @@ public class BackpackSlot extends ItemSlot {
             GuiDraw.drawRect(1, 1, 16, 16, UpgradeSlot.ERROR_SLOT_COLOR);
             GlStateManager.enableDepth();
         }
+
+        renderInventoryInteractionOverlay();
     }
 
     private boolean shouldHighlightConflict() {
@@ -354,6 +358,22 @@ public class BackpackSlot extends ItemSlot {
             GuiDraw.drawRect(1, 1, 16, 16, getSlotHoverColor());
             GlStateManager.colorMask(true, true, true, true);
         }
+    }
+
+    private void renderInventoryInteractionOverlay() {
+        Minecraft minecraft = Minecraft.getMinecraft();
+        if (minecraft == null || minecraft.thePlayer == null || minecraft.fontRenderer == null) {
+            return;
+        }
+
+        ItemStack cursorStack = minecraft.thePlayer.inventory.getItemStack();
+        if (cursorStack == null || cursorStack.stackSize <= 0) {
+            return;
+        }
+
+        BackpackInventoryInteractionResult result = BackpackInventoryInteractionOverlay
+            .getRenderableResult(minecraft.thePlayer, getSlot(), cursorStack);
+        BackpackInventoryInteractionOverlay.renderOverlayAt(minecraft.fontRenderer, result, 1, 1);
     }
 
     @SideOnly(Side.CLIENT)

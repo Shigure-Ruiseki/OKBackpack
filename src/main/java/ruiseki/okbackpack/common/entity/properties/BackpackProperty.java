@@ -2,17 +2,14 @@ package ruiseki.okbackpack.common.entity.properties;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
-import baubles.api.BaublesApi;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.block.BlockBackpack;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 
 public class BackpackProperty implements IExtendedEntityProperties {
 
@@ -165,34 +162,19 @@ public class BackpackProperty implements IExtendedEntityProperties {
             return;
         }
 
-        syncInventory(player.inventory);
-        syncInventory(BaublesApi.getBaubles(player));
-    }
+        BackpackEntityHelpers
+            .visitPlayerBackpacks(player, BackpackEntityHelpers.SearchOrder.PLAYER_THEN_BAUBLES, context -> {
+                BackpackWrapper wrapper = context.wrapper();
+                if (!wrapper.isUsePlayerSettings()) {
+                    return false;
+                }
 
-    private void syncInventory(IInventory inventory) {
-        if (inventory == null) {
-            return;
-        }
-
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            syncBackpackStack(inventory.getStackInSlot(i));
-        }
-    }
-
-    private void syncBackpackStack(ItemStack stack) {
-        if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack item)) {
-            return;
-        }
-
-        BackpackWrapper wrapper = new BackpackWrapper(stack, item);
-        if (!wrapper.isUsePlayerSettings()) {
-            return;
-        }
-
-        applySettingsToWrapper(wrapper);
-        wrapper.setPlayerUUID(
-            player.getUniqueID()
-                .toString());
-        wrapper.writeToItem();
+                applySettingsToWrapper(wrapper);
+                wrapper.setPlayerUUID(
+                    player.getUniqueID()
+                        .toString());
+                BackpackEntityHelpers.persistBackpack(context);
+                return false;
+            });
     }
 }

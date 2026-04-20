@@ -88,12 +88,12 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                 IndexedModularArcaneSlot arcaneSlot = arcaneSlotInstances.get(upgradeSlotIndex);
                 IndexedModularCraftingSlot slot = craftingSlotInstances.get(upgradeSlotIndex);
 
-                if (arcaneSlot != null && Mods.Thaumcraft.isLoaded()) {
+                if (arcaneSlot != null && Mods.Thaumcraft.isModLoaded()) {
                     ItemStack result = findArcaneOrVanillaResult(inventoryCrafting, player);
                     inventoryCrafting.setSlot(9, result, false);
                 } else {
                     ItemStack result;
-                    if (Mods.TConstruct.isLoaded()) {
+                    if (Mods.TConstruct.isModLoaded()) {
                         result = TinkersHelpers.getTinkersRecipe(inventoryCrafting);
                     } else {
                         result = CraftingManager.getInstance()
@@ -139,7 +139,7 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                 }
             }
         }
-        if (Mods.TConstruct.isLoaded()) {
+        if (Mods.TConstruct.isModLoaded()) {
             return TinkersHelpers.getTinkersRecipe(inventoryCrafting);
         }
         return CraftingManager.getInstance()
@@ -249,6 +249,9 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
 
                 // If the slot cannot be taken from, return empty
                 if (!fromSlot.canTakeStack(player)) {
+                    if (fromSlot instanceof ModularUpgradeSlot modularUpgradeSlot) {
+                        modularUpgradeSlot.setLastChangeResult(modularUpgradeSlot.getBlockedTakeResult(player));
+                    }
                     return Platform.EMPTY_STACK;
                 }
 
@@ -285,6 +288,9 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                             if (heldStack.stackSize == 0) {
                                 playerInventory.setItemStack(null);
                             }
+                        } else if (heldStack != null && clickedSlot instanceof ModularUpgradeSlot modularUpgradeSlot) {
+                            modularUpgradeSlot
+                                .setLastChangeResult(modularUpgradeSlot.getBlockedInsertResult(heldStack));
                         }
 
                     } else if (clickedSlot.canTakeStack(player)) { // Slot has items and can be taken
@@ -348,6 +354,9 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
 
                                 playerInventory.setItemStack(slotStack);
                             }
+                        } else if (clickedSlot instanceof ModularUpgradeSlot modularUpgradeSlot) {
+                            modularUpgradeSlot
+                                .setLastChangeResult(modularUpgradeSlot.getBlockedInsertResult(heldStack));
                         } else if (slotStack.getItem() == heldStack.getItem() && heldStack.getMaxStackSize() > 1
                             && (!slotStack.getHasSubtypes() || slotStack.getItemDamage() == heldStack.getItemDamage())
                             && ItemStack.areItemStackTagsEqual(slotStack, heldStack)) {
@@ -366,6 +375,8 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                                     clickedSlot.onPickupFromSlot(player, playerInventory.getItemStack());
                                 }
                             }
+                    } else if (clickedSlot instanceof ModularUpgradeSlot modularUpgradeSlot) {
+                        modularUpgradeSlot.setLastChangeResult(modularUpgradeSlot.getBlockedTakeResult(player));
                     }
 
                     clickedSlot.onSlotChanged();
@@ -451,6 +462,15 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
             }
 
         return super.slotClick(slotId, mouseButton, mode, player);
+    }
+
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+        ModularSlot slot = getModularSlot(index);
+        if (!slot.canTakeStack(playerIn)) {
+            return Platform.EMPTY_STACK;
+        }
+        return super.transferStackInSlot(playerIn, index);
     }
 
     @Override

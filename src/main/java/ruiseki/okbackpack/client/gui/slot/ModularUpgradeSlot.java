@@ -34,17 +34,21 @@ public class ModularUpgradeSlot extends ModularSlot {
 
     @Override
     public boolean canTakeStack(EntityPlayer player) {
-        ItemStack current = this.getStack();
-        if (current == null) return true;
+        return getBlockedTakeResult(player) == null;
+    }
 
-        // Admin infinity upgrade: only admins can remove/replace
+    @Nullable
+    public UpgradeSlotChangeResult getBlockedTakeResult(EntityPlayer player) {
+        ItemStack current = this.getStack();
+        if (current == null) return null;
+
+        // Admin infinity upgrade: only admins can remove/replace.
         if (current.getItem() instanceof ItemInfinityUpgrade) {
             if (!InfinityUpgradeWrapper.isAdmin(player)) {
-                // Non-admin can only swap with another infinity variant
                 ItemStack cursor = player.inventory.getItemStack();
                 if (cursor == null || !(cursor.getItem() instanceof ItemInfinityUpgrade
                     || cursor.getItem() instanceof ItemSurvivalInfinityUpgrade)) {
-                    return false;
+                    return null;
                 }
             }
         }
@@ -52,23 +56,13 @@ public class ModularUpgradeSlot extends ModularSlot {
         ItemStack cursor = player.inventory.getItemStack();
         int slot = getSlotIndex();
 
-        // cursor empty → remove
         if (cursor == null) {
             UpgradeSlotChangeResult result = wrapper.getRemoveUpgradeResult(slot);
-            if (!result.isSuccessful()) {
-                lastChangeResult = result;
-                return false;
-            }
-            return true;
+            return result.isSuccessful() ? null : result;
         }
 
-        // cursor not empty → replace
         UpgradeSlotChangeResult replaceResult = wrapper.getReplaceUpgradeResult(slot, cursor);
-        if (!replaceResult.isSuccessful()) {
-            lastChangeResult = replaceResult;
-            return false;
-        }
-        return true;
+        return replaceResult.isSuccessful() ? null : replaceResult;
     }
 
     @Override
@@ -87,30 +81,49 @@ public class ModularUpgradeSlot extends ModularSlot {
             return false;
         }
 
-        // check IUpgradeItem.canAddUpgradeTo
         UpgradeSlotChangeResult result = upgradeItem.canAddUpgradeTo(wrapper, stack, slot);
-        lastChangeResult = result;
         if (!result.isSuccessful()) {
             return false;
         }
 
-        // check global upgrade rules
         if (!wrapper.canAddUpgrade(slot, stack)) {
             return false;
         }
 
-        // simulate replace (slot currently has something?)
         ItemStack current = getStack();
-
         if (current == null) {
-            lastChangeResult = UpgradeSlotChangeResult.success();
             return true;
         }
 
-        boolean canReplace = wrapper.canReplaceUpgrade(slot, stack);
-        if (!canReplace) {
-            lastChangeResult = null;
+        return wrapper.canReplaceUpgrade(slot, stack);
+    }
+
+    @Nullable
+    public UpgradeSlotChangeResult getBlockedInsertResult(@Nullable ItemStack stack) {
+        if (stack == null) return null;
+
+        Item item = stack.getItem();
+        int slot = getSlotIndex();
+
+        if (!(item instanceof IUpgradeItem<?>upgradeItem)) {
+            return null;
         }
-        return canReplace;
+
+        UpgradeSlotChangeResult result = upgradeItem.canAddUpgradeTo(wrapper, stack, slot);
+        if (!result.isSuccessful()) {
+            return result;
+        }
+
+        if (!wrapper.canAddUpgrade(slot, stack)) {
+            return null;
+        }
+
+        ItemStack current = getStack();
+        if (current == null) {
+            return null;
+        }
+
+        UpgradeSlotChangeResult replaceResult = wrapper.getReplaceUpgradeResult(slot, stack);
+        return replaceResult.isSuccessful() ? null : replaceResult;
     }
 }

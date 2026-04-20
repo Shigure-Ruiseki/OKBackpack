@@ -1,5 +1,6 @@
 package ruiseki.okbackpack.common.item.arcane;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -12,9 +13,11 @@ import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
+import ruiseki.okbackpack.compat.thaumcraft.IUpgradeVisChargeTarget;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
-public class ArcaneCraftingUpgradeWrapper extends UpgradeWrapperBase implements IArcaneCraftingUpgrade {
+public class ArcaneCraftingUpgradeWrapper extends UpgradeWrapperBase
+    implements IArcaneCraftingUpgrade, IUpgradeVisChargeTarget {
 
     protected BaseItemStackHandler handler;
     private boolean hasWand;
@@ -131,5 +134,11 @@ public class ArcaneCraftingUpgradeWrapper extends UpgradeWrapperBase implements 
     @Override
     public String getCraftingInfoKey() {
         return "arcane_info";
+    }
+
+    @Override
+    public Iterable<ItemStack> getVisChargeableStacks() {
+        ItemStack wandStack = handler.getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
+        return wandStack == null ? Collections.emptyList() : Collections.singletonList(wandStack);
     }
 }

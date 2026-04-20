@@ -43,10 +43,14 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
 import ruiseki.okbackpack.OKBCreativeTab;
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IAdminProtectable;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
+import ruiseki.okbackpack.api.wrapper.IBookshelfUpgrade;
+import ruiseki.okbackpack.api.wrapper.ILightUpgrade;
+import ruiseki.okbackpack.api.wrapper.IRedstoneUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
+import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
+import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionTooltipHelpers;
 import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
@@ -240,6 +244,55 @@ public class BlockBackpack extends BlockOK {
             return backpack.onBlockActivated(worldIn, player, ForgeDirection.getOrientation(side), subX, subY, subZ);
         }
         return super.onBlockActivated(worldIn, x, y, z, player, side, subX, subY, subZ);
+    }
+
+    @Override
+    public int getLightValue(IBlockAccess world, int x, int y, int z) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof TEBackpack backpack) {
+            return backpack.getWrapper()
+                .gatherCapabilityUpgrades(ILightUpgrade.class)
+                .values()
+                .stream()
+                .mapToInt(ILightUpgrade::getLightLevel)
+                .max()
+                .orElseGet(() -> super.getLightValue(world, x, y, z));
+        }
+        return super.getLightValue(world, x, y, z);
+    }
+
+    @Override
+    public boolean canProvidePower() {
+        return true;
+    }
+
+    @Override
+    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof TEBackpack backpack) {
+            return backpack.getWrapper()
+                .gatherCapabilityUpgrades(IRedstoneUpgrade.class)
+                .values()
+                .stream()
+                .mapToInt(IRedstoneUpgrade::getRedstonePower)
+                .max()
+                .orElse(0);
+        }
+        return 0;
+    }
+
+    @Override
+    public float getEnchantPowerBonus(World world, int x, int y, int z) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof TEBackpack backpack) {
+            return (float) backpack.getWrapper()
+                .gatherCapabilityUpgrades(IBookshelfUpgrade.class)
+                .values()
+                .stream()
+                .mapToDouble(IBookshelfUpgrade::getEnchantPowerBonus)
+                .sum();
+        }
+        return 0.0f;
     }
 
     public static class ItemBackpack extends ItemBlockBauble
@@ -522,8 +575,9 @@ public class BlockBackpack extends BlockOK {
         }
 
         @Override
+        @SideOnly(Side.CLIENT)
         public ModularScreen createScreen(PlayerInventoryGuiData data, ModularPanel mainPanel) {
-            return new ModularScreen(Reference.MOD_ID, mainPanel);
+            return new BackpackModularScreen(mainPanel);
         }
 
         @Override
@@ -546,47 +600,13 @@ public class BlockBackpack extends BlockOK {
                 String shiftKey = "\u00a7b" + LangHelpers.localize("tooltip.backpack.contents.shift")
                     + "\u00a7r\u00a77";
                 list.add("\u00a77" + LangHelpers.localize("tooltip.backpack.contents.press_for_contents", shiftKey));
-                if (Mods.CodeChickenCore.isLoaded()) {
+                if (Mods.CodeChickenCore.isModLoaded()) {
                     BackpackContentHandler.reset();
                 }
-            } else if (Mods.CodeChickenCore.isLoaded()) {
-                // Expanded tooltip with upgrade/inventory info
+            } else {
                 BackpackWrapper wrapper = new BackpackWrapper(stack, this);
-                BackpackContentHandler.prepareContents(wrapper);
-
-                boolean hasUpgrades = !BackpackContentHandler.upgradeInfos.isEmpty();
-                boolean hasContents = !BackpackContentHandler.sortedContents.isEmpty();
-
-                if (!hasUpgrades && !hasContents) {
-                    // Empty backpack
-                    list.add("\u00a7e" + LangHelpers.localize("tooltip.backpack.contents.empty"));
-                } else {
-                    // Stack multiplier
-                    double multiplier = wrapper.applyStackLimitModifiers();
-                    if (multiplier > 1 && multiplier != Integer.MAX_VALUE) {
-                        list.add(
-                            "\u00a7a" + LangHelpers.localize(
-                                "tooltip.backpack.contents.stack_multiplier",
-                                String.format("%.1f", multiplier)));
-                    } else if (multiplier == Integer.MAX_VALUE) {
-                        list.add(
-                            "\u00a7a" + LangHelpers.localize("tooltip.backpack.contents.stack_multiplier", "\u221E"));
-                    }
-
-                    if (hasUpgrades) {
-                        list.addAll(BackpackContentHandler.upgradeTooltipLines);
-                        list.add("\u00a7e" + LangHelpers.localize("tooltip.backpack.contents.upgrades"));
-                        list.add(BackpackContentHandler.getUpgradeHandlerLine());
-                    }
-
-                    if (hasContents) {
-                        list.add("\u00a7e" + LangHelpers.localize("tooltip.backpack.contents.inventory"));
-                        list.add(BackpackContentHandler.getContentsHandlerLine());
-                    }
-                }
+                list.addAll(BackpackInventoryInteractionTooltipHelpers.buildExpandedTooltipLines(stack, wrapper));
             }
-            list.add(LangHelpers.localize("tooltip.backpack.inventory_size", backpackSlots));
-            list.add(LangHelpers.localize("tooltip.backpack.upgrade_slots_size", upgradeSlots));
             super.addInformation(stack, player, list, flag);
         }
 

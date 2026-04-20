@@ -93,6 +93,22 @@ public class ModConfig {
     @Config.DefaultInt(5)
     public static int magnetRange;
 
+    @Config.Comment("Enable all travelers upgrade items, recipes, runtime behaviors, and related mixins")
+    @Config.DefaultBoolean(true)
+    public static boolean enableTravelersUpgrades;
+
+    @Config.Comment("Enable the arcane crafting upgrade item, recipes, runtime behaviors, and Thaumcraft mixins")
+    @Config.DefaultBoolean(true)
+    public static boolean enableArcaneCraftingUpgrade;
+
+    @Config.Comment("Enable Backpack inventory interaction mixins, runtime logic, and GUI rendering. Requires restart")
+    @Config.DefaultBoolean(true)
+    public static boolean enableBackpackInventoryInteraction;
+
+    @Config.Comment("When a backpack is opened from the player inventory, including opening another backpack from a backpack GUI, closing it returns to the inventory screen")
+    @Config.DefaultBoolean(true)
+    public static boolean enableInventoryBackpackCloseReturnsToInventory;
+
     @Config.Comment("Maximum number of item stacks to display per row in the backpack tooltip")
     @Config.DefaultInt(9)
     @Config.RangeInt(min = 1)

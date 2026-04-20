@@ -23,7 +23,7 @@ public class IndexedModularArcaneSlot extends IndexedModularCraftingSlot {
 
     @Override
     public boolean canTakeStack(EntityPlayer player) {
-        if (!Mods.Thaumcraft.isLoaded()) return super.canTakeStack(player);
+        if (!Mods.Thaumcraft.isModLoaded()) return super.canTakeStack(player);
 
         IArcaneCraftingUpgrade arcane = wrapper != null ? wrapper.gatherCapabilityUpgrades(IArcaneCraftingUpgrade.class)
             .get(upgradeSlotIndex) : null;
@@ -52,7 +52,7 @@ public class IndexedModularArcaneSlot extends IndexedModularCraftingSlot {
     public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
         if (craftMatrix == null) return;
 
-        if (Mods.Thaumcraft.isLoaded()) {
+        if (Mods.Thaumcraft.isModLoaded()) {
             consumeArcaneVis(player);
         }
 
