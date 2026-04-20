@@ -12,7 +12,7 @@ import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftChargeHelper;
 import thaumcraft.common.tiles.TileMagicWorkbenchCharger;
 import thaumcraft.common.tiles.TileVisRelay;
 
-@Mixin(value = TileMagicWorkbenchCharger.class, remap = false)
+@Mixin(value = TileMagicWorkbenchCharger.class, remap = true)
 public abstract class MixinTileMagicWorkbenchCharger extends TileVisRelay {
 
     @Inject(method = "updateEntity", at = @At("HEAD"), cancellable = true)

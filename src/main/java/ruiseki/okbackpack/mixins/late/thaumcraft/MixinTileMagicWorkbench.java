@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import ruiseki.okbackpack.compat.thaumcraft.IVisChargeTarget;
 import thaumcraft.common.tiles.TileMagicWorkbench;
 
-@Mixin(value = TileMagicWorkbench.class, remap = false)
+@Mixin(value = TileMagicWorkbench.class, remap = true)
 public abstract class MixinTileMagicWorkbench implements IVisChargeTarget {
 
     @Shadow
