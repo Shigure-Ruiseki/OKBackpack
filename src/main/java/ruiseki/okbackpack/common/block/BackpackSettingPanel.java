@@ -824,16 +824,15 @@ public class BackpackSettingPanel extends ModularPanel {
         public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {}
 
         public void drawBackgroundPost(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-            IDrawable bg = getCurrentBackground(widgetTheme);
-            if (bg != null) {
-                bg.draw(
-                    context,
-                    getArea().x - getPanel().getArea().x,
-                    getArea().y - getPanel().getArea().y,
-                    getArea().width,
-                    getArea().height,
-                    getActiveWidgetTheme(widgetTheme, isHovering()));
-            }
+            IDrawable bg = getBackground();
+            if (bg == null) return;
+            bg.draw(
+                context,
+                getArea().x - getPanel().getArea().x,
+                getArea().y - getPanel().getArea().y,
+                getArea().width,
+                getArea().height,
+                getActiveWidgetTheme(widgetTheme, isHovering()));
         }
 
         public void drawTextPost(ModularGuiContext context) {
