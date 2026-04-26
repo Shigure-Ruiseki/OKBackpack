@@ -11,7 +11,6 @@ import java.util.List;
 import net.minecraft.util.EnumChatFormatting;
 
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.input.Keyboard;
 
 import com.cleanroommc.modularui.api.UpOrDown;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
@@ -52,6 +51,9 @@ import ruiseki.okcore.helper.LangHelpers;
 public class BackpackSettingPanel extends ModularPanel {
 
     private static final File SETTINGS_TEMPLATE_DIR = new File("config/" + Reference.MOD_ID + "/dump");
+    private static final int KEY_ESCAPE = 1;
+    private static final int KEY_RETURN = 28;
+    private static final int KEY_NUMPADENTER = 156;
 
     private final IStoragePanel<?> parent;
 
@@ -866,11 +868,11 @@ public class BackpackSettingPanel extends ModularPanel {
 
         @Override
         public @NotNull Interactable.Result onKeyPressed(char character, int keyCode) {
-            if (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_NUMPADENTER) {
+            if (keyCode == KEY_RETURN || keyCode == KEY_NUMPADENTER) {
                 submitSettingsInput();
                 return Interactable.Result.SUCCESS;
             }
-            if (keyCode == Keyboard.KEY_ESCAPE) {
+            if (keyCode == KEY_ESCAPE) {
                 closeSettingsInput();
                 return Interactable.Result.SUCCESS;
             }
