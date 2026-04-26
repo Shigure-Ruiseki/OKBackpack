@@ -11,7 +11,6 @@ import java.util.List;
 import net.minecraft.util.EnumChatFormatting;
 
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.input.Keyboard;
 
 import com.cleanroommc.modularui.api.UpOrDown;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
@@ -29,6 +28,8 @@ import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
@@ -50,6 +51,9 @@ import ruiseki.okcore.helper.LangHelpers;
 public class BackpackSettingPanel extends ModularPanel {
 
     private static final File SETTINGS_TEMPLATE_DIR = new File("config/" + Reference.MOD_ID + "/dump");
+    private static final int KEY_ESCAPE = 1;
+    private static final int KEY_RETURN = 28;
+    private static final int KEY_NUMPADENTER = 156;
 
     private final IStoragePanel<?> parent;
 
@@ -746,6 +750,7 @@ public class BackpackSettingPanel extends ModularPanel {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void onOpen(ModularScreen screen) {
         super.onOpen(screen);
         syncSettingModeState();
@@ -821,16 +826,15 @@ public class BackpackSettingPanel extends ModularPanel {
         public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {}
 
         public void drawBackgroundPost(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-            IDrawable bg = getCurrentBackground(widgetTheme);
-            if (bg != null) {
-                bg.draw(
-                    context,
-                    getArea().x - getPanel().getArea().x,
-                    getArea().y - getPanel().getArea().y,
-                    getArea().width,
-                    getArea().height,
-                    getActiveWidgetTheme(widgetTheme, isHovering()));
-            }
+            IDrawable bg = getBackground();
+            if (bg == null) return;
+            bg.draw(
+                context,
+                getArea().x - getPanel().getArea().x,
+                getArea().y - getPanel().getArea().y,
+                getArea().width,
+                getArea().height,
+                getActiveWidgetTheme(widgetTheme, isHovering()));
         }
 
         public void drawTextPost(ModularGuiContext context) {
@@ -864,11 +868,11 @@ public class BackpackSettingPanel extends ModularPanel {
 
         @Override
         public @NotNull Interactable.Result onKeyPressed(char character, int keyCode) {
-            if (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_NUMPADENTER) {
+            if (keyCode == KEY_RETURN || keyCode == KEY_NUMPADENTER) {
                 submitSettingsInput();
                 return Interactable.Result.SUCCESS;
             }
-            if (keyCode == Keyboard.KEY_ESCAPE) {
+            if (keyCode == KEY_ESCAPE) {
                 closeSettingsInput();
                 return Interactable.Result.SUCCESS;
             }

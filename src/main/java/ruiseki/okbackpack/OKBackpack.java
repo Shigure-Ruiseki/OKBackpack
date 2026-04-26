@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Level;
 
 import com.google.common.collect.Maps;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
-import com.gtnewhorizon.gtnhlib.config.ConfigException;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
@@ -36,7 +35,6 @@ import ruiseki.okbackpack.common.init.ModOreDicts;
 import ruiseki.okbackpack.common.recipe.CompactingRecipeCache;
 import ruiseki.okbackpack.common.recipe.ModRecipes;
 import ruiseki.okbackpack.compat.bauble.BaubleCompat;
-import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.command.CommandMod;
 import ruiseki.okcore.helper.MinecraftHelpers;
 import ruiseki.okcore.init.ModBase;
@@ -49,14 +47,6 @@ import ruiseki.okcore.proxy.ICommonProxy;
     dependencies = Reference.DEPENDENCIES,
     guiFactory = Reference.GUI_FACTORY)
 public class OKBackpack extends ModBase {
-
-    static {
-        try {
-            ModConfig.registerConfig();
-        } catch (ConfigException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @SidedProxy(serverSide = Reference.PROXY_COMMON, clientSide = Reference.PROXY_CLIENT)
     public static ICommonProxy proxy;

@@ -2,7 +2,12 @@ package ruiseki.okbackpack.api.wrapper;
 
 import net.minecraft.item.ItemStack;
 
-public interface IRestockUpgrade {
+/**
+ * Restock upgrade marker interface. Transfers items from target container to backpack.
+ */
+public interface IRestockUpgrade extends IInventoryInteractionUpgrade {
 
-    boolean canRestock(ItemStack stack);
+    default boolean canRestock(ItemStack stack) {
+        return true;
+    }
 }

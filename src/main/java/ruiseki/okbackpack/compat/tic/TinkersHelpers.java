@@ -37,7 +37,7 @@ public class TinkersHelpers {
     private TinkersHelpers() {}
 
     static {
-        if (Mods.TConstruct.isLoaded()) {
+        if (Mods.TConstruct.isModLoaded()) {
             createCraftingStationInstance();
         }
     }

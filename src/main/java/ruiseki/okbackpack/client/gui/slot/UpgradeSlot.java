@@ -40,7 +40,7 @@ public class UpgradeSlot extends ItemSlot {
         }
     }
 
-    private boolean shouldHighlightConflict() {
+    public boolean shouldHighlightConflict() {
         return panel.isSlotInConflict(slotIndex);
     }
 }

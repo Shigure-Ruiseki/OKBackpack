@@ -1,8 +1,8 @@
 package ruiseki.okbackpack.common.block;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -22,10 +21,8 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
-import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.github.bsideup.jabel.Desugar;
 
-import baubles.api.BaublesApi;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
@@ -33,6 +30,7 @@ import ruiseki.okbackpack.api.SortType;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.api.wrapper.IEntityApplicable;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
+import ruiseki.okbackpack.api.wrapper.IInceptionUpgrade;
 import ruiseki.okbackpack.api.wrapper.IInfinityUpgrade;
 import ruiseki.okbackpack.api.wrapper.IInventoryModifiable;
 import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade;
@@ -42,13 +40,17 @@ import ruiseki.okbackpack.api.wrapper.ISmeltingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IStackSizeUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITickable;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
+import ruiseki.okbackpack.api.wrapper.ITravelersUpgrade;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.handler.UpgradeItemStackHandler;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackSettingsTemplate;
+import ruiseki.okbackpack.common.helpers.UpgradeFeatureHelper;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.network.PacketJukeboxPlaybackState;
+import ruiseki.okbackpack.compat.thaumcraft.IUpgradeVisChargeTarget;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemNBTHelpers;
@@ -99,6 +101,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     public int sleepingBagZ;
 
     private final Set<Integer> pendingJukeboxStops = new HashSet<>();
+    private List<VisChargeTargetEntry> visChargeTargetsCache = null;
 
     public int slotIndex = -1;
     public InventoryType type = null;
@@ -462,11 +465,17 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public boolean canAddStack(int slot, ItemStack stack) {
-        Map<Integer, ISlotModifiable> gathered = gatherCapabilityUpgrades(ISlotModifiable.class);
-        if (stack != null && stack.getItem() instanceof BlockBackpack.ItemBackpack) {
+        if (BackpackEntityHelpers.isBackpackStack(stack, false)) {
+            for (int i = 0; i < upgradeSlots; i++) {
+                ItemStack upgradeStack = upgradeHandler.getStackInSlot(i);
+                if (upgradeStack == null) continue;
 
-            for (ISlotModifiable mod : gathered.values()) {
-                if (mod.canAddStack(slot, stack)) {
+                IUpgradeWrapper wrapper = this.getUpgradeHandler()
+                    .getWrapperInSlot(i);
+                if (!(wrapper instanceof IInceptionUpgrade inception)) continue;
+                if (!UpgradeFeatureHelper.isUpgradeRuntimeEnabled(wrapper) || !inception.isEnabled()) continue;
+
+                if (((ISlotModifiable) inception).canAddStack(slot, stack)) {
                     return true;
                 }
             }
@@ -474,8 +483,18 @@ public class BackpackWrapper implements IBackpackWrapper {
             return false;
         }
 
-        for (ISlotModifiable mod : gathered.values()) {
-            if (!mod.canAddStack(slot, stack)) return false;
+        for (int i = 0; i < upgradeSlots; i++) {
+            ItemStack upgradeStack = upgradeHandler.getStackInSlot(i);
+            if (upgradeStack == null) continue;
+
+            IUpgradeWrapper wrapper = this.getUpgradeHandler()
+                .getWrapperInSlot(i);
+            if (wrapper == null || !UpgradeFeatureHelper.isUpgradeRuntimeEnabled(wrapper)) continue;
+            if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) continue;
+
+            if (wrapper instanceof ISlotModifiable modifiable && !modifiable.canAddStack(slot, stack)) {
+                return false;
+            }
         }
 
         return true;
@@ -494,8 +513,8 @@ public class BackpackWrapper implements IBackpackWrapper {
         IUpgradeWrapper wrapper = this.getUpgradeHandler()
             .getWrapperInSlot(slot);
         if (wrapper == null) return UpgradeSlotChangeResult.success();
-        if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled())
-            return UpgradeSlotChangeResult.success();
+        if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()
+            && !(wrapper instanceof IInceptionUpgrade)) return UpgradeSlotChangeResult.success();
 
         if (wrapper instanceof ISlotModifiable modifiable) {
             return modifiable.getRemoveUpgradeResult(slot);
@@ -517,8 +536,8 @@ public class BackpackWrapper implements IBackpackWrapper {
         IUpgradeWrapper wrapper = this.getUpgradeHandler()
             .getWrapperInSlot(slot);
         if (wrapper == null) return UpgradeSlotChangeResult.success();
-        if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled())
-            return UpgradeSlotChangeResult.success();
+        if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()
+            && !(wrapper instanceof IInceptionUpgrade)) return UpgradeSlotChangeResult.success();
 
         if (wrapper instanceof ISlotModifiable modifiable) {
             return modifiable.getReplaceUpgradeResult(slot, replacement);
@@ -545,6 +564,35 @@ public class BackpackWrapper implements IBackpackWrapper {
             IUpgradeWrapper wrapper2 = this.getUpgradeHandler()
                 .getWrapperInSlot(i);
             if (wrapper2 instanceof ITickable tickable) {
+                dirty |= tickable.tick(player);
+            }
+        }
+
+        // Process removed jukebox upgrades that were playing
+        processPendingJukeboxStops(player);
+
+        return dirty;
+    }
+
+    public boolean tickNonTravelers(EntityPlayer player) {
+        Map<Integer, ITickable> gathered = gatherCapabilityUpgrades(ITickable.class);
+
+        boolean dirty = false;
+
+        for (ITickable wrapper : gathered.values()) {
+            if (wrapper instanceof ITravelersUpgrade) continue;
+            dirty |= wrapper.tick(player);
+        }
+
+        // Process disabled jukebox upgrades that have a pending stop sync
+        for (int i = 0; i < upgradeSlots; i++) {
+            if (gathered.containsKey(i)) continue;
+            ItemStack stack = upgradeHandler.getStackInSlot(i);
+            if (stack == null) continue;
+            if (!ItemNBTHelpers.getBoolean(stack, IJukeboxUpgrade.PENDING_STOP_SYNC_TAG, false)) continue;
+            IUpgradeWrapper wrapper2 = this.getUpgradeHandler()
+                .getWrapperInSlot(i);
+            if (wrapper2 instanceof ITickable tickable && !(wrapper2 instanceof ITravelersUpgrade)) {
                 dirty |= tickable.tick(player);
             }
         }
@@ -669,6 +717,56 @@ public class BackpackWrapper implements IBackpackWrapper {
         return false;
     }
 
+    public Iterable<ItemStack> getVisChargeableStacks() {
+        return collectVisChargeableStacks(-1);
+    }
+
+    public Iterable<ItemStack> getVisChargeableStacksExcluding(int excludedUpgradeSlot) {
+        return collectVisChargeableStacks(excludedUpgradeSlot);
+    }
+
+    public Iterable<ItemStack> collectVisChargeableStacks(int excludedUpgradeSlot) {
+        List<ItemStack> stacks = new ArrayList<>();
+        for (VisChargeTargetEntry entry : getVisChargeTargetEntries()) {
+            if (entry.slotIndex() == excludedUpgradeSlot) continue;
+
+            for (ItemStack stack : entry.target()
+                .getVisChargeableStacks()) {
+                if (stack != null) {
+                    stacks.add(stack);
+                }
+            }
+        }
+        return stacks;
+    }
+
+    public List<VisChargeTargetEntry> getVisChargeTargetEntries() {
+        if (visChargeTargetsCache != null) {
+            return visChargeTargetsCache;
+        }
+
+        List<VisChargeTargetEntry> entries = new ArrayList<>();
+        for (int i = 0; i < upgradeSlots; i++) {
+            ItemStack stack = upgradeHandler.getStackInSlot(i);
+            if (stack == null) continue;
+
+            IUpgradeWrapper wrapper = this.getUpgradeHandler()
+                .getWrapperInSlot(i);
+            if (wrapper == null || !UpgradeFeatureHelper.isUpgradeRuntimeEnabled(wrapper)) continue;
+            if (wrapper instanceof IToggleable toggleable && !toggleable.isEnabled()) continue;
+            if (wrapper instanceof IUpgradeVisChargeTarget target) {
+                entries.add(new VisChargeTargetEntry(i, target));
+            }
+        }
+
+        visChargeTargetsCache = entries;
+        return visChargeTargetsCache;
+    }
+
+    public void invalidateVisChargeTargetCache() {
+        visChargeTargetsCache = null;
+    }
+
     @Override
     public void applyContainerEntity(World world, Entity selfEntity) {
         Map<Integer, IEntityApplicable> gathered = gatherCapabilityUpgrades(IEntityApplicable.class);
@@ -698,38 +796,10 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     public ItemStack findStackByUUID(EntityPlayer player) {
-        if (player == null || uuid == null || type == null) return backpack;
+        if (player == null || uuid == null || uuid.isEmpty()) return backpack;
 
-        // Check held item first (fastest)
-        ItemStack held = player.getHeldItem();
-        if (isSameBackpack(held)) return held;
-
-        // Check player inventory
-        if (type == InventoryTypes.PLAYER) {
-            for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                ItemStack stack = player.inventory.getStackInSlot(i);
-                if (isSameBackpack(stack)) return stack;
-            }
-        }
-
-        // Check Baubles if loaded
-        if (type == InventoryTypes.BAUBLES) {
-            IInventory baubles = BaublesApi.getBaubles(player);
-            if (baubles != null) {
-                for (int i = 0; i < baubles.getSizeInventory(); i++) {
-                    ItemStack stack = baubles.getStackInSlot(i);
-                    if (isSameBackpack(stack)) return stack;
-                }
-            }
-        }
-        return backpack; // Fallback
-    }
-
-    private boolean isSameBackpack(ItemStack stack) {
-        if (stack == null || !(stack.getItem() instanceof BlockBackpack.ItemBackpack)) return false;
-        NBTTagCompound tag = stack.getTagCompound();
-        NBTTagCompound backpackTag = tag.getCompoundTag(BACKPACK_NBT);
-        return backpackTag != null && uuid.equals(backpackTag.getString(UUID_TAG));
+        ItemStack found = BackpackEntityHelpers.findBackpackByUuid(player, uuid, type);
+        return found != null ? found : backpack;
     }
 
     @Override
@@ -960,7 +1030,7 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public <T> Map<Integer, T> gatherCapabilityUpgrades(Class<T> capabilityClass) {
-        Map<Integer, T> result = new HashMap<>();
+        Map<Integer, T> result = new LinkedHashMap<>();
 
         for (int i = 0; i < upgradeSlots; i++) {
             ItemStack stack = upgradeHandler.getStackInSlot(i);
@@ -969,6 +1039,7 @@ public class BackpackWrapper implements IBackpackWrapper {
             IUpgradeWrapper wrapper = this.getUpgradeHandler()
                 .getWrapperInSlot(i);
             if (wrapper == null) continue;
+            if (!UpgradeFeatureHelper.isUpgradeRuntimeEnabled(wrapper)) continue;
             if (capabilityClass.isAssignableFrom(wrapper.getClass())) {
                 result.put(i, capabilityClass.cast(wrapper));
             }
@@ -1179,6 +1250,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public void markDirty() {
         this.isDirty = true;
+        invalidateVisChargeTargetCache();
         if (onInventoryHandlerRefresh != null) {
             onInventoryHandlerRefresh.run();
         }
@@ -1220,6 +1292,9 @@ public class BackpackWrapper implements IBackpackWrapper {
     public ItemStack getBackpack() {
         return backpack;
     }
+
+    @Desugar
+    public record VisChargeTargetEntry(int slotIndex, IUpgradeVisChargeTarget target) {}
 
     @Desugar
     public record SettingsPreset(String name, BackpackSettingsTemplate template) {

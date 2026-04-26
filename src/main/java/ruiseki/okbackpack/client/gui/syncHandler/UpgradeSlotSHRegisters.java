@@ -59,6 +59,8 @@ public class UpgradeSlotSHRegisters implements IInitListener {
     public static final String UPDATE_ARCANE_CRAFTING_R = "update_arcane_crafting_r";
     public static final String UPDATE_ARCANE_CRAFTING_G = "update_arcane_crafting_g";
     public static final String UPDATE_ARCANE_CRAFTING_C = "update_arcane_crafting_c";
+    public static final String UPDATE_DEPOSIT = "update_deposit";
+    public static final String UPDATE_RESTOCK = "update_restock";
 
     @Override
     public void onInit(Step step) {
@@ -90,6 +92,7 @@ public class UpgradeSlotSHRegisters implements IInitListener {
                 upgrade.setMatchType(NetworkUtils.readEnumValue(buf, IAdvancedFilterable.MatchType.class));
                 upgrade.setIgnoreDurability(buf.readBoolean());
                 upgrade.setIgnoreNBT(buf.readBoolean());
+                upgrade.setMatchAllOreDicts(buf.readBoolean());
 
                 int size = buf.readInt();
                 List<String> list = new ArrayList<>(size);
@@ -263,6 +266,34 @@ public class UpgradeSlotSHRegisters implements IInitListener {
                 int ordinal = buf.readInt();
                 BackpackInventoryHelpers.clear(slot.panel, upgrade.getStorage(), ordinal);
                 slot.panel.getPlayer().inventory.markDirty();
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_DEPOSIT, (slot, buf) -> {
+                IUpgradeWrapper wrapper = slot.getWrapper();
+                if (wrapper instanceof ruiseki.okbackpack.common.item.deposit.DepositUpgradeWrapper deposit) {
+                    deposit.setDepositFilterType(
+                        NetworkUtils
+                            .readEnumValue(buf, ruiseki.okbackpack.common.item.deposit.DepositFilterType.class));
+                } else
+                    if (wrapper instanceof ruiseki.okbackpack.common.item.deposit.AdvancedDepositUpgradeWrapper advDeposit) {
+                        advDeposit.setDepositFilterType(
+                            NetworkUtils
+                                .readEnumValue(buf, ruiseki.okbackpack.common.item.deposit.DepositFilterType.class));
+                    }
+            });
+
+            UpgradeSlotSHRegistry.registerServer(UPDATE_RESTOCK, (slot, buf) -> {
+                IUpgradeWrapper wrapper = slot.getWrapper();
+                if (wrapper instanceof ruiseki.okbackpack.common.item.restock.RestockUpgradeWrapper restock) {
+                    restock.setRestockFilterType(
+                        NetworkUtils
+                            .readEnumValue(buf, ruiseki.okbackpack.common.item.restock.RestockFilterType.class));
+                } else
+                    if (wrapper instanceof ruiseki.okbackpack.common.item.restock.AdvancedRestockUpgradeWrapper advRestock) {
+                        advRestock.setRestockFilterType(
+                            NetworkUtils
+                                .readEnumValue(buf, ruiseki.okbackpack.common.item.restock.RestockFilterType.class));
+                    }
             });
 
         }

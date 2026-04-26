@@ -6,6 +6,7 @@ import ruiseki.okbackpack.api.widget.IUpgradeSlotGroupFactory;
 import ruiseki.okbackpack.client.gui.slot.ModularFilterSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.syncHandler.FilterSlotSH;
+import ruiseki.okbackpack.client.gui.syncHandler.OreDictFilterSlotSH;
 
 public class AdvancedCommonFilterSlotGroupFactory implements IUpgradeSlotGroupFactory {
 
@@ -42,7 +43,7 @@ public class AdvancedCommonFilterSlotGroupFactory implements IUpgradeSlotGroupFa
         group.put("ore_dict_handler", oreDictStackHandler);
 
         ModularFilterSlot oreDictSlot = new ModularFilterSlot(oreDictStackHandler.delegatedStackHandler, 0);
-        group.syncManager.syncValue("ore_dict_" + group.slotIndex, 0, new FilterSlotSH(oreDictSlot));
+        group.syncManager.syncValue("ore_dict_" + group.slotIndex, 0, new OreDictFilterSlotSH(oreDictSlot));
         group.put("ore_dict_", slots);
     }
 }

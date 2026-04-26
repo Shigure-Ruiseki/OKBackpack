@@ -40,10 +40,9 @@ public class BackpackSearchBarWidget extends TextFieldWidget {
 
     @Override
     public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        IDrawable bg = getCurrentBackground(widgetTheme);
-        if (bg != null) {
-            bg.draw(context, 2, -1, getArea().width - 4, getArea().height + 1, widgetTheme.getTheme());
-        }
+        IDrawable bg = getBackground();
+        if (bg == null) return;
+        bg.draw(context, 2, -1, getArea().width - 4, getArea().height + 1, widgetTheme.getTheme());
     }
 
     @Override

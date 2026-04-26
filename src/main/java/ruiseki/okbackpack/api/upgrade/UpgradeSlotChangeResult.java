@@ -107,4 +107,11 @@ public class UpgradeSlotChangeResult {
         String formattedMultiplier) {
         return fail("gui.backpack.error.remove.stack_low_multiplier", upgradeConflictSlots, formattedMultiplier);
     }
+
+    /**
+     * Backpack contains one or more nested backpacks and the inception upgrade cannot be removed.
+     */
+    public static UpgradeSlotChangeResult failInceptionSubBackpack(int[] inventoryConflictSlots) {
+        return failWithInventoryConflicts("gui.backpack.error.remove.inception_sub_backpack", inventoryConflictSlots);
+    }
 }

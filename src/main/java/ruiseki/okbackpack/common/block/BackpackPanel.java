@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,7 +17,6 @@ import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.AdaptableUITexture;
-import com.cleanroommc.modularui.drawable.GuiDraw;
 import com.cleanroommc.modularui.drawable.ItemDrawable;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
@@ -30,7 +27,6 @@ import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetTheme;
-import com.cleanroommc.modularui.utils.GlStateManager;
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
@@ -41,6 +37,9 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageContainer;
 import ruiseki.okbackpack.api.IStoragePanel;
@@ -76,6 +75,7 @@ import ruiseki.okbackpack.client.gui.widget.TileWidget;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotGroupWidget;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
+import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okcore.helper.ItemStackHelpers;
 import ruiseki.okcore.helper.LangHelpers;
@@ -92,9 +92,6 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         .tiled()
         .build();
 
-    public static final int ERROR_BACKGROUND_COLOR = 0xF0100010;
-    public static final int ERROR_BORDER_COLOR = 0xFFB02E26;
-    public static final int ERROR_TEXT_COLOR = 0xB02E26;
     public static final int ERROR_DISPLAY_TICKS = 60;
 
     private static final List<CyclicVariantButtonWidget.Variant> SORT_TYPE_VARIANTS = Arrays.asList(
@@ -220,7 +217,11 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
 
         syncManager.onServerTick(() -> {
             if (tile != null) return;
-            if (wrapper.tick(player)) {
+            InventoryType type = wrapper.getType();
+            boolean isWorn = type == InventoryTypes.BAUBLES
+                || (type == InventoryTypes.PLAYER && wrapper.getSlotIndex() >= player.inventory.getSizeInventory() - 4);
+            boolean dirty = isWorn ? wrapper.tick(player) : wrapper.tickNonTravelers(player);
+            if (dirty) {
                 syncManager.getContainer()
                     .detectAndSendChanges();
             }
@@ -497,13 +498,16 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         int usableRowSize = getUsableRowSize();
         backpackInvCol = Flow.column()
             .coverChildren();
+        boolean clientSide = FMLCommonHandler.instance()
+            .getEffectiveSide()
+            .isClient();
 
         for (int i = 0; i < wrapper.getStackHandler()
             .getVisualSize(); i++) {
             int col = i % usableRowSize;
             int row = i / usableRowSize;
 
-            BackpackSlot slot = (BackpackSlot) new BackpackSlot(this, wrapper).syncHandler("backpack", i)
+            ItemSlot slot = (clientSide ? new BackpackSlot(this, wrapper) : new ItemSlot()).syncHandler("backpack", i)
                 .size(ItemSlot.SIZE)
                 .name("slot_" + i)
                 .left(col * ItemSlot.SIZE)
@@ -910,6 +914,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         return isDirty;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void postDraw(ModularGuiContext context, boolean transformed) {
         super.postDraw(context, transformed);
@@ -921,7 +926,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             resizer().getArea().height,
             WidgetTheme.getDefault()
                 .getTheme());
-        renderErrorOverlay(context.getPartialTicks());
+        RenderHelpers.renderErrorOverlay(this, context.getPartialTicks());
     }
 
     public boolean isSlotInConflict(int slotIndex) {
@@ -942,7 +947,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         return false;
     }
 
-    private void updateActiveError(float partialTicks) {
+    public void updateActiveError(float partialTicks) {
         // pick up new error from any upgrade slot
         for (var widget : upgradeSlotWidgets) {
             if (widget instanceof UpgradeSlot upgradeSlot
@@ -951,7 +956,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 if (result != null && !result.isSuccessful()) {
                     if (result != activeError) {
                         activeError = result;
-                        activeErrorSetTick = getCurrentTick(partialTicks);
+                        activeErrorSetTick = RenderHelpers.getCurrentTick(partialTicks);
                     }
                     modularSlot.setLastChangeResult(null);
                     return;
@@ -959,44 +964,10 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             }
         }
         // check expiry
-        if (activeError != null && getCurrentTick(partialTicks) - activeErrorSetTick >= ERROR_DISPLAY_TICKS) {
+        if (activeError != null
+            && RenderHelpers.getCurrentTick(partialTicks) - activeErrorSetTick >= ERROR_DISPLAY_TICKS) {
             activeError = null;
         }
-    }
-
-    private void renderErrorOverlay(float partialTicks) {
-        updateActiveError(partialTicks);
-        if (activeError == null || activeError.getErrorLangKey() == null) return;
-
-        String errorText = LangHelpers.localize(activeError.getErrorLangKey(), activeError.getErrorArgs());
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-        int textWidth = font.getStringWidth(errorText);
-
-        int panelWidth = resizer().getArea().width;
-        int panelHeight = resizer().getArea().height;
-
-        int padding = 4;
-        int boxWidth = textWidth + padding * 2;
-        int boxHeight = font.FONT_HEIGHT + padding * 2;
-        int boxX = (panelWidth - boxWidth) / 2;
-        int boxY = panelHeight - 90;
-
-        GlStateManager.disableDepth();
-        // border
-        GuiDraw.drawRect(boxX, boxY, boxWidth, boxHeight, ERROR_BORDER_COLOR);
-        // background
-        GuiDraw.drawRect(boxX + 1, boxY + 1, boxWidth - 2, boxHeight - 2, ERROR_BACKGROUND_COLOR);
-        // re-enable textures after drawRect for font rendering
-        GlStateManager.enableTexture2D();
-        GlStateManager.color(1f, 1f, 1f, 1f);
-        // text
-        font.drawStringWithShadow(errorText, boxX + padding, boxY + padding, ERROR_TEXT_COLOR);
-        GlStateManager.enableDepth();
-    }
-
-    private float getCurrentTick(float partialTicks) {
-        var mc = Minecraft.getMinecraft();
-        return mc.theWorld != null ? mc.theWorld.getTotalWorldTime() + partialTicks : 0;
     }
 
     @Override

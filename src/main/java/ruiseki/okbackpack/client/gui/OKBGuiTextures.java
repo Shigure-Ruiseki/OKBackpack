@@ -117,6 +117,9 @@ public class OKBGuiTextures {
     public static final UITexture MATCH_DURABILITY_ICON = icon("consider_duration", 0, 16);
     public static final UITexture IGNORE_DURABILITY_ICON = icon("ignore_duration", 16, 16);
 
+    public static final UITexture MATCH_INVENTORY_ICON = icon("match_inventory", 64, 16);
+    public static final UITexture MATCH_BACKPACK_ICON = icon("match_backpack", 64, 16);
+
     public static final UITexture HALF_HEART_ICON = icon("half_heart", 96, 16);
     public static final UITexture IGNORE_HALF_HEART_ICON = icon("ignore_half_heart", 112, 16);
 
@@ -218,6 +221,12 @@ public class OKBGuiTextures {
         .location(Reference.MOD_ID, "gui/gui_controls.png")
         .imageSize(256, 256)
         .xy(47, 0, 18, 18)
+        .build();
+
+    public static final UITexture SLOT_DISABLED = UITexture.builder()
+        .location(Reference.MOD_ID, "gui/slot_disabled.png")
+        .imageSize(18, 18)
+        .xy(0, 0, 18, 18)
         .build();
 
     public static final UITexture BIG_SLOT_TEXTURE = UITexture.builder()

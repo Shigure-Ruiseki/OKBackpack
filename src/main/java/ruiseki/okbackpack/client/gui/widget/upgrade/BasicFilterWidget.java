@@ -3,6 +3,7 @@ package ruiseki.okbackpack.client.gui.widget.upgrade;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +17,7 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import lombok.Getter;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
+import ruiseki.okbackpack.client.gui.slot.DisableablePhantomItemSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
@@ -27,11 +29,14 @@ public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.blacklist"), OKBGuiTextures.CROSS_ICON));
 
     @Getter
-    private final CyclicVariantButtonWidget filterTypeButton;
+    private CyclicVariantButtonWidget filterTypeButton;
     @Getter
     private final List<ItemSlot> filterSlots;
     @Getter
     private UpgradeSlotSH slotSyncHandler = null;
+
+    private final SlotGroupWidget slotGroup;
+    private BooleanSupplier slotsDisabled = () -> false;
 
     public BasicFilterWidget(IBasicFilterable filterableWrapper, int slotIndex, String syncKey) {
 
@@ -50,13 +55,13 @@ public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
                 }
             }).size(20, 20);
 
-        SlotGroupWidget slotGroup = new SlotGroupWidget().name(syncKey + "s");
+        this.slotGroup = new SlotGroupWidget().name(syncKey + "s");
         slotGroup.coverChildren()
             .top(26);
 
         this.filterSlots = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
-            ItemSlot slot = ItemSlot.create(true);
+            ItemSlot slot = new DisableablePhantomItemSlot(() -> this.slotsDisabled.getAsBoolean());
             slot.name(syncKey + "_" + slotIndex)
                 .syncHandler(syncKey + "_" + slotIndex, i)
                 .pos(i % 3 * 18, i / 3 * 18);
@@ -72,6 +77,16 @@ public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
         this(filterableWrapper, slotIndex, "common_filter");
     }
 
+    public void replaceFilterTypeButton(CyclicVariantButtonWidget newButton) {
+        getChildren().remove(this.filterTypeButton);
+        this.filterTypeButton = newButton;
+        getChildren().add(0, newButton);
+    }
+
+    public void setSlotsDisabled(BooleanSupplier disabled) {
+        this.slotsDisabled = disabled;
+    }
+
     @Override
     public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
         if (syncOrValue instanceof UpgradeSlotSH) {
@@ -79,4 +94,5 @@ public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
         }
         return this.slotSyncHandler != null;
     }
+
 }
