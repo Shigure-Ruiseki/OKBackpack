@@ -9,7 +9,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -184,13 +183,8 @@ public class BlockBackpack extends BlockOK {
     }
 
     @Override
-    protected Class<? extends ItemBlock> getItemBlockClass() {
-        return ItemBackpack.class;
-    }
-
-    @Override
-    protected void registerComponent() {
-
+    public void registerComponent() {
+        super.registerComponent();
         BlockColor.registerBlockColors(new IBlockColor() {
 
             @Override
