@@ -66,10 +66,7 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
                 markDirty();
             }
         });
-        allSlots = new int[wrapper.getSlots()];
-        for (int i = 0; i < allSlots.length; i++) {
-            allSlots[i] = i;
-        }
+        refreshAccessibleSlots();
     }
 
     public void setWrapper(BackpackWrapper wrapper) {
@@ -81,7 +78,16 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
                 markDirty();
             }
         });
-        allSlots = new int[wrapper.getSlots()];
+        refreshAccessibleSlots();
+    }
+
+    private void refreshAccessibleSlots() {
+        int slotCount = wrapper == null ? 0 : wrapper.getSlots();
+        if (allSlots != null && allSlots.length == slotCount) {
+            return;
+        }
+
+        allSlots = new int[slotCount];
         for (int i = 0; i < allSlots.length; i++) {
             allSlots[i] = i;
         }
@@ -150,6 +156,7 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
+        refreshAccessibleSlots();
         return allSlots;
     }
 
@@ -181,6 +188,7 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
 
     @Override
     public int getSizeInventory() {
+        refreshAccessibleSlots();
         return wrapper.getSlots();
     }
 
