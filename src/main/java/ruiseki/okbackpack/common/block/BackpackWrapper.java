@@ -943,6 +943,9 @@ public class BackpackWrapper implements IBackpackWrapper {
             if (backpackHandler.isSizeInconsistent(this.backpackSlots)) {
                 backpackHandler.resize(this.backpackSlots);
             }
+            if (backpackHandler.getVisualSize() < this.backpackSlots) {
+                backpackHandler.setVisualSize(this.backpackSlots);
+            }
 
             BackpackItemStackHelpers
                 .loadAllItemsExtended(tag.getCompoundTag(BACKPACK_INV), backpackHandler.getStacks());
@@ -971,6 +974,9 @@ public class BackpackWrapper implements IBackpackWrapper {
             upgradeHandler.deserializeNBT(tag.getCompoundTag(UPGRADE_INV));
             if (upgradeHandler.isSizeInconsistent(this.upgradeSlots)) {
                 upgradeHandler.resize(this.upgradeSlots);
+            }
+            if (upgradeHandler.getVisualSize() < this.upgradeSlots) {
+                upgradeHandler.setVisualSize(this.upgradeSlots);
             }
         }
 
