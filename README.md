@@ -72,7 +72,7 @@
 
 ## License
 
-This mod is primarily released under the MIT License (see LICENSE file).
+This mod is primarily released under the LGPL v3 License (see LICENSE file).
 
 ### Third-party components
 
@@ -85,7 +85,7 @@ their original licenses:
 - Any GPLv3/LGPL-3.0 components used in this project remain under GPLv3/LGPL-3.0 and must be
   respected accordingly, all assets are forked before Sophisticated Backpack changes license to All Right Reserve.
 
-You are free to use, modify, and distribute the MIT-licensed portions of this
+You are free to use, modify, and distribute the LGPL-licensed portions of this
 project, but must comply with the original licenses of the included third-party
 components.
 
