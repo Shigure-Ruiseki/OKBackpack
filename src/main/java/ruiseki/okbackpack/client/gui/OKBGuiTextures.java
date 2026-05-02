@@ -194,6 +194,25 @@ public class OKBGuiTextures {
     public static final IDrawable LOOP_SINGLE_ICON = icon("loop_single", 144, 80);
     public static final IDrawable LOOP_OFF_ICON = icon("loop_off", 160, 80);
 
+    public static final UITexture PUMP_INPUT_ICON = icon("pump_input", 144, 0);
+    public static final UITexture PUMP_OUTPUT_ICON = icon("pump_output", 160, 0);
+    public static final UITexture PUMP_INTERACT_TANKS_ICON = icon("pump_interact_tanks", 0, 112);
+    public static final UITexture PUMP_NO_INTERACT_TANKS_ICON = icon("pump_no_interact_tanks", 16, 112);
+    public static final UITexture PUMP_INTERACT_WORLD_ICON = icon("pump_interact_world", 176, 0);
+    public static final UITexture PUMP_NO_INTERACT_WORLD_ICON = icon("pump_no_interact_world", 192, 0);
+    public static final UITexture PUMP_INTERACT_HAND_ICON = icon("pump_interact_hand", 208, 0);
+    public static final UITexture PUMP_NO_INTERACT_HAND_ICON = icon("pump_no_interact_hand", 224, 0);
+
+    public static final UITexture XP_PUMP_OUTPUT_ICON = icon("xp_pump_output", 128, 16);
+    public static final UITexture XP_PUMP_KEEP_ICON = icon("xp_pump_keep", 96, 96);
+    public static final UITexture XP_PUMP_OFF_ICON = icon("xp_pump_off", 0, 96);
+    public static final UITexture XP_PUMP_MEND_ICON = icon("xp_pump_mend", 144, 32);
+    public static final UITexture XP_PUMP_NO_MEND_ICON = icon("xp_pump_no_mend", 160, 32);
+    public static final UITexture XP_PUMP_TAKE_ALL_ICON = icon("xp_pump_take_all", 144, 16);
+    public static final UITexture XP_PUMP_TAKE_LEVELS_ICON = icon("xp_pump_take_levels", 160, 16);
+    public static final UITexture XP_PUMP_STORE_LEVELS_ICON = icon("xp_pump_store_levels", 176, 16);
+    public static final UITexture XP_PUMP_STORE_ALL_ICON = icon("xp_pump_store_all", 192, 16);
+
     public static final UITexture ROTATED_RIGHT = icon("rotated_right", 0, 170);
     public static final UITexture ROTATED_LEFT = icon("rotated_left", 48, 170);
     public static final UITexture BALANCE = icon("balance", 32, 170);
