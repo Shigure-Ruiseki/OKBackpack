@@ -39,6 +39,7 @@
 - [X] Restock upgrade — restocks backpack items from containers
 - [X] Tank upgrade — stores fluids
 - [X] Battery upgrade — stores energy
+- [X] Pump upgrade — transfers fluids
 
 #### Integration
 
