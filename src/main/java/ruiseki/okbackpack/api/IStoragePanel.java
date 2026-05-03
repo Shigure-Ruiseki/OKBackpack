@@ -13,6 +13,8 @@ import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 
+import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
+
 public interface IStoragePanel<T extends ModularPanel> extends IWidget {
 
     EntityPlayer getPlayer();
@@ -49,5 +51,7 @@ public interface IStoragePanel<T extends ModularPanel> extends IWidget {
     ItemSlotSH[] getStorageSlotSH();
 
     ItemSlotSH[] getUpgradedSlotSH();
+
+    UpgradeSlotUpdateGroup getUpgradeSlotUpdateGroup(int slotIndex);
 
 }

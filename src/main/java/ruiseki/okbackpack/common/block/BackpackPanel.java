@@ -1054,4 +1054,10 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
     public ItemSlotSH[] getUpgradedSlotSH() {
         return upgradeSlotSyncHandlers;
     }
+
+    @Override
+    public UpgradeSlotUpdateGroup getUpgradeSlotUpdateGroup(int slotIndex) {
+        if (slotIndex < 0 || slotIndex >= upgradeSlotGroups.length) return null;
+        return upgradeSlotGroups[slotIndex];
+    }
 }
