@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import org.apache.logging.log4j.Level;
 
@@ -32,6 +33,9 @@ import ruiseki.okbackpack.common.item.magnet.ItemAdvancedMagnetUpgrade;
 import ruiseki.okbackpack.common.item.magnet.ItemMagnetUpgrade;
 import ruiseki.okbackpack.common.item.pickup.ItemAdvancedPickupUpgrade;
 import ruiseki.okbackpack.common.item.pickup.ItemPickupUpgrade;
+import ruiseki.okbackpack.common.item.pump.ItemAdvancedPumpUpgrade;
+import ruiseki.okbackpack.common.item.pump.ItemPumpUpgrade;
+import ruiseki.okbackpack.common.item.pump.xp.ItemXpPumpUpgrade;
 import ruiseki.okbackpack.common.item.refill.ItemAdvancedRefillUpgrade;
 import ruiseki.okbackpack.common.item.refill.ItemRefillUpgrade;
 import ruiseki.okbackpack.common.item.restock.ItemAdvancedRestockUpgrade;
@@ -117,6 +121,9 @@ public enum ModItems {
     ANVIL_UPGRADE(new ItemAnvilUpgrade()),
     BATTERY_UPGRADE(new ItemBatteryUpgrade()),
     TANK_UPGRADE(new ItemTankUpgrade()),
+    PUMP_UPGRADE(new ItemPumpUpgrade()),
+    ADVANCED_PUMP_UPGRADE(new ItemAdvancedPumpUpgrade()),
+    XP_PUMP_UPGRADE(new ItemXpPumpUpgrade(), ModItems::xpPumpEnabled),
     INFINITY_UPGRADE(new ItemInfinityUpgrade()),
     SURVIVAL_INFINITY_UPGRADE(new ItemSurvivalInfinityUpgrade()),
     ARCANE_CRAFTING_UPGRADE(new ItemArcaneCraftingUpgrade(), Mods.Thaumcraft, ModItems::arcaneCraftingEnabled),
@@ -227,6 +234,10 @@ public enum ModItems {
 
     public static boolean arcaneCraftingEnabled() {
         return ModConfig.enableArcaneCraftingUpgrade;
+    }
+
+    public static boolean xpPumpEnabled() {
+        return FluidRegistry.isFluidRegistered("xpjuice");
     }
 
 }
