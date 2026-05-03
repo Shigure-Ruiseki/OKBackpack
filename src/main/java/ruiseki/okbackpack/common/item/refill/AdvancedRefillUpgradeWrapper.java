@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import lombok.Getter;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.TargetSlot;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 @Getter
@@ -68,10 +69,12 @@ public class AdvancedRefillUpgradeWrapper extends RefillUpgradeWrapper {
         return "gui.backpack.advanced_refill_settings";
     }
 
+    @Override
     public TargetSlot getTargetSlot(int filterSlot) {
         return targetSlots.getOrDefault(filterSlot, TargetSlot.ANY);
     }
 
+    @Override
     public void setTargetSlot(int filterSlot, TargetSlot targetSlot) {
         targetSlots.put(filterSlot, targetSlot);
         saveTargetSlots();

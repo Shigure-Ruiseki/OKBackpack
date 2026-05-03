@@ -12,32 +12,29 @@ import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.ICompactingUpgrade;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
+import ruiseki.okbackpack.api.wrapper.IDepositUpgrade;
+import ruiseki.okbackpack.api.wrapper.IDepositUpgrade.DepositFilterType;
 import ruiseki.okbackpack.api.wrapper.IDirtable;
 import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade;
+import ruiseki.okbackpack.api.wrapper.IFeedingUpgrade.FeedingStrategy;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
 import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade;
 import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade.JukeboxLoopMode;
 import ruiseki.okbackpack.api.wrapper.IMagnetUpgrade;
+import ruiseki.okbackpack.api.wrapper.IPickupUpgrade;
+import ruiseki.okbackpack.api.wrapper.IPickupUpgrade.PickupFilterType;
+import ruiseki.okbackpack.api.wrapper.IPumpUpgrade;
+import ruiseki.okbackpack.api.wrapper.IPumpUpgrade.FluidFilterType;
+import ruiseki.okbackpack.api.wrapper.IRefillUpgrade;
+import ruiseki.okbackpack.api.wrapper.IRestockUpgrade;
+import ruiseki.okbackpack.api.wrapper.IRestockUpgrade.RestockFilterType;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IToolSwapperUpgrade;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.api.wrapper.IVoidUpgrade;
 import ruiseki.okbackpack.api.wrapper.IXpPumpUpgrade;
+import ruiseki.okbackpack.api.wrapper.TargetSlot;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
-import ruiseki.okbackpack.common.item.deposit.AdvancedDepositUpgradeWrapper;
-import ruiseki.okbackpack.common.item.deposit.DepositFilterType;
-import ruiseki.okbackpack.common.item.deposit.DepositUpgradeWrapper;
-import ruiseki.okbackpack.common.item.feeding.AdvancedFeedingUpgradeWrapper;
-import ruiseki.okbackpack.common.item.jukebox.AdvancedJukeboxUpgradeWrapper;
-import ruiseki.okbackpack.common.item.pickup.AdvancedPickupUpgradeWrapper;
-import ruiseki.okbackpack.common.item.pump.AdvancedPumpUpgradeWrapper;
-import ruiseki.okbackpack.common.item.pump.FluidFilterType;
-import ruiseki.okbackpack.common.item.pump.PumpUpgradeWrapper;
-import ruiseki.okbackpack.common.item.refill.AdvancedRefillUpgradeWrapper;
-import ruiseki.okbackpack.common.item.refill.TargetSlot;
-import ruiseki.okbackpack.common.item.restock.AdvancedRestockUpgradeWrapper;
-import ruiseki.okbackpack.common.item.restock.RestockFilterType;
-import ruiseki.okbackpack.common.item.restock.RestockUpgradeWrapper;
 import ruiseki.okcore.init.IInitListener;
 import ruiseki.okcore.item.ItemStackHandler;
 
@@ -128,11 +125,9 @@ public class UpgradeSlotSHRegisters implements IInitListener {
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_ADVANCED_FEEDING, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (!(wrapper instanceof AdvancedFeedingUpgradeWrapper upgrade)) return;
-                upgrade.setHungerFeedingStrategy(
-                    NetworkUtils.readEnumValue(buf, IFeedingUpgrade.FeedingStrategy.Hunger.class));
-                upgrade.setHealthFeedingStrategy(
-                    NetworkUtils.readEnumValue(buf, IFeedingUpgrade.FeedingStrategy.HEALTH.class));
+                if (!(wrapper instanceof IFeedingUpgrade upgrade)) return;
+                upgrade.setHungerFeedingStrategy(NetworkUtils.readEnumValue(buf, FeedingStrategy.Hunger.class));
+                upgrade.setHealthFeedingStrategy(NetworkUtils.readEnumValue(buf, FeedingStrategy.HEALTH.class));
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_FILTER, (slot, buf) -> {
@@ -213,25 +208,25 @@ public class UpgradeSlotSHRegisters implements IInitListener {
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_PREV, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (!(wrapper instanceof AdvancedJukeboxUpgradeWrapper jukebox)) return;
+                if (!(wrapper instanceof IJukeboxUpgrade jukebox)) return;
                 jukebox.previous();
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_NEXT, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (!(wrapper instanceof AdvancedJukeboxUpgradeWrapper jukebox)) return;
+                if (!(wrapper instanceof IJukeboxUpgrade jukebox)) return;
                 jukebox.next();
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_SHUFFLE, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (!(wrapper instanceof AdvancedJukeboxUpgradeWrapper jukebox)) return;
+                if (!(wrapper instanceof IJukeboxUpgrade jukebox)) return;
                 jukebox.setShuffleEnabled(buf.readBoolean());
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_JUKEBOX_LOOP, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (!(wrapper instanceof AdvancedJukeboxUpgradeWrapper jukebox)) return;
+                if (!(wrapper instanceof IJukeboxUpgrade jukebox)) return;
                 int ordinal = buf.readInt();
                 JukeboxLoopMode[] modes = JukeboxLoopMode.values();
                 if (ordinal >= 0 && ordinal < modes.length) {
@@ -256,7 +251,7 @@ public class UpgradeSlotSHRegisters implements IInitListener {
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_REFILL_TARGET_SLOT, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (!(wrapper instanceof AdvancedRefillUpgradeWrapper refill)) return;
+                if (!(wrapper instanceof IRefillUpgrade refill) || !refill.allowsTargetSlotSelection()) return;
                 int filterSlot = buf.readInt();
                 int ordinal = buf.readInt();
                 if (filterSlot >= 0 && filterSlot < refill.getFilterSlotCount()) {
@@ -296,56 +291,50 @@ public class UpgradeSlotSHRegisters implements IInitListener {
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_DEPOSIT, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (wrapper instanceof DepositUpgradeWrapper deposit) {
-                    deposit.setDepositFilterType(NetworkUtils.readEnumValue(buf, DepositFilterType.class));
-                } else if (wrapper instanceof AdvancedDepositUpgradeWrapper advDeposit) {
-                    advDeposit.setDepositFilterType(NetworkUtils.readEnumValue(buf, DepositFilterType.class));
-                }
+                if (!(wrapper instanceof IDepositUpgrade deposit)) return;
+                deposit.setDepositFilterType(NetworkUtils.readEnumValue(buf, DepositFilterType.class));
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_RESTOCK, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (wrapper instanceof RestockUpgradeWrapper restock) {
-                    restock.setRestockFilterType(NetworkUtils.readEnumValue(buf, RestockFilterType.class));
-                } else if (wrapper instanceof AdvancedRestockUpgradeWrapper advRestock) {
-                    advRestock.setRestockFilterType(NetworkUtils.readEnumValue(buf, RestockFilterType.class));
-                }
+                if (!(wrapper instanceof IRestockUpgrade restock)) return;
+                restock.setRestockFilterType(NetworkUtils.readEnumValue(buf, RestockFilterType.class));
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_PICKUP, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (!(wrapper instanceof AdvancedPickupUpgradeWrapper advPickup)) return;
-                advPickup.setPickupFilterType(NetworkUtils.readEnumValue(buf, RestockFilterType.class));
+                if (!(wrapper instanceof IPickupUpgrade pickup)) return;
+                pickup.setPickupFilterType(NetworkUtils.readEnumValue(buf, PickupFilterType.class));
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_PUMP_INPUT, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (!(wrapper instanceof PumpUpgradeWrapper pump)) return;
+                if (!(wrapper instanceof IPumpUpgrade pump)) return;
                 pump.setInput(buf.readBoolean());
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_PUMP_HAND, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (!(wrapper instanceof PumpUpgradeWrapper pump)) return;
+                if (!(wrapper instanceof IPumpUpgrade pump)) return;
                 pump.setInteractWithHand(buf.readBoolean());
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_PUMP_WORLD, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (!(wrapper instanceof PumpUpgradeWrapper pump)) return;
+                if (!(wrapper instanceof IPumpUpgrade pump)) return;
                 pump.setInteractWithWorld(buf.readBoolean());
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_PUMP_HANDLERS, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (!(wrapper instanceof PumpUpgradeWrapper pump)) return;
+                if (!(wrapper instanceof IPumpUpgrade pump)) return;
                 pump.setInteractWithFluidHandlers(buf.readBoolean());
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_PUMP_FILTER_TYPE, (slot, buf) -> {
                 IUpgradeWrapper wrapper = slot.getWrapper();
-                if (!(wrapper instanceof AdvancedPumpUpgradeWrapper adv)) return;
-                adv.setFilterType(NetworkUtils.readEnumValue(buf, FluidFilterType.class));
+                if (!(wrapper instanceof IPumpUpgrade pump) || !pump.isAdvanced()) return;
+                pump.setFilterType(NetworkUtils.readEnumValue(buf, FluidFilterType.class));
             });
 
             UpgradeSlotSHRegistry.registerServer(UPDATE_XP_PUMP_DIRECTION, (slot, buf) -> {

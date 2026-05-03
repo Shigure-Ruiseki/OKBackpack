@@ -20,6 +20,14 @@ public class PickupUpgradeWrapper extends BasicUpgradeWrapper implements IPickup
     }
 
     @Override
+    public PickupFilterType getPickupFilterType() {
+        return PickupFilterType.ALLOW;
+    }
+
+    @Override
+    public void setPickupFilterType(PickupFilterType type) {}
+
+    @Override
     public boolean canPickup(ItemStack stack) {
         return checkFilter(stack);
     }

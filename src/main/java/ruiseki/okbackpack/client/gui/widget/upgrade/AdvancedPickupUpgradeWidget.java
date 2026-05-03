@@ -10,12 +10,12 @@ import com.cleanroommc.modularui.network.NetworkUtils;
 
 import lombok.Getter;
 import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.wrapper.IPickupUpgrade.PickupFilterType;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.common.item.pickup.AdvancedPickupUpgradeWrapper;
-import ruiseki.okbackpack.common.item.restock.RestockFilterType;
 
 public class AdvancedPickupUpgradeWidget extends AdvancedExpandedTabWidget<AdvancedPickupUpgradeWrapper> {
 
@@ -42,7 +42,7 @@ public class AdvancedPickupUpgradeWidget extends AdvancedExpandedTabWidget<Advan
             wrapper.getPickupFilterType()
                 .ordinal(),
             index -> {
-                wrapper.setPickupFilterType(RestockFilterType.values()[index]);
+                wrapper.setPickupFilterType(PickupFilterType.values()[index]);
                 if (this.filterWidget.getSlotSyncHandler() != null) {
                     this.filterWidget.getSyncHandler()
                         .syncToServer(
@@ -52,6 +52,6 @@ public class AdvancedPickupUpgradeWidget extends AdvancedExpandedTabWidget<Advan
             });
 
         this.filterWidget.replaceFilterTypeButton(this.pickupFilterButton);
-        this.filterWidget.setSlotsDisabled(() -> wrapper.getPickupFilterType() == RestockFilterType.STORAGE);
+        this.filterWidget.setSlotsDisabled(() -> wrapper.getPickupFilterType() == PickupFilterType.STORAGE);
     }
 }

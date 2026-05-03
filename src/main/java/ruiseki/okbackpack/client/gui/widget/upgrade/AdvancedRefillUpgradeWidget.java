@@ -10,11 +10,11 @@ import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.wrapper.TargetSlot;
 import ruiseki.okbackpack.client.gui.slot.RefillPhantomSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.common.item.refill.AdvancedRefillUpgradeWrapper;
-import ruiseki.okbackpack.common.item.refill.TargetSlot;
 
 public class AdvancedRefillUpgradeWidget extends ExpandedUpgradeTabWidget<AdvancedRefillUpgradeWrapper> {
 

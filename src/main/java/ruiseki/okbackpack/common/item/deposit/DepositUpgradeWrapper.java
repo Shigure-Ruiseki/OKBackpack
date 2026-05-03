@@ -21,8 +21,6 @@ import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class DepositUpgradeWrapper extends BasicUpgradeWrapper implements IDepositUpgrade {
 
-    private static final String DEPOSIT_FILTER_TYPE_TAG = "DepositFilterType";
-
     public DepositUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage, Consumer<ItemStack> upgradeConsumer) {
         super(upgrade, storage, upgradeConsumer);
     }
@@ -32,6 +30,7 @@ public class DepositUpgradeWrapper extends BasicUpgradeWrapper implements IDepos
         return "gui.backpack.deposit_settings";
     }
 
+    @Override
     public DepositFilterType getDepositFilterType() {
         int ordinal = ItemNBTHelpers.getInt(upgrade, DEPOSIT_FILTER_TYPE_TAG, DepositFilterType.ALLOW.ordinal());
         DepositFilterType[] types = DepositFilterType.values();
@@ -39,6 +38,7 @@ public class DepositUpgradeWrapper extends BasicUpgradeWrapper implements IDepos
         return types[ordinal];
     }
 
+    @Override
     public void setDepositFilterType(DepositFilterType type) {
         if (type == null) type = DepositFilterType.ALLOW;
         ItemNBTHelpers.setInt(upgrade, DEPOSIT_FILTER_TYPE_TAG, type.ordinal());
@@ -62,9 +62,7 @@ public class DepositUpgradeWrapper extends BasicUpgradeWrapper implements IDepos
 
         int transferred = InventoryInteractionHelpers.transferToInventory(storage, inventory, stack -> {
             switch (filterType) {
-                case ALLOW:
-                    return checkFilter(stack);
-                case BLOCK:
+                case ALLOW, BLOCK:
                     return checkFilter(stack);
                 case INVENTORY:
                     boolean matchesInventory = inventoryStacks.stream()
@@ -109,15 +107,10 @@ public class DepositUpgradeWrapper extends BasicUpgradeWrapper implements IDepos
         DepositFilterType filterType = getDepositFilterType();
         boolean matchesFilter = matchesAnyFilterItem(check);
 
-        switch (filterType) {
-            case ALLOW:
-            case INVENTORY:
-                return matchesFilter;
-            case BLOCK:
-                return !matchesFilter;
-            default:
-                return false;
-        }
+        return switch (filterType) {
+            case ALLOW, INVENTORY -> matchesFilter;
+            case BLOCK -> !matchesFilter;
+        };
     }
 
     private boolean matchesAnyFilterItem(ItemStack check) {
