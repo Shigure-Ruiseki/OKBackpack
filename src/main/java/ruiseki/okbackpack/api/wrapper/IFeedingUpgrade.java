@@ -164,4 +164,12 @@ public interface IFeedingUpgrade extends ITickable {
             IGNORE;
         }
     }
+
+    FeedingStrategy.Hunger getHungerFeedingStrategy();
+
+    void setHungerFeedingStrategy(FeedingStrategy.Hunger strategy);
+
+    FeedingStrategy.HEALTH getHealthFeedingStrategy();
+
+    void setHealthFeedingStrategy(FeedingStrategy.HEALTH strategy);
 }

@@ -16,4 +16,12 @@ public interface IRefillUpgrade extends ITickable, IToggleable, IBasicFilterable
      * Whether this upgrade supports picking a block from the backpack via middle mouse.
      */
     boolean supportsBlockPick();
+
+    int getFilterSlotCount();
+
+    default TargetSlot getTargetSlot(int filterSlot) {
+        return TargetSlot.ANY;
+    }
+
+    default void setTargetSlot(int filterSlot, TargetSlot targetSlot) {}
 }

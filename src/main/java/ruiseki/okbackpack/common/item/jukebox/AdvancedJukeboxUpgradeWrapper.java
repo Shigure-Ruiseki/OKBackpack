@@ -105,14 +105,17 @@ public class AdvancedJukeboxUpgradeWrapper extends UpgradeWrapperBase implements
         save();
     }
 
+    @Override
     public boolean isShuffleEnabled() {
         return ItemNBTHelpers.getBoolean(upgrade, SHUFFLE_TAG, false);
     }
 
+    @Override
     public void setShuffleEnabled(boolean enabled) {
         ItemNBTHelpers.setBoolean(upgrade, SHUFFLE_TAG, enabled);
     }
 
+    @Override
     public JukeboxLoopMode getLoopMode() {
         int ordinal = ItemNBTHelpers.getInt(upgrade, LOOP_MODE_TAG, JukeboxLoopMode.OFF.ordinal());
         JukeboxLoopMode[] modes = JukeboxLoopMode.values();
@@ -120,6 +123,7 @@ public class AdvancedJukeboxUpgradeWrapper extends UpgradeWrapperBase implements
         return modes[ordinal];
     }
 
+    @Override
     public void setLoopMode(JukeboxLoopMode mode) {
         if (mode == null) mode = JukeboxLoopMode.OFF;
         ItemNBTHelpers.setInt(upgrade, LOOP_MODE_TAG, mode.ordinal());
@@ -153,6 +157,7 @@ public class AdvancedJukeboxUpgradeWrapper extends UpgradeWrapperBase implements
         markDirty();
     }
 
+    @Override
     public void previous() {
         if (!isEnabled() || !isPlaying()) return;
         List<Integer> playable = buildPlayableSlots();
@@ -171,6 +176,7 @@ public class AdvancedJukeboxUpgradeWrapper extends UpgradeWrapperBase implements
         applyDecision(decision);
     }
 
+    @Override
     public void next() {
         if (!isEnabled() || !isPlaying()) return;
         List<Integer> playable = buildPlayableSlots();

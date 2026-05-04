@@ -43,11 +43,13 @@ public class AdvancedPumpUpgradeWrapper extends PumpUpgradeWrapper {
         save();
     }
 
+    @Override
     public FluidFilterType getFilterType() {
         int ordinal = ItemNBTHelpers.getInt(upgrade, FILTER_TYPE_TAG, FluidFilterType.WHITELIST.ordinal());
         return FluidFilterType.fromOrdinal(ordinal);
     }
 
+    @Override
     public void setFilterType(FluidFilterType type) {
         ItemNBTHelpers.setInt(upgrade, FILTER_TYPE_TAG, type.ordinal());
         save();

@@ -25,6 +25,18 @@ public interface IJukeboxUpgrade extends ITickable, IToggleable, IStorageUpgrade
 
     void stop();
 
+    void previous();
+
+    void next();
+
+    boolean isShuffleEnabled();
+
+    void setShuffleEnabled(boolean enabled);
+
+    JukeboxLoopMode getLoopMode();
+
+    void setLoopMode(JukeboxLoopMode mode);
+
     int getRecordSlotCount();
 
     enum JukeboxLoopMode {

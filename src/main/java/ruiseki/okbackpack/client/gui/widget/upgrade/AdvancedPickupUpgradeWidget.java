@@ -10,16 +10,16 @@ import com.cleanroommc.modularui.network.NetworkUtils;
 
 import lombok.Getter;
 import ruiseki.okbackpack.api.IStoragePanel;
-import ruiseki.okbackpack.api.wrapper.IRestockUpgrade.RestockFilterType;
+import ruiseki.okbackpack.api.wrapper.IPickupUpgrade.PickupFilterType;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
-import ruiseki.okbackpack.common.item.restock.RestockUpgradeWrapper;
+import ruiseki.okbackpack.common.item.pickup.AdvancedPickupUpgradeWrapper;
 
-public class RestockUpgradeWidget extends BasicExpandedTabWidget<RestockUpgradeWrapper> {
+public class AdvancedPickupUpgradeWidget extends AdvancedExpandedTabWidget<AdvancedPickupUpgradeWrapper> {
 
-    private static final List<CyclicVariantButtonWidget.Variant> RESTOCK_FILTER_VARIANTS = Arrays.asList(
+    private static final List<CyclicVariantButtonWidget.Variant> PICKUP_FILTER_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.backpack.restock_filter_allow"),
             OKBGuiTextures.CHECK_ICON),
@@ -31,27 +31,27 @@ public class RestockUpgradeWidget extends BasicExpandedTabWidget<RestockUpgradeW
             OKBGuiTextures.MATCH_BACKPACK_ICON));
 
     @Getter
-    private final CyclicVariantButtonWidget restockFilterButton;
+    private final CyclicVariantButtonWidget pickupFilterButton;
 
-    public RestockUpgradeWidget(int slotIndex, RestockUpgradeWrapper wrapper, ItemStack stack, IStoragePanel<?> panel,
-        String titleKey) {
-        super(slotIndex, wrapper, stack, panel, titleKey, "restock_filter", 4, 75);
+    public AdvancedPickupUpgradeWidget(int slotIndex, AdvancedPickupUpgradeWrapper wrapper, ItemStack stack,
+        IStoragePanel<?> panel, String titleKey) {
+        super(slotIndex, wrapper, stack, panel, titleKey, "adv_common_filter", 6, 100);
 
-        this.restockFilterButton = new CyclicVariantButtonWidget(
-            RESTOCK_FILTER_VARIANTS,
-            wrapper.getRestockFilterType()
+        this.pickupFilterButton = new CyclicVariantButtonWidget(
+            PICKUP_FILTER_VARIANTS,
+            wrapper.getPickupFilterType()
                 .ordinal(),
             index -> {
-                wrapper.setRestockFilterType(RestockFilterType.values()[index]);
+                wrapper.setPickupFilterType(PickupFilterType.values()[index]);
                 if (this.filterWidget.getSlotSyncHandler() != null) {
                     this.filterWidget.getSyncHandler()
                         .syncToServer(
-                            UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_RESTOCK),
-                            buf -> NetworkUtils.writeEnumValue(buf, wrapper.getRestockFilterType()));
+                            UpgradeSlotSH.getId(UpgradeSlotSHRegisters.UPDATE_PICKUP),
+                            buf -> NetworkUtils.writeEnumValue(buf, wrapper.getPickupFilterType()));
                 }
             });
 
-        this.filterWidget.replaceFilterTypeButton(this.restockFilterButton);
-        this.filterWidget.setSlotsDisabled(() -> wrapper.getRestockFilterType() == RestockFilterType.STORAGE);
+        this.filterWidget.replaceFilterTypeButton(this.pickupFilterButton);
+        this.filterWidget.setSlotsDisabled(() -> wrapper.getPickupFilterType() == PickupFilterType.STORAGE);
     }
 }

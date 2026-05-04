@@ -83,24 +83,28 @@ public class AdvancedFeedingUpgradeWrapper extends AdvancedUpgradeWrapper implem
         return -1;
     }
 
+    @Override
     public FeedingStrategy.Hunger getHungerFeedingStrategy() {
         int ord = ItemNBTHelpers.getInt(upgrade, HUNGER_FEEDING_STRATEGY_TAG, FeedingStrategy.Hunger.FULL.ordinal());
         FeedingStrategy.Hunger[] vals = FeedingStrategy.Hunger.values();
         return (ord < 0 || ord >= vals.length) ? FeedingStrategy.Hunger.FULL : vals[ord];
     }
 
+    @Override
     public void setHungerFeedingStrategy(FeedingStrategy.Hunger strategy) {
         if (strategy == null) strategy = FeedingStrategy.Hunger.FULL;
         ItemNBTHelpers.setInt(upgrade, HUNGER_FEEDING_STRATEGY_TAG, strategy.ordinal());
         save();
     }
 
+    @Override
     public FeedingStrategy.HEALTH getHealthFeedingStrategy() {
         int ord = ItemNBTHelpers.getInt(upgrade, HURT_FEEDING_STRATEGY_TAG, FeedingStrategy.HEALTH.ALWAYS.ordinal());
         FeedingStrategy.HEALTH[] vals = FeedingStrategy.HEALTH.values();
         return (ord < 0 || ord >= vals.length) ? FeedingStrategy.HEALTH.ALWAYS : vals[ord];
     }
 
+    @Override
     public void setHealthFeedingStrategy(FeedingStrategy.HEALTH strategy) {
         if (strategy == null) strategy = FeedingStrategy.HEALTH.ALWAYS;
         ItemNBTHelpers.setInt(upgrade, HURT_FEEDING_STRATEGY_TAG, strategy.ordinal());

@@ -124,6 +124,28 @@ public class JukeboxUpgradeWrapper extends UpgradeWrapperBase implements IJukebo
     }
 
     @Override
+    public void previous() {}
+
+    @Override
+    public void next() {}
+
+    @Override
+    public boolean isShuffleEnabled() {
+        return false;
+    }
+
+    @Override
+    public void setShuffleEnabled(boolean enabled) {}
+
+    @Override
+    public JukeboxLoopMode getLoopMode() {
+        return JukeboxLoopMode.OFF;
+    }
+
+    @Override
+    public void setLoopMode(JukeboxLoopMode mode) {}
+
+    @Override
     public boolean isEnabled() {
         return ItemNBTHelpers.getBoolean(upgrade, ENABLED_TAG, true);
     }

@@ -21,8 +21,6 @@ import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class AdvancedDepositUpgradeWrapper extends AdvancedUpgradeWrapper implements IDepositUpgrade {
 
-    private static final String DEPOSIT_FILTER_TYPE_TAG = "DepositFilterType";
-
     public AdvancedDepositUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage,
         Consumer<ItemStack> upgradeConsumer) {
         super(upgrade, storage, upgradeConsumer);
@@ -33,6 +31,7 @@ public class AdvancedDepositUpgradeWrapper extends AdvancedUpgradeWrapper implem
         return "gui.backpack.advanced_deposit_settings";
     }
 
+    @Override
     public DepositFilterType getDepositFilterType() {
         int ordinal = ItemNBTHelpers.getInt(upgrade, DEPOSIT_FILTER_TYPE_TAG, DepositFilterType.ALLOW.ordinal());
         DepositFilterType[] types = DepositFilterType.values();
@@ -40,6 +39,7 @@ public class AdvancedDepositUpgradeWrapper extends AdvancedUpgradeWrapper implem
         return types[ordinal];
     }
 
+    @Override
     public void setDepositFilterType(DepositFilterType type) {
         if (type == null) type = DepositFilterType.ALLOW;
         ItemNBTHelpers.setInt(upgrade, DEPOSIT_FILTER_TYPE_TAG, type.ordinal());

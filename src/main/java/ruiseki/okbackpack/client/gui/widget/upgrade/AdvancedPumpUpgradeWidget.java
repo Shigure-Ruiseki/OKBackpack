@@ -12,6 +12,7 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.FluidSlot;
 
 import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.wrapper.IPumpUpgrade.FluidFilterType;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
@@ -19,7 +20,6 @@ import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget.Variant;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.AdvancedPumpFilterSlotGroupFactory;
 import ruiseki.okbackpack.common.item.pump.AdvancedPumpUpgradeWrapper;
-import ruiseki.okbackpack.common.item.pump.FluidFilterType;
 
 public class AdvancedPumpUpgradeWidget extends PumpUpgradeWidget<AdvancedPumpUpgradeWrapper> {
 
