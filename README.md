@@ -1,4 +1,7 @@
 
+[![](https://cf.way2muchnoise.eu/full_1382289_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/okbackpack)
+[![](https://cf.way2muchnoise.eu/versions/For%20MC_1382289_all.svg)](https://www.curseforge.com/minecraft/mc-mods/okbackpack)
+
 ## Required Dependencies:
 
 - [ModularUI2 (>= 2.3.56)](https://github.com/GTNewHorizons/ModularUI2)
