@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
 import com.cleanroommc.modularui.api.inventory.ClickType;
+import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.screen.NEAAnimationHandler;
 import com.cleanroommc.modularui.utils.Platform;
@@ -218,6 +219,10 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
         InventoryPlayer playerInventory = player.inventory;
         ItemStack heldStack = playerInventory.getItemStack();
         ItemStack returnable = null;
+
+        if (isOpenBackpackPlayerSlot(slotId)) {
+            return Platform.EMPTY_STACK;
+        }
 
         if (clickTypeIn == ClickType.QUICK_CRAFT || acc().getDragEvent() != 0) {
             ItemStack result = super.slotClick(slotId, mouseButton, mode, player);
@@ -456,7 +461,7 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
         else if (clickTypeIn == ClickType.SWAP && mouseButton >= 0
             && mouseButton < 9
             && backpackSlotIndex != null
-            && backpackSlotIndex == mouseButton) {
+            && (backpackSlotIndex == mouseButton || isOpenBackpackPlayerSlot(slotId))) {
 
                 return Platform.EMPTY_STACK;
             }
@@ -467,7 +472,7 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
         ModularSlot slot = getModularSlot(index);
-        if (!slot.canTakeStack(playerIn)) {
+        if (slot == null || isOpenBackpackPlayerSlot(slot) || !slot.canTakeStack(playerIn)) {
             return Platform.EMPTY_STACK;
         }
         return super.transferStackInSlot(playerIn, index);
@@ -538,6 +543,21 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
         }
 
         return super.transferItem(fromSlot, fromStack);
+    }
+
+    private boolean isOpenBackpackPlayerSlot(int slotId) {
+        if (slotId < 0 || slotId >= inventorySlots.size()) {
+            return false;
+        }
+        return isOpenBackpackPlayerSlot(getSlot(slotId));
+    }
+
+    private boolean isOpenBackpackPlayerSlot(Slot slot) {
+        if (backpackSlotIndex == null || wrapper.getType() != InventoryTypes.PLAYER) {
+            return false;
+        }
+        return slot instanceof ModularSlot modularSlot && PLAYER_INV.equals(modularSlot.getSlotGroupName())
+            && modularSlot.getSlotIndex() == backpackSlotIndex;
     }
 
     @SafeVarargs
