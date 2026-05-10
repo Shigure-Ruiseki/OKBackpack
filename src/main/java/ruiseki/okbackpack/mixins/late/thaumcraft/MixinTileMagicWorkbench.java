@@ -27,6 +27,12 @@ public abstract class MixinTileMagicWorkbench implements IVisChargeTarget {
 
     @Override
     public void onVisCharged() {
-        eventHandler.onCraftMatrixChanged((TileMagicWorkbench) (Object) this);
+        TileMagicWorkbench workbench = (TileMagicWorkbench) (Object) this;
+        if (eventHandler != null) {
+            eventHandler.onCraftMatrixChanged(workbench);
+            return;
+        }
+
+        workbench.markDirty();
     }
 }
