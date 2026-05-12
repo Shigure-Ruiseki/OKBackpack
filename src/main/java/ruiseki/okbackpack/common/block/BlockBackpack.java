@@ -45,6 +45,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
 import ruiseki.okbackpack.OKBCreativeTab;
+import ruiseki.okbackpack.api.ITintable;
 import ruiseki.okbackpack.api.wrapper.IAdminProtectable;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.api.wrapper.IBookshelfUpgrade;
@@ -64,6 +65,7 @@ import ruiseki.okbackpack.common.helpers.InventoryInteractionHelpers;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.block.BlockOK;
 import ruiseki.okcore.energy.IOKEnergyItem;
+import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemBlockBauble;
 
@@ -199,10 +201,10 @@ public class BlockBackpack extends BlockOK {
             public int colorMultiplier(@Nullable ItemStack stack, int tintIndex) {
                 if (stack == null) return -1;
 
-                BackpackWrapper wrapper = new BackpackWrapper(stack, backpackSlots, upgradeSlots);
+                NBTTagCompound compound = ItemNBTHelpers.getCompound(stack, BackpackWrapper.BACKPACK_NBT, true);
                 return switch (tintIndex) {
-                    case 0 -> wrapper.getMainColor();
-                    case 1 -> wrapper.getAccentColor();
+                    case 0 -> compound != null ? compound.getInteger(ITintable.MAIN_COLOR) : 0xFFCC613A;
+                    case 1 -> compound != null ? compound.getInteger(ITintable.ACCENT_COLOR) : 0xFF622E1A;
                     default -> -1;
                 };
             }
@@ -488,6 +490,7 @@ public class BlockBackpack extends BlockOK {
         }
 
         @Override
+        @Optional.Method(modid = "angelica")
         public int getLuminance(ItemStack container) {
             BackpackWrapper wrapper = createWrapper(container);
             if (wrapper == null) return 0;

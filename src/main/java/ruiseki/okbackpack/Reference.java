@@ -10,6 +10,7 @@ public class Reference {
         + "required-after:okcore@[1.2.4,);"
         + "required-after:Baubles|Expanded;"
         + "after:TConstruct;"
+        + "after:angelica;"
         + "after:NotEnoughItems;"
         + "after:Waila;";
 
