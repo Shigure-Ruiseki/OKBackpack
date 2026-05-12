@@ -21,8 +21,6 @@ import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class AdvancedRestockUpgradeWrapper extends AdvancedUpgradeWrapper implements IRestockUpgrade {
 
-    private static final String RESTOCK_FILTER_TYPE_TAG = "RestockFilterType";
-
     public AdvancedRestockUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage,
         Consumer<ItemStack> upgradeConsumer) {
         super(upgrade, storage, upgradeConsumer);
@@ -33,6 +31,7 @@ public class AdvancedRestockUpgradeWrapper extends AdvancedUpgradeWrapper implem
         return "gui.backpack.advanced_restock_settings";
     }
 
+    @Override
     public RestockFilterType getRestockFilterType() {
         int ordinal = ItemNBTHelpers.getInt(upgrade, RESTOCK_FILTER_TYPE_TAG, RestockFilterType.ALLOW.ordinal());
         RestockFilterType[] types = RestockFilterType.values();
@@ -40,6 +39,7 @@ public class AdvancedRestockUpgradeWrapper extends AdvancedUpgradeWrapper implem
         return types[ordinal];
     }
 
+    @Override
     public void setRestockFilterType(RestockFilterType type) {
         if (type == null) type = RestockFilterType.ALLOW;
         ItemNBTHelpers.setInt(upgrade, RESTOCK_FILTER_TYPE_TAG, type.ordinal());

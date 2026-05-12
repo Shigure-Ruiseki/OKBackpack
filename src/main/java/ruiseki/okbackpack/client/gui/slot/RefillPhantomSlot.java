@@ -16,7 +16,7 @@ import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
 
-import ruiseki.okbackpack.common.item.refill.TargetSlot;
+import ruiseki.okbackpack.api.wrapper.TargetSlot;
 import ruiseki.okcore.helper.LangHelpers;
 
 public class RefillPhantomSlot extends PhantomItemSlot {

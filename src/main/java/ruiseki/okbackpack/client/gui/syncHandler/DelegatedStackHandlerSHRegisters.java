@@ -31,6 +31,7 @@ public class DelegatedStackHandlerSHRegisters implements IInitListener {
     public static final String UPDATE_CRAFTING_CHANGES = "update_crafting_changes";
     public static final String UPDATE_ARCANE_CRAFTING = "update_arcane_crafting";
     public static final String UPDATE_ARCANE_CRAFTING_CHANGES = "update_arcane_crafting_changes";
+    public static final String UPDATE_PUMP_FLUID_FILTER = "update_pump_fluid_filter";
 
     @Override
     public void onInit(IInitListener.Step step) {
@@ -59,6 +60,13 @@ public class DelegatedStackHandlerSHRegisters implements IInitListener {
                 IUpgradeWrapper wrapper = handler.getWrapper();
                 if (!(wrapper instanceof ISmeltingUpgrade upgrade)) return;
                 handler.setDelegatedStackHandler(upgrade::getFuelFilterItems);
+            });
+
+            DelegatedStackHandlerSHRegistry.registerServer(UPDATE_PUMP_FLUID_FILTER, (handler, buf) -> {
+                // Legacy slot kept for backward compatibility; advanced pump now uses
+                // FluidSlotSyncHandler instances bound directly in
+                // AdvancedPumpFilterSlotGroupFactory and no longer relies on a delegated stack
+                // handler for its fluid filters.
             });
 
             DelegatedStackHandlerSHRegistry.registerServer(UPDATE_CRAFTING, (handler, buf) -> {

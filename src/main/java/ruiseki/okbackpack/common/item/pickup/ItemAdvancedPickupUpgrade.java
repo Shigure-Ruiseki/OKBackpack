@@ -12,7 +12,7 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
-import ruiseki.okbackpack.client.gui.widget.upgrade.AdvancedExpandedTabWidget;
+import ruiseki.okbackpack.client.gui.widget.upgrade.AdvancedPickupUpgradeWidget;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okcore.helper.LangHelpers;
@@ -58,6 +58,6 @@ public class ItemAdvancedPickupUpgrade extends ItemUpgrade<AdvancedPickupUpgrade
     @Override
     public ExpandedTabWidget getExpandedTabWidget(int slotIndex, AdvancedPickupUpgradeWrapper wrapper, ItemStack stack,
         IStoragePanel<?> panel, String titleKey) {
-        return new AdvancedExpandedTabWidget<>(slotIndex, wrapper, stack, panel, titleKey);
+        return new AdvancedPickupUpgradeWidget(slotIndex, wrapper, stack, panel, titleKey);
     }
 }

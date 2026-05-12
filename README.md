@@ -1,9 +1,12 @@
 
+[![](https://cf.way2muchnoise.eu/full_1488577_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/okbackpack)
+[![](https://cf.way2muchnoise.eu/versions/For%20MC_1488577_all.svg)](https://www.curseforge.com/minecraft/mc-mods/okbackpack)
+
 ## Required Dependencies:
 
 - [ModularUI2 (>= 2.3.56)](https://github.com/GTNewHorizons/ModularUI2)
-- [GTNHLib (>= 0.9.52)](https://github.com/GTNewHorizons/GTNHLib)
-- [OKCore](https://github.com/Shigure-Ruiseki/OKCore)
+- [GTNHLib (>= 0.9.59)](https://github.com/GTNewHorizons/GTNHLib)
+- [OKCore (>= 1.2.4)](https://github.com/Shigure-Ruiseki/OKCore)
 
 ## Features:
 
@@ -39,6 +42,7 @@
 - [X] Restock upgrade — restocks backpack items from containers
 - [X] Tank upgrade — stores fluids
 - [X] Battery upgrade — stores energy
+- [X] Pump upgrade — transfers fluids
 
 #### Integration
 
@@ -72,7 +76,7 @@
 
 ## License
 
-This mod is primarily released under the MIT License (see LICENSE file).
+This mod is primarily released under the LGPL v3 License (see LICENSE file).
 
 ### Third-party components
 
@@ -85,7 +89,7 @@ their original licenses:
 - Any GPLv3/LGPL-3.0 components used in this project remain under GPLv3/LGPL-3.0 and must be
   respected accordingly, all assets are forked before Sophisticated Backpack changes license to All Right Reserve.
 
-You are free to use, modify, and distribute the MIT-licensed portions of this
+You are free to use, modify, and distribute the LGPL-licensed portions of this
 project, but must comply with the original licenses of the included third-party
 components.
 

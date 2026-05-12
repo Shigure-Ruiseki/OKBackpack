@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -37,7 +38,9 @@ import com.gtnewhorizon.gtnhlib.blockstate.properties.DirectionBlockProperty;
 import com.gtnewhorizon.gtnhlib.blockstate.registry.BlockPropertyRegistry;
 import com.gtnewhorizon.gtnhlib.client.model.color.BlockColor;
 import com.gtnewhorizon.gtnhlib.client.model.color.IBlockColor;
+import com.gtnewhorizons.angelica.api.IDynamicLightProducer;
 
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
@@ -185,6 +188,11 @@ public class BlockBackpack extends BlockOK {
     }
 
     @Override
+    public Class<? extends ItemBlock> getItemBlockClass() {
+        return ItemBackpack.class;
+    }
+
+    @Override
     public void registerComponent() {
         super.registerComponent();
         BlockColor.registerBlockColors(new IBlockColor() {
@@ -291,8 +299,9 @@ public class BlockBackpack extends BlockOK {
         return 0.0f;
     }
 
-    public static class ItemBackpack extends ItemBlockBauble
-        implements IGuiHolder<PlayerInventoryGuiData>, IBaubleRender, IArmorRender, IOKEnergyItem {
+    @Optional.Interface(iface = "com.gtnewhorizons.angelica.api.IDynamicLightProducer", modid = "angelica")
+    public static class ItemBackpack extends ItemBlockBauble implements IGuiHolder<PlayerInventoryGuiData>,
+        IBaubleRender, IArmorRender, IOKEnergyItem, IDynamicLightProducer {
 
         public int backpackSlots = 27;
         public int upgradeSlots = 1;
@@ -306,11 +315,8 @@ public class BlockBackpack extends BlockOK {
         }
 
         private @Nullable IBatteryUpgrade getBatteryUpgrade(ItemStack stack) {
-            if (stack == null || !stack.hasTagCompound()) return null;
-            if (!stack.getTagCompound()
-                .hasKey(BackpackWrapper.BACKPACK_NBT)) return null;
-            BackpackWrapper wrapper = new BackpackWrapper(stack, this);
-            wrapper.readFromItem();
+            var wrapper = createWrapper(stack);
+            if (wrapper == null) return null;
             var batteries = wrapper.gatherCapabilityUpgrades(IBatteryUpgrade.class);
             if (batteries.isEmpty()) return null;
             return batteries.values()
@@ -480,6 +486,25 @@ public class BlockBackpack extends BlockOK {
                     .getString("Name");
             }
             return super.getItemStackDisplayName(stack);
+        }
+
+        @Override
+        public int getLuminance(ItemStack container) {
+            BackpackWrapper wrapper = createWrapper(container);
+            if (wrapper == null) return 0;
+
+            var lights = wrapper.gatherCapabilityUpgrades(ILightUpgrade.class);
+            if (lights.isEmpty()) return 0;
+
+            int maxLight = 0;
+
+            for (ILightUpgrade light : lights.values()) {
+                if (light != null) {
+                    maxLight = Math.max(maxLight, light.getLightLevel());
+                }
+            }
+
+            return maxLight;
         }
 
         @Override

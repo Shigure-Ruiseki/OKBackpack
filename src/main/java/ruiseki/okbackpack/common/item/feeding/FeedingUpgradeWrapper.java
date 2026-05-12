@@ -101,4 +101,20 @@ public class FeedingUpgradeWrapper extends BasicUpgradeWrapper implements IFeedi
 
         return fedAny;
     }
+
+    @Override
+    public FeedingStrategy.Hunger getHungerFeedingStrategy() {
+        return FeedingStrategy.Hunger.ALWAYS;
+    }
+
+    @Override
+    public void setHungerFeedingStrategy(FeedingStrategy.Hunger strategy) {}
+
+    @Override
+    public FeedingStrategy.HEALTH getHealthFeedingStrategy() {
+        return FeedingStrategy.HEALTH.IGNORE;
+    }
+
+    @Override
+    public void setHealthFeedingStrategy(FeedingStrategy.HEALTH strategy) {}
 }

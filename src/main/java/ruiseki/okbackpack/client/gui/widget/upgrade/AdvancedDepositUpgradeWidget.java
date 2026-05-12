@@ -10,12 +10,12 @@ import com.cleanroommc.modularui.network.NetworkUtils;
 
 import lombok.Getter;
 import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.wrapper.IDepositUpgrade.DepositFilterType;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.common.item.deposit.AdvancedDepositUpgradeWrapper;
-import ruiseki.okbackpack.common.item.deposit.DepositFilterType;
 
 public class AdvancedDepositUpgradeWidget extends AdvancedExpandedTabWidget<AdvancedDepositUpgradeWrapper> {
 

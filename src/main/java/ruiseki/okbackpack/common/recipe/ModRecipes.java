@@ -808,6 +808,60 @@ public class ModRecipes implements IInitListener {
                     'U',
                     ModItems.BASE_UPGRADE.getItem()));
 
+            // Pump Upgrade
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.PUMP_UPGRADE.getItem(),
+                    "GUG",
+                    "PBS",
+                    "GUG",
+                    'G',
+                    "blockGlass",
+                    'U',
+                    Items.bucket,
+                    'P',
+                    Blocks.piston,
+                    'S',
+                    Blocks.sticky_piston,
+                    'B',
+                    ModItems.BASE_UPGRADE.getItem()));
+
+            // Advanced Pump Upgrade
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    ModItems.ADVANCED_PUMP_UPGRADE.getItem(),
+                    "DID",
+                    "GPG",
+                    "RRR",
+                    'D',
+                    "gemDiamond",
+                    'I',
+                    Blocks.dispenser,
+                    'G',
+                    "ingotGold",
+                    'P',
+                    ModItems.PUMP_UPGRADE.getItem(),
+                    'R',
+                    "dustRedstone"));
+
+            // Experience Pump Upgrade (requires xpjuice fluid)
+            if (ModItems.xpPumpEnabled()) {
+                GameRegistry.addRecipe(
+                    new ShapedOreRecipe(
+                        ModItems.XP_PUMP_UPGRADE.getItem(),
+                        "RER",
+                        "CPC",
+                        "RER",
+                        'R',
+                        "dustRedstone",
+                        'E',
+                        Items.ender_eye,
+                        'C',
+                        Items.experience_bottle,
+                        'P',
+                        ModItems.ADVANCED_PUMP_UPGRADE.getItem()));
+            }
+
             // Battery Upgrade
             GameRegistry.addRecipe(
                 new ShapedOreRecipe(

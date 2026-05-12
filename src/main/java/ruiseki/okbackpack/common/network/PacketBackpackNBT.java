@@ -83,6 +83,5 @@ public class PacketBackpackNBT extends PacketCodec {
         }
 
         wrapper.setBackpackStack(stack);
-        wrapper.readFromItem();
     }
 }
