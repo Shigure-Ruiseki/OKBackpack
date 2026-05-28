@@ -2,12 +2,19 @@
 [![](https://cf.way2muchnoise.eu/full_1488577_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/okbackpack)
 [![](https://cf.way2muchnoise.eu/versions/For%20MC_1488577_all.svg)](https://www.curseforge.com/minecraft/mc-mods/okbackpack)
 
-## Required Dependencies:
+## Required Dependencies
 
-- [ModularUI2 (>= 2.3.56)](https://github.com/GTNewHorizons/ModularUI2)
-- [GTNHLib (>= 0.9.59)](https://github.com/GTNewHorizons/GTNHLib)
-- [OKCore (== 1.4.2)](https://github.com/Shigure-Ruiseki/OKCore)
+*   [ModularUI2 (>= 2.3.63)](https://github.com/GTNewHorizons/ModularUI2)
+*   [GTNHLib (>= 0.9.66)](https://github.com/GTNewHorizons/GTNHLib)
+*   [OKCore](https://github.com/Shigure-Ruiseki/OKCore) (See version compatibility below)
 
+### Version Compatibility
+Please ensure your **OKCore** version matches your **OKBackpack** version to prevent crashes or data loss:
+
+| OKBackpack Version | Required OKCore Version |
+|:-------------------|:------------------------|
+| **1.4.2**          | **1.4.2**               |
+| **>= 1.4.3**       | **>= 1.5.4.1**          |
 ## Features:
 
 #### Backpack
