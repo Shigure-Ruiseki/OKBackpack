@@ -1,6 +1,7 @@
 
 [![](https://cf.way2muchnoise.eu/full_1488577_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/okbackpack)
 [![](https://cf.way2muchnoise.eu/versions/For%20MC_1488577_all.svg)](https://www.curseforge.com/minecraft/mc-mods/okbackpack)
+[![](https://jitpack.io/v/Shigure-Ruiseki/OKBackpack.svg)](https://jitpack.io/#Shigure-Ruiseki/OKBackpack)
 
 ## Required Dependencies
 
