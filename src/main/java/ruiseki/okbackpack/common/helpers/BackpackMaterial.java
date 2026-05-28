@@ -3,6 +3,7 @@ package ruiseki.okbackpack.common.helpers;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -11,11 +12,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import cpw.mods.fml.common.registry.GameData;
 import lombok.Getter;
 import lombok.Setter;
 import ruiseki.okcore.helper.JsonNBTHelpers;
 import ruiseki.okcore.json.AbstractJsonMaterial;
-import ruiseki.okcore.json.ItemJson;
 
 /**
  * Material class representing a Backpack template JSON.
@@ -143,6 +144,7 @@ public class BackpackMaterial extends AbstractJsonMaterial {
 
         public int slot;
         public String id;
+        public int meta = 0;
         public int count = 1;
         public NBTTagCompound nbt;
 
@@ -163,6 +165,7 @@ public class BackpackMaterial extends AbstractJsonMaterial {
         public void write(JsonObject json) {
             json.addProperty("Slot", slot);
             if (id != null) json.addProperty("id", id);
+            if (meta != 0) json.addProperty("Meta", meta);
             if (count != 1) json.addProperty("Count", count);
             if (nbt != null) {
                 json.add("nbt", JsonNBTHelpers.nbtToJSON(nbt));
@@ -170,12 +173,12 @@ public class BackpackMaterial extends AbstractJsonMaterial {
         }
 
         public ItemStack toItemStack() {
-            ItemJson itemJson = new ItemJson();
-            itemJson.name = id;
-            itemJson.amount = count;
+            if (id == null) return null;
+            Item item = GameData.getItemRegistry()
+                .getObject(id);
+            if (item == null) return null;
 
-            ItemStack stack = ItemJson.resolveItemStack(itemJson);
-            if (stack == null) return null;
+            ItemStack stack = new ItemStack(item, count, meta);
             if (nbt != null) {
                 stack.setTagCompound((NBTTagCompound) nbt.copy());
             }
@@ -186,16 +189,10 @@ public class BackpackMaterial extends AbstractJsonMaterial {
             if (stack == null) return null;
             BackpackEntry entry = new BackpackEntry();
             entry.slot = slot;
-            ItemJson itemJson = ItemJson.parseItemStack(stack);
-            if (itemJson != null) {
-                // Check if it has metadata in ItemJson
-                if (itemJson.meta != 0) {
-                    entry.id = itemJson.name + ":" + itemJson.meta;
-                } else {
-                    entry.id = itemJson.name;
-                }
-            }
+            entry.id = GameData.getItemRegistry()
+                .getNameForObject(stack.getItem());
             entry.count = stack.stackSize;
+            entry.meta = stack.getItemDamage();
             if (stack.hasTagCompound()) {
                 entry.nbt = (NBTTagCompound) stack.getTagCompound()
                     .copy();
