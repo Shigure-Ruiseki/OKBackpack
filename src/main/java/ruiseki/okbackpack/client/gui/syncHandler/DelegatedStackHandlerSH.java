@@ -16,7 +16,7 @@ import ruiseki.okbackpack.client.gui.handler.DelegatedItemHandler;
 import ruiseki.okcore.item.EmptyHandler;
 import ruiseki.okcore.item.IItemHandler;
 
-public class DelegatedStackHandlerSH extends SyncHandler {
+public class DelegatedStackHandlerSH extends SyncHandler<DelegatedStackHandlerSH> {
 
     public final Supplier<IStorageContainer<?>> containerProvider;
     public final IStorageWrapper wrapper;
@@ -80,5 +80,10 @@ public class DelegatedStackHandlerSH extends SyncHandler {
 
     public static int getId(String name) {
         return DelegatedStackHandlerSHRegistry.getId(name);
+    }
+
+    @Override
+    public boolean isAllowC2S() {
+        return true;
     }
 }

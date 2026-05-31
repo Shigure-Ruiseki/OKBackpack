@@ -37,6 +37,11 @@ public class BackpackSlotSH extends ItemSlotSH {
     }
 
     @Override
+    public boolean isAllowC2S() {
+        return true;
+    }
+
+    @Override
     public void readOnClient(int id, PacketBuffer buf) {
         if (!BackpackSlotSHRegistry.isClientEmpty()) {
             try {

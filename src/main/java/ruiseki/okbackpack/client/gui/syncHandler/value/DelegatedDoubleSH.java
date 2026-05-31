@@ -8,7 +8,7 @@ import com.cleanroommc.modularui.api.value.sync.IStringSyncValue;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 
-public class DelegatedDoubleSH extends DelegatedValueSH<Double>
+public class DelegatedDoubleSH extends DelegatedValueSH<Double, DelegatedDoubleSH>
     implements IFloatSyncValue<Double>, IDoubleSyncValue<Double>, IStringSyncValue<Double> {
 
     public DelegatedDoubleSupplier delegatedSupplier;

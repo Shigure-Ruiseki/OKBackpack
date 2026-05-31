@@ -54,4 +54,9 @@ public class FilterSlotSH extends PhantomItemSlotSH {
             phantomClick(new MouseData(Side.SERVER, button, false, false, false), itemStack);
         }
     }
+
+    @Override
+    public boolean isAllowC2S() {
+        return true;
+    }
 }

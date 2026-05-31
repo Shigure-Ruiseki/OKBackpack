@@ -10,7 +10,8 @@ import com.cleanroommc.modularui.network.NetworkUtils;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 
-public class DelegatedEnumSH<T extends Enum<T>> extends DelegatedValueSH<T> implements IEnumValue<T>, IIntSyncValue<T> {
+public class DelegatedEnumSH<T extends Enum<T>> extends DelegatedValueSH<T, DelegatedEnumSH<T>>
+    implements IEnumValue<T>, IIntSyncValue<T> {
 
     protected final Class<T> enumClass;
     public DelegatedEnumSupplier<T> delegatedSupplier;

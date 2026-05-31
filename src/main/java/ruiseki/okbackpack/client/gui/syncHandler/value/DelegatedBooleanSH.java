@@ -7,7 +7,7 @@ import com.cleanroommc.modularui.api.value.sync.IStringSyncValue;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 
-public class DelegatedBooleanSH extends DelegatedValueSH<Boolean>
+public class DelegatedBooleanSH extends DelegatedValueSH<Boolean, DelegatedBooleanSH>
     implements IBoolSyncValue<Boolean>, IStringSyncValue<Boolean> {
 
     public DelegatedBooleanSupplier delegatedSupplier;

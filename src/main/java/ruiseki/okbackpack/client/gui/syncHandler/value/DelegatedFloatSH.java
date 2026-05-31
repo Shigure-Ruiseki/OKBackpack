@@ -9,7 +9,7 @@ import com.cleanroommc.modularui.utils.FloatSupplier;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 
-public class DelegatedFloatSH extends DelegatedValueSH<Float>
+public class DelegatedFloatSH extends DelegatedValueSH<Float, DelegatedFloatSH>
     implements IFloatSyncValue<Float>, IDoubleSyncValue<Float>, IStringSyncValue<Float> {
 
     public DelegatedFloatSupplier delegatedSupplier;
