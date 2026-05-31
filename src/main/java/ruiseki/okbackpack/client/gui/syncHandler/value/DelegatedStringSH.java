@@ -9,7 +9,7 @@ import com.cleanroommc.modularui.api.value.sync.IStringSyncValue;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 
-public class DelegatedStringSH extends DelegatedValueSH<String> implements IStringSyncValue<String> {
+public class DelegatedStringSH extends DelegatedValueSH<String, DelegatedStringSH> implements IStringSyncValue<String> {
 
     public DelegatedStringSupplier delegatedSupplier;
 

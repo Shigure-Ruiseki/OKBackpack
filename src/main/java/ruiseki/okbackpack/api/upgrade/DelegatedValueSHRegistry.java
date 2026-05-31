@@ -12,12 +12,12 @@ public class DelegatedValueSHRegistry {
 
     public interface ServerHandler {
 
-        void handle(DelegatedValueSH<?> value, PacketBuffer buf) throws IOException;
+        void handle(DelegatedValueSH<?, ?> value, PacketBuffer buf) throws IOException;
     }
 
     public interface ClientHandler {
 
-        void handle(DelegatedValueSH<?> value, PacketBuffer buf) throws IOException;
+        void handle(DelegatedValueSH<?, ?> value, PacketBuffer buf) throws IOException;
     }
 
     private static final Map<Integer, ServerHandler> SERVER_HANDLERS = new HashMap<>();
@@ -42,12 +42,12 @@ public class DelegatedValueSHRegistry {
         return NAME_TO_ID.getOrDefault(name, name.hashCode());
     }
 
-    public static void handleServer(DelegatedValueSH<?> value, int id, PacketBuffer buf) throws IOException {
+    public static void handleServer(DelegatedValueSH<?, ?> value, int id, PacketBuffer buf) throws IOException {
         ServerHandler handler = SERVER_HANDLERS.get(id);
         if (handler != null) handler.handle(value, buf);
     }
 
-    public static void handleClient(DelegatedValueSH<?> value, int id, PacketBuffer buf) throws IOException {
+    public static void handleClient(DelegatedValueSH<?, ?> value, int id, PacketBuffer buf) throws IOException {
         ClientHandler handler = CLIENT_HANDLERS.get(id);
         if (handler != null) handler.handle(value, buf);
     }

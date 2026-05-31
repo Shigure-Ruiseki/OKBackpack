@@ -10,7 +10,7 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.DelegatedValueSHRegistry;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 
-public abstract class DelegatedValueSH<T> extends ValueSyncHandler<T> {
+public abstract class DelegatedValueSH<T, S extends DelegatedValueSH<T, S>> extends ValueSyncHandler<T, S> {
 
     protected T cache;
 
@@ -69,5 +69,10 @@ public abstract class DelegatedValueSH<T> extends ValueSyncHandler<T> {
 
     public static int getId(String name) {
         return DelegatedValueSHRegistry.getId(name);
+    }
+
+    @Override
+    public boolean isAllowC2S() {
+        return true;
     }
 }

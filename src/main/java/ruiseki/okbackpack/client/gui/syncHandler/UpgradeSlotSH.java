@@ -57,4 +57,9 @@ public class UpgradeSlotSH extends ItemSlotSH {
     public static int getId(String name) {
         return UpgradeSlotSHRegistry.getId(name);
     }
+
+    @Override
+    public boolean isAllowC2S() {
+        return true;
+    }
 }

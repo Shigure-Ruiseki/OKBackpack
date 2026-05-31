@@ -11,7 +11,7 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.BackpackSHRegistry;
 import ruiseki.okcore.item.PlayerMainInvWrapper;
 
-public class BackpackSH extends SyncHandler {
+public class BackpackSH extends SyncHandler<BackpackSH> {
 
     public final PlayerMainInvWrapper playerInv;
     public final IStorageWrapper wrapper;
@@ -49,5 +49,10 @@ public class BackpackSH extends SyncHandler {
 
     public static int getId(String name) {
         return BackpackSHRegistry.getId(name);
+    }
+
+    @Override
+    public boolean isAllowC2S() {
+        return true;
     }
 }

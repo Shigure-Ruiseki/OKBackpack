@@ -10,7 +10,7 @@ import com.cleanroommc.modularui.api.value.sync.IStringSyncValue;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 
-public class DelegatedLongSH extends DelegatedValueSH<Long>
+public class DelegatedLongSH extends DelegatedValueSH<Long, DelegatedLongSH>
     implements ILongSyncValue<Long>, IIntSyncValue<Long>, IStringSyncValue<Long> {
 
     public DelegatedLongSupplier delegatedSupplier;
