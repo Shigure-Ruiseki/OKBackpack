@@ -252,7 +252,8 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
         int visibleRows = Math.min(rows, maxRows);
 
         // set panel height
-        height(visibleRows * slotSize + 118);
+        int calculatedHeight = visibleRows * slotSize + 118;
+        height(Math.max(calculatedHeight, BackpackSettingPanel.getCompactMinimumPanelHeight()));
 
         // set list height
         slotsHeight = visibleRows * slotSize;

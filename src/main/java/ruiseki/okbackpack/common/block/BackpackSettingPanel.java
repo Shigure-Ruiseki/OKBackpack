@@ -54,6 +54,14 @@ public class BackpackSettingPanel extends ModularPanel {
     private static final int KEY_ESCAPE = 1;
     private static final int KEY_RETURN = 28;
     private static final int KEY_NUMPADENTER = 156;
+    private static final int SETTINGS_BUTTON_SIZE = 18;
+    private static final int SETTINGS_BUTTON_BOTTOM_OFFSET = 11;
+    private static final int SETTINGS_BUTTON_RIGHT_OFFSET = -21;
+    private static final int SETTINGS_BUTTON_COMPACT_RIGHT_OFFSET = SETTINGS_BUTTON_RIGHT_OFFSET - SETTINGS_BUTTON_SIZE;
+    private static final int SETTINGS_BUTTON_SINGLE_COLUMN_HEIGHT = SETTINGS_BUTTON_SIZE * 5;
+    private static final int SETTINGS_BUTTON_COMPACT_COLUMN_HEIGHT = SETTINGS_BUTTON_SIZE * 3;
+    private static final int SETTINGS_BUTTON_COMPACT_WIDTH = SETTINGS_BUTTON_SIZE * 2;
+    private static final int SETTINGS_BUTTON_RESERVED_TOP = 150;
 
     private final IStoragePanel<?> parent;
 
@@ -67,8 +75,12 @@ public class BackpackSettingPanel extends ModularPanel {
     private SettingsInputMode activeSettingsInput = SettingsInputMode.NONE;
     private SettingsInputTextFieldWidget settingsInputField;
     private ButtonWidget<?> saveButton;
+    private ButtonWidget<?> loadButton;
+    private ButtonWidget<?> deleteButton;
     private ButtonWidget<?> exportButton;
+    private ButtonWidget<?> importButton;
     private ParentWidget<?> settingsButtonContainer;
+    private boolean settingsButtonsCompact = false;
     private int savePresetIndex = 0;
     private int loadPresetIndex = 0;
     private int deletePresetIndex = 0;
@@ -145,13 +157,18 @@ public class BackpackSettingPanel extends ModularPanel {
         return parent.getWrapper();
     }
 
+    public static int getCompactMinimumPanelHeight() {
+        return SETTINGS_BUTTON_RESERVED_TOP + SETTINGS_BUTTON_BOTTOM_OFFSET + SETTINGS_BUTTON_COMPACT_COLUMN_HEIGHT;
+    }
+
+    private static int getSingleColumnMinimumPanelHeight() {
+        return SETTINGS_BUTTON_RESERVED_TOP + SETTINGS_BUTTON_BOTTOM_OFFSET + SETTINGS_BUTTON_SINGLE_COLUMN_HEIGHT;
+    }
+
     private void addSettingsTemplateButtons() {
         refreshAvailableSettingsFiles();
 
         settingsButtonContainer = new ParentWidget<>();
-        settingsButtonContainer.bottom(11)
-            .right(-21)
-            .size(18, 90);
 
         saveButton = new ButtonWidget() {
 
@@ -161,9 +178,7 @@ public class BackpackSettingPanel extends ModularPanel {
                 return true;
             }
         };
-        saveButton.bottom(72)
-            .left(0)
-            .size(18);
+        saveButton.size(SETTINGS_BUTTON_SIZE);
         saveButton.overlay(OKBGuiTextures.SAVE_TEMPLATE_ICON);
         saveButton.onMousePressed(mouseButton -> {
             if (mouseButton == 0) {
@@ -202,7 +217,7 @@ public class BackpackSettingPanel extends ModularPanel {
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
             });
 
-        ButtonWidget<?> loadButton = new ButtonWidget() {
+        loadButton = new ButtonWidget() {
 
             @Override
             public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
@@ -210,9 +225,7 @@ public class BackpackSettingPanel extends ModularPanel {
                 return true;
             }
         };
-        loadButton.bottom(54)
-            .left(0)
-            .size(18);
+        loadButton.size(SETTINGS_BUTTON_SIZE);
         loadButton.overlay(OKBGuiTextures.LOAD_TEMPLATE_ICON);
         loadButton.onMousePressed(mouseButton -> {
             if (mouseButton == 0) {
@@ -237,7 +250,7 @@ public class BackpackSettingPanel extends ModularPanel {
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
             });
 
-        ButtonWidget<?> deleteButton = new ButtonWidget() {
+        deleteButton = new ButtonWidget() {
 
             @Override
             public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
@@ -245,9 +258,7 @@ public class BackpackSettingPanel extends ModularPanel {
                 return true;
             }
         };
-        deleteButton.bottom(36)
-            .left(0)
-            .size(18);
+        deleteButton.size(SETTINGS_BUTTON_SIZE);
         deleteButton.overlay(OKBGuiTextures.DELETE_TEMPLATE_ICON);
         deleteButton.onMousePressed(mouseButton -> {
             if (mouseButton == 0) {
@@ -282,9 +293,7 @@ public class BackpackSettingPanel extends ModularPanel {
                 return true;
             }
         };
-        exportButton.bottom(18)
-            .left(0)
-            .size(18);
+        exportButton.size(SETTINGS_BUTTON_SIZE);
         exportButton.overlay(OKBGuiTextures.EXPORT_TEMPLATE_ICON);
         exportButton.onMousePressed(mouseButton -> {
             if (mouseButton == 0) {
@@ -321,7 +330,7 @@ public class BackpackSettingPanel extends ModularPanel {
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
             });
 
-        ButtonWidget<?> importButton = new ButtonWidget() {
+        importButton = new ButtonWidget() {
 
             @Override
             public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
@@ -329,9 +338,7 @@ public class BackpackSettingPanel extends ModularPanel {
                 return true;
             }
         };
-        importButton.bottom(0)
-            .left(0)
-            .size(18);
+        importButton.size(SETTINGS_BUTTON_SIZE);
         importButton.overlay(OKBGuiTextures.IMPORT_TEMPLATE_ICON);
         importButton.onMousePressed(mouseButton -> {
             if (mouseButton == 0) {
@@ -369,6 +376,48 @@ public class BackpackSettingPanel extends ModularPanel {
 
         child(settingsButtonContainer);
         child(settingsInputField);
+        applySettingsTemplateButtonLayout(false);
+    }
+
+    private void updateSettingsTemplateButtonLayout() {
+        int panelHeight = getArea().height > 0 ? getArea().height : parent.getArea().height;
+        boolean compact = panelHeight > 0 && panelHeight < getSingleColumnMinimumPanelHeight();
+        if (settingsButtonsCompact == compact) return;
+
+        applySettingsTemplateButtonLayout(compact);
+        settingsButtonsCompact = compact;
+    }
+
+    private void applySettingsTemplateButtonLayout(boolean compact) {
+        settingsButtonContainer.resizer()
+            .resetPosition();
+        settingsButtonContainer.bottom(SETTINGS_BUTTON_BOTTOM_OFFSET)
+            .right(compact ? SETTINGS_BUTTON_COMPACT_RIGHT_OFFSET : SETTINGS_BUTTON_RIGHT_OFFSET)
+            .size(
+                compact ? SETTINGS_BUTTON_COMPACT_WIDTH : SETTINGS_BUTTON_SIZE,
+                compact ? SETTINGS_BUTTON_COMPACT_COLUMN_HEIGHT : SETTINGS_BUTTON_SINGLE_COLUMN_HEIGHT);
+
+        if (compact) {
+            placeSettingsButton(saveButton, 0, 0);
+            placeSettingsButton(loadButton, 0, 1);
+            placeSettingsButton(deleteButton, 0, 2);
+            placeSettingsButton(exportButton, 1, 0);
+            placeSettingsButton(importButton, 1, 1);
+            return;
+        }
+
+        placeSettingsButton(saveButton, 0, 0);
+        placeSettingsButton(loadButton, 0, 1);
+        placeSettingsButton(deleteButton, 0, 2);
+        placeSettingsButton(exportButton, 0, 3);
+        placeSettingsButton(importButton, 0, 4);
+    }
+
+    private void placeSettingsButton(ButtonWidget<?> button, int column, int row) {
+        button.resizer()
+            .resetPosition();
+        button.pos(column * SETTINGS_BUTTON_SIZE, row * SETTINGS_BUTTON_SIZE)
+            .size(SETTINGS_BUTTON_SIZE);
     }
 
     private void refreshAvailableSettingsFiles() {
@@ -742,6 +791,7 @@ public class BackpackSettingPanel extends ModularPanel {
     @Override
     public void onInit() {
         super.onInit();
+        updateSettingsTemplateButtonLayout();
         if (settingsButtonContainer != null) {
             getContext().getUISettings()
                 .getRecipeViewerSettings()
@@ -753,7 +803,14 @@ public class BackpackSettingPanel extends ModularPanel {
     @SideOnly(Side.CLIENT)
     public void onOpen(ModularScreen screen) {
         super.onOpen(screen);
+        updateSettingsTemplateButtonLayout();
         syncSettingModeState();
+    }
+
+    @Override
+    public void onResized() {
+        super.onResized();
+        updateSettingsTemplateButtonLayout();
     }
 
     @Override
@@ -768,6 +825,7 @@ public class BackpackSettingPanel extends ModularPanel {
     @Override
     public void onUpdate() {
         super.onUpdate();
+        updateSettingsTemplateButtonLayout();
 
         if (saveButton != null && exportButton != null) {
             if (saveButton.isHovering() && isSavePresetNewSlotSelected()) {
