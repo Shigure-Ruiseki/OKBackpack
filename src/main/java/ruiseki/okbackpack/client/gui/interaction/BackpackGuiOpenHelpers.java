@@ -5,6 +5,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 
 import com.cleanroommc.modularui.factory.GuiFactories;
+import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
@@ -43,8 +44,16 @@ public final class BackpackGuiOpenHelpers {
             return false;
         }
 
+        return openClient(context.getInventoryType(), context.getSlotIndex());
+    }
+
+    public static boolean openClient(InventoryType inventoryType, int slotIndex) {
+        if (inventoryType == null || slotIndex < 0) {
+            return false;
+        }
+
         GuiFactories.playerInventory()
-            .openClient(context.getInventoryType(), context.getSlotIndex());
+            .openClient(inventoryType, slotIndex);
         return true;
     }
 
