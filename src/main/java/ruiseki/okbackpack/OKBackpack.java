@@ -35,6 +35,7 @@ import ruiseki.okbackpack.common.init.ModOreDicts;
 import ruiseki.okbackpack.common.recipe.CompactingRecipeCache;
 import ruiseki.okbackpack.common.recipe.ModRecipes;
 import ruiseki.okbackpack.compat.bauble.BaubleCompat;
+import ruiseki.okbackpack.compat.tic.TConstructTabCompat;
 import ruiseki.okcore.command.CommandMod;
 import ruiseki.okcore.helper.MinecraftHelpers;
 import ruiseki.okcore.init.ModBase;
@@ -98,6 +99,9 @@ public class OKBackpack extends ModBase {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         super.postInit(event);
+        if (MinecraftHelpers.isClientSide()) {
+            TConstructTabCompat.registerClientTabs();
+        }
     }
 
     @Override
