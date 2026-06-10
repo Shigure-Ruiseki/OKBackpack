@@ -61,7 +61,7 @@ public class BackpackSettingPanel extends ModularPanel {
     private static final int SETTINGS_BUTTON_SINGLE_COLUMN_HEIGHT = SETTINGS_BUTTON_SIZE * 5;
     private static final int SETTINGS_BUTTON_COMPACT_COLUMN_HEIGHT = SETTINGS_BUTTON_SIZE * 3;
     private static final int SETTINGS_BUTTON_COMPACT_WIDTH = SETTINGS_BUTTON_SIZE * 2;
-    private static final int SETTINGS_BUTTON_RESERVED_TOP = 120;
+    private static final int SETTINGS_BUTTON_RESERVED_TOP = 150;
 
     private final IStoragePanel<?> parent;
 
