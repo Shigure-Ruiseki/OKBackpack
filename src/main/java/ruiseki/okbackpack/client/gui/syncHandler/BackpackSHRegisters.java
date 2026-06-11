@@ -163,13 +163,8 @@ public class BackpackSHRegisters implements IInitListener {
             }
             player.closeScreen();
         } else if (tile == null) {
-            int[] can = BlockSleepingBag.canDeploySleepingBag(
-                world,
-                player,
-                (int) player.posX,
-                (int) player.posY,
-                (int) player.posZ - 1,
-                false);
+            int[] can = BlockSleepingBag
+                .canDeploySleepingBag(world, player, (int) player.posX, (int) player.posY, (int) player.posZ, false);
             if (can[0] > -1) {
                 if (backpackSH.wrapper.deploySleepingBag(player, world, can[0], can[1], can[2], can[3])) {
                     Block portableBag = world.getBlock(can[1], can[2], can[3]);

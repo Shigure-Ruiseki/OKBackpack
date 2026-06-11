@@ -307,7 +307,8 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
     }
 
     public void removeSleepingBag(World world) {
-        if (sleepingBagDeployed && world.getBlock(sbx, sby, sbz) == ModBlocks.SLEEPING_BAG.getBlock())
+        if (sleepingBagDeployed && world.blockExists(sbx, sby, sbz)
+            && world.getBlock(sbx, sby, sbz) == ModBlocks.SLEEPING_BAG.getBlock())
             world.func_147480_a(sbx, sby, sbz, false);
 
         sleepingBagDeployed = false;

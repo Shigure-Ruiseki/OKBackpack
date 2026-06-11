@@ -18,7 +18,6 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import org.apache.logging.log4j.Level;
 
@@ -33,6 +32,18 @@ import ruiseki.okcore.block.BlockOK;
 public class BlockSleepingBag extends BlockOK {
 
     private static final int[][] footBlockToHeadBlockMap = new int[][] { { 0, 1 }, { -1, 0 }, { 0, -1 }, { 1, 0 } };
+
+    private record SleepingBagPlacement(int direction, int footX, int footY, int footZ, int headX, int headY,
+        int headZ) {
+
+        int ownerX() {
+            return footX - footBlockToHeadBlockMap[direction][0];
+        }
+
+        int ownerZ() {
+            return footZ - footBlockToHeadBlockMap[direction][1];
+        }
+    }
 
     @SideOnly(Side.CLIENT)
     private IIcon[] endIcons;
@@ -218,22 +229,13 @@ public class BlockSleepingBag extends BlockOK {
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
         int meta = world.getBlockMetadata(x, y, z);
-        int dir = getDirection(meta);
-
-        if (isBlockHeadOfBed(meta)) {
-            int footX = x - footBlockToHeadBlockMap[dir][0];
-            int footZ = z - footBlockToHeadBlockMap[dir][1];
-            if (world.getBlock(footX, y, footZ) != this) {
-                world.setBlockToAir(x, y, z);
-            }
-        } else {
-            int headX = x + footBlockToHeadBlockMap[dir][0];
-            int headZ = z + footBlockToHeadBlockMap[dir][1];
-            if (world.getBlock(headX, y, headZ) != this) {
-                world.setBlockToAir(x, y, z);
-                if (!world.isRemote) {
-                    this.dropBlockAsItem(world, x, y, z, meta, 0);
-                }
+        SleepingBagPlacement placement = resolvePlacementFromBlock(x, y, z, meta);
+        int otherX = isBlockHeadOfBed(meta) ? placement.footX() : placement.headX();
+        int otherZ = isBlockHeadOfBed(meta) ? placement.footZ() : placement.headZ();
+        if (world.getBlock(otherX, y, otherZ) != this) {
+            world.setBlockToAir(x, y, z);
+            if (!world.isRemote && !isBlockHeadOfBed(meta)) {
+                this.dropBlockAsItem(world, x, y, z, meta, 0);
             }
         }
     }
@@ -250,13 +252,10 @@ public class BlockSleepingBag extends BlockOK {
 
     @Override
     public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player) {
-        int direction = getDirection(meta);
         if (player.capabilities.isCreativeMode && isBlockHeadOfBed(meta)) {
-            x -= footBlockToHeadBlockMap[direction][0];
-            z -= footBlockToHeadBlockMap[direction][1];
-
-            if (world.getBlock(x, y, z) == this) {
-                world.setBlockToAir(x, y, z);
+            SleepingBagPlacement placement = resolvePlacementFromBlock(x, y, z, meta);
+            if (world.getBlock(placement.footX(), y, placement.footZ()) == this) {
+                world.setBlockToAir(placement.footX(), y, placement.footZ());
             }
         }
     }
@@ -268,25 +267,10 @@ public class BlockSleepingBag extends BlockOK {
 
     @Override
     public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta) {
-        int tileZ = z;
-        int tileX = x;
-        switch (meta) {
-            case 0:
-                tileZ--;
-                break;
-            case 1:
-                tileX++;
-                break;
-            case 2:
-                tileZ++;
-                break;
-            case 3:
-                tileX--;
-                break;
-        }
-        if (world.getTileEntity(tileX, y, tileZ) != null
-            && world.getTileEntity(tileX, y, tileZ) instanceof TEBackpack) {
-            ((TEBackpack) world.getTileEntity(tileX, y, tileZ)).setSleepingBagDeployed(false);
+        SleepingBagPlacement placement = resolvePlacementFromBlock(x, y, z, meta);
+        removeOtherPart(world, x, y, z, placement);
+        if (world.getTileEntity(placement.ownerX(), y, placement.ownerZ()) instanceof TEBackpack teBackpack) {
+            teBackpack.setSleepingBagDeployed(false);
         }
     }
 
@@ -345,62 +329,89 @@ public class BlockSleepingBag extends BlockOK {
                 }
             }
         }
-        return getDirectionAndCoordsForSleepingBag(switchBy, world, cX, cY, cZ);
+        SleepingBagPlacement placement = resolvePlacementFromSwitch(switchBy, cX, cY, cZ);
+        if (placement != null && canPlaceSleepingBag(world, placement)) {
+            return new int[] { placement.direction(), placement.footX(), placement.footY(), placement.footZ() };
+        }
+        return new int[] { -1, cX, cY, cZ };
     }
 
-    private static int[] getDirectionAndCoordsForSleepingBag(int switchBy, World world, int cX, int cY, int cZ) {
-        int direction = -1;
-        OKBackpack.okLog(
-            ForgeDirection.getOrientation(switchBy)
-                .name());
+    private static SleepingBagPlacement resolvePlacementFromSwitch(int switchBy, int cX, int cY, int cZ) {
         switch (switchBy) {
             case 0:
-                --cX;
-                if (isAirAboveSolid(world, cX, cY, cZ) && isAirAboveSolid(world, cX, cY, cZ - 1)) direction = 1;
-                break;
+                return createPlacement(1, cX - 1, cY, cZ);
             case 1:
-                ++cX;
-                if (isAirAboveSolid(world, cX, cY, cZ) && isAirAboveSolid(world, cX + 1, cY, cZ)) direction = 3;
-                break;
+                return createPlacement(3, cX + 1, cY, cZ);
             case 2:
-                ++cZ;
-                if (isAirAboveSolid(world, cX, cY, cZ) && isAirAboveSolid(world, cX, cY, cZ + 1)) direction = 0;
-                break;
+                return createPlacement(0, cX, cY, cZ + 1);
             case 3:
-                --cZ;
-                if (isAirAboveSolid(world, cX, cY, cZ) && isAirAboveSolid(world, cX - 1, cY, cZ)) direction = 2;
-                break;
+                return createPlacement(2, cX, cY, cZ - 1);
             default:
-                break;
+                return null;
         }
-        return new int[] { direction, cX, cY, cZ };
     }
 
-    private static boolean isAirAboveSolid(World world, int cX, int cY, int cZ) {
-        return world.isAirBlock(cX, cY, cZ) && world.getBlock(cX, cY - 1, cZ)
+    private static SleepingBagPlacement createPlacement(int direction, int footX, int footY, int footZ) {
+        return new SleepingBagPlacement(
+            direction,
+            footX,
+            footY,
+            footZ,
+            footX + footBlockToHeadBlockMap[direction][0],
+            footY,
+            footZ + footBlockToHeadBlockMap[direction][1]);
+    }
+
+    private static SleepingBagPlacement resolvePlacementFromBlock(int x, int y, int z, int meta) {
+        int direction = getDirection(meta);
+        if (isBlockHeadOfBed(meta)) {
+            x -= footBlockToHeadBlockMap[direction][0];
+            z -= footBlockToHeadBlockMap[direction][1];
+        }
+        return createPlacement(direction, x, y, z);
+    }
+
+    private static boolean canPlaceSleepingBag(World world, SleepingBagPlacement placement) {
+        return canOccupySleepingBagBlock(world, placement.footX(), placement.footY(), placement.footZ())
+            && canOccupySleepingBagBlock(world, placement.headX(), placement.headY(), placement.headZ());
+    }
+
+    private static boolean canOccupySleepingBagBlock(World world, int x, int y, int z) {
+        Block block = world.getBlock(x, y, z);
+        return canReplaceSleepingBagBlock(world, block, x, y, z) && hasSolidSupport(world, x, y, z);
+    }
+
+    private static boolean canReplaceSleepingBagBlock(World world, Block block, int x, int y, int z) {
+        return world.isAirBlock(x, y, z) || block.isReplaceable(world, x, y, z);
+    }
+
+    private static boolean hasSolidSupport(World world, int x, int y, int z) {
+        return world.getBlock(x, y - 1, z)
             .getMaterial()
             .isSolid();
     }
 
+    private static void removeOtherPart(World world, int x, int y, int z, SleepingBagPlacement placement) {
+        int otherX = x == placement.footX() && z == placement.footZ() ? placement.headX() : placement.footX();
+        int otherZ = x == placement.footX() && z == placement.footZ() ? placement.headZ() : placement.footZ();
+        if (world.getBlock(otherX, y, otherZ) == ModBlocks.SLEEPING_BAG.getBlock()) {
+            world.setBlockToAir(otherX, y, otherZ);
+        }
+    }
+
     public static boolean spawnSleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ) {
+        SleepingBagPlacement placement = createPlacement(meta & 3, cX, cY, cZ);
+        if (!canPlaceSleepingBag(world, placement)) {
+            return false;
+        }
+
         Block sleepingBag = ModBlocks.SLEEPING_BAG.getBlock();
-        if (world.setBlock(cX, cY, cZ, sleepingBag, meta, 3)) {
+        if (world.setBlock(placement.footX(), placement.footY(), placement.footZ(), sleepingBag, meta, 3)) {
             world.playSoundAtEntity(player, Block.soundTypeCloth.func_150496_b(), 0.5f, 1.0f);
-            switch (meta & 3) {
-                case 0:
-                    ++cZ;
-                    break;
-                case 1:
-                    --cX;
-                    break;
-                case 2:
-                    --cZ;
-                    break;
-                case 3:
-                    ++cX;
-                    break;
+            if (world.setBlock(placement.headX(), placement.headY(), placement.headZ(), sleepingBag, meta + 8, 3)) {
+                return true;
             }
-            return world.setBlock(cX, cY, cZ, sleepingBag, meta + 8, 3);
+            world.setBlockToAir(placement.footX(), placement.footY(), placement.footZ());
         }
         return false;
     }
