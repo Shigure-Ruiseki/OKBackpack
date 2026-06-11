@@ -58,6 +58,9 @@ import ruiseki.okcore.helper.LangHelpers;
 
 public class BackpackWrapper implements IBackpackWrapper {
 
+    private static final double MAX_SLEEPING_BAG_DISTANCE_SQ = 32.0D * 32.0D;
+    private static final int SLEEPING_BAG_DISTANCE_CHECK_INTERVAL = 10;
+
     public ItemStack backpack;
     public final TileEntity tile;
 
@@ -549,7 +552,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     public boolean tick(EntityPlayer player) {
         Map<Integer, ITickable> gathered = gatherCapabilityUpgrades(ITickable.class);
 
-        boolean dirty = false;
+        boolean dirty = clearSleepingBagWhenTooFar(player);
 
         for (ITickable wrapper : gathered.values()) {
             dirty |= wrapper.tick(player);
@@ -577,7 +580,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     public boolean tickNonTravelers(EntityPlayer player) {
         Map<Integer, ITickable> gathered = gatherCapabilityUpgrades(ITickable.class);
 
-        boolean dirty = false;
+        boolean dirty = clearSleepingBagWhenTooFar(player);
 
         for (ITickable wrapper : gathered.values()) {
             if (wrapper instanceof ITravelersUpgrade) continue;
@@ -1241,11 +1244,33 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public void removeSleepingBag(World world) {
         if (this.sleepingBagDeployed) {
-            if (world.getBlock(sleepingBagX, sleepingBagY, sleepingBagZ) == ModBlocks.SLEEPING_BAG.getBlock())
-                world.func_147480_a(sleepingBagX, sleepingBagY, sleepingBagZ, false);
+            destroySleepingBagIfLoaded(world);
         }
         this.sleepingBagDeployed = false;
         writeToItem();
+    }
+
+    private boolean clearSleepingBagWhenTooFar(EntityPlayer player) {
+        if (!sleepingBagDeployed) return false;
+        if (!shouldCheckSleepingBagDistance(player)) return false;
+        if (player.getDistanceSq(sleepingBagX + 0.5D, sleepingBagY + 0.5D, sleepingBagZ + 0.5D)
+            <= MAX_SLEEPING_BAG_DISTANCE_SQ) {
+            return false;
+        }
+        removeSleepingBag(player.worldObj);
+        return true;
+    }
+
+    private boolean shouldCheckSleepingBagDistance(EntityPlayer player) {
+        int checkOffset = slotIndex >= 0 ? slotIndex : 0;
+        return (player.ticksExisted + checkOffset) % SLEEPING_BAG_DISTANCE_CHECK_INTERVAL == 0;
+    }
+
+    private void destroySleepingBagIfLoaded(World world) {
+        if (!world.blockExists(sleepingBagX, sleepingBagY, sleepingBagZ)) return;
+        if (world.getBlock(sleepingBagX, sleepingBagY, sleepingBagZ) == ModBlocks.SLEEPING_BAG.getBlock()) {
+            world.func_147480_a(sleepingBagX, sleepingBagY, sleepingBagZ, false);
+        }
     }
 
     @Override
