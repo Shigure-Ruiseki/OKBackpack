@@ -1,0 +1,78 @@
+name: Auto Tag on Build and Test
+
+on:
+  workflow_run:
+    workflows: ["Build and test"]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  create-tag:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.pull_requests[0] != null &&
+        github.event.workflow_run.pull_requests[0].head.repo.full_name == github.repository
+      )
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout master branch
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Set up Git configuration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch all tags
+        run: git fetch --tags
+
+      - name: Generate new tag
+        id: new_tag
+        run: |
+          current_date=$(date +"%Y-%m-%d")
+          last_tag=$(git tag --list "[0-9]*.[0-9]*.[0-9]*" | sort -V | tail -n 1)
+
+          if [ -z "$last_tag" ]; then
+            NEW_TAG="1.0.0"
+          else
+            X=$(echo "$last_tag" | cut -d. -f1)
+            Y=$(echo "$last_tag" | cut -d. -f2)
+            Z=$(echo "$last_tag" | cut -d. -f3)
+
+            tag_date=$(git log -1 --format=%ai "$last_tag" | cut -d' ' -f1)
+
+            if [ "$current_date" = "$tag_date" ]; then
+              Z=$((Z + 1))
+              if [ $Z -gt 6 ]; then
+                Z=0
+                Y=$((Y + 1))
+              fi
+            else
+              Y=$((Y + 1))
+              Z=0
+              if [ $Y -gt 6 ]; then
+                Y=0
+                Z=0
+                X=$((X + 1))
+              fi
+            fi
+
+            NEW_TAG="${X}.${Y}.${Z}"
+          fi
+
+          echo "Tag created: $NEW_TAG"
+          echo "tag=$NEW_TAG" >> $GITHUB_OUTPUT
+
+      - name: Create and push tag
+        run: |
+          git tag ${{ steps.new_tag.outputs.tag }}
+          git push origin ${{ steps.new_tag.outputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
