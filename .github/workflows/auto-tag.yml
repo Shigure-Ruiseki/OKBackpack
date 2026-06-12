@@ -50,16 +50,11 @@ jobs:
 
             if [ "$current_date" = "$tag_date" ]; then
               Z=$((Z + 1))
-              if [ $Z -gt 6 ]; then
-                Z=0
-                Y=$((Y + 1))
-              fi
             else
               Y=$((Y + 1))
               Z=0
               if [ $Y -gt 6 ]; then
                 Y=0
-                Z=0
                 X=$((X + 1))
               fi
             fi
