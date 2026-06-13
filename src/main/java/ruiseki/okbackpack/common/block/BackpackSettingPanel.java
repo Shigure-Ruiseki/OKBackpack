@@ -57,11 +57,11 @@ public class BackpackSettingPanel extends ModularPanel {
     private static final int SETTINGS_BUTTON_SIZE = 18;
     private static final int SETTINGS_BUTTON_BOTTOM_OFFSET = 11;
     private static final int SETTINGS_BUTTON_RIGHT_OFFSET = -21;
-    private static final int SETTINGS_BUTTON_COMPACT_RIGHT_OFFSET = SETTINGS_BUTTON_RIGHT_OFFSET - SETTINGS_BUTTON_SIZE;
+    private static final int SETTINGS_BUTTON_COMPACT_RIGHT_OFFSET = SETTINGS_BUTTON_RIGHT_OFFSET - (SETTINGS_BUTTON_SIZE * 2);
     private static final int SETTINGS_BUTTON_SINGLE_COLUMN_HEIGHT = SETTINGS_BUTTON_SIZE * 5;
-    private static final int SETTINGS_BUTTON_COMPACT_COLUMN_HEIGHT = SETTINGS_BUTTON_SIZE * 3;
-    private static final int SETTINGS_BUTTON_COMPACT_WIDTH = SETTINGS_BUTTON_SIZE * 2;
-    private static final int SETTINGS_BUTTON_RESERVED_TOP = 150;
+    private static final int SETTINGS_BUTTON_COMPACT_COLUMN_HEIGHT = SETTINGS_BUTTON_SIZE * 2;
+    private static final int SETTINGS_BUTTON_COMPACT_WIDTH = SETTINGS_BUTTON_SIZE * 3;
+    private static final int SETTINGS_BUTTON_RESERVED_TOP = 90;
 
     private final IStoragePanel<?> parent;
 
@@ -400,9 +400,9 @@ public class BackpackSettingPanel extends ModularPanel {
         if (compact) {
             placeSettingsButton(saveButton, 0, 0);
             placeSettingsButton(loadButton, 0, 1);
-            placeSettingsButton(deleteButton, 0, 2);
             placeSettingsButton(exportButton, 1, 0);
             placeSettingsButton(importButton, 1, 1);
+            placeSettingsButton(deleteButton, 2, 1);
             return;
         }
 
