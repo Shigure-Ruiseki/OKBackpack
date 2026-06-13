@@ -57,7 +57,8 @@ public class BackpackSettingPanel extends ModularPanel {
     private static final int SETTINGS_BUTTON_SIZE = 18;
     private static final int SETTINGS_BUTTON_BOTTOM_OFFSET = 11;
     private static final int SETTINGS_BUTTON_RIGHT_OFFSET = -21;
-    private static final int SETTINGS_BUTTON_COMPACT_RIGHT_OFFSET = SETTINGS_BUTTON_RIGHT_OFFSET - (SETTINGS_BUTTON_SIZE * 2);
+    private static final int SETTINGS_BUTTON_COMPACT_RIGHT_OFFSET = SETTINGS_BUTTON_RIGHT_OFFSET
+        - (SETTINGS_BUTTON_SIZE * 2);
     private static final int SETTINGS_BUTTON_SINGLE_COLUMN_HEIGHT = SETTINGS_BUTTON_SIZE * 5;
     private static final int SETTINGS_BUTTON_COMPACT_COLUMN_HEIGHT = SETTINGS_BUTTON_SIZE * 2;
     private static final int SETTINGS_BUTTON_COMPACT_WIDTH = SETTINGS_BUTTON_SIZE * 3;
