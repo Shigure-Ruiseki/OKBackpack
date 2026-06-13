@@ -2,8 +2,14 @@ package ruiseki.okbackpack.compat.tic;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
@@ -16,6 +22,11 @@ import ruiseki.okbackpack.common.init.ModBlocks;
 import tconstruct.client.tabs.AbstractTab;
 
 public class OKBackpackInventoryTab extends AbstractTab {
+
+    private static final ResourceLocation TAB_TEXTURE = new ResourceLocation(
+        "textures/gui/container/creative_inventory/tabs.png");
+
+    private final RenderItem tabItemRenderer = new RenderItem();
 
     private EntityClientPlayerMP cachedPlayer;
     private int cachedTick = -1;
@@ -44,6 +55,53 @@ public class OKBackpackInventoryTab extends AbstractTab {
         if (target != null) {
             drawButton(minecraft, target.stack(), true);
         }
+    }
+
+    @Override
+    protected void drawButton(Minecraft minecraft, ItemStack tabIcon, boolean enableItemIconDepthTest) {
+        if (!visible || tabIcon == null) {
+            return;
+        }
+
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        int textureY = enabled ? 2 : 32;
+        int tabHeight = enabled ? 25 : 32;
+        int textureX = id == 2 ? 0 : 1;
+        int tabY = yPosition + (enabled ? 3 : 0);
+
+        minecraft.getTextureManager()
+            .bindTexture(TAB_TEXTURE);
+        drawTexturedModalRect(xPosition, tabY, textureX * 28, textureY, 28, tabHeight);
+
+        RenderHelper.enableGUIStandardItemLighting();
+        zLevel = 100.0F;
+        tabItemRenderer.zLevel = 100.0F;
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        if (enableItemIconDepthTest) {
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+        }
+        tabItemRenderer.renderItemAndEffectIntoGUI(
+            minecraft.fontRenderer,
+            minecraft.getTextureManager(),
+            tabIcon,
+            xPosition + 6,
+            yPosition + 8);
+        tabItemRenderer.renderItemOverlayIntoGUI(
+            minecraft.fontRenderer,
+            minecraft.getTextureManager(),
+            tabIcon,
+            xPosition + 6,
+            yPosition + 8);
+        if (enableItemIconDepthTest) {
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+        }
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_BLEND);
+        tabItemRenderer.zLevel = 0.0F;
+        zLevel = 0.0F;
+        RenderHelper.disableStandardItemLighting();
     }
 
     private TargetBackpack getTargetBackpack() {
