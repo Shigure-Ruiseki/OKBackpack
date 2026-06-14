@@ -39,7 +39,7 @@ public class CowUpgradeWrapper extends UpgradeWrapperBase implements ITickable, 
 
             for (PotionEffect effect : activeEffects) {
                 Potion potion = Potion.potionTypes[effect.getPotionID()];
-                if (potion != null && potion.isBadEffect()) {
+                if (potion != null && potion.isBadEffect) {
                     player.removePotionEffect(effect.getPotionID());
                     cleared = true;
                 }
