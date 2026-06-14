@@ -15,10 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout master branch
+      - name: Checkout target branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.base.ref }}
+          ref: ${{ github.event.pull_request.base.ref || github.ref_name }}
           fetch-depth: 0
           token: ${{ secrets.PAT_TOKEN }}
 
@@ -33,33 +33,20 @@ jobs:
       - name: Generate new tag
         id: new_tag
         run: |
-          current_date=$(date +"%Y-%m-%d")
-          last_tag=$(git tag --list "[0-9]*.[0-9]*.[0-9]*" | sort -V | tail -n 1)
+          CURRENT_DATE=$(date +"%y.%m.%d")
 
-          if [ -z "$last_tag" ]; then
-            NEW_TAG="1.0.0"
+          LAST_TAG=$(git tag --list "$CURRENT_DATE.*" | sort -V | tail -n 1)
+
+          if [ -z "$LAST_TAG" ]; then
+            PATCH=0
           else
-            X=$(echo "$last_tag" | cut -d. -f1)
-            Y=$(echo "$last_tag" | cut -d. -f2)
-            Z=$(echo "$last_tag" | cut -d. -f3)
-
-            tag_date=$(git log -1 --format=%ai "$last_tag" | cut -d' ' -f1)
-
-            if [ "$current_date" = "$tag_date" ]; then
-              Z=$((Z + 1))
-            else
-              Y=$((Y + 1))
-              Z=0
-              if [ $Y -gt 6 ]; then
-                Y=0
-                X=$((X + 1))
-              fi
-            fi
-
-            NEW_TAG="${X}.${Y}.${Z}"
+            LAST_PATCH=$(echo "$LAST_TAG" | cut -d. -f4)
+            PATCH=$((LAST_PATCH + 1))
           fi
 
-          echo "Tag created: $NEW_TAG"
+          NEW_TAG="${CURRENT_DATE}.${PATCH}"
+
+          echo "Generated tag: $NEW_TAG"
           echo "tag=$NEW_TAG" >> $GITHUB_OUTPUT
 
       - name: Create and push tag
