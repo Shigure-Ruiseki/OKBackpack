@@ -7,15 +7,8 @@
 
 *   [ModularUI2 (>= 2.3.73)](https://github.com/GTNewHorizons/ModularUI2)
 *   [GTNHLib (>= 0.11.9)](https://github.com/GTNewHorizons/GTNHLib)
-*   [OKCore](https://github.com/Shigure-Ruiseki/OKCore) (See version compatibility below)
+*   [OKCore (>= 26.06.14.0)](https://github.com/Shigure-Ruiseki/OKCore)
 
-### Version Compatibility
-Please ensure your **OKCore** version matches your **OKBackpack** version to prevent crashes or data loss:
-
-| OKBackpack Version | Required OKCore Version |
-|:-------------------|:------------------------|
-| **1.4.2**          | **1.4.2**               |
-| **>= 1.4.3**       | **>= 1.5.4.1**          |
 ## Features:
 
 #### Backpack
