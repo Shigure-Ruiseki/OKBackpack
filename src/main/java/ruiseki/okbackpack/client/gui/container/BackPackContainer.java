@@ -453,13 +453,14 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
                 return Platform.EMPTY_STACK;
             }
         // hotbar swap blocked for backpack slot
-        else if (clickTypeIn == ClickType.SWAP && mouseButton >= 0
-            && mouseButton < 9
-            && backpackSlotIndex != null
-            && backpackSlotIndex == mouseButton) {
-
+        else if (clickTypeIn == ClickType.SWAP && mouseButton >= 0 && mouseButton < 9) {
+            if (backpackSlotIndex != null && backpackSlotIndex == mouseButton) {
                 return Platform.EMPTY_STACK;
             }
+            if (!canHotbarSwap(slotId, mouseButton, player)) {
+                return Platform.EMPTY_STACK;
+            }
+        }
 
         return super.slotClick(slotId, mouseButton, mode, player);
     }
@@ -607,6 +608,63 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
 
         return ItemHandlerHelpers.canItemStacksStack(fromStack, toStack)
             && toStack.stackSize < stackLimit(toSlot, fromStack);
+    }
+
+    private boolean canHotbarSwap(int slotId, int hotbarIndex, EntityPlayer player) {
+        if (slotId < 0) return false;
+
+        Slot clickedSlot = getSlot(slotId);
+        Slot hotbarSlot = getSlotFromInventory(player.inventory, hotbarIndex);
+        if (clickedSlot == null || hotbarSlot == null) return false;
+
+        ItemStack clickedStack = clickedSlot.getStack();
+        ItemStack hotbarStack = hotbarSlot.getStack();
+
+        if (clickedStack != null && !clickedSlot.canTakeStack(player)) {
+            if (clickedSlot instanceof ModularUpgradeSlot modularUpgradeSlot) {
+                modularUpgradeSlot.setLastChangeResult(modularUpgradeSlot.getBlockedTakeResult(player));
+            }
+            return false;
+        }
+
+        if (clickedStack != null && !canStackFitSlot(hotbarSlot, clickedStack)) {
+            return false;
+        }
+
+        if (hotbarStack != null && willHotbarStackEnterClickedSlot(clickedSlot, clickedStack, hotbarStack)
+            && !canStackEnterSlot(clickedSlot, hotbarStack)) {
+            if (clickedSlot instanceof ModularUpgradeSlot modularUpgradeSlot) {
+                modularUpgradeSlot.setLastChangeResult(modularUpgradeSlot.getBlockedInsertResult(hotbarStack));
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean willHotbarStackEnterClickedSlot(Slot clickedSlot, ItemStack clickedStack, ItemStack hotbarStack) {
+        if (clickedStack == null) {
+            return true;
+        }
+        return clickedSlot.inventory instanceof InventoryPlayer && clickedSlot.isItemValid(hotbarStack);
+    }
+
+    private boolean canStackEnterSlot(Slot targetSlot, ItemStack stack) {
+        if (stack == null) return true;
+        if (targetSlot instanceof ModularSlot modularSlot) {
+            if (modularSlot.isPhantom() || isExtractionOnlyUpgradeSlot(modularSlot)) {
+                return false;
+            }
+            if (modularSlot instanceof ModularUpgradeWidgetSlot upgradeWidgetSlot
+                && !upgradeWidgetSlot.canShiftClickInsert(stack)) {
+                return false;
+            }
+        }
+        return targetSlot.isItemValid(stack) && canStackFitSlot(targetSlot, stack);
+    }
+
+    private boolean canStackFitSlot(Slot targetSlot, ItemStack stack) {
+        return stack.stackSize <= stackLimit(targetSlot, stack);
     }
 
     protected void transferToSlot(ModularSlot fromSlot, ModularSlot toSlot, ItemStack fromStack) {
