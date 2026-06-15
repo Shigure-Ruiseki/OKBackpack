@@ -59,6 +59,11 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
         this.smeltingInventory = new BaseItemStackHandler(3) {
 
             @Override
+            public boolean isItemValid(int slot, ItemStack stack) {
+                return slot != 0 || canAcceptInput(stack);
+            }
+
+            @Override
             protected void onContentsChanged(int slot) {
                 NBTTagCompound tag = ItemNBTHelpers.getNBT(upgrade);
                 tag.setTag(STORAGE_TAG, this.serializeNBT());
@@ -178,6 +183,29 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
         smeltingInventory.setStackInSlot(2, stack);
     }
 
+    protected boolean canAcceptInput(ItemStack stack) {
+        if (stack == null || !matchesInputFilter(stack)) return false;
+
+        ItemStack result = getSmeltingResult(stack);
+        return canAcceptSmeltingResult(result);
+    }
+
+    protected boolean matchesInputFilter(ItemStack stack) {
+        return switch (getMatchType()) {
+            case ITEM -> super.matchItem(stack);
+            case MOD -> super.matchMod(stack);
+            case ORE_DICT -> super.matchOreDict(stack);
+        };
+    }
+
+    protected boolean canAcceptSmeltingResult(ItemStack result) {
+        if (result == null) return false;
+
+        ItemStack output = getOutput();
+        return output == null || (ItemHandlerHelpers.canItemStacksStack(output, result)
+            && output.stackSize + result.stackSize <= output.getMaxStackSize());
+    }
+
     protected boolean doAutoSmeltTick() {
         if (!isEnabled()) return false;
         boolean changed = false;
@@ -188,9 +216,7 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
             for (int i = 0; i < storage.getSlots(); i++) {
                 ItemStack stack = storage.getStackInSlot(i);
                 if (stack == null || stack.stackSize <= 0) continue;
-                if (!checkFilter(stack)) continue;
-                ItemStack result = getSmeltingResult(stack);
-                if (result == null) continue;
+                if (!canAcceptInput(stack)) continue;
 
                 if (input == null) {
                     ItemStack pulled = stack.copy();
@@ -203,7 +229,6 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                     } else {
                         storage.setStackInSlot(i, stack);
                     }
-                    input = getInput();
                     save();
                     break;
                 } else if (ItemHandlerHelpers.canItemStacksStack(input, stack)) {
@@ -247,7 +272,6 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                     } else {
                         storage.setStackInSlot(i, stack);
                     }
-                    fuel = getFuel();
                     save();
                     break;
                 } else if (ItemHandlerHelpers.canItemStacksStack(fuel, stack)) {
@@ -289,7 +313,6 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
         boolean dirty = false;
         int fuelProgress = getBurnTime();
         int smeltProgress = getCookTime();
-        int fuelTotal = getTotalBurnTime();
 
         if (fuelProgress > 0) {
             fuelProgress--;
@@ -298,6 +321,14 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
 
         ItemStack input = getInput();
         if (input != null) {
+            if (!canAcceptInput(input)) {
+                if (smeltProgress > 0) {
+                    smeltProgress = Math.max(smeltProgress - 2, 0);
+                    setCookTime(smeltProgress);
+                }
+                return false;
+            }
+
             ItemStack result = getSmeltingResult(input);
             if (result != null) {
                 ItemStack output = getOutput();
@@ -311,9 +342,8 @@ public abstract class AdvancedSmeltingUpgradeWrapperBase extends AdvancedUpgrade
                             int burnTime = TileEntityFurnace.getItemBurnTime(fuel);
                             if (burnTime > 0) {
                                 fuelProgress = burnTime;
-                                fuelTotal = burnTime;
                                 setBurnTime(fuelProgress);
-                                setTotalBurnTime(fuelTotal);
+                                setTotalBurnTime(burnTime);
 
                                 fuel.stackSize--;
                                 if (fuel.stackSize <= 0 && fuel.getItem() != null) {
