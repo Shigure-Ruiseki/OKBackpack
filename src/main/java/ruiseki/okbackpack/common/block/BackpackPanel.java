@@ -295,11 +295,9 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
 
                         BackpackInventoryHelpers.sortInventory(wrapper, reverse);
 
-                        backpackSyncHandler.syncToServer(BackpackSH.getId(BackpackSHRegisters.UPDATE_SORT_INV), buf -> {
-                            for (int i = 0; i < wrapper.getSlots(); i++) {
-                                buf.writeItemStackToBuffer(wrapper.getStackInSlot(i));
-                            }
-                        });
+                        backpackSyncHandler.syncToServer(
+                            BackpackSH.getId(BackpackSHRegisters.UPDATE_SORT_INV),
+                            buf -> buf.writeBoolean(reverse));
                         return true;
                     }
                     return false;

@@ -14,6 +14,11 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
+import org.jetbrains.annotations.Nullable;
+
+import com.cleanroommc.bogosorter.api.IPosSetter;
+import com.cleanroommc.bogosorter.api.ISortableContainer;
+import com.cleanroommc.bogosorter.api.ISortingContextBuilder;
 import com.cleanroommc.modularui.api.inventory.ClickType;
 import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.screen.NEAAnimationHandler;
@@ -46,7 +51,9 @@ import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.item.IItemHandlerModifiable;
 
-public class BackPackContainer extends ModularContainer implements IStorageContainer<BackPackContainer> {
+@Optional.Interface(iface = "com.cleanroommc.bogosorter.api.ISortableContainer", modid = "bogosorter")
+public class BackPackContainer extends ModularContainer
+    implements IStorageContainer<BackPackContainer>, ISortableContainer {
 
     public final IBackpackWrapper wrapper;
     protected final Integer backpackSlotIndex;
@@ -54,6 +61,9 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
     private static final int DROP_TO_WORLD = -999;
     private static final int LEFT_MOUSE = 0;
     private static final int RIGHT_MOUSE = 1;
+    private static final int BOGO_BUTTON_SLEEPING_BAG_GAP = 2;
+    private static final int SLEEPING_BAG_BUTTON_SIZE = 14;
+    private static final int SLEEPING_BAG_RIGHT_OFFSET = 35;
 
     private static final String PLAYER_INV = "player_inventory";
 
@@ -64,6 +74,32 @@ public class BackPackContainer extends ModularContainer implements IStorageConta
     public BackPackContainer(IBackpackWrapper wrapper, Integer backpackSlotIndex) {
         this.wrapper = wrapper;
         this.backpackSlotIndex = backpackSlotIndex;
+    }
+
+    @Optional.Method(modid = "bogosorter")
+    @Override
+    public void buildSortingContext(ISortingContextBuilder builder) {}
+
+    @Optional.Method(modid = "bogosorter")
+    @Override
+    public @Nullable IPosSetter getPlayerButtonPosSetter() {
+        return (slotGroup, buttonPos) -> {
+            if (slotGroup.getSlots()
+                .isEmpty()) {
+                buttonPos.setEnabled(false);
+                return;
+            }
+            buttonPos.setHorizontal();
+            buttonPos.setTopRight();
+            int rowSize = wrapper.getSlots() > 81 ? 12 : 9;
+            int panelWidth = 20 + rowSize * 18;
+            int sleepingBagLeft = panelWidth - SLEEPING_BAG_RIGHT_OFFSET - SLEEPING_BAG_BUTTON_SIZE;
+            int topY = slotGroup.getSlots()
+                .get(0)
+                .bogo$getY();
+            int buttonTop = topY - 14;
+            buttonPos.setPos(sleepingBagLeft - BOGO_BUTTON_SLEEPING_BAG_GAP, buttonTop);
+        };
     }
 
     @Override
