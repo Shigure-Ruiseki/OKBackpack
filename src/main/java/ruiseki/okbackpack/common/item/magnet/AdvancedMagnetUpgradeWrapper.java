@@ -108,6 +108,8 @@ public class AdvancedMagnetUpgradeWrapper extends AdvancedPickupUpgradeWrapper i
         if (entities.isEmpty()) return false;
 
         int pulled = 0;
+        boolean storageLoaded = false;
+        boolean storageChanged = false;
 
         for (Entity entity : entities) {
             if (pulled++ > 20) break;
@@ -126,7 +128,16 @@ public class AdvancedMagnetUpgradeWrapper extends AdvancedPickupUpgradeWrapper i
                 double distSq = entity.getDistanceSq(dx, dy, dz);
 
                 if (distSq < 2.25) { // ~1.5 block
+                    if (!storageLoaded) {
+                        storage.readFromItem();
+                        storageLoaded = true;
+                    }
+
                     ItemStack remaining = storage.insertItem(stack, false);
+
+                    if (remaining == null || remaining.stackSize != stack.stackSize) {
+                        storageChanged = true;
+                    }
 
                     if (remaining == null || remaining.stackSize <= 0) {
                         entity.setDead();
@@ -139,6 +150,10 @@ public class AdvancedMagnetUpgradeWrapper extends AdvancedPickupUpgradeWrapper i
             }
 
             setEntityMotionFromVector(entity, new Vector3d(dx, dy, dz), 0.45F);
+        }
+
+        if (storageChanged) {
+            storage.writeToItem();
         }
 
         return true;
