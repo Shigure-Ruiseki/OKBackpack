@@ -13,6 +13,7 @@ import ruiseki.okbackpack.client.key.ToolSwapHandler;
 import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.common.event.ItemRenderEvent;
 import ruiseki.okbackpack.compat.Mods;
+import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
 import ruiseki.okcore.client.key.IKeyRegistry;
 import ruiseki.okcore.client.key.KeyRegistry;
 import ruiseki.okcore.init.ModBase;
@@ -74,6 +75,9 @@ public class ClientProxy extends ClientProxyComponent {
         MinecraftForge.EVENT_BUS.register(BackpackJukeboxSoundManager.getInstance());
         if (Mods.CodeChickenCore.isModLoaded()) {
             MinecraftForge.EVENT_BUS.register(new BackpackContentHandler());
+        }
+        if (Mods.InventoryBogoSorter.isModLoaded()) {
+            MinecraftForge.EVENT_BUS.register(new BackpackBogoSorterClientCompat());
         }
     }
 }

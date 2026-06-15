@@ -50,6 +50,10 @@ public interface IStorageWrapper extends IItemHandlerModifiable, IItemHandler, I
 
     String getDisplayName();
 
+    void writeToItem();
+
+    void readFromItem();
+
     @Nullable
     ItemStack insertItem(@Nullable ItemStack stack, boolean simulate);
 

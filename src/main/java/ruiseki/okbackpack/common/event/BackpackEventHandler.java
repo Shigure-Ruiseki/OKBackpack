@@ -560,6 +560,9 @@ public class BackpackEventHandler {
             if (!context.getWrapper()
                 .canPickupItem(pickupStack)) continue;
 
+            context.getWrapper()
+                .readFromItem();
+
             ItemStack before = pickupStack.copy();
             ItemStack result = context.getWrapper()
                 .insertItem(pickupStack, false);

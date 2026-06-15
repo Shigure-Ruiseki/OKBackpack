@@ -15,6 +15,8 @@ import ruiseki.okbackpack.common.block.TEBackpack;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackSettingsTemplate;
+import ruiseki.okbackpack.compat.Mods;
+import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterServerCompat;
 import ruiseki.okcore.init.IInitListener;
 
 public class BackpackSHRegisters implements IInitListener {
@@ -31,6 +33,7 @@ public class BackpackSHRegisters implements IInitListener {
     public static final String UPDATE_DELETE_SETTINGS_PRESET = "update_delete_settings_preset";
     public static final String UPDATE_IMPORT_SETTINGS_PRESET = "update_import_settings_preset";
     public static final String UPDATE_TAB_INDEX = "update_tab_index";
+    public static final String UPDATE_BOGO_SORT_INV = "update_bogo_sort_inv";
     public static final String DEPLOY_SLEEPING_BAG = "update_deploy_sleeping_bag";
 
     @Override
@@ -43,10 +46,14 @@ public class BackpackSHRegisters implements IInitListener {
             });
 
             BackpackSHRegistry.registerServer(UPDATE_SORT_INV, (handler, buf) -> {
-                for (int i = 0; i < handler.wrapper.getSlots(); i++) {
-                    handler.wrapper.setStackInSlot(i, buf.readItemStackFromBuffer());
-                }
+                boolean reverse = buf.readBoolean();
+                BackpackInventoryHelpers.sortInventory(handler.wrapper, reverse);
+                handler.wrapper.markDirty();
             });
+
+            if (Mods.InventoryBogoSorter.isModLoaded()) {
+                BackpackBogoSorterServerCompat.register();
+            }
 
             BackpackSHRegistry.registerServer(UPDATE_TRANSFER_TO_BACKPACK_INV, (handler, buf) -> {
                 boolean transferMatched = buf.readBoolean();

@@ -15,6 +15,7 @@ public enum Mods implements IMod, ITargetMod {
 
     // spotless:off
     NotEnoughItems("NotEnoughItems"),
+    InventoryBogoSorter("bogosorter"),
     CodeChickenCore("CodeChickenCore"),
     EtFuturum("etfuturum"),
     TConstruct("TConstruct"),
