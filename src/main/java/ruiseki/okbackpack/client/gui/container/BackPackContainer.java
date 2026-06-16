@@ -32,6 +32,7 @@ import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.IStorageContainer;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
+import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade.CraftingDestination;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
@@ -43,7 +44,6 @@ import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularUpgradeWidgetSlot;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
@@ -521,17 +521,14 @@ public class BackPackContainer extends ModularContainer
 
             if (inventoryCrafting == null) {
                 transferItemFiltered(fromSlot, fromStack, slot -> PLAYER_INV.equals(slot.getSlotGroupName()));
-            } else
-                if (inventoryCrafting.getCraftingDestination() == CraftingUpgradeWrapper.CraftingDestination.BACKPACK) {
-
-                    transferItemFiltered(
-                        fromSlot,
-                        fromStack,
-                        slot -> slot instanceof ModularBackpackSlot && wrapper.isSlotMemorized(slot.getSlotIndex()),
-                        slot -> slot instanceof ModularBackpackSlot);
-                } else {
-                    transferItemFiltered(fromSlot, fromStack, slot -> PLAYER_INV.equals(slot.getSlotGroupName()));
-                }
+            } else {
+                transferCraftingDestinationItem(fromSlot, fromStack, inventoryCrafting.getCraftingDestination());
+            }
+        } else if (fromSlot instanceof IndexedModularCraftingMatrixSlot matrixSlot) {
+            IndexedInventoryCraftingWrapper inventoryCrafting = getInventoryCrafting(matrixSlot);
+            if (inventoryCrafting != null) {
+                transferCraftingDestinationItem(fromSlot, fromStack, inventoryCrafting.getCraftingDestination());
+            }
         }
         if (fromSlot instanceof ModularUpgradeSlot upgradeSlot) {
             transferItemFiltered(
@@ -575,6 +572,23 @@ public class BackPackContainer extends ModularContainer
         }
 
         return super.transferItem(fromSlot, fromStack);
+    }
+
+    private IndexedInventoryCraftingWrapper getInventoryCrafting(ModularUpgradeWidgetSlot slot) {
+        return inventoryCraftingInstances.get(slot.getUpgradeSlotIndex());
+    }
+
+    private void transferCraftingDestinationItem(ModularSlot fromSlot, ItemStack fromStack,
+        CraftingDestination craftingDestination) {
+        if (craftingDestination == CraftingDestination.BACKPACK) {
+            transferItemFiltered(
+                fromSlot,
+                fromStack,
+                slot -> slot instanceof ModularBackpackSlot && wrapper.isSlotMemorized(slot.getSlotIndex()),
+                slot -> slot instanceof ModularBackpackSlot);
+            return;
+        }
+        transferItemFiltered(fromSlot, fromStack, slot -> PLAYER_INV.equals(slot.getSlotGroupName()));
     }
 
     @SafeVarargs
