@@ -35,6 +35,7 @@ import ruiseki.okbackpack.common.init.ModOreDicts;
 import ruiseki.okbackpack.common.recipe.CompactingRecipeCache;
 import ruiseki.okbackpack.common.recipe.ModRecipes;
 import ruiseki.okbackpack.compat.bauble.BaubleCompat;
+import ruiseki.okbackpack.compat.structurelib.StructureLibCompat;
 import ruiseki.okbackpack.compat.tic.TConstructTabCompat;
 import ruiseki.okcore.command.CommandMod;
 import ruiseki.okcore.helper.MinecraftHelpers;
@@ -59,6 +60,7 @@ public class OKBackpack extends ModBase {
         super(Reference.MOD_ID, Reference.MOD_NAME);
         putGenericReference(REFKEY_MOD_VERSION, Reference.VERSION);
         addInitListeners(new BaubleCompat());
+        addInitListeners(new StructureLibCompat());
         addInitListeners(new ModRecipes());
         addInitListeners(new ModOreDicts());
         addInitListeners(new UpgradeSlotGroupRegisters());

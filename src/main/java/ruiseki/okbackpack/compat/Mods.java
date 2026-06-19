@@ -17,6 +17,7 @@ public enum Mods implements IMod, ITargetMod {
     NotEnoughItems("NotEnoughItems"),
     InventoryBogoSorter("bogosorter"),
     CodeChickenCore("CodeChickenCore"),
+    StructureLib("structurelib"),
     EtFuturum("etfuturum"),
     TConstruct("TConstruct"),
     Thaumcraft("Thaumcraft"),
