@@ -15,10 +15,10 @@ import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.github.bsideup.jabel.Desugar;
 
-import baubles.api.BaublesApi;
 import ruiseki.okbackpack.client.gui.interaction.BackpackGuiOpenHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.init.ModBlocks;
+import ruiseki.okcore.helper.BaublesHelpers;
 import tconstruct.client.tabs.AbstractTab;
 
 public class OKBackpackInventoryTab extends AbstractTab {
@@ -124,7 +124,7 @@ public class OKBackpackInventoryTab extends AbstractTab {
     }
 
     private TargetBackpack findTargetBackpack(EntityClientPlayerMP player) {
-        TargetBackpack baublesTarget = findTargetBackpack(BaublesApi.getBaubles(player), InventoryTypes.BAUBLES);
+        TargetBackpack baublesTarget = findTargetBackpack(BaublesHelpers.getBaubles(player), InventoryTypes.BAUBLES);
         if (baublesTarget != null) {
             return baublesTarget;
         }

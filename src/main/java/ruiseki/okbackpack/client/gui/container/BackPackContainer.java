@@ -425,6 +425,13 @@ public class BackPackContainer extends ModularContainer
 
             if (heldStack != null) {
 
+                if (slotId >= 0 && slotId < inventorySlots.size()) {
+                    Slot targetClickSlot = getSlot(slotId);
+                    if (targetClickSlot instanceof IndexedModularCraftingSlot) {
+                        return Platform.EMPTY_STACK;
+                    }
+                }
+
                 int start = mouseButton == 0 ? 0 : inventorySlots.size() - 1;
                 int step = mouseButton == 0 ? 1 : -1;
 

@@ -7,8 +7,8 @@ public class Reference {
     public static final String VERSION = Tags.VERSION;
     public static final String DEPENDENCIES = "required-after:gtnhlib@[0.11.9,);"
         + "required-after:modularui2@[2.3.73-1.7.10,);"
-        + "required-after:okcore@[26.06.14.0,);"
-        + "required-after:Baubles|Expanded;"
+        + "required-after:okcore@[26.06.19.1,);"
+        + "after:Baubles;"
         + "after:TConstruct;"
         + "after:angelica;"
         + "after:NotEnoughItems;"
