@@ -46,7 +46,7 @@ public class ItemAdvancedJukeboxUpgrade extends ItemUpgrade<AdvancedJukeboxUpgra
             return UpgradeSlotChangeResult.failOnlySingleAllowed(
                 conflicts,
                 LangHelpers.localize("item.jukebox_upgrade.name"),
-                wrapper.getDisplayName());
+                wrapper.getInventoryName());
         }
         return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
     }

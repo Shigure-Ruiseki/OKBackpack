@@ -97,7 +97,7 @@ public class ItemEnergizedNodeUpgrade extends ItemUpgrade<EnergizedNodeUpgradeWr
             return UpgradeSlotChangeResult.failOnlySingleAllowed(
                 conflicts,
                 LangHelpers.localize("item.energized_node_upgrade.name"),
-                wrapper.getDisplayName());
+                wrapper.getInventoryName());
         }
         return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
     }

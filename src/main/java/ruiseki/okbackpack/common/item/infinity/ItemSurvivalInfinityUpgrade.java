@@ -35,7 +35,7 @@ public class ItemSurvivalInfinityUpgrade extends ItemUpgrade<InfinityUpgradeWrap
             .findConflictSlots(wrapper, targetSlot, ItemInfinityUpgrade.class, ItemSurvivalInfinityUpgrade.class);
         if (conflicts.length >= 1) {
             return UpgradeSlotChangeResult
-                .failOnlySingleAllowed(conflicts, upgradeStack.getDisplayName(), wrapper.getDisplayName());
+                .failOnlySingleAllowed(conflicts, upgradeStack.getDisplayName(), wrapper.getInventoryName());
         }
 
         // All other upgrade slots must be empty

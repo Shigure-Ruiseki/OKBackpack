@@ -35,6 +35,7 @@ import ruiseki.okbackpack.common.init.ModOreDicts;
 import ruiseki.okbackpack.common.recipe.CompactingRecipeCache;
 import ruiseki.okbackpack.common.recipe.ModRecipes;
 import ruiseki.okbackpack.compat.bauble.BaubleCompat;
+import ruiseki.okbackpack.compat.findit.FindItCompat;
 import ruiseki.okbackpack.compat.tic.TConstructTabCompat;
 import ruiseki.okcore.command.CommandMod;
 import ruiseki.okcore.helper.MinecraftHelpers;
@@ -102,6 +103,7 @@ public class OKBackpack extends ModBase {
         if (MinecraftHelpers.isClientSide()) {
             TConstructTabCompat.registerClientTabs();
         }
+        FindItCompat.registerProvider();
     }
 
     @Override

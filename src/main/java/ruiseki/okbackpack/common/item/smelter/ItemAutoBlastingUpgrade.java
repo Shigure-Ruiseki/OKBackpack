@@ -55,7 +55,7 @@ public class ItemAutoBlastingUpgrade extends ItemUpgrade<AutoBlastingUpgradeWrap
             return UpgradeSlotChangeResult.failOnlySingleAllowed(
                 conflicts,
                 LangHelpers.localize("item.smelting_upgrade.name"),
-                wrapper.getDisplayName());
+                wrapper.getInventoryName());
         }
         return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
     }

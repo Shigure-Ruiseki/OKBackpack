@@ -62,7 +62,7 @@ public class ItemBatteryUpgrade extends ItemUpgrade<BatteryUpgradeWrapper> {
             return UpgradeSlotChangeResult.failOnlySingleAllowed(
                 conflicts,
                 LangHelpers.localize("item.battery_upgrade.name"),
-                wrapper.getDisplayName());
+                wrapper.getInventoryName());
         }
 
         // getVisualSize() already accounts for slots reserved by existing storage upgrades (tank, etc.)

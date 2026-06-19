@@ -12,6 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -56,7 +57,7 @@ import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 
-public class BackpackWrapper implements IBackpackWrapper {
+public class BackpackWrapper implements IBackpackWrapper, IInventory {
 
     private static final double MAX_SLEEPING_BAG_DISTANCE_SQ = 32.0D * 32.0D;
     private static final int SLEEPING_BAG_DISTANCE_CHECK_INTERVAL = 10;
@@ -223,29 +224,6 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public UpgradeItemStackHandler getUpgradeHandler() {
         return upgradeHandler;
-    }
-
-    @Override
-    public String getDisplayName() {
-        if (hasCustomInventoryName()) {
-            return this.customName;
-        }
-
-        if (backpack != null && backpack.getItem() != null) {
-            return LangHelpers.localize(
-                backpack.getItem()
-                    .getUnlocalizedName(backpack) + ".name");
-        }
-
-        if (tile != null && tile.getWorldObj() != null) {
-            Block block = tile.getWorldObj()
-                .getBlock(tile.xCoord, tile.yCoord, tile.zCoord);
-            if (block != null) {
-                return LangHelpers.localize(block.getUnlocalizedName() + ".name");
-            }
-        }
-
-        return LangHelpers.localize("container.inventory");
     }
 
     @Override
@@ -784,10 +762,6 @@ public class BackpackWrapper implements IBackpackWrapper {
         if (!lockBackpack) return true;
         if (playerUUID == null || playerUuid == null || playerUuid.isEmpty()) return false;
         return playerUUID.equals(UUID.fromString(playerUuid));
-    }
-
-    public boolean hasCustomInventoryName() {
-        return this.customName != null && !this.customName.isEmpty();
     }
 
     @Override
@@ -1351,5 +1325,74 @@ public class BackpackWrapper implements IBackpackWrapper {
                 .fromNBT(tag.getCompoundTag(TEMPLATE_TAG), slotCount);
             return new SettingsPreset(name, template);
         }
+    }
+
+    @Override
+    public int getSizeInventory() {
+        return this.getSlots();
+    }
+
+    @Override
+    public ItemStack decrStackSize(int index, int count) {
+        return this.extractItem(index, count, false);
+    }
+
+    @Override
+    public ItemStack getStackInSlotOnClosing(int index) {
+        return null;
+    }
+
+    @Override
+    public void setInventorySlotContents(int index, ItemStack stack) {
+        this.setStackInSlot(index, stack);
+    }
+
+    @Override
+    public boolean hasCustomInventoryName() {
+        return this.customName != null && !this.customName.isEmpty();
+    }
+
+    @Override
+    public String getInventoryName() {
+        if (hasCustomInventoryName()) {
+            return this.customName;
+        }
+
+        if (backpack != null && backpack.getItem() != null) {
+            return LangHelpers.localize(
+                backpack.getItem()
+                    .getUnlocalizedName(backpack) + ".name");
+        }
+
+        if (tile != null && tile.getWorldObj() != null) {
+            Block block = tile.getWorldObj()
+                .getBlock(tile.xCoord, tile.yCoord, tile.zCoord);
+            if (block != null) {
+                return LangHelpers.localize(block.getUnlocalizedName() + ".name");
+            }
+        }
+
+        return LangHelpers.localize("container.inventory");
+    }
+
+    @Override
+    public int getInventoryStackLimit() {
+        return this.getSlotLimit(0);
+    }
+
+    @Override
+    public boolean isUseableByPlayer(EntityPlayer player) {
+        return true;
+    }
+
+    @Override
+    public void openInventory() {}
+
+    @Override
+    public void closeInventory() {}
+
+    @Override
+    public boolean isItemValidForSlot(int slot, ItemStack stack) {
+        return this.isItemValid(slot, stack);
     }
 }

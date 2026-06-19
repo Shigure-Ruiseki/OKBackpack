@@ -48,7 +48,7 @@ public interface IStorageWrapper extends IItemHandlerModifiable, IItemHandler, I
 
     <T extends BackpackItemStackHandler> T getStackHandler();
 
-    String getDisplayName();
+    String getInventoryName();
 
     void writeToItem();
 

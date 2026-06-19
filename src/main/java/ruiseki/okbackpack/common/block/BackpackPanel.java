@@ -595,7 +595,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
     }
 
     public void addTexts() {
-        child(new TileWidget(wrapper.getDisplayName()).widthRel(0.8f));
+        child(new TileWidget(wrapper.getInventoryName()).widthRel(0.8f));
         child(
             IKey.lang(this.player.inventory.getInventoryName())
                 .asWidget()

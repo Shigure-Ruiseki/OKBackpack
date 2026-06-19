@@ -65,7 +65,7 @@ public class ItemTankUpgrade extends ItemUpgrade<TankUpgradeWrapper> {
                 conflicts,
                 MAX_TANK_UPGRADES,
                 LangHelpers.localize("item.tank_upgrade.name"),
-                wrapper.getDisplayName());
+                wrapper.getInventoryName());
         }
 
         // getVisualSize() already accounts for slots reserved by existing storage upgrades (battery, other tanks)

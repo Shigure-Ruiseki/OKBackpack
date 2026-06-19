@@ -241,7 +241,7 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
 
     @Override
     public String getInventoryName() {
-        return wrapper.getDisplayName();
+        return wrapper.getInventoryName();
     }
 
     @Override

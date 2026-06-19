@@ -57,7 +57,7 @@ public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
                 conflicts,
                 3,
                 LangHelpers.localize("item.stack_upgrade.name"),
-                wrapper.getDisplayName());
+                wrapper.getInventoryName());
         }
         if (isDowngrade(upgradeStack)) {
             return checkCapacityConflict(wrapper, -1, upgradeStack);
