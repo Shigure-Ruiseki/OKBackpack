@@ -9,9 +9,9 @@ import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
-import baubles.common.container.InventoryBaubles;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
+import ruiseki.okcore.helper.BaublesHelpers;
 
 public final class BackpackGuiOpenHelpers {
 
@@ -68,7 +68,7 @@ public final class BackpackGuiOpenHelpers {
             return BackpackEntityHelpers.getBackpack(player, InventoryTypes.PLAYER, slot.getSlotIndex());
         }
 
-        if (slot.inventory instanceof InventoryBaubles) {
+        if (BaublesHelpers.isBaubles(slot)) {
             return BackpackEntityHelpers.getBackpack(player, InventoryTypes.BAUBLES, slot.getSlotIndex());
         }
 

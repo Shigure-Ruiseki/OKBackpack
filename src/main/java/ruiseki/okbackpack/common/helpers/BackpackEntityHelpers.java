@@ -15,11 +15,11 @@ import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.github.bsideup.jabel.Desugar;
 import com.gtnewhorizon.gtnhlib.concurrent.ThreadsafeCache;
 
-import baubles.api.BaublesApi;
 import ruiseki.okbackpack.api.entity.IBackpackCarrierEntity;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockBackpack;
+import ruiseki.okcore.helper.BaublesHelpers;
 
 public final class BackpackEntityHelpers {
 
@@ -59,18 +59,18 @@ public final class BackpackEntityHelpers {
         if (player == null || visitor == null) return false;
 
         if (order == SearchOrder.BAUBLES_THEN_PLAYER) {
-            return visitInventory(player, BaublesApi.getBaubles(player), InventoryTypes.BAUBLES, visitor)
+            return visitInventory(player, BaublesHelpers.getBaubles(player), InventoryTypes.BAUBLES, visitor)
                 || visitInventory(player, player.inventory, InventoryTypes.PLAYER, visitor);
         }
 
         return visitInventory(player, player.inventory, InventoryTypes.PLAYER, visitor)
-            || visitInventory(player, BaublesApi.getBaubles(player), InventoryTypes.BAUBLES, visitor);
+            || visitInventory(player, BaublesHelpers.getBaubles(player), InventoryTypes.BAUBLES, visitor);
     }
 
     public static boolean visitWornBackpacks(EntityPlayer player, BackpackVisitor visitor) {
         if (player == null || visitor == null) return false;
 
-        if (visitInventory(player, BaublesApi.getBaubles(player), InventoryTypes.BAUBLES, visitor)) {
+        if (visitInventory(player, BaublesHelpers.getBaubles(player), InventoryTypes.BAUBLES, visitor)) {
             return true;
         }
 
@@ -264,7 +264,7 @@ public final class BackpackEntityHelpers {
     private static IInventory getInventory(EntityPlayer player, InventoryType type) {
         if (player == null || type == null) return null;
         if (type == InventoryTypes.PLAYER) return player.inventory;
-        if (type == InventoryTypes.BAUBLES) return BaublesApi.getBaubles(player);
+        if (type == InventoryTypes.BAUBLES) return BaublesHelpers.getBaubles(player);
         return null;
     }
 

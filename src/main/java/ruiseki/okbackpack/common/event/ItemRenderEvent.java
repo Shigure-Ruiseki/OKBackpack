@@ -2,18 +2,18 @@ package ruiseki.okbackpack.common.event;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 import org.lwjgl.opengl.GL11;
 
-import baubles.common.container.InventoryBaubles;
-import baubles.common.lib.PlayerHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.client.renderer.player.IPlayerItemRender;
 import ruiseki.okbackpack.client.renderer.player.PlayerRenderContext;
+import ruiseki.okcore.helper.BaublesHelpers;
 
 public class ItemRenderEvent {
 
@@ -25,8 +25,8 @@ public class ItemRenderEvent {
         if (event.entityLiving.getActivePotionEffect(Potion.invisibility) != null) return;
 
         EntityPlayer player = event.entityPlayer;
-        InventoryPlayer inv = player.inventory;
-        InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(player);
+        IInventory inv = player.inventory;
+        IInventory baubles = BaublesHelpers.getBaubles(player);
 
         // BODY render
         renderArmor(inv, event, RenderHelpers.RenderType.BODY);
@@ -83,7 +83,7 @@ public class ItemRenderEvent {
         }
 
         // baubles
-        InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(player);
+        IInventory baubles = BaublesHelpers.getBaubles(player);
 
         for (int i = 0; i < baubles.getSizeInventory(); i++) {
             ItemStack stack = baubles.getStackInSlot(i);
@@ -96,7 +96,7 @@ public class ItemRenderEvent {
         return context;
     }
 
-    private void renderBauble(InventoryBaubles inv, RenderPlayerEvent event, RenderHelpers.RenderType type) {
+    private void renderBauble(IInventory inv, RenderPlayerEvent event, RenderHelpers.RenderType type) {
         EntityPlayer player = event.entityPlayer;
 
         for (int i = 0; i < inv.getSizeInventory(); i++) {
@@ -113,7 +113,7 @@ public class ItemRenderEvent {
         }
     }
 
-    private void renderArmor(InventoryPlayer inv, RenderPlayerEvent event, RenderHelpers.RenderType type) {
+    private void renderArmor(IInventory inv, RenderPlayerEvent event, RenderHelpers.RenderType type) {
         EntityPlayer player = event.entityPlayer;
 
         for (int armorIndex = 0; armorIndex < 4; armorIndex++) {

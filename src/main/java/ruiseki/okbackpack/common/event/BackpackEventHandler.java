@@ -45,7 +45,6 @@ import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.github.bsideup.jabel.Desugar;
 
-import baubles.api.BaublesApi;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -64,6 +63,7 @@ import ruiseki.okbackpack.common.item.travelers.lapis.LapisUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.quiver.QuiverUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.rainbow.RainbowUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.slime.SlimeUpgradeWrapper;
+import ruiseki.okcore.helper.BaublesHelpers;
 
 public class BackpackEventHandler {
 
@@ -512,7 +512,7 @@ public class BackpackEventHandler {
         ItemStack stack = event.item.getEntityItem()
             .copy();
 
-        IInventory baubles = BaublesApi.getBaubles(player);
+        IInventory baubles = BaublesHelpers.getBaubles(player);
         stack = attemptPickup(player, baubles, stack, InventoryTypes.BAUBLES);
 
         if (stack != null) {
