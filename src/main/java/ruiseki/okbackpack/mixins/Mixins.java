@@ -42,6 +42,9 @@ public enum Mixins implements IMixins {
         .setApplyIf(() -> ModConfig.enableBackpackInventoryInteraction)
         .setPhase(Phase.EARLY)),
 
+    MUI2(new MixinBuilder("Mui2 Mixin").addClientMixins("modularui2.ItemSlotInvoker")
+        .setPhase(Phase.EARLY)),
+
     ;
 
     @Getter

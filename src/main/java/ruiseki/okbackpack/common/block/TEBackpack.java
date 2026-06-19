@@ -242,7 +242,7 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
 
     @Override
     public String getInventoryName() {
-        return wrapper.getDisplayName();
+        return wrapper.getInventoryName();
     }
 
     @Override

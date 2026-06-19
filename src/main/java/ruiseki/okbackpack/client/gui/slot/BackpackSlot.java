@@ -43,6 +43,7 @@ import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.upgrade.SortingSettingWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
+import ruiseki.okbackpack.mixins.early.modularui2.ItemSlotInvoker;
 
 public class BackpackSlot extends ItemSlot {
 
@@ -440,6 +441,8 @@ public class BackpackSlot extends ItemSlot {
                 GuiDraw.drawRect(1, 1, 16, 16, -2130706433);
             }
 
+            ((ItemSlotInvoker) this).invokeRenderSlotUnderlayNEI(guiContainer, slotIn);
+
             itemstack = NEAAnimationHandler.injectVirtualStack(itemstack, guiContainer, slotIn);
 
             if (itemstack != null) {
@@ -486,6 +489,8 @@ public class BackpackSlot extends ItemSlot {
                 GlStateManager.disableDepth();
                 GlStateManager.disableLighting();
             }
+
+            ((ItemSlotInvoker) this).invokeRenderSlotOverlayNEI(guiContainer, slotIn);
         }
 
         ((GuiAccessor) guiScreen).setZLevel(0f);

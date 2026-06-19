@@ -31,7 +31,7 @@ public class ItemInceptionUpgrade extends ItemUpgrade<InceptionUpgradeWrapper> {
         int[] conflicts = IUpgradeItem.findConflictSlots(wrapper, targetSlot, ItemInceptionUpgrade.class);
         if (conflicts.length >= 1) {
             return UpgradeSlotChangeResult
-                .failOnlySingleAllowed(conflicts, upgradeStack.getDisplayName(), wrapper.getDisplayName());
+                .failOnlySingleAllowed(conflicts, upgradeStack.getDisplayName(), wrapper.getInventoryName());
         }
         return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
     }

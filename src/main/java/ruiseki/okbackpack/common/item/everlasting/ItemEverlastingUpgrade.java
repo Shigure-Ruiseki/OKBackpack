@@ -32,7 +32,7 @@ public class ItemEverlastingUpgrade extends ItemUpgrade<EverlastingUpgradeWrappe
         int[] conflicts = IUpgradeItem.findConflictSlots(wrapper, targetSlot, ItemEverlastingUpgrade.class);
         if (conflicts.length >= 1) {
             return UpgradeSlotChangeResult
-                .failOnlySingleAllowed(conflicts, upgradeStack.getDisplayName(), wrapper.getDisplayName());
+                .failOnlySingleAllowed(conflicts, upgradeStack.getDisplayName(), wrapper.getInventoryName());
         }
         return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
     }
