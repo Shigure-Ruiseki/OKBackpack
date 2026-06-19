@@ -1,8 +1,11 @@
 package ruiseki.okbackpack.common.item.pickup;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IPickupUpgrade;
@@ -56,18 +59,76 @@ public class AdvancedPickupUpgradeWrapper extends AdvancedUpgradeWrapper impleme
             }
             if (!inBackpack) return false;
             if (!hasAnyFilterItem()) return true;
-            return super.checkFilter(stack);
+            return matchesConfiguredFilter(stack);
         }
 
         if (!hasAnyFilterItem()) return true;
-        boolean matchesFilter = super.checkFilter(stack);
-        return (filterType == PickupFilterType.ALLOW) == matchesFilter;
+        boolean matchesFilter = matchesConfiguredFilter(stack);
+        return switch (filterType) {
+            case ALLOW -> matchesFilter;
+            case BLOCK -> !matchesFilter;
+            case STORAGE -> matchesFilter;
+        };
     }
 
     private boolean hasAnyFilterItem() {
         BaseItemStackHandler filterItems = getFilterItems();
         for (int i = 0; i < filterItems.getSlots(); i++) {
             if (filterItems.getStackInSlot(i) != null) return true;
+        }
+        return false;
+    }
+
+    private boolean matchesConfiguredFilter(ItemStack stack) {
+        return switch (getMatchType()) {
+            case ITEM -> matchesItemFilter(stack);
+            case MOD -> matchesModFilter(stack);
+            case ORE_DICT -> matchesOreDictFilter(stack);
+        };
+    }
+
+    private boolean matchesItemFilter(ItemStack stack) {
+        BaseItemStackHandler filterItems = getFilterItems();
+        for (int i = 0; i < filterItems.getSlots(); i++) {
+            ItemStack filterStack = filterItems.getStackInSlot(i);
+            if (filterStack == null || filterStack.getItem() != stack.getItem()) continue;
+            if (matchItemInfo(stack, filterStack)) return true;
+        }
+        return false;
+    }
+
+    private boolean matchesModFilter(ItemStack stack) {
+        String stackMod = getModID(stack.getItem());
+        BaseItemStackHandler filterItems = getFilterItems();
+        for (int i = 0; i < filterItems.getSlots(); i++) {
+            ItemStack filterStack = filterItems.getStackInSlot(i);
+            if (filterStack == null || filterStack.getItem() == null) continue;
+            if (stackMod.equals(getModID(filterStack.getItem()))) return true;
+        }
+        return false;
+    }
+
+    private boolean matchesOreDictFilter(ItemStack stack) {
+        List<String> entries = getOreDictEntries();
+        if (entries.isEmpty()) return false;
+
+        List<String> stackOreDicts = new ArrayList<>();
+        for (int id : OreDictionary.getOreIDs(stack)) {
+            stackOreDicts.add(OreDictionary.getOreName(id));
+        }
+
+        if (isMatchAllOreDicts()) {
+            for (String entry : entries) {
+                boolean found = stackOreDicts.stream().anyMatch(name -> name.matches(entry));
+                if (!found) return false;
+            }
+            return true;
+        }
+
+        for (String entry : entries) {
+            if (stackOreDicts.stream().anyMatch(name -> name.matches(entry))) {
+                return true;
+            }
         }
         return false;
     }
