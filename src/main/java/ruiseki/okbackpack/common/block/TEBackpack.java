@@ -32,9 +32,8 @@ import ruiseki.okbackpack.compat.thaumcraft.IVisChargeTarget;
 import ruiseki.okcore.energy.IOKEnergyIO;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileEntityOK;
-import ruiseki.okcore.tileentity.TileSideCapability;
 
-public class TEBackpack extends TileSideCapability implements ISidedInventory, IGuiHolder<SidedPosGuiData>,
+public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHolder<SidedPosGuiData>,
     TileEntityOK.ITickingTile, IOKEnergyIO, IFluidHandler, IVisChargeTarget {
 
     private int[] allSlots;
