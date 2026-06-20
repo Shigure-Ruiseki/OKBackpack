@@ -63,6 +63,7 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
             @Override
             public void run() {
                 markDirty();
+                onSendUpdate();
             }
         });
         refreshAccessibleSlots();
@@ -75,6 +76,7 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
             @Override
             public void run() {
                 markDirty();
+                onSendUpdate();
             }
         });
         refreshAccessibleSlots();
@@ -113,6 +115,7 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
 
         if (wrapper.tick(worldObj, getPos())) {
             markDirty();
+            onSendUpdate();
         }
     }
 

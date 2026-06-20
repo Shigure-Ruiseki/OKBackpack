@@ -45,7 +45,8 @@ public enum Mixins implements IMixins {
     MUI2(new MixinBuilder("Mui2 Mixin").addClientMixins("modularui2.ItemSlotInvoker")
         .setPhase(Phase.EARLY)),
 
-    ;
+    GTNHLIB(new MixinBuilder("GTNHLib Mixin").addClientMixins("gtnhlib.JSONModelAccessor")
+        .setPhase(Phase.EARLY));
 
     @Getter
     private final MixinBuilder builder;

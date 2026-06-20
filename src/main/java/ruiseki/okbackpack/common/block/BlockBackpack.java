@@ -1,5 +1,8 @@
 package ruiseki.okbackpack.common.block;
 
+import static ruiseki.okbackpack.common.init.TierRegistries.LEATHER;
+
+import java.lang.reflect.Type;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -33,9 +36,13 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.gtnewhorizon.gtnhlib.api.BlockModelInfo;
+import com.gtnewhorizon.gtnhlib.api.IBlockModelProvider;
+import com.gtnewhorizon.gtnhlib.blockstate.core.BlockProperty;
 import com.gtnewhorizon.gtnhlib.blockstate.core.BlockPropertyTrait;
 import com.gtnewhorizon.gtnhlib.blockstate.properties.DirectionBlockProperty;
-import com.gtnewhorizon.gtnhlib.blockstate.registry.BlockPropertyRegistry;
+import com.gtnewhorizon.gtnhlib.client.model.BakedModelQuadContext;
+import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.gtnewhorizon.gtnhlib.client.model.color.BlockColor;
 import com.gtnewhorizon.gtnhlib.client.model.color.IBlockColor;
 import com.gtnewhorizons.angelica.api.IDynamicLightProducer;
@@ -43,9 +50,10 @@ import com.gtnewhorizons.angelica.api.IDynamicLightProducer;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import lombok.Getter;
 import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.api.ITintable;
+import ruiseki.okbackpack.api.tier.BackpackTier;
+import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okbackpack.api.wrapper.IAdminProtectable;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.api.wrapper.IBookshelfUpgrade;
@@ -57,6 +65,7 @@ import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionToo
 import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
+import ruiseki.okbackpack.client.renderer.model.BackpackModel;
 import ruiseki.okbackpack.client.renderer.player.IArmorRender;
 import ruiseki.okbackpack.client.renderer.player.IBaubleRender;
 import ruiseki.okbackpack.client.renderer.player.PlayerRenderContext;
@@ -64,19 +73,18 @@ import ruiseki.okbackpack.common.entity.EntityBackpack;
 import ruiseki.okbackpack.common.helpers.InventoryInteractionHelpers;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.block.BlockOK;
+import ruiseki.okcore.block.property.BlockPropertyReg;
 import ruiseki.okcore.energy.IOKEnergyItem;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemBlockBauble;
 
-public class BlockBackpack extends BlockOK {
+public class BlockBackpack extends BlockOK implements IBlockModelProvider, BlockModelInfo {
 
-    @Getter
-    private final int backpackSlots;
-    @Getter
-    private final int upgradeSlots;
+    protected final BackpackTier tier;
 
-    private final static DirectionBlockProperty property = new DirectionBlockProperty() {
+    @BlockPropertyReg
+    public final static DirectionBlockProperty property = new DirectionBlockProperty() {
 
         @Override
         public String getName() {
@@ -114,13 +122,51 @@ public class BlockBackpack extends BlockOK {
         }
     };
 
-    public BlockBackpack(String name, int backpackSlots, int upgradeSlots) {
-        super(name, TEBackpack.class, Material.cloth);
+    @BlockPropertyReg
+    public final static BlockProperty<String> tierProperties = new BlockProperty<String>() {
+
+        @Override
+        public String getName() {
+            return "tier";
+        }
+
+        @Override
+        public Type getType() {
+            return String.class;
+        }
+
+        @Override
+        public boolean hasTrait(BlockPropertyTrait trait) {
+            return switch (trait) {
+                case SupportsWorld, WorldMutable, StackMutable, SupportsStacks -> true;
+                default -> false;
+            };
+        }
+
+        @Override
+        public String getValue(ItemStack stack) {
+            return stack.getItem() instanceof ItemBackpack backpack ? backpack.tier.getId()
+                : TierRegistry.getTier(LEATHER)
+                    .getId();
+        }
+
+        @Override
+        public String getValue(IBlockAccess world, int x, int y, int z) {
+            Block block = world.getBlock(x, y, z);
+            if (block instanceof BlockBackpack backpack) {
+                return backpack.tier.getId();
+            }
+            return TierRegistry.getTier(LEATHER)
+                .getId();
+        }
+    };
+
+    public BlockBackpack(BackpackTier tier) {
+        super(tier.getId(), TEBackpack.class, Material.cloth);
+        this.tier = tier;
         setStepSound(soundTypeCloth);
         setHardness(1f);
         setCreativeTab(OKBCreativeTab.INSTANCE);
-        this.backpackSlots = backpackSlots;
-        this.upgradeSlots = upgradeSlots;
         this.isFullSize = this.isOpaque = false;
     }
 
@@ -224,14 +270,12 @@ public class BlockBackpack extends BlockOK {
             }
 
         }, this);
-
-        BlockPropertyRegistry.registerBlockItemProperty(this, property);
     }
 
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
         TEBackpack backpack = new TEBackpack();
-        BackpackWrapper wrapper = new BackpackWrapper(backpack, backpackSlots, upgradeSlots);
+        BackpackWrapper wrapper = new BackpackWrapper(tier);
         backpack.setWrapper(wrapper);
         return backpack;
     }
@@ -300,18 +344,31 @@ public class BlockBackpack extends BlockOK {
         return 0.0f;
     }
 
+    @Override
+    public BakedModel getModel(BakedModelQuadContext context) {
+        return new BackpackModel();
+    }
+
+    @Override
+    public boolean nhlib$isModeled() {
+        return true;
+    }
+
+    @Override
+    public void nhlib$setModeled(boolean modeled) {
+
+    }
+
     @Optional.Interface(iface = "com.gtnewhorizons.angelica.api.IDynamicLightProducer", modid = "angelica")
     public static class ItemBackpack extends ItemBlockBauble implements IGuiHolder<PlayerInventoryGuiData>,
         IBaubleRender, IArmorRender, IOKEnergyItem, IDynamicLightProducer {
 
-        public int backpackSlots = 27;
-        public int upgradeSlots = 1;
+        protected BackpackTier tier = TierRegistry.getTier("leather");
 
         public ItemBackpack(Block block) {
             super(block);
             if (block instanceof BlockBackpack backpack) {
-                this.backpackSlots = backpack.getBackpackSlots();
-                this.upgradeSlots = backpack.getUpgradeSlots();
+                this.tier = backpack.tier;
             }
         }
 

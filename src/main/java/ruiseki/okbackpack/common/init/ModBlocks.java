@@ -7,22 +7,20 @@ import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.Level;
 
 import ruiseki.okbackpack.OKBackpack;
+import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
-import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.block.IBlock;
 
 public enum ModBlocks {
 
     // spotless: off
 
-    BACKPACK_BASE(new BlockBackpack("leather_backpack", ModConfig.leatherBackpackSlots, ModConfig.leatherUpgradeSlots)),
-    BACKPACK_IRON(new BlockBackpack("iron_backpack", ModConfig.ironBackpackSlots, ModConfig.ironUpgradeSlots)),
-    BACKPACK_GOLD(new BlockBackpack("gold_backpack", ModConfig.goldBackpackSlots, ModConfig.goldUpgradeSlots)),
-    BACKPACK_DIAMOND(
-        new BlockBackpack("diamond_backpack", ModConfig.diamondBackpackSlots, ModConfig.diamondUpgradeSlots)),
-    BACKPACK_OBSIDIAN(
-        new BlockBackpack("obsidian_backpack", ModConfig.obsidianBackpackSlots, ModConfig.obsidianUpgradeSlots)),
+    BACKPACK_BASE(new BlockBackpack(TierRegistry.getTier("leather_backpack"))),
+    BACKPACK_IRON(new BlockBackpack(TierRegistry.getTier("iron_backpack"))),
+    BACKPACK_GOLD(new BlockBackpack(TierRegistry.getTier("gold_backpack"))),
+    BACKPACK_DIAMOND(new BlockBackpack(TierRegistry.getTier("diamond_backpack"))),
+    BACKPACK_OBSIDIAN(new BlockBackpack(TierRegistry.getTier("obsidian_backpack"))),
     SLEEPING_BAG(new BlockSleepingBag()),
 
     ;
