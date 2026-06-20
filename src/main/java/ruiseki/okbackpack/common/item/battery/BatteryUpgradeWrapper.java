@@ -4,12 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.gtnewhorizon.gtnhlib.client.model.BakedModelQuadContext;
-import com.gtnewhorizon.gtnhlib.client.model.loading.ResourceLoc;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
+import com.gtnewhorizon.gtnhlib.client.model.BakedModelQuadContext;
+import com.gtnewhorizon.gtnhlib.client.model.loading.ResourceLoc;
 
 import cofh.api.energy.IEnergyContainerItem;
 import ruiseki.okbackpack.Reference;
