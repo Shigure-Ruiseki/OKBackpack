@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RER",
+    "CPC",
+    "RER"
+  ],
+  "key": {
+    "R": { "ore": "dustRedstone" },
+    "E": { "item": "minecraft:ender_eye" },
+    "C": { "item": "minecraft:experience_bottle" },
+    "P": { "item": "okbackpack:advanced_pump_upgrade" }
+  },
+  "result": {
+    "item": "okbackpack:xp_pump_upgrade",
+    "count": 1
+  }
+}

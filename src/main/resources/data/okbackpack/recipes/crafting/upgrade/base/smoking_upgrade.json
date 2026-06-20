@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " L ",
+    "LUL",
+    " L "
+  ],
+  "key": {
+    "L": { "ore": "logWood" },
+    "U": { "item": "okbackpack:smelting_upgrade" }
+  },
+  "result": {
+    "item": "okbackpack:smoking_upgrade",
+    "count": 1
+  }
+}

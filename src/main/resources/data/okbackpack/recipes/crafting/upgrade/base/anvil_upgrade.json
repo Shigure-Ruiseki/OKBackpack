@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ADA",
+    "IUI",
+    " C "
+  ],
+  "key": {
+    "A": { "item": "minecraft:anvil" },
+    "C": { "item": "minecraft:chest" },
+    "D": { "ore": "gemDiamond" },
+    "I": { "ore": "ingotIron" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:anvil_upgrade",
+    "count": 1
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "okcore:load_conditions": [
+    {
+      "type": "okcore:gtnh_config",
+      "class_path": "ruiseki.okbackpack.config.ModConfig",
+      "config_name": "enableTravelersUpgrades",
+      "value": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RFR",
+    "RUR",
+    "PLP"
+  ],
+  "key": {
+    "R": { "item": "minecraft:blaze_rod" },
+    "F": { "item": "minecraft:fire_charge" },
+    "P": { "item": "minecraft:blaze_powder" },
+    "L": { "item": "minecraft:lava_bucket" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:blaze_upgrade",
+    "count": 1
+  }
+}

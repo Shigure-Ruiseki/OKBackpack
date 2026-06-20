@@ -1,0 +1,29 @@
+{
+  "okcore:load_conditions": [
+    {
+      "type": "okcore:gtnh_config",
+      "class_path": "ruiseki.okbackpack.config.ModConfig",
+      "config_name": "enableTravelersUpgrades",
+      "value": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SDS",
+    "SUS",
+    "SPS"
+  ],
+  "key": {
+    "S": { "ore": "slimeball" },
+    "D": {
+      "item": "minecraft:potion",
+      "meta": 8194
+    },
+    "P": { "item": "minecraft:sticky_piston" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:slime_upgrade",
+    "count": 1
+  }
+}

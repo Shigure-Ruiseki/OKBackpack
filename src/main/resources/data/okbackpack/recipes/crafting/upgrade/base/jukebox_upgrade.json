@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " J ",
+    "IUI",
+    " R "
+  ],
+  "key": {
+    "J": { "item": "minecraft:jukebox" },
+    "R": { "ore": "dustRedstone" },
+    "I": { "ore": "ingotIron" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:jukebox_upgrade",
+    "count": 1
+  }
+}

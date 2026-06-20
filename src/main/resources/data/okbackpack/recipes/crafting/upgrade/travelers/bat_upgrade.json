@@ -1,0 +1,29 @@
+{
+  "okcore:load_conditions": [
+    {
+      "type": "okcore:gtnh_config",
+      "class_path": "ruiseki.okbackpack.config.ModConfig",
+      "config_name": "enableTravelersUpgrades",
+      "value": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SNS",
+    "SUS",
+    "SRS"
+  ],
+  "key": {
+    "S": { "ore": "stone" },
+    "R": { "item": "minecraft:golden_carrot" },
+    "N": {
+      "item": "minecraft:potion",
+      "meta": 8262
+    },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:bat_upgrade",
+    "count": 1
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " D ",
+    "GUG",
+    "RRR"
+  ],
+  "key": {
+    "D": { "ore": "gemDiamond" },
+    "R": { "ore": "dustRedstone" },
+    "G": { "ore": "ingotGold" },
+    "U": { "item": "okbackpack:deposit_upgrade" }
+  },
+  "result": {
+    "item": "okbackpack:advanced_deposit_upgrade",
+    "count": 1
+  }
+}

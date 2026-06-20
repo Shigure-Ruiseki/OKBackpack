@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " D ",
+    "GUG",
+    "RRR"
+  ],
+  "key": {
+    "D": { "item": "minecraft:sticky_piston" },
+    "R": { "ore": "dustRedstone" },
+    "G": { "item": "minecraft:string" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:pickup_upgrade",
+    "count": 1
+  }
+}

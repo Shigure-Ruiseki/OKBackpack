@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "BUB",
+    "BBB"
+  ],
+  "key": {
+    "B": {
+      "ore": "blockGold"
+    },
+    "U": {
+      "item": "okbackpack:stack_upgrade",
+      "meta": 0
+    }
+  },
+  "result": {
+    "item": "okbackpack:stack_upgrade",
+    "meta": 1,
+    "count": 1
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RIR",
+    "IUI",
+    "RFR"
+  ],
+  "key": {
+    "F": { "item": "minecraft:furnace" },
+    "R": { "ore": "dustRedstone" },
+    "I": { "ore": "ingotIron" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:smelting_upgrade",
+    "count": 1
+  }
+}

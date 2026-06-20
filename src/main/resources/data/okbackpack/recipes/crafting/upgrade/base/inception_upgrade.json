@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ESE",
+    "DUD",
+    "EDE"
+  ],
+  "key": {
+    "D": { "ore": "gemDiamond" },
+    "S": { "ore": "itemNetherStar" },
+    "E": { "item": "minecraft:ender_eye" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:inception_upgrade",
+    "count": 1
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "okcore:load_conditions": [
+    {
+      "type": "okcore:mod_loaded",
+      "values": ["etfuturum"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GRG",
+    "RUR",
+    "GRG"
+  ],
+  "key": {
+    "G": { "item": "etfuturum:end_crystal" },
+    "R": { "ore": "itemNetherStar" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:everlasting_upgrade",
+    "count": 1
+  }
+}

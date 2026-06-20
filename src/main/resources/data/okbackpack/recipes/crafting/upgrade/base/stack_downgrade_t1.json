@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SFS",
+    "SUS",
+    "FSF"
+  ],
+  "key": {
+    "F": { "item": "minecraft:flint" },
+    "S": { "item": "minecraft:stick" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:stack_upgrade",
+    "meta": 6,
+    "count": 1
+  }
+}
