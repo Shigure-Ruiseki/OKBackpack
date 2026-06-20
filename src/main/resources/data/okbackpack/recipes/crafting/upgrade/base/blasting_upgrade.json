@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "IUI",
+    "SSS"
+  ],
+  "key": {
+    "S": { "item": "etfuturum:smooth_stone" },
+    "I": { "ore": "ingotIron" },
+    "U": { "item": "okbackpack:smelting_upgrade" }
+  },
+  "result": {
+    "item": "okbackpack:blasting_upgrade",
+    "count": 1
+  }
+}

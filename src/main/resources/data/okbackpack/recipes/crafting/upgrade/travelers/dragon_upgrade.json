@@ -1,0 +1,27 @@
+{
+  "okcore:load_conditions": [
+    {
+      "type": "okcore:gtnh_config",
+      "class_path": "ruiseki.okbackpack.config.ModConfig",
+      "config_name": "enableTravelersUpgrades",
+      "value": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "EDE",
+    "OUO",
+    "POP"
+  ],
+  "key": {
+    "E": { "item": "minecraft:end_stone" },
+    "D": { "item": "minecraft:dragon_egg" },
+    "O": { "item": "minecraft:obsidian" },
+    "P": { "item": "minecraft:ender_pearl" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:dragon_upgrade",
+    "count": 1
+  }
+}

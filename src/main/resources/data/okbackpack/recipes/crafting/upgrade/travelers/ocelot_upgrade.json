@@ -1,0 +1,28 @@
+{
+  "okcore:load_conditions": [
+    {
+      "type": "okcore:gtnh_config",
+      "class_path": "ruiseki.okbackpack.config.ModConfig",
+      "config_name": "enableTravelersUpgrades",
+      "value": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WFW",
+    "FUF",
+    "WFW"
+  ],
+  "key": {
+    "F": { "item": "minecraft:fish" },
+    "W": {
+      "item": "minecraft:wool",
+      "meta": 4
+    },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:ocelot_upgrade",
+    "count": 1
+  }
+}

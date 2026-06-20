@@ -1,0 +1,25 @@
+{
+  "okcore:load_conditions": [
+    {
+      "type": "okcore:gtnh_config",
+      "class_path": "ruiseki.okbackpack.config.ModConfig",
+      "config_name": "enableTravelersUpgrades",
+      "value": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BGB",
+    "GUG",
+    "BGB"
+  ],
+  "key": {
+    "B": { "ore": "blockQuartz" },
+    "G": { "ore": "gemQuartz" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:quartz_upgrade",
+    "count": 1
+  }
+}

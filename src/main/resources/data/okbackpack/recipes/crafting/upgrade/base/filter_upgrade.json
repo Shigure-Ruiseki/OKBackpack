@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RSR",
+    "SUS",
+    "RSR"
+  ],
+  "key": {
+    "R": { "ore": "dustRedstone" },
+    "S": { "item": "minecraft:string" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:filter_upgrade",
+    "count": 1
+  }
+}

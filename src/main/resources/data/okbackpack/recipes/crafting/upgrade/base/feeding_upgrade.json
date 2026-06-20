@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "AUM",
+    " E "
+  ],
+  "key": {
+    "E": { "ore": "pearlEnder" },
+    "C": { "item": "minecraft:golden_carrot" },
+    "A": { "item": "minecraft:golden_apple" },
+    "M": { "item": "minecraft:speckled_melon" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:feeding_upgrade",
+    "count": 1
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IPI",
+    "PUP",
+    "RPR"
+  ],
+  "key": {
+    "P": { "item": "minecraft:piston" },
+    "R": { "ore": "dustRedstone" },
+    "I": { "ore": "ingotIron" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:compacting_upgrade",
+    "count": 1
+  }
+}

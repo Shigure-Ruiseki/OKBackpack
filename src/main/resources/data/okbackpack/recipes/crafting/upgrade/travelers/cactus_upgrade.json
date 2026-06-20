@@ -1,0 +1,26 @@
+{
+  "okcore:load_conditions": [
+    {
+      "type": "okcore:gtnh_config",
+      "class_path": "ruiseki.okbackpack.config.ModConfig",
+      "config_name": "enableTravelersUpgrades",
+      "value": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CGC",
+    "CUC",
+    "SSS"
+  ],
+  "key": {
+    "C": { "item": "minecraft:cactus" },
+    "G": { "ore": "dyeGreen" },
+    "S": { "ore": "sand" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:cactus_upgrade",
+    "count": 1
+  }
+}

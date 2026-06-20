@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RSR",
+    "PUA",
+    "IHI"
+  ],
+  "key": {
+    "S": { "item": "minecraft:wooden_sword" },
+    "P": { "item": "minecraft:wooden_pickaxe" },
+    "A": { "item": "minecraft:wooden_axe" },
+    "H": { "item": "minecraft:wooden_shovel" },
+    "R": { "ore": "dustRedstone" },
+    "I": { "ore": "ingotIron" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:tool_swapper_upgrade",
+    "count": 1
+  }
+}

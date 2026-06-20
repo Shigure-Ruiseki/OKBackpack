@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " D ",
+    "GUG",
+    "RRR"
+  ],
+  "key": {
+    "D": { "ore": "gemDiamond" },
+    "R": { "ore": "dustRedstone" },
+    "G": { "ore": "ingotGold" },
+    "U": { "item": "okbackpack:feeding_upgrade" }
+  },
+  "result": {
+    "item": "okbackpack:advanced_feeding_upgrade",
+    "count": 1
+  }
+}
