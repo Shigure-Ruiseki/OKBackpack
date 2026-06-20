@@ -159,34 +159,23 @@ public class BackpackModel implements BakedModel {
 
     @Override
     public ModelDisplay getDisplay(Position pos, BakedModelQuadContext context) {
-        BackpackTier tier = TierRegistry.getTier(LEATHER);
-        if (context.getBlockState() != null) {
-            String tierId = context.getBlockState()
-                .getPropertyValue(BlockBackpack.tierProperties);
-            tier = TierRegistry.getTier(tierId);
-        }
-        JSONModel model = JSON_CACHE.get(new CacheKey(MODEL_BASE, tier.getId()));
+        JSONModel model = ModelRegistry.getJSONModel(MODEL_BASE);
 
         if (model != null) {
             return model.bake(createVariantForPart(MODEL_BASE, ForgeDirection.SOUTH))
                 .getDisplay(pos, context);
         }
-        return null;
+        return ModelDisplay.DEFAULT;
     }
 
     @Override
     public IIcon getParticle(BakedModelQuadContext context) {
-        BackpackTier tier = TierRegistry.getTier(LEATHER);
-        if (context.getBlockState() != null) {
-            String tierId = context.getBlockState()
-                .getPropertyValue(BlockBackpack.tierProperties);
-            tier = TierRegistry.getTier(tierId);
-        }
-        JSONModel model = JSON_CACHE.get(new CacheKey(MODEL_BASE, tier.getId()));
+        JSONModel model = ModelRegistry.getJSONModel(MODEL_BASE);
 
         if (model != null) {
-            return model.bake(createVariantForPart(MODEL_BASE, ForgeDirection.SOUTH))
+            IIcon partical = model.bake(createVariantForPart(MODEL_BASE, ForgeDirection.SOUTH))
                 .getParticle(context);
+            return partical;
         }
         return null;
     }

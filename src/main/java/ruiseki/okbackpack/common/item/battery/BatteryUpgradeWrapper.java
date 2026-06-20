@@ -4,21 +4,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.gtnewhorizon.gtnhlib.client.model.BakedModelQuadContext;
+import com.gtnewhorizon.gtnhlib.client.model.loading.ResourceLoc;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import cofh.api.energy.IEnergyContainerItem;
+import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.api.BackpackPart;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
+import ruiseki.okbackpack.api.wrapper.IModelWrapper;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 
-public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatteryUpgrade {
+public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatteryUpgrade, IModelWrapper {
 
     public static final int INPUT_SLOT = 0;
     public static final int OUTPUT_SLOT = 1;
@@ -242,5 +247,15 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatter
     public List<String> getTooltipLines() {
         return Collections
             .singletonList("\u00a7c" + LangHelpers.localize("tooltip.backpack.contents.energy", energyStored));
+    }
+
+    @Override
+    public ResourceLoc.ModelLoc getModelLoc(BakedModelQuadContext context) {
+        return new ResourceLoc.ModelLoc(Reference.MOD_ID, "block/part/backpack_battery");
+    }
+
+    @Override
+    public BackpackPart getBackpackPart(BakedModelQuadContext context) {
+        return BackpackPart.FRONT_POUCH;
     }
 }
