@@ -30,6 +30,8 @@ import ruiseki.okbackpack.common.helpers.BackpackHandSwapHelpers;
 
 public class ToolSwapEventHandler {
 
+    public static final ToolSwapEventHandler INSTANCE = new ToolSwapEventHandler();
+
     private static final int COOLDOWN_TICKS = 10;
 
     private final Map<Integer, PlayerSwapState> playerStates = new HashMap<>();

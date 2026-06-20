@@ -1,5 +1,7 @@
 package ruiseki.okbackpack.common.block;
 
+import static ruiseki.okbackpack.common.init.TierRegistries.LEATHER;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -8,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -16,7 +17,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +28,8 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.SortType;
+import ruiseki.okbackpack.api.tier.BackpackTier;
+import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.api.wrapper.IEntityApplicable;
 import ruiseki.okbackpack.api.wrapper.IFilterUpgrade;
@@ -62,8 +64,8 @@ public class BackpackWrapper implements IBackpackWrapper, IInventory {
     private static final double MAX_SLEEPING_BAG_DISTANCE_SQ = 32.0D * 32.0D;
     private static final int SLEEPING_BAG_DISTANCE_CHECK_INTERVAL = 10;
 
+    public BackpackTier tier;
     public ItemStack backpack;
-    public final TileEntity tile;
 
     public final BackpackItemStackHandler backpackHandler;
     public UpgradeItemStackHandler upgradeHandler;
@@ -111,42 +113,26 @@ public class BackpackWrapper implements IBackpackWrapper, IInventory {
     public InventoryType type = null;
 
     public BackpackWrapper() {
-        this(null, null, 120, 7);
-    }
-
-    public BackpackWrapper(TileEntity tile) {
-        this(null, tile, 120, 7);
+        this(null, TierRegistry.getTier(LEATHER));
     }
 
     public BackpackWrapper(ItemStack backpack) {
-        this(backpack, null, 120, 7);
+        this(backpack, TierRegistry.getTier(LEATHER));
     }
 
-    public BackpackWrapper(ItemStack backpack, TileEntity tile) {
-        this(backpack, tile, 120, 7);
+    public BackpackWrapper(BackpackTier tier) {
+        this(null, tier);
     }
 
     public BackpackWrapper(ItemStack backpack, BlockBackpack.ItemBackpack item) {
-        this(backpack, null, item.backpackSlots, item.upgradeSlots);
+        this(backpack, item.tier);
     }
 
-    public BackpackWrapper(TileEntity tile, int backpackSlots, int upgradeSlots) {
-        this(null, tile, backpackSlots, upgradeSlots);
-    }
-
-    public BackpackWrapper(ItemStack backpack, int backpackSlots, int upgradeSlots) {
-        this(backpack, null, backpackSlots, upgradeSlots);
-    }
-
-    public BackpackWrapper(ItemStack backpack, BlockBackpack blockBackpack, TileEntity tile) {
-        this(backpack, tile, blockBackpack.getBackpackSlots(), blockBackpack.getUpgradeSlots());
-    }
-
-    public BackpackWrapper(ItemStack backpack, TileEntity tile, int backpackSlots, int upgradeSlots) {
+    public BackpackWrapper(ItemStack backpack, BackpackTier tier) {
         this.backpack = backpack;
-        this.tile = tile;
-        this.backpackSlots = backpackSlots;
-        this.upgradeSlots = upgradeSlots;
+        this.tier = tier;
+        this.backpackSlots = tier.getBackpackSlots();
+        this.upgradeSlots = tier.getUpgradeSlots();
         this.mainColor = 0xFFCC613A;
         this.accentColor = 0xFF622E1A;
         this.sortType = SortType.BY_NAME;
@@ -905,10 +891,17 @@ public class BackpackWrapper implements IBackpackWrapper, IInventory {
     public void deserializeNBT(NBTTagCompound tag) {
         if (tag == null) return;
         if (tag.hasKey(BACKPACK_SLOTS, 3)) {
-            this.backpackSlots = tag.getInteger(BACKPACK_SLOTS);
+            int loadedSlots = tag.getInteger(BACKPACK_SLOTS);
+            if (loadedSlots > this.backpackSlots) {
+                this.backpackSlots = loadedSlots;
+            }
         }
+
         if (tag.hasKey(UPGRADE_SLOTS, 3)) {
-            this.upgradeSlots = tag.getInteger(UPGRADE_SLOTS);
+            int loadedUpgrades = tag.getInteger(UPGRADE_SLOTS);
+            if (loadedUpgrades > this.upgradeSlots) {
+                this.upgradeSlots = loadedUpgrades;
+            }
         }
 
         if (tag.hasKey(MAIN_COLOR, 3)) this.mainColor = tag.getInteger(MAIN_COLOR);
@@ -1358,20 +1351,9 @@ public class BackpackWrapper implements IBackpackWrapper, IInventory {
             return this.customName;
         }
 
-        if (backpack != null && backpack.getItem() != null) {
-            return LangHelpers.localize(
-                backpack.getItem()
-                    .getUnlocalizedName(backpack) + ".name");
+        if (tier != null) {
+            return LangHelpers.localize(tier.getId() + ".name");
         }
-
-        if (tile != null && tile.getWorldObj() != null) {
-            Block block = tile.getWorldObj()
-                .getBlock(tile.xCoord, tile.yCoord, tile.zCoord);
-            if (block != null) {
-                return LangHelpers.localize(block.getUnlocalizedName() + ".name");
-            }
-        }
-
         return LangHelpers.localize("container.inventory");
     }
 

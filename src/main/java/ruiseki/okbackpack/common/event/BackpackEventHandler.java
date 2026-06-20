@@ -29,7 +29,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -45,9 +45,12 @@ import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.github.bsideup.jabel.Desugar;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import ruiseki.okbackpack.api.tier.BackpackTier;
+import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okbackpack.api.wrapper.IWitherUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
@@ -67,17 +70,25 @@ import ruiseki.okcore.helper.BaublesHelpers;
 
 public class BackpackEventHandler {
 
+    public static final BackpackEventHandler INSTANCE = new BackpackEventHandler();
+
     private static final ItemStack SINGLE_ARROW = new ItemStack(Items.arrow);
     private static final float LUCKY_LAPIS_CHANCE = 0.15F;
     private static final float HAY_DOUBLE_CROP_CHANCE = 0.40F;
     private static final float HAY_GRASS_DROP_CHANCE = 0.15F;
     private static final double GHAST_RANGE = 32.0D;
 
-    public BackpackEventHandler() {
-        MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(this);
+    public BackpackEventHandler() {}
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void onTextureStitch(TextureStitchEvent.Pre event) {
+        if (event.map.getTextureType() == 0) {
+            for (BackpackTier tier : TierRegistry.getAllTiers()) {
+                var clipLocation = tier.getClipTexturePath();
+                event.map.registerIcon(clipLocation.toString());
+            }
+        }
     }
 
     @SubscribeEvent
