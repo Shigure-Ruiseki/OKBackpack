@@ -1330,7 +1330,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         }
 
         if (tier != null) {
-            return LangHelpers.localize(tier.getId() + ".name");
+            return LangHelpers.localize("tile." + tier.getId() + ".name");
         }
         return LangHelpers.localize("container.inventory");
     }
