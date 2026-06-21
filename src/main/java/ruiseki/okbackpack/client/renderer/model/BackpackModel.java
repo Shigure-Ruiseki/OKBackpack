@@ -185,9 +185,7 @@ public class BackpackModel implements BakedModel {
         if (context instanceof BakedModelQuadContext.Item itemContext) {
             ItemStack stack = itemContext.getItemStack();
             return BackpackEntityHelpers.getWrapper(stack);
-        }
-
-        if (context instanceof BakedModelQuadContext.World worldContext) {
+        } else if (context instanceof BakedModelQuadContext.World worldContext) {
             IBlockAccess world = worldContext.getWorld();
             if (world != null) {
                 TileEntity te = world.getTileEntity(worldContext.getX(), worldContext.getY(), worldContext.getZ());
