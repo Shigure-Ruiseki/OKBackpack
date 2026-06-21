@@ -17,6 +17,7 @@ import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.block.TEBackpack;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
+import ruiseki.okbackpack.common.inventory.BackpackWrapperInventoryAdapter;
 
 public class BackpackProvider implements IStackFilterProvider {
 
@@ -46,7 +47,7 @@ public class BackpackProvider implements IStackFilterProvider {
         final AnyMultiItemFilter filter = new AnyMultiItemFilter();
         final FluidStackFilter fluidFilter = new FluidStackFilter();
 
-        filter.add(new InventoryStackFilter(player, wrapper));
+        filter.add(new InventoryStackFilter(player, new BackpackWrapperInventoryAdapter(wrapper)));
         for (ITankUpgrade tank : wrapper.gatherCapabilityUpgrades(ITankUpgrade.class)
             .values()) {
             if (tank != null) {

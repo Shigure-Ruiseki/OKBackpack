@@ -182,24 +182,19 @@ public class BackpackModel implements BakedModel {
 
     @Nullable
     public static BackpackWrapper getWrapperFromContext(BakedModelQuadContext context) {
-        switch (context) {
-            case BakedModelQuadContext.Item itemContext -> {
-                ItemStack stack = itemContext.getItemStack();
-                return BackpackEntityHelpers.getWrapper(stack);
-            }
-            case BakedModelQuadContext.World worldContext -> {
-                IBlockAccess world = worldContext.getWorld();
-                if (world != null) {
-                    TileEntity te = world.getTileEntity(worldContext.getX(), worldContext.getY(), worldContext.getZ());
-                    if (te instanceof TEBackpack teBackpack) {
-                        return teBackpack.getWrapper();
-                    }
+        if (context instanceof BakedModelQuadContext.Item itemContext) {
+            ItemStack stack = itemContext.getItemStack();
+            return BackpackEntityHelpers.getWrapper(stack);
+        } else if (context instanceof BakedModelQuadContext.World worldContext) {
+            IBlockAccess world = worldContext.getWorld();
+            if (world != null) {
+                TileEntity te = world.getTileEntity(worldContext.getX(), worldContext.getY(), worldContext.getZ());
+                if (te instanceof TEBackpack teBackpack) {
+                    return teBackpack.getWrapper();
                 }
             }
-            case null, default -> {
-                return null;
-            }
         }
+
         return null;
     }
 }
