@@ -13,7 +13,6 @@ import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -59,7 +58,7 @@ import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 
-public class BackpackWrapper implements IBackpackWrapper, IInventory {
+public class BackpackWrapper implements IBackpackWrapper {
 
     private static final double MAX_SLEEPING_BAG_DISTANCE_SQ = 32.0D * 32.0D;
     private static final int SLEEPING_BAG_DISTANCE_CHECK_INTERVAL = 10;
@@ -1320,27 +1319,22 @@ public class BackpackWrapper implements IBackpackWrapper, IInventory {
         }
     }
 
-    @Override
     public int getSizeInventory() {
         return this.getSlots();
     }
 
-    @Override
     public ItemStack decrStackSize(int index, int count) {
         return this.extractItem(index, count, false);
     }
 
-    @Override
     public ItemStack getStackInSlotOnClosing(int index) {
         return null;
     }
 
-    @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
         this.setStackInSlot(index, stack);
     }
 
-    @Override
     public boolean hasCustomInventoryName() {
         return this.customName != null && !this.customName.isEmpty();
     }
@@ -1357,23 +1351,18 @@ public class BackpackWrapper implements IBackpackWrapper, IInventory {
         return LangHelpers.localize("container.inventory");
     }
 
-    @Override
     public int getInventoryStackLimit() {
         return this.getSlotLimit(0);
     }
 
-    @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
         return true;
     }
 
-    @Override
     public void openInventory() {}
 
-    @Override
     public void closeInventory() {}
 
-    @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
         return this.isItemValid(slot, stack);
     }
