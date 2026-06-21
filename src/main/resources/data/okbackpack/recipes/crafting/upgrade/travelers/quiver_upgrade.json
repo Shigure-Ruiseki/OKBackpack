@@ -1,0 +1,26 @@
+{
+  "okcore:load_conditions": [
+    {
+      "type": "okcore:gtnh_config",
+      "class_path": "ruiseki.okbackpack.config.ModConfig",
+      "config_name": "enableTravelersUpgrades",
+      "value": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AL ",
+    "LUL",
+    " LS"
+  ],
+  "key": {
+    "A": { "item": "minecraft:arrow" },
+    "L": { "item": "minecraft:leather" },
+    "S": { "item": "minecraft:string" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:quiver_upgrade",
+    "count": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DHD",
+    "RUH",
+    "GHG"
+  ],
+  "key": {
+    "H": { "item": "minecraft:hopper" },
+    "D": { "ore": "gemDiamond" },
+    "R": { "ore": "dustRedstone" },
+    "G": { "ore": "ingotGold" },
+    "U": { "item": "okbackpack:smelting_upgrade" }
+  },
+  "result": {
+    "item": "okbackpack:auto_smelting_upgrade",
+    "count": 1
+  }
+}

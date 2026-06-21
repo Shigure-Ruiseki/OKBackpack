@@ -37,7 +37,7 @@ public class ItemToolSwapperUpgrade extends ItemUpgrade<ToolSwapperUpgradeWrappe
             return UpgradeSlotChangeResult.failOnlySingleAllowed(
                 conflicts,
                 LangHelpers.localize("item.tool_swapper_upgrade.name"),
-                wrapper.getDisplayName());
+                wrapper.getInventoryName());
         }
         return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
     }

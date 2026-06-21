@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GUG",
+    "PBS",
+    "GUG"
+  ],
+  "key": {
+    "G": { "ore": "blockGlass" },
+    "U": { "item": "minecraft:bucket" },
+    "P": { "item": "minecraft:piston" },
+    "S": { "item": "minecraft:sticky_piston" },
+    "B": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:pump_upgrade",
+    "count": 1
+  }
+}

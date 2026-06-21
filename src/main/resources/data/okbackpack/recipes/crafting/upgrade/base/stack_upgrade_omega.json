@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "BBB",
+    "BBB"
+  ],
+  "key": {
+    "B": {
+      "item": "okbackpack:stack_upgrade",
+      "meta": 3
+    }
+  },
+  "result": {
+    "item": "okbackpack:stack_upgrade",
+    "meta": 4,
+    "count": 1
+  }
+}

@@ -13,7 +13,6 @@ import net.minecraft.util.MovingObjectPosition;
 
 import com.github.bsideup.jabel.Desugar;
 
-import baubles.api.BaublesApi;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.wrapper.IRefillUpgrade;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
@@ -21,6 +20,7 @@ import ruiseki.okbackpack.common.helpers.BackpackHandSwapHelpers;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.common.network.PacketQuickDraw;
 import ruiseki.okcore.client.key.IKeyHandler;
+import ruiseki.okcore.helper.BaublesHelpers;
 import ruiseki.okcore.helper.ItemStackHelpers;
 
 public class PickBlockHandler implements IKeyHandler {
@@ -93,7 +93,7 @@ public class PickBlockHandler implements IKeyHandler {
     }
 
     private boolean playerHasItem(EntityClientPlayerMP player, ItemStack wanted) {
-        IInventory baublesInventory = BaublesApi.getBaubles(player);
+        IInventory baublesInventory = BaublesHelpers.getBaubles(player);
         if (baublesInventory != null) {
             for (int i = 0; i < baublesInventory.getSizeInventory(); i++) {
                 ItemStack stack = baublesInventory.getStackInSlot(i);

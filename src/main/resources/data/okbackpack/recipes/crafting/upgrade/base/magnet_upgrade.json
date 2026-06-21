@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "EIE",
+    "IUI",
+    "R L"
+  ],
+  "key": {
+    "E": { "ore": "pearlEnder" },
+    "R": { "ore": "dustRedstone" },
+    "L": { "ore": "gemLapis" },
+    "I": { "ore": "ingotIron" },
+    "U": { "item": "okbackpack:pickup_upgrade" }
+  },
+  "result": {
+    "item": "okbackpack:magnet_upgrade",
+    "count": 1
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SIS",
+    "ILI",
+    "SIS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:string"
+    },
+    "I": {
+      "ore": "ingotIron"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "item": "okbackpack:upgrade_base",
+    "count": 1
+  }
+}

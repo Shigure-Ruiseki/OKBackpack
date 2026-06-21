@@ -1,0 +1,29 @@
+{
+  "okcore:load_conditions": [
+    {
+      "type": "okcore:gtnh_config",
+      "class_path": "ruiseki.okbackpack.config.ModConfig",
+      "config_name": "enableTravelersUpgrades",
+      "value": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BWB",
+    "SUS",
+    "BSB"
+  ],
+  "key": {
+    "B": { "ore": "coal" },
+    "W": {
+      "item": "minecraft:skull",
+      "meta": 1
+    },
+    "S": { "ore": "soulSand" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:wither_upgrade",
+    "count": 1
+  }
+}

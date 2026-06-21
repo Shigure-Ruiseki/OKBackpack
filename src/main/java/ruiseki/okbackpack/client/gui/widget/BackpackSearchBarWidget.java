@@ -19,9 +19,9 @@ import ruiseki.okbackpack.client.gui.slot.BackpackSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
 import ruiseki.okbackpack.common.block.BackpackPanel;
-import ruiseki.okbackpack.common.search.ItemStackKey;
-import ruiseki.okbackpack.common.search.SearchNode;
-import ruiseki.okbackpack.common.search.SearchParser;
+import ruiseki.okcore.inventory.ItemStackKey;
+import ruiseki.okcore.inventory.search.SearchNode;
+import ruiseki.okcore.inventory.search.SearchParser;
 
 public class BackpackSearchBarWidget extends TextFieldWidget {
 

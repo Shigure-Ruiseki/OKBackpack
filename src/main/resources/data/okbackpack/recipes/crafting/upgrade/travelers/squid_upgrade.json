@@ -1,0 +1,33 @@
+{
+  "okcore:load_conditions": [
+    {
+      "type": "okcore:gtnh_config",
+      "class_path": "ruiseki.okbackpack.config.ModConfig",
+      "config_name": "enableTravelersUpgrades",
+      "value": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "INI",
+    "BUB",
+    "IWI"
+  ],
+  "key": {
+    "B": { "item": "minecraft:water_bucket" },
+    "I": { "item": "minecraft:dye" },
+    "W": {
+      "item": "minecraft:potion",
+      "meta": 8269
+    },
+    "N": {
+      "item": "minecraft:potion",
+      "meta": 8262
+    },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:squid_upgrade",
+    "count": 1
+  }
+}

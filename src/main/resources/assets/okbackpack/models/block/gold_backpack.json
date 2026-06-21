@@ -1,6 +1,0 @@
-{
-  "parent": "okbackpack:block/leather_backpack",
-  "textures": {
-    "clips": "okbackpack:block/gold_clips"
-  }
-}

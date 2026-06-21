@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " E ",
+    "OUO",
+    "ROR"
+  ],
+  "key": {
+    "E": { "ore": "pearlEnder" },
+    "R": { "ore": "dustRedstone" },
+    "O": { "ore": "blockObsidian" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:void_upgrade",
+    "count": 1
+  }
+}

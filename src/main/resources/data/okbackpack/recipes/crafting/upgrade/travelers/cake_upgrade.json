@@ -1,0 +1,28 @@
+{
+  "okcore:load_conditions": [
+    {
+      "type": "okcore:gtnh_config",
+      "class_path": "ruiseki.okbackpack.config.ModConfig",
+      "config_name": "enableTravelersUpgrades",
+      "value": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ECE",
+    "WUW",
+    "SMS"
+  ],
+  "key": {
+    "E": { "item": "minecraft:egg" },
+    "C": { "item": "minecraft:cake" },
+    "W": { "item": "minecraft:wheat" },
+    "S": { "item": "minecraft:sugar" },
+    "M": { "item": "minecraft:milk_bucket" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:cake_upgrade",
+    "count": 1
+  }
+}

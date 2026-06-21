@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " c ",
+    "IUI",
+    " C "
+  ],
+  "key": {
+    "c": { "item": "minecraft:crafting_table" },
+    "C": { "item": "minecraft:chest" },
+    "I": { "ore": "ingotIron" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:crafting_upgrade",
+    "count": 1
+  }
+}

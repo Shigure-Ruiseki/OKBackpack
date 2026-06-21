@@ -34,7 +34,7 @@ public class ItemSquidUpgrade extends ItemUpgrade<SquidUpgradeWrapper> {
             return UpgradeSlotChangeResult.failOnlySingleAllowed(
                 conflicts,
                 LangHelpers.localize("item.travelers_upgrade.name"),
-                wrapper.getDisplayName());
+                wrapper.getInventoryName());
         }
         return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
     }

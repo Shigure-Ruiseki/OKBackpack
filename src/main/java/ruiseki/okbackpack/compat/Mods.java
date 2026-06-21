@@ -21,6 +21,7 @@ public enum Mods implements IMod, ITargetMod {
     EtFuturum("etfuturum"),
     TConstruct("TConstruct"),
     Thaumcraft("Thaumcraft"),
+    FindIt("findit"),
     ;
     // spotless:on
 

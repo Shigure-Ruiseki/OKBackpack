@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " P ",
+    "IUI",
+    "RCR"
+  ],
+  "key": {
+    "P": { "item": "minecraft:sticky_piston" },
+    "C": { "item": "minecraft:chest" },
+    "R": { "ore": "dustRedstone" },
+    "I": { "ore": "ingotIron" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:restock_upgrade",
+    "count": 1
+  }
+}

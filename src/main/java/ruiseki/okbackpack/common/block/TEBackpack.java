@@ -32,9 +32,8 @@ import ruiseki.okbackpack.compat.thaumcraft.IVisChargeTarget;
 import ruiseki.okcore.energy.IOKEnergyIO;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileEntityOK;
-import ruiseki.okcore.tileentity.TileSideCapability;
 
-public class TEBackpack extends TileSideCapability implements ISidedInventory, IGuiHolder<SidedPosGuiData>,
+public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHolder<SidedPosGuiData>,
     TileEntityOK.ITickingTile, IOKEnergyIO, IFluidHandler, IVisChargeTarget {
 
     private int[] allSlots;
@@ -64,6 +63,7 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
             @Override
             public void run() {
                 markDirty();
+                onSendUpdate();
             }
         });
         refreshAccessibleSlots();
@@ -76,6 +76,7 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
             @Override
             public void run() {
                 markDirty();
+                onSendUpdate();
             }
         });
         refreshAccessibleSlots();
@@ -114,6 +115,7 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
 
         if (wrapper.tick(worldObj, getPos())) {
             markDirty();
+            onSendUpdate();
         }
     }
 
@@ -242,7 +244,7 @@ public class TEBackpack extends TileSideCapability implements ISidedInventory, I
 
     @Override
     public String getInventoryName() {
-        return wrapper.getDisplayName();
+        return wrapper.getInventoryName();
     }
 
     @Override

@@ -1,5 +1,8 @@
 package ruiseki.okbackpack;
 
+import net.minecraftforge.common.MinecraftForge;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 import ruiseki.okbackpack.common.event.BackpackEventHandler;
 import ruiseki.okbackpack.common.event.ToolSwapEventHandler;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
@@ -41,7 +44,10 @@ public class CommonProxy extends CommonProxyComponent {
     @Override
     public void registerEventHooks() {
         super.registerEventHooks();
-        BackpackEventHandler handler = new BackpackEventHandler();
-        new ToolSwapEventHandler();
+        MinecraftForge.EVENT_BUS.register(BackpackEventHandler.INSTANCE);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(BackpackEventHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(ToolSwapEventHandler.INSTANCE);
     }
 }

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DID",
+    "GPG",
+    "RRR"
+  ],
+  "key": {
+    "D": { "ore": "gemDiamond" },
+    "I": { "item": "minecraft:dispenser" },
+    "G": { "ore": "ingotGold" },
+    "P": { "item": "okbackpack:pump_upgrade" },
+    "R": { "ore": "dustRedstone" }
+  },
+  "result": {
+    "item": "okbackpack:advanced_pump_upgrade",
+    "count": 1
+  }
+}
