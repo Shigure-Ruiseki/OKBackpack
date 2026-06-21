@@ -1,7 +1,10 @@
 package ruiseki.okbackpack.common.item.battery;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,14 +20,14 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.BackpackPart;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
-import ruiseki.okbackpack.api.wrapper.IModelWrapper;
+import ruiseki.okbackpack.api.wrapper.IModelUpgrade;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 
-public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatteryUpgrade, IModelWrapper {
+public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatteryUpgrade, IModelUpgrade {
 
     public static final int INPUT_SLOT = 0;
     public static final int OUTPUT_SLOT = 1;
@@ -250,13 +253,42 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase implements IBatter
             .singletonList("\u00a7c" + LangHelpers.localize("tooltip.backpack.contents.energy", energyStored));
     }
 
-    @Override
-    public ResourceLoc.ModelLoc getModelLoc(BakedModelQuadContext context) {
-        return new ResourceLoc.ModelLoc(Reference.MOD_ID, "block/part/backpack_battery");
-    }
+    private static final ResourceLoc.ModelLoc MODEL_BATTERY_BASE = new ResourceLoc.ModelLoc(
+        Reference.MOD_ID,
+        "block/part/battery/backpack_battery");
+
+    private static final ResourceLoc.ModelLoc MODEL_CHARGE_25 = new ResourceLoc.ModelLoc(
+        Reference.MOD_ID,
+        "block/part/battery/backpack_battery_charge_25");
+    private static final ResourceLoc.ModelLoc MODEL_CHARGE_50 = new ResourceLoc.ModelLoc(
+        Reference.MOD_ID,
+        "block/part/battery/backpack_battery_charge_50");
+    private static final ResourceLoc.ModelLoc MODEL_CHARGE_75 = new ResourceLoc.ModelLoc(
+        Reference.MOD_ID,
+        "block/part/battery/backpack_battery_charge_75");
+    private static final ResourceLoc.ModelLoc MODEL_CHARGE_100 = new ResourceLoc.ModelLoc(
+        Reference.MOD_ID,
+        "block/part/battery/backpack_battery_charge_100");
 
     @Override
-    public BackpackPart getBackpackPart(BakedModelQuadContext context) {
-        return BackpackPart.FRONT_POUCH;
+    public Map<BackpackPart, List<ResourceLoc.ModelLoc>> geModels(BakedModelQuadContext context) {
+        Map<BackpackPart, List<ResourceLoc.ModelLoc>> map = new EnumMap<>(BackpackPart.class);
+
+        float chargeRatio = getChargeRatio();
+        ResourceLoc.ModelLoc chargeModel;
+
+        if (chargeRatio >= 0.95f) chargeModel = MODEL_CHARGE_100;
+        else if (chargeRatio >= 0.70f) chargeModel = MODEL_CHARGE_75;
+        else if (chargeRatio >= 0.45f) chargeModel = MODEL_CHARGE_50;
+        else if (chargeRatio >= 0.15f) chargeModel = MODEL_CHARGE_25;
+        else chargeModel = null;
+
+        List<ResourceLoc.ModelLoc> frontPouchModels = new ArrayList<>();
+        frontPouchModels.add(MODEL_BATTERY_BASE);
+        if (chargeModel != null) frontPouchModels.add(chargeModel);
+
+        map.put(BackpackPart.FRONT_POUCH, frontPouchModels);
+
+        return map;
     }
 }
