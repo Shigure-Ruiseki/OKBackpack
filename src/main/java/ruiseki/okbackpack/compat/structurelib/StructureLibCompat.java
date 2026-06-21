@@ -87,7 +87,7 @@ public class StructureLibCompat implements IInitListener {
 
         @Override
         public String getInventoryName() {
-            return wrapper.getDisplayName();
+            return wrapper.getInventoryName();
         }
 
         @Override
