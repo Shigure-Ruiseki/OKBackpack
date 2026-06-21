@@ -1319,22 +1319,6 @@ public class BackpackWrapper implements IBackpackWrapper {
         }
     }
 
-    public int getSizeInventory() {
-        return this.getSlots();
-    }
-
-    public ItemStack decrStackSize(int index, int count) {
-        return this.extractItem(index, count, false);
-    }
-
-    public ItemStack getStackInSlotOnClosing(int index) {
-        return null;
-    }
-
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        this.setStackInSlot(index, stack);
-    }
-
     public boolean hasCustomInventoryName() {
         return this.customName != null && !this.customName.isEmpty();
     }
@@ -1349,21 +1333,5 @@ public class BackpackWrapper implements IBackpackWrapper {
             return LangHelpers.localize(tier.getId() + ".name");
         }
         return LangHelpers.localize("container.inventory");
-    }
-
-    public int getInventoryStackLimit() {
-        return this.getSlotLimit(0);
-    }
-
-    public boolean isUseableByPlayer(EntityPlayer player) {
-        return true;
-    }
-
-    public void openInventory() {}
-
-    public void closeInventory() {}
-
-    public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        return this.isItemValid(slot, stack);
     }
 }
