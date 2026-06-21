@@ -119,14 +119,16 @@ public class AdvancedPickupUpgradeWrapper extends AdvancedUpgradeWrapper impleme
 
         if (isMatchAllOreDicts()) {
             for (String entry : entries) {
-                boolean found = stackOreDicts.stream().anyMatch(name -> name.matches(entry));
+                boolean found = stackOreDicts.stream()
+                    .anyMatch(name -> name.matches(entry));
                 if (!found) return false;
             }
             return true;
         }
 
         for (String entry : entries) {
-            if (stackOreDicts.stream().anyMatch(name -> name.matches(entry))) {
+            if (stackOreDicts.stream()
+                .anyMatch(name -> name.matches(entry))) {
                 return true;
             }
         }
