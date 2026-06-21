@@ -1,0 +1,18 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"modules": "okbackpack:blocks/backpack_modules"
+	},
+	"elements": [
+		{
+			"name": "charge_2",
+			"from": [8.5, 1.2, 1.9],
+			"to": [10.5, 2, 2.9],
+			"faces": {
+				"north": {"uv": [14, 6, 15, 6.5], "texture": "#modules"}
+			}
+		}
+	]
+}

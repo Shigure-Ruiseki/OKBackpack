@@ -1,13 +1,14 @@
 package ruiseki.okbackpack.api.wrapper;
 
+import java.util.List;
+import java.util.Map;
+
 import com.gtnewhorizon.gtnhlib.client.model.BakedModelQuadContext;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ResourceLoc;
 
 import ruiseki.okbackpack.api.BackpackPart;
 
-public interface IModelWrapper {
+public interface IModelUpgrade {
 
-    ResourceLoc.ModelLoc getModelLoc(BakedModelQuadContext context);
-
-    BackpackPart getBackpackPart(BakedModelQuadContext context);
+    Map<BackpackPart, List<ResourceLoc.ModelLoc>> geModels(BakedModelQuadContext context);
 }

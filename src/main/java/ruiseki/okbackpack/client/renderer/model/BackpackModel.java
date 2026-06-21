@@ -32,7 +32,7 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.BackpackPart;
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
-import ruiseki.okbackpack.api.wrapper.IModelWrapper;
+import ruiseki.okbackpack.api.wrapper.IModelUpgrade;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.block.TEBackpack;
@@ -67,7 +67,8 @@ public class BackpackModel implements BakedModel {
     @Override
     public List<ModelQuadView> getQuads(BakedModelQuadContext context) {
         List<ModelQuadView> combinedQuads = new ArrayList<>();
-        Map<BackpackPart, JSONVariant> activeParts = new EnumMap<>(BackpackPart.class);
+
+        List<JSONVariant> variantsToRender = new ArrayList<>();
 
         ForgeDirection facing = ForgeDirection.SOUTH;
         BackpackTier tier = TierRegistry.getTier(LEATHER);
@@ -79,33 +80,49 @@ public class BackpackModel implements BakedModel {
             tier = TierRegistry.getTier(tierId);
         }
 
-        activeParts.put(BackpackPart.BASE, createVariantForPart(MODEL_BASE, facing));
-        activeParts.put(BackpackPart.FRONT_POUCH, createVariantForPart(MODEL_FRONT, facing));
-        activeParts.put(BackpackPart.LEFT_POUCH, createVariantForPart(MODEL_LEFT, facing));
-        activeParts.put(BackpackPart.RIGHT_POUCH, createVariantForPart(MODEL_RIGHT, facing));
+        Map<BackpackPart, List<ResourceLoc.ModelLoc>> upgradePartModels = new EnumMap<>(BackpackPart.class);
 
         BackpackWrapper wrapper = getWrapperFromContext(context);
         if (wrapper != null) {
-            Map<Integer, IModelWrapper> modelUpgrades = wrapper.gatherCapabilityUpgrades(IModelWrapper.class);
+            Map<Integer, IModelUpgrade> modelUpgrades = wrapper.gatherCapabilityUpgrades(IModelUpgrade.class);
             if (!modelUpgrades.isEmpty()) {
-                for (IModelWrapper modelWrapper : modelUpgrades.values()) {
-                    ResourceLoc.ModelLoc upgradeModelLoc = modelWrapper.getModelLoc(context);
-                    BackpackPart targetPart = modelWrapper.getBackpackPart(context);
-
-                    if (upgradeModelLoc != null && targetPart != null) {
-                        activeParts.put(targetPart, createVariantForPart(upgradeModelLoc, facing));
+                for (IModelUpgrade modelWrapper : modelUpgrades.values()) {
+                    Map<BackpackPart, List<ResourceLoc.ModelLoc>> activeModels = modelWrapper.geModels(context);
+                    if (activeModels != null) {
+                        for (var entry : activeModels.entrySet()) {
+                            upgradePartModels.computeIfAbsent(entry.getKey(), k -> new ArrayList<>())
+                                .addAll(entry.getValue());
+                        }
                     }
                 }
             }
         }
 
-        for (JSONVariant variant : activeParts.values()) {
+        renderOrOverridePart(variantsToRender, BackpackPart.BASE, MODEL_BASE, facing, upgradePartModels);
+        renderOrOverridePart(variantsToRender, BackpackPart.FRONT_POUCH, MODEL_FRONT, facing, upgradePartModels);
+        renderOrOverridePart(variantsToRender, BackpackPart.LEFT_POUCH, MODEL_LEFT, facing, upgradePartModels);
+        renderOrOverridePart(variantsToRender, BackpackPart.RIGHT_POUCH, MODEL_RIGHT, facing, upgradePartModels);
+
+        for (JSONVariant variant : variantsToRender) {
             if (variant != null && variant.model() != null) {
                 addPartQuads(combinedQuads, variant, context, tier);
             }
         }
 
         return combinedQuads;
+    }
+
+    private void renderOrOverridePart(List<JSONVariant> variantsToRender, BackpackPart part,
+        ResourceLoc.ModelLoc defaultModel, ForgeDirection facing,
+        Map<BackpackPart, List<ResourceLoc.ModelLoc>> upgradePartModels) {
+        if (upgradePartModels.containsKey(part)) {
+            List<ResourceLoc.ModelLoc> upgradeModels = upgradePartModels.get(part);
+            for (ResourceLoc.ModelLoc modelLoc : upgradeModels) {
+                variantsToRender.add(createVariantForPart(modelLoc, facing));
+            }
+        } else {
+            variantsToRender.add(createVariantForPart(defaultModel, facing));
+        }
     }
 
     private static JSONModel loadAndPrepareJSON(CacheKey key) {
