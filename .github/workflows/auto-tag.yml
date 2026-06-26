@@ -1,4 +1,4 @@
-name: Auto Tag on Merge
+name: Auto tag on merge
 
 on:
   pull_request:
@@ -15,7 +15,7 @@ jobs:
     if: |
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
-    uses: Shigure-Ruiseki/OKBase/.github/workflows/auto-tag.yml@master
+    uses: Shigure-Ruiseki/OK-Actions-Workflows/.github/workflows/auto-tag.yml@master
     with:
       branch: ${{ github.event.pull_request.base.ref || github.ref_name }}
     secrets:

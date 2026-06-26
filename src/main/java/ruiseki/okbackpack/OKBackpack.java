@@ -39,6 +39,7 @@ import ruiseki.okbackpack.compat.bauble.BaubleCompat;
 import ruiseki.okbackpack.compat.findit.FindItCompat;
 import ruiseki.okbackpack.compat.structurelib.StructureLibCompat;
 import ruiseki.okbackpack.compat.tic.TConstructTabCompat;
+import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.command.CommandMod;
 import ruiseki.okcore.helper.MinecraftHelpers;
 import ruiseki.okcore.init.ModBase;
@@ -61,6 +62,9 @@ public class OKBackpack extends ModBase {
     public OKBackpack() {
         super(Reference.MOD_ID, Reference.MOD_NAME);
         putGenericReference(REFKEY_MOD_VERSION, Reference.VERSION);
+        putGenericReference(REFKEY_VERSION_CHECKER, ModConfig.useVersionChecker);
+        putGenericReference(REFKEY_VERSION_CHECKER_URL, Reference.UPDATE_URL);
+
         addInitListeners(new BaubleCompat());
         addInitListeners(new StructureLibCompat());
         addInitListeners(new ModRecipes());

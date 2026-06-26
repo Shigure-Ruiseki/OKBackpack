@@ -14,6 +14,9 @@ public class ModConfig {
         ConfigurationManager.registerConfig(ModConfig.class);
     }
 
+    @Config.DefaultBoolean(true)
+    public static boolean useVersionChecker;
+
     @Config.DefaultInt(27)
     @Config.RangeInt(min = 1)
     public static int leatherBackpackSlots;
