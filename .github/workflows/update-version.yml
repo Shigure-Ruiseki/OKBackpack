@@ -1,0 +1,30 @@
+name: Update version JSON
+
+on:
+  workflow_run:
+    workflows: [ "Release tagged build" ]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      head_branch:
+        description: 'Enter the exact Tag or Branch name to execute (e.g., v1.6.0)'
+        required: true
+        type: string
+        default: 'master'
+
+permissions:
+  contents: write
+
+jobs:
+  call-update-version:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+
+    uses: Shigure-Ruiseki/OK-Actions-Workflows/.github/workflows/update-version.yml@master
+    with:
+      head_branch: ${{ inputs.head_branch || github.event.workflow_run.head_branch }}
+      extra_downloads: '{}'
+    secrets:
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
