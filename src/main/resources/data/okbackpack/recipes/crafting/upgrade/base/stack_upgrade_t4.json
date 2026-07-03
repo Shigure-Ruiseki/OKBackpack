@@ -1,13 +1,13 @@
 {
-  "okcore:load_conditions": [
-  {
-    "type": "okcore:not",
-    "value": {
-      "type": "okcore:mod_loaded",
-      "values": ["etfuturum"]
+  "conditions": [
+    {
+      "type": "okcore:not",
+      "value": {
+        "type": "okcore:mod_loaded",
+        "modid": "etfuturum"
+      }
     }
-  }
-],
+  ],
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "BBB",
