@@ -1,9 +1,8 @@
 {
-  "okcore:load_conditions": [
+  "conditions": [
     {
-      "type": "okcore:gtnh_config",
-      "class_path": "ruiseki.okbackpack.config.ModConfig",
-      "config_name": "enableTravelersUpgrades",
+      "type": "okcore:config",
+      "id": "okbackpack:enableTravelersUpgrades",
       "value": true
     }
   ],

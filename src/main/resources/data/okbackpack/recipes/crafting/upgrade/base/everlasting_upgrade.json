@@ -1,10 +1,10 @@
 {
-  "okcore:load_conditions": [
+  "conditions": [
     {
       "type": "okcore:not",
       "value": {
         "type": "okcore:mod_loaded",
-        "values": ["etfuturum"]
+        "modid": "etfuturum"
       }
     }
   ],

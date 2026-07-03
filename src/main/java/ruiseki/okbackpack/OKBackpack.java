@@ -5,6 +5,7 @@ import java.util.Map;
 import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 
 import org.apache.logging.log4j.Level;
 
@@ -41,6 +42,7 @@ import ruiseki.okbackpack.compat.structurelib.StructureLibCompat;
 import ruiseki.okbackpack.compat.tic.TConstructTabCompat;
 import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.command.CommandMod;
+import ruiseki.okcore.data.condition.ConfigCondition;
 import ruiseki.okcore.helper.MinecraftHelpers;
 import ruiseki.okcore.init.ModBase;
 import ruiseki.okcore.proxy.ICommonProxy;
@@ -64,6 +66,10 @@ public class OKBackpack extends ModBase {
         putGenericReference(REFKEY_MOD_VERSION, Reference.VERSION);
         putGenericReference(REFKEY_VERSION_CHECKER, ModConfig.useVersionChecker);
         putGenericReference(REFKEY_VERSION_CHECKER_URL, Reference.UPDATE_URL);
+
+        ConfigCondition.registerConfig(
+            new ResourceLocation(Reference.MOD_ID, "enableTravelersUpgrades"),
+            ModConfig.enableTravelersUpgrades);
 
         addInitListeners(new BaubleCompat());
         addInitListeners(new StructureLibCompat());

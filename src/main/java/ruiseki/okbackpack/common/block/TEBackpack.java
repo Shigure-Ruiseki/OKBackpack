@@ -29,12 +29,12 @@ import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
 import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.compat.thaumcraft.IVisChargeTarget;
-import ruiseki.okcore.energy.IOKEnergyIO;
+import ruiseki.okcore.energy.IOKEnergyHandler;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileEntityOK;
 
 public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHolder<SidedPosGuiData>,
-    TileEntityOK.ITickingTile, IOKEnergyIO, IFluidHandler, IVisChargeTarget {
+    TileEntityOK.ITickingTile, IOKEnergyHandler, IFluidHandler, IVisChargeTarget {
 
     private int[] allSlots;
 

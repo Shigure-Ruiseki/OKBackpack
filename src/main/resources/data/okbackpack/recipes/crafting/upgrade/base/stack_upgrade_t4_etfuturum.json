@@ -1,8 +1,8 @@
 {
-  "okcore:load_conditions": [
+  "conditions": [
     {
       "type": "okcore:mod_loaded",
-      "values": ["etfuturum"]
+      "modid": "etfuturum"
     }
   ],
   "type": "minecraft:crafting_shaped",
