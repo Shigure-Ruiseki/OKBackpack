@@ -4,19 +4,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
@@ -32,18 +34,16 @@ import ruiseki.okcore.init.ModBase;
 
 public class CommandBackpack extends CommandMod {
 
+    private final MinecraftServer server;
     private final File backpackDir;
 
-    public CommandBackpack(ModBase mod, Map<String, ICommand> subCommands) {
-        super(mod, subCommands);
+    public CommandBackpack(ModBase mod, MinecraftServer server) {
+        super(mod, "backpack");
+        this.server = server;
         this.backpackDir = new File("config/" + Reference.MOD_ID + "/dump");
         if (!backpackDir.exists()) {
             backpackDir.mkdirs();
         }
-
-        addSubcommands("give", new CommandGive());
-        addSubcommands("export", new CommandExport());
-        addSubcommands("import", new CommandImport());
     }
 
     @Override
@@ -52,17 +52,211 @@ public class CommandBackpack extends CommandMod {
     }
 
     @Override
-    public void processCommandHelp(ICommandSender sender, String[] args) throws CommandException {
-        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.YELLOW + "Usage:"));
-        sender.addChatMessage(
-            new ChatComponentText(
-                EnumChatFormatting.WHITE + "  /okbackpack give <player> <name> [count] - Give backpack template"));
-        sender.addChatMessage(
-            new ChatComponentText(
-                EnumChatFormatting.WHITE + "  /okbackpack export <name> - Export held backpack to JSON"));
-        sender.addChatMessage(
-            new ChatComponentText(
-                EnumChatFormatting.WHITE + "  /okbackpack import <name> - Import JSON template to held backpack"));
+    public LiteralArgumentBuilder<ICommandSender> make() {
+        return super.make()
+            // /okbackpack give <player> <name> [count]
+            .then(
+                LiteralArgumentBuilder.<ICommandSender>literal("give")
+                    .then(
+                        RequiredArgumentBuilder.<ICommandSender, String>argument("player", StringArgumentType.string())
+                            // Suggest online player usernames using injection server instance
+                            .suggests((context, suggestionsBuilder) -> {
+                                String[] usernames = this.server.getAllUsernames();
+                                for (String name : usernames) {
+                                    if (name.toLowerCase()
+                                        .startsWith(
+                                            suggestionsBuilder.getRemaining()
+                                                .toLowerCase())) {
+                                        suggestionsBuilder.suggest(name);
+                                    }
+                                }
+                                return suggestionsBuilder.buildFuture();
+                            })
+                            .then(
+                                RequiredArgumentBuilder
+                                    .<ICommandSender, String>argument("name", StringArgumentType.string())
+                                    // Suggest existing JSON templates
+                                    .suggests((context, suggestionsBuilder) -> {
+                                        for (String file : getJsonFiles()) {
+                                            if (file.toLowerCase()
+                                                .startsWith(
+                                                    suggestionsBuilder.getRemaining()
+                                                        .toLowerCase())) {
+                                                suggestionsBuilder.suggest(file);
+                                            }
+                                        }
+                                        return suggestionsBuilder.buildFuture();
+                                    })
+                                    .executes(ctx -> executeGive(ctx, 1)) // Default count to 1
+                                    .then(
+                                        RequiredArgumentBuilder
+                                            .<ICommandSender, Integer>argument(
+                                                "count",
+                                                IntegerArgumentType.integer(1, 64))
+                                            .executes(
+                                                ctx -> executeGive(
+                                                    ctx,
+                                                    IntegerArgumentType.getInteger(ctx, "count")))))))
+            // /okbackpack export <name>
+            .then(
+                LiteralArgumentBuilder.<ICommandSender>literal("export")
+                    .then(
+                        RequiredArgumentBuilder.<ICommandSender, String>argument("name", StringArgumentType.string())
+                            .executes(this::executeExport)))
+            // /okbackpack import <name>
+            .then(
+                LiteralArgumentBuilder.<ICommandSender>literal("import")
+                    .then(
+                        RequiredArgumentBuilder.<ICommandSender, String>argument("name", StringArgumentType.string())
+                            .suggests((context, suggestionsBuilder) -> {
+                                for (String file : getJsonFiles()) {
+                                    if (file.toLowerCase()
+                                        .startsWith(
+                                            suggestionsBuilder.getRemaining()
+                                                .toLowerCase())) {
+                                        suggestionsBuilder.suggest(file);
+                                    }
+                                }
+                                return suggestionsBuilder.buildFuture();
+                            })
+                            .executes(this::executeImport)));
+    }
+
+    @Override
+    public int run(CommandContext<ICommandSender> context) {
+        context.getSource()
+            .addChatMessage(new ChatComponentText(EnumChatFormatting.YELLOW + "Usage:"));
+        context.getSource()
+            .addChatMessage(
+                new ChatComponentText(
+                    EnumChatFormatting.WHITE
+                        + "  /okbackpack backpack give <player> <name> [count] - Give backpack template"));
+        context.getSource()
+            .addChatMessage(
+                new ChatComponentText(
+                    EnumChatFormatting.WHITE + "  /okbackpack backpack export <name> - Export held backpack to JSON"));
+        context.getSource()
+            .addChatMessage(
+                new ChatComponentText(
+                    EnumChatFormatting.WHITE
+                        + "  /okbackpack backpack import <name> - Import JSON template to held backpack"));
+        return 1;
+    }
+
+    private int executeGive(CommandContext<ICommandSender> ctx, int count) throws CommandSyntaxException {
+        ICommandSender sender = ctx.getSource();
+        String playerName = StringArgumentType.getString(ctx, "player");
+        String template = StringArgumentType.getString(ctx, "name");
+
+        // Use the instance field 'this.server' instead of MinecraftServer.getServer()
+        EntityPlayerMP player = this.server.getConfigurationManager()
+            .func_152612_a(playerName);
+        if (player == null) {
+            printErrorToChat(sender, "Player not found: " + playerName);
+            return 0;
+        }
+
+        File file = new File(backpackDir, template + ".json");
+        if (!file.exists()) {
+            printErrorToChat(sender, "Template not found: " + template);
+            return 0;
+        }
+
+        BackpackMaterial mat;
+        try {
+            mat = new BackpackJsonReader(file).read();
+        } catch (IOException e) {
+            printErrorToChat(sender, "Error reading file: " + e.getMessage());
+            return 0;
+        }
+
+        if (mat == null) {
+            printErrorToChat(sender, "Failed to read template");
+            return 0;
+        }
+
+        for (int k = 0; k < count; ++k) {
+            ItemStack stack = createBackpackFromMaterial(mat);
+            if (!player.inventory.addItemStackToInventory(stack)) {
+                player.dropPlayerItemWithRandomChoice(stack, false);
+            }
+        }
+
+        printLineToChat(
+            sender,
+            String.format("Gave backpack template %s x%s to %s", template, count, player.getCommandSenderName()));
+        return 1;
+    }
+
+    private int executeExport(CommandContext<ICommandSender> ctx) throws CommandSyntaxException {
+        ICommandSender sender = ctx.getSource();
+        if (!(sender instanceof EntityPlayer player)) {
+            printErrorToChat(sender, "Only players can execute this command!");
+            return 0;
+        }
+
+        ItemStack held = player.getHeldItem();
+        String name = StringArgumentType.getString(ctx, "name");
+
+        if (!BackpackEntityHelpers.isBackpackStack(held, false)) {
+            printErrorToChat(sender, "You must hold a backpack to export it!");
+            return 0;
+        }
+
+        BackpackWrapper wrapper = new BackpackWrapper(held, (BlockBackpack.ItemBackpack) held.getItem());
+        wrapper.readFromItem();
+        BackpackMaterial mat = createMaterialFromWrapper(wrapper);
+
+        File file = new File(backpackDir, name + ".json");
+        try {
+            new BackpackJsonWriter(file).write(mat);
+            printLineToChat(sender, EnumChatFormatting.GREEN + "Exported backpack to: " + file.getPath());
+        } catch (Exception e) {
+            printErrorToChat(sender, "Error writing file: " + e.getMessage());
+            return 0;
+        }
+        return 1;
+    }
+
+    private int executeImport(CommandContext<ICommandSender> ctx) throws CommandSyntaxException {
+        ICommandSender sender = ctx.getSource();
+        if (!(sender instanceof EntityPlayer player)) {
+            printErrorToChat(sender, "Only players can execute this command!");
+            return 0;
+        }
+
+        ItemStack held = player.getHeldItem();
+        String name = StringArgumentType.getString(ctx, "name");
+
+        if (!BackpackEntityHelpers.isBackpackStack(held, false)) {
+            printErrorToChat(sender, "You must hold a backpack to import to it!");
+            return 0;
+        }
+
+        File file = new File(backpackDir, name + ".json");
+        if (!file.exists()) {
+            printErrorToChat(sender, "Template not found: " + name);
+            return 0;
+        }
+
+        try {
+            BackpackMaterial mat = new BackpackJsonReader(file).read();
+            if (mat == null) {
+                printErrorToChat(sender, "Failed to read template");
+                return 0;
+            }
+
+            BackpackWrapper wrapper = new BackpackWrapper(held, (BlockBackpack.ItemBackpack) held.getItem());
+            wrapper.readFromItem();
+            applyMaterialToWrapper(mat, wrapper);
+            wrapper.writeToItem();
+
+            printLineToChat(sender, EnumChatFormatting.GREEN + "Imported template " + name + " to held backpack");
+        } catch (IOException e) {
+            printErrorToChat(sender, "Error reading file: " + e.getMessage());
+            return 0;
+        }
+        return 1;
     }
 
     private List<String> getJsonFiles() {
@@ -78,177 +272,6 @@ public class CommandBackpack extends CommandMod {
             }
         }
         return files;
-    }
-
-    private class CommandGive extends CommandBase {
-
-        @Override
-        public String getCommandName() {
-            return "give";
-        }
-
-        @Override
-        public String getCommandUsage(ICommandSender sender) {
-            return "/okbackpack give <player> <name> [count]";
-        }
-
-        @Override
-        public void processCommand(ICommandSender sender, String[] args) {
-
-            if (args.length < 2) {
-                throw new WrongUsageException(getCommandUsage(sender));
-            }
-
-            EntityPlayerMP player = getPlayer(sender, args[0]);
-            String template = args[1];
-
-            int count = 1;
-
-            if (args.length >= 3) {
-                count = parseIntBounded(sender, args[2], 1, 64);
-            }
-
-            File file = new File(backpackDir, template + ".json");
-
-            if (!file.exists()) {
-                throw new CommandException("Template not found: " + template);
-            }
-
-            BackpackMaterial mat;
-
-            try {
-                mat = new BackpackJsonReader(file).read();
-            } catch (IOException e) {
-                throw new CommandException("Error reading file: " + e.getMessage());
-            }
-
-            if (mat == null) {
-                throw new CommandException("Failed to read template");
-            }
-
-            for (int k = 0; k < count; ++k) {
-
-                ItemStack stack = createBackpackFromMaterial(mat);
-
-                if (!player.inventory.addItemStackToInventory(stack)) {
-                    player.dropPlayerItemWithRandomChoice(stack, false);
-                }
-            }
-
-            func_152373_a(
-                sender,
-                this,
-                "Gave backpack template %s x%s to %s",
-                template,
-                count,
-                player.getCommandSenderName());
-        }
-
-        @Override
-        public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
-
-            return args.length == 1 ? getListOfStringsMatchingLastWord(
-                args,
-                MinecraftServer.getServer()
-                    .getAllUsernames())
-                : (args.length == 2 ? getListOfStringsMatchingLastWord(args, getJsonFiles().toArray(new String[0]))
-                    : null);
-        }
-
-        @Override
-        public boolean isUsernameIndex(String[] args, int index) {
-            return index == 0;
-        }
-    }
-
-    private class CommandExport extends CommandBase {
-
-        @Override
-        public String getCommandName() {
-            return "export";
-        }
-
-        @Override
-        public String getCommandUsage(ICommandSender sender) {
-            return "/okbackpack export <name>";
-        }
-
-        @Override
-        public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-            if (args.length < 1) throw new WrongUsageException(getCommandUsage(sender));
-            EntityPlayer player = CommandBase.getCommandSenderAsPlayer(sender);
-            ItemStack held = player.getHeldItem();
-
-            if (!BackpackEntityHelpers.isBackpackStack(held, false)) {
-                throw new CommandException("You must hold a backpack to export it!");
-            }
-
-            BackpackWrapper wrapper = new BackpackWrapper(held, (BlockBackpack.ItemBackpack) held.getItem());
-            wrapper.readFromItem();
-            BackpackMaterial mat = createMaterialFromWrapper(wrapper);
-
-            File file = new File(backpackDir, args[0] + ".json");
-            try {
-                new BackpackJsonWriter(file).write(mat);
-                sender.addChatMessage(
-                    new ChatComponentText(EnumChatFormatting.GREEN + "Exported backpack to: " + file.getPath()));
-            } catch (Exception e) {
-                throw new CommandException("Error writing file: " + e.getMessage());
-            }
-        }
-    }
-
-    private class CommandImport extends CommandBase {
-
-        @Override
-        public String getCommandName() {
-            return "import";
-        }
-
-        @Override
-        public String getCommandUsage(ICommandSender sender) {
-            return "/okbackpack import <name>";
-        }
-
-        @Override
-        public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-            if (args.length < 1) throw new WrongUsageException(getCommandUsage(sender));
-            EntityPlayer player = CommandBase.getCommandSenderAsPlayer(sender);
-            ItemStack held = player.getHeldItem();
-
-            if (!BackpackEntityHelpers.isBackpackStack(held, false)) {
-                throw new CommandException("You must hold a backpack to import to it!");
-            }
-
-            File file = new File(backpackDir, args[0] + ".json");
-            if (!file.exists()) {
-                throw new CommandException("Template not found: " + args[0]);
-            }
-
-            try {
-                BackpackMaterial mat = new BackpackJsonReader(file).read();
-                if (mat == null) throw new CommandException("Failed to read template");
-
-                BackpackWrapper wrapper = new BackpackWrapper(held, (BlockBackpack.ItemBackpack) held.getItem());
-                wrapper.readFromItem();
-                applyMaterialToWrapper(mat, wrapper);
-                wrapper.writeToItem();
-
-                sender.addChatMessage(
-                    new ChatComponentText(
-                        EnumChatFormatting.GREEN + "Imported template " + args[0] + " to held backpack"));
-            } catch (IOException e) {
-                throw new CommandException("Error reading file: " + e.getMessage());
-            }
-        }
-
-        @Override
-        public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
-            if (args.length == 1) {
-                return getListOfStringsMatchingLastWord(args, getJsonFiles().toArray(new String[0]));
-            }
-            return null;
-        }
     }
 
     // Helper methods for conversion between Material and Wrapper
@@ -273,7 +296,6 @@ public class CommandBackpack extends CommandMod {
 
     private BackpackMaterial createMaterialFromWrapper(BackpackWrapper wrapper) {
         BackpackMaterial mat = new BackpackMaterial();
-        // Determine tier name
         String tier = "Base";
         for (ModBlocks block : ModBlocks.VALUES) {
             if (block.getItem() == wrapper.backpack.getItem()) {
@@ -286,7 +308,6 @@ public class CommandBackpack extends CommandMod {
         mat.setMainColor(BackpackMaterial.toHexColor(wrapper.getMainColor()));
         mat.setAccentColor(BackpackMaterial.toHexColor(wrapper.getAccentColor()));
 
-        // Inventory
         for (int i = 0; i < wrapper.getSlots(); i++) {
             ItemStack stack = wrapper.getStackInSlot(i);
             if (stack != null) {
@@ -295,7 +316,6 @@ public class CommandBackpack extends CommandMod {
             }
         }
 
-        // Upgrades
         for (int i = 0; i < wrapper.getUpgradeHandler()
             .getSlots(); i++) {
             ItemStack stack = wrapper.getUpgradeHandler()
@@ -307,21 +327,19 @@ public class CommandBackpack extends CommandMod {
         }
 
         mat.setSettingsFromTemplate(BackpackSettingsTemplate.fromWrapper(wrapper));
-
         return mat;
     }
 
     private void applyMaterialToWrapper(BackpackMaterial mat, BackpackWrapper wrapper) {
         wrapper.setColors(mat.parseMainColor(), mat.parseAccentColor());
 
-        // Clear existing
         for (int i = 0; i < wrapper.getSlots(); i++) wrapper.setStackInSlot(i, null);
         for (int i = 0; i < wrapper.getUpgradeHandler()
-            .getSlots(); i++)
+            .getSlots(); i++) {
             wrapper.getUpgradeHandler()
                 .setStackInSlot(i, null);
+        }
 
-        // Set new
         for (BackpackMaterial.BackpackEntry entry : mat.getInventory()) {
             if (entry.slot < wrapper.getSlots()) {
                 wrapper.setStackInSlot(entry.slot, entry.toItemStack());
@@ -340,5 +358,4 @@ public class CommandBackpack extends CommandMod {
                 .applyTo(wrapper);
         }
     }
-
 }

@@ -7,73 +7,73 @@
 
 *   [ModularUI2 (>= 2.3.79)](https://github.com/GTNewHorizons/ModularUI2)
 *   [GTNHLib (>= 0.11.21)](https://github.com/GTNewHorizons/GTNHLib)
-*   [OKCore (>= 26.07.03.0)](https://github.com/Shigure-Ruiseki/OKCore)
+*   [OKCore (>= 26.07.06.0)](https://github.com/Shigure-Ruiseki/OKCore)
 
 ## Features:
 
 #### Backpack
 
-- [X] Sorting system
-- [X] Custom name
-- [X] Memory slot
-- [X] Lockable by player
-- [X] Searching System
-- [X] Backpack model render on player's back when equipped
-- [X] Custom Backpack main color and accent color
-- [X] Modifier each backpack and upgrade slot size
-- [X] Sleeping Bag
+*   Sorting system
+*   Custom name
+*   Memory slot
+*   Lockable by player
+*   Searching System
+*   Backpack model render on player's back when equipped
+*   Custom Backpack main color and accent color
+*   Modifier each backpack and upgrade slot size
+*   Sleeping Bag
 
 #### Upgrades
 
-- [X] Stack upgrade — extended backpacks max slot stack
-- [X] Stack downgrade — decreased backpack max slot stack
-- [X] Inception upgrade — backpacks inside backpacks
-- [X] Pickup upgrade — auto-pickup items
-- [X] Feeding upgrade — auto-feed player
-- [X] Filter upgrade — filter in/out to access backpacks block
-- [X] Magnet upgrade — collect item and experient around player
-- [X] Everlasting upgrade — make backpack immortal
-- [X] Void upgrade — filter item to remove
-- [X] Crafting upgrade — crafting table
-- [X] Compacting upgrade — compact item
-- [X] JukeBox upgrade — play music disc
-- [X] Smelting upgrade — smelt item
-- [X] Refill upgrade — automatically refills items
-- [X] Deposit upgrade — deposits backpack items into containers
-- [X] Restock upgrade — restocks backpack items from containers
-- [X] Tank upgrade — stores fluids
-- [X] Battery upgrade — stores energy
-- [X] Pump upgrade — transfers fluids
+*   Stack upgrade — extended backpacks max slot stack
+*   Stack downgrade — decreased backpack max slot stack
+*   Inception upgrade — backpacks inside backpacks
+*   Pickup upgrade — auto-pickup items
+*   Feeding upgrade — auto-feed player
+*   Filter upgrade — filter in/out to access backpacks block
+*   Magnet upgrade — collect item and experient around player
+*   Everlasting upgrade — make backpack immortal
+*   Void upgrade — filter item to remove
+*   Crafting upgrade — crafting table
+*   Compacting upgrade — compact item
+*   JukeBox upgrade — play music disc
+*   Smelting upgrade — smelt item
+*   Refill upgrade — automatically refills items
+*   Deposit upgrade — deposits backpack items into containers
+*   Restock upgrade — restocks backpack items from containers
+*   Tank upgrade — stores fluids
+*   Battery upgrade — stores energy
+*   Pump upgrade — transfers fluids
 
 #### Integration
 
 ##### Travelers Upgrades
 
-- [X] Rainbow upgrade — Grants Jump Boost and Speed effects; Immune to fall damage
-- [X] Cactus upgrade — Automatically collects water in rain or water
-- [X] Cow upgrade — Clears all negative status effects
-- [X] Bat upgrade — Grants Night Vision
-- [X] Squid upgrade — Grants Water Breathing and Night Vision while underwater
-- [X] Wither upgrade — Immunity to damage caused by the Wither effect; Applies the Wither effect when attacking entities
-- [X] Cake upgrade — Grants hunger, saturation, and health regeneration
-- [X] Slime upgrade — Bounce like a slime; Grants a speed effect on full-moon nights
-- [X] Bookshelf upgrade — Provides an enchantment level bonus to nearby enchanting tables
-- [X] Wolf upgrade — Calms nearby angry wolves and dogs; Grants Strength on full-moon nights
-- [X] Ocelot upgrade — Grants Speed while hostile mobs are nearby
-- [X] Quiver upgrade — Prioritizes arrows stored in the backpack when firing a bow
-- [X] Chicken upgrade — Generates eggs from time to time
-- [X] Magma Cube upgrade — Grants Fire Resistance
-- [X] Dragon upgrade — Grants Fire Resistance, Strength, Water Breathing, and Regeneration
-- [X] Blaze upgrade — Immunity to fall damage and blaze fireballs
-- [X] Ghast upgrade — Makes ghasts neutral
-- [X] Spider upgrade — Allows climbing walls
-- [X] Lapis upgrade — Has a chance to double experience gained
-- [X] Hay upgrade — Has a chance to double crop drops; Has a chance to obtain edible crops from grass
+*   Rainbow upgrade — Grants Jump Boost and Speed effects; Immune to fall damage
+*   Cactus upgrade — Automatically collects water in rain or water
+*   Cow upgrade — Clears all negative status effects
+*   Bat upgrade — Grants Night Vision
+*   Squid upgrade — Grants Water Breathing and Night Vision while underwater
+*   Wither upgrade — Immunity to damage caused by the Wither effect; Applies the Wither effect when attacking entities
+*   Cake upgrade — Grants hunger, saturation, and health regeneration
+*   Slime upgrade — Bounce like a slime; Grants a speed effect on full-moon nights
+*   Bookshelf upgrade — Provides an enchantment level bonus to nearby enchanting tables
+*   Wolf upgrade — Calms nearby angry wolves and dogs; Grants Strength on full-moon nights
+*   Ocelot upgrade — Grants Speed while hostile mobs are nearby
+*   Quiver upgrade — Prioritizes arrows stored in the backpack when firing a bow
+*   Chicken upgrade — Generates eggs from time to time
+*   Magma Cube upgrade — Grants Fire Resistance
+*   Dragon upgrade — Grants Fire Resistance, Strength, Water Breathing, and Regeneration
+*   Blaze upgrade — Immunity to fall damage and blaze fireballs
+*   Ghast upgrade — Makes ghasts neutral
+*   Spider upgrade — Allows climbing walls
+*   Lapis upgrade — Has a chance to double experience gained
+*   Hay upgrade — Has a chance to double crop drops; Has a chance to obtain edible crops from grass
 
 ##### Thaumcraft Integration
 
-- [X] Arcane Crafting upgrade — Arcane workbench in an upgrade tab
-- [X] Energized Node upgrade — Slowly charges wands in the backpack
+*   Arcane Crafting upgrade — Arcane workbench in an upgrade tab
+*   Energized Node upgrade — Slowly charges wands in the backpack
 
 ## License
 
