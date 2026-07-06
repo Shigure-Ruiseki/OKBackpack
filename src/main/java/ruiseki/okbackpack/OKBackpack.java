@@ -1,16 +1,14 @@
 package ruiseki.okbackpack;
 
-import java.util.Map;
-
-import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 
 import org.apache.logging.log4j.Level;
 
-import com.google.common.collect.Maps;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
@@ -41,7 +39,6 @@ import ruiseki.okbackpack.compat.findit.FindItCompat;
 import ruiseki.okbackpack.compat.structurelib.StructureLibCompat;
 import ruiseki.okbackpack.compat.tic.TConstructTabCompat;
 import ruiseki.okbackpack.config.ModConfig;
-import ruiseki.okcore.command.CommandMod;
 import ruiseki.okcore.data.condition.ConfigCondition;
 import ruiseki.okcore.helper.MinecraftHelpers;
 import ruiseki.okcore.init.ModBase;
@@ -97,11 +94,10 @@ public class OKBackpack extends ModBase {
     }
 
     @Override
-    protected CommandMod constructBaseCommand() {
-        Map<String, ICommand> commands = Maps.newHashMap();
-        CommandMod command = new CommandBackpack(this, commands);
-        command.addAlias("okbackpack");
-        return command;
+    protected LiteralArgumentBuilder<ICommandSender> constructBaseCommand(MinecraftServer server) {
+        LiteralArgumentBuilder<ICommandSender> builder = super.constructBaseCommand(server);
+        builder.then(new CommandBackpack(this, server).make());
+        return builder;
     }
 
     @Override
