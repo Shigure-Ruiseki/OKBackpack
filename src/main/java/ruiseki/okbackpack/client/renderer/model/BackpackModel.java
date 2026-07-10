@@ -74,10 +74,9 @@ public class BackpackModel implements BakedModel {
         BackpackTier tier = TierRegistry.getTier(LEATHER);
         if (context.getBlockState() != null) {
             facing = context.getBlockState()
-                .getPropertyValue(BlockBackpack.property);
-            String tierId = context.getBlockState()
-                .getPropertyValue(BlockBackpack.tierProperties);
-            tier = TierRegistry.getTier(tierId);
+                .getPropertyValue(BlockBackpack.DIRECTION_PROPERTY);
+            tier = context.getBlockState()
+                .getPropertyValue(BlockBackpack.TIER_PROPERTY);
         }
 
         Map<BackpackPart, List<ResourceLoc.ModelLoc>> upgradePartModels = new EnumMap<>(BackpackPart.class);

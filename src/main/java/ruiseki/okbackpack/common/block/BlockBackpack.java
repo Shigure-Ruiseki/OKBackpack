@@ -2,7 +2,6 @@ package ruiseki.okbackpack.common.block;
 
 import static ruiseki.okbackpack.common.init.TierRegistries.LEATHER;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -38,9 +37,6 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.api.BlockModelInfo;
 import com.gtnewhorizon.gtnhlib.api.IBlockModelProvider;
-import com.gtnewhorizon.gtnhlib.blockstate.core.BlockProperty;
-import com.gtnewhorizon.gtnhlib.blockstate.core.BlockPropertyTrait;
-import com.gtnewhorizon.gtnhlib.blockstate.properties.DirectionBlockProperty;
 import com.gtnewhorizon.gtnhlib.client.model.BakedModelQuadContext;
 import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.gtnewhorizon.gtnhlib.client.model.color.BlockColor;
@@ -69,11 +65,13 @@ import ruiseki.okbackpack.client.renderer.model.BackpackModel;
 import ruiseki.okbackpack.client.renderer.player.IArmorRender;
 import ruiseki.okbackpack.client.renderer.player.IBaubleRender;
 import ruiseki.okbackpack.client.renderer.player.PlayerRenderContext;
+import ruiseki.okbackpack.common.block.property.TierProperty;
 import ruiseki.okbackpack.common.entity.EntityBackpack;
 import ruiseki.okbackpack.common.helpers.InventoryInteractionHelpers;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.block.BlockOK;
-import ruiseki.okcore.block.property.BlockPropertyReg;
+import ruiseki.okcore.block.property.BlockProperty;
+import ruiseki.okcore.block.property.DirectionProperty;
 import ruiseki.okcore.energy.IOKEnergyItem;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
@@ -83,83 +81,30 @@ public class BlockBackpack extends BlockOK implements IBlockModelProvider, Block
 
     protected final BackpackTier tier;
 
-    @BlockPropertyReg
-    public final static DirectionBlockProperty property = new DirectionBlockProperty() {
-
-        @Override
-        public String getName() {
-            return "facing";
-        }
-
-        @Override
-        public boolean hasTrait(BlockPropertyTrait trait) {
-            return switch (trait) {
-                case SupportsWorld, WorldMutable, StackMutable, SupportsStacks -> true;
-                default -> false;
-            };
-        }
-
-        @Override
-        public ForgeDirection getValue(IBlockAccess world, int x, int y, int z) {
+    @BlockProperty
+    public final static DirectionProperty DIRECTION_PROPERTY = DirectionProperty
+        .facing(ForgeDirection.NORTH, (world, x, y, z) -> {
             TileEntity te = world.getTileEntity(x, y, z);
             if (te instanceof TEBackpack tile) {
                 return tile.getFacing();
             }
             return ForgeDirection.NORTH;
-        }
-
-        @Override
-        public void setValue(World world, int x, int y, int z, ForgeDirection value) {
+        }, (world, x, y, z, value) -> {
             TileEntity te = world.getTileEntity(x, y, z);
             if (te instanceof TEBackpack tile) {
                 tile.setFacing(value);
             }
-        }
+        });
 
-        @Override
-        public ForgeDirection getValue(ItemStack stack) {
-            return ForgeDirection.NORTH;
-        }
-    };
-
-    @BlockPropertyReg
-    public final static BlockProperty<String> tierProperties = new BlockProperty<String>() {
-
-        @Override
-        public String getName() {
-            return "tier";
-        }
-
-        @Override
-        public Type getType() {
-            return String.class;
-        }
-
-        @Override
-        public boolean hasTrait(BlockPropertyTrait trait) {
-            return switch (trait) {
-                case SupportsWorld, WorldMutable, StackMutable, SupportsStacks -> true;
-                default -> false;
-            };
-        }
-
-        @Override
-        public String getValue(ItemStack stack) {
-            return stack.getItem() instanceof ItemBackpack backpack ? backpack.tier.getId()
-                : TierRegistry.getTier(LEATHER)
-                    .getId();
-        }
-
-        @Override
-        public String getValue(IBlockAccess world, int x, int y, int z) {
+    @BlockProperty
+    public final static TierProperty TIER_PROPERTY = TierProperty
+        .tier(TierRegistry.getTier(LEATHER), (world, x, y, z) -> {
             Block block = world.getBlock(x, y, z);
             if (block instanceof BlockBackpack backpack) {
-                return backpack.tier.getId();
+                return backpack.getTier();
             }
-            return TierRegistry.getTier(LEATHER)
-                .getId();
-        }
-    };
+            return TierRegistry.getTier(LEATHER);
+        }, (world, x, y, z, value) -> {});
 
     public BlockBackpack(BackpackTier tier) {
         super(tier.getId(), TEBackpack.class, Material.cloth);
@@ -168,6 +113,10 @@ public class BlockBackpack extends BlockOK implements IBlockModelProvider, Block
         setHardness(1f);
         setCreativeTab(OKBCreativeTab.INSTANCE);
         this.isFullSize = this.isOpaque = false;
+    }
+
+    public BackpackTier getTier() {
+        return tier;
     }
 
     @Override
@@ -363,13 +312,17 @@ public class BlockBackpack extends BlockOK implements IBlockModelProvider, Block
     public static class ItemBackpack extends ItemBlockBauble implements IGuiHolder<PlayerInventoryGuiData>,
         IBaubleRender, IArmorRender, IOKEnergyItem, IDynamicLightProducer {
 
-        protected BackpackTier tier = TierRegistry.getTier("leather");
+        protected BackpackTier tier = TierRegistry.getTier(LEATHER);
 
         public ItemBackpack(Block block) {
             super(block);
             if (block instanceof BlockBackpack backpack) {
-                this.tier = backpack.tier;
+                this.tier = backpack.getTier();
             }
+        }
+
+        public BackpackTier getTier() {
+            return tier;
         }
 
         private @Nullable IBatteryUpgrade getBatteryUpgrade(ItemStack stack) {
