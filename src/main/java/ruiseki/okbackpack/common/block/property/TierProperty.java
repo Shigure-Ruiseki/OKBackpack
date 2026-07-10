@@ -4,13 +4,13 @@ import static ruiseki.okbackpack.common.init.TierRegistries.LEATHER;
 
 import java.lang.reflect.Type;
 
-import com.gtnewhorizon.gtnhlib.blockstate.core.InvalidPropertyTextException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import com.gtnewhorizon.gtnhlib.blockstate.core.InvalidPropertyTextException;
 
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
@@ -36,7 +36,8 @@ public interface TierProperty extends IProperty<BackpackTier> {
     }
 
     default String stringify(BackpackTier value) {
-        return value.getId().toLowerCase();
+        return value.getId()
+            .toLowerCase();
     }
 
     default BackpackTier parse(String text) throws InvalidPropertyTextException {
