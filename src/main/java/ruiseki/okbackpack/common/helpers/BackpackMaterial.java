@@ -15,7 +15,7 @@ import com.google.gson.JsonPrimitive;
 import cpw.mods.fml.common.registry.GameData;
 import lombok.Getter;
 import lombok.Setter;
-import ruiseki.okcore.helper.JsonNBTHelpers;
+import ruiseki.okcore.helper.GsonHelpers;
 import ruiseki.okcore.json.AbstractJsonMaterial;
 
 /**
@@ -158,7 +158,7 @@ public class BackpackMaterial extends AbstractJsonMaterial {
 
             if (json.has("nbt") && json.get("nbt")
                 .isJsonObject()) {
-                this.nbt = JsonNBTHelpers.jsonToNBT(json.getAsJsonObject("nbt"));
+                this.nbt = GsonHelpers.jsonToNBT(json.getAsJsonObject("nbt"));
             }
         }
 
@@ -168,7 +168,7 @@ public class BackpackMaterial extends AbstractJsonMaterial {
             if (meta != 0) json.addProperty("Meta", meta);
             if (count != 1) json.addProperty("Count", count);
             if (nbt != null) {
-                json.add("nbt", JsonNBTHelpers.nbtToJSON(nbt));
+                json.add("nbt", GsonHelpers.nbtToJSON(nbt));
             }
         }
 

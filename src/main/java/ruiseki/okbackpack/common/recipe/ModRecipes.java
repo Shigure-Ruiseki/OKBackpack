@@ -12,7 +12,7 @@ import ruiseki.okbackpack.common.init.ModBlocks;
 import ruiseki.okbackpack.common.init.ModItems;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.config.ModConfig;
-import ruiseki.okcore.color.EnumDye;
+import ruiseki.okcore.enums.EnumDye;
 import ruiseki.okcore.init.IInitListener;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
