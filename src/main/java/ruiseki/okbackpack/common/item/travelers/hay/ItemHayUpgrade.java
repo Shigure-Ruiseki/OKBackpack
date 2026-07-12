@@ -4,13 +4,15 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.travelers.ItemTravelersUpgradeBase;
 
 public class ItemHayUpgrade extends ItemTravelersUpgradeBase<HayUpgradeWrapper> {
 
     public ItemHayUpgrade() {
-        super("hay_upgrade", "tooltip.backpack.hay_upgrade", "tooltip.backpack.hay_upgrade.1");
+        super("tooltip.backpack.hay_upgrade", "tooltip.backpack.hay_upgrade.1");
+        setTextureName(Reference.PREFIX_MOD + "hay_upgrade");
     }
 
     @Override

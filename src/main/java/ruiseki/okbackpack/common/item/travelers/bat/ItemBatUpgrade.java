@@ -17,7 +17,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemBatUpgrade extends ItemUpgrade<BatUpgradeWrapper> {
 
     public ItemBatUpgrade() {
-        super("bat_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "bat_upgrade");
     }

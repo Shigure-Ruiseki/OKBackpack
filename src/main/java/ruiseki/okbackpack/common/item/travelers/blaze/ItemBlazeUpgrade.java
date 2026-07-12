@@ -4,13 +4,15 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.travelers.ItemTravelersUpgradeBase;
 
 public class ItemBlazeUpgrade extends ItemTravelersUpgradeBase<BlazeUpgradeWrapper> {
 
     public ItemBlazeUpgrade() {
-        super("blaze_upgrade", "tooltip.backpack.blaze_upgrade");
+        super("tooltip.backpack.blaze_upgrade");
+        setTextureName(Reference.PREFIX_MOD + "blaze_upgrade");
     }
 
     @Override

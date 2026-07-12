@@ -17,7 +17,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemGlowstoneUpgrade extends ItemUpgrade<GlowstoneUpgradeWrapper> {
 
     public ItemGlowstoneUpgrade() {
-        super("glowstone_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "glowstone_upgrade");
     }

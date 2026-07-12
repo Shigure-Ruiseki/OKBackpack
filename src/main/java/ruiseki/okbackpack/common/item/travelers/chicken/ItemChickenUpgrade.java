@@ -4,13 +4,15 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.travelers.ItemTravelersUpgradeBase;
 
 public class ItemChickenUpgrade extends ItemTravelersUpgradeBase<ChickenUpgradeWrapper> {
 
     public ItemChickenUpgrade() {
-        super("chicken_upgrade", "tooltip.backpack.chicken_upgrade");
+        super("tooltip.backpack.chicken_upgrade");
+        setTextureName(Reference.PREFIX_MOD + "chicken_upgrade");
     }
 
     @Override

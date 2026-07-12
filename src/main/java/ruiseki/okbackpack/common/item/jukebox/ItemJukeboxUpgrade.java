@@ -22,7 +22,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemJukeboxUpgrade extends ItemUpgrade<JukeboxUpgradeWrapper> {
 
     public ItemJukeboxUpgrade() {
-        super("jukebox_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "jukebox_upgrade");
     }

@@ -57,7 +57,7 @@ import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
-import ruiseki.okbackpack.common.init.ModBlocks;
+import ruiseki.okbackpack.common.init.OKBackpackBlocks;
 import ruiseki.okbackpack.common.item.travelers.blaze.BlazeUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.creeper.CreeperUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.ghast.GhastUpgradeHelpers;
@@ -105,7 +105,7 @@ public class BackpackEventHandler {
         EntityPlayer player = event.entityPlayer;
         ChunkCoordinates bedLocation = player.getBedLocation(player.dimension);
         if (bedLocation != null && player.worldObj.getBlock(bedLocation.posX, bedLocation.posY, bedLocation.posZ)
-            == ModBlocks.SLEEPING_BAG.getBlock()) {
+            == OKBackpackBlocks.SLEEPING_BAG.get()) {
             if (BlockSleepingBag.isSleepingInPortableBag(player)) {
                 BlockSleepingBag.packPortableSleepingBag(player);
                 BackpackProperty.get(player)

@@ -17,7 +17,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemWitherUpgrade extends ItemUpgrade<WitherUpgradeWrapper> {
 
     public ItemWitherUpgrade() {
-        super("wither_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "wither_upgrade");
     }

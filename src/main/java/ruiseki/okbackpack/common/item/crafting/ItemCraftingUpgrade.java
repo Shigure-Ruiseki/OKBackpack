@@ -20,7 +20,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemCraftingUpgrade extends ItemUpgrade<CraftingUpgradeWrapper> {
 
     public ItemCraftingUpgrade() {
-        super("crafting_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "crafting_upgrade");
     }

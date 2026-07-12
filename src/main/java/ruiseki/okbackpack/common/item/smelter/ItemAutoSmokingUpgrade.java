@@ -24,7 +24,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemAutoSmokingUpgrade extends ItemUpgrade<AutoSmokingUpgradeWrapper> {
 
     public ItemAutoSmokingUpgrade() {
-        super("auto_smoking_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "auto_smoking_upgrade");
     }

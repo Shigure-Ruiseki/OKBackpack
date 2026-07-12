@@ -16,7 +16,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemEverlastingUpgrade extends ItemUpgrade<EverlastingUpgradeWrapper> {
 
     public ItemEverlastingUpgrade() {
-        super("everlasting_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "everlasting_upgrade");
     }

@@ -45,7 +45,7 @@ public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
     protected IIcon tier1, tier2, tier3, tier4, tierOmega, tierStarter, downTier1, downTier2, downTier3;
 
     public ItemStackUpgrade() {
-        super("stack_upgrade");
+        super();
         setMaxStackSize(1);
     }
 

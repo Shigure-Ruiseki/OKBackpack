@@ -20,7 +20,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemArcaneCraftingUpgrade extends ItemUpgrade<ArcaneCraftingUpgradeWrapper> {
 
     public ItemArcaneCraftingUpgrade() {
-        super("arcane_crafting_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "arcane_crafting_upgrade");
     }

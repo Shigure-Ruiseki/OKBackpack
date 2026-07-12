@@ -20,7 +20,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemVoidUpgrade extends ItemUpgrade<VoidUpgradeWrapper> {
 
     public ItemVoidUpgrade() {
-        super("void_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "void_upgrade");
     }

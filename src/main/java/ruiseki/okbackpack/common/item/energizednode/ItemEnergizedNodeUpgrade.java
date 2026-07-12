@@ -29,7 +29,7 @@ import thaumcraft.common.tiles.TileNodeEnergized;
 public class ItemEnergizedNodeUpgrade extends ItemUpgrade<EnergizedNodeUpgradeWrapper> {
 
     public ItemEnergizedNodeUpgrade() {
-        super("energized_node_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "energized_node_upgrade");
     }

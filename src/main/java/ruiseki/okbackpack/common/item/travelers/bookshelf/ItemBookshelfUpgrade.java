@@ -17,7 +17,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemBookshelfUpgrade extends ItemUpgrade<BookshelfUpgradeWrapper> {
 
     public ItemBookshelfUpgrade() {
-        super("bookshelf_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "bookshelf_upgrade");
     }

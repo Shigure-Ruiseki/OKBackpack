@@ -4,13 +4,15 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.travelers.ItemTravelersUpgradeBase;
 
 public class ItemQuiverUpgrade extends ItemTravelersUpgradeBase<QuiverUpgradeWrapper> {
 
     public ItemQuiverUpgrade() {
-        super("quiver_upgrade", "tooltip.backpack.quiver_upgrade");
+        super("tooltip.backpack.quiver_upgrade");
+        setTextureName(Reference.PREFIX_MOD + "quiver_upgrade");
     }
 
     @Override

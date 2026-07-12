@@ -17,7 +17,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemCowUpgrade extends ItemUpgrade<CowUpgradeWrapper> {
 
     public ItemCowUpgrade() {
-        super("cow_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "cow_upgrade");
     }

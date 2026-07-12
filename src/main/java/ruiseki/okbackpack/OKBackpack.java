@@ -28,9 +28,9 @@ import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedValueSHRegisters
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotGroupRegisters;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
 import ruiseki.okbackpack.common.command.CommandBackpack;
-import ruiseki.okbackpack.common.init.ModBlocks;
-import ruiseki.okbackpack.common.init.ModItems;
 import ruiseki.okbackpack.common.init.ModOreDicts;
+import ruiseki.okbackpack.common.init.OKBackpackBlocks;
+import ruiseki.okbackpack.common.init.OKBackpackItems;
 import ruiseki.okbackpack.common.init.TierRegistries;
 import ruiseki.okbackpack.common.recipe.CompactingRecipeCache;
 import ruiseki.okbackpack.common.recipe.ModRecipes;
@@ -85,8 +85,8 @@ public class OKBackpack extends ModBase {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
-        ModBlocks.preInit();
-        ModItems.preInit();
+        OKBackpackBlocks.register();
+        OKBackpackItems.register();
         if (MinecraftHelpers.isClientSide()) {
             ModelRegistry.registerModid(Reference.MOD_ID);
             RenderingRegistry.registerBlockHandler(JsonModelISBRH.INSTANCE);

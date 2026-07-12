@@ -4,13 +4,15 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.travelers.ItemTravelersUpgradeBase;
 
 public class ItemOcelotUpgrade extends ItemTravelersUpgradeBase<OcelotUpgradeWrapper> {
 
     public ItemOcelotUpgrade() {
-        super("ocelot_upgrade", "tooltip.backpack.ocelot_upgrade");
+        super("tooltip.backpack.ocelot_upgrade");
+        setTextureName(Reference.PREFIX_MOD + "ocelot_upgrade");
     }
 
     @Override

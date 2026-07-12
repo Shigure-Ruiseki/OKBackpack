@@ -17,7 +17,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemCactusUpgrade extends ItemUpgrade<CactusUpgradeWrapper> {
 
     public ItemCactusUpgrade() {
-        super("cactus_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "cactus_upgrade");
     }

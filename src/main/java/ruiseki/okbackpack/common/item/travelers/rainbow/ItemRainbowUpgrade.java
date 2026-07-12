@@ -17,7 +17,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemRainbowUpgrade extends ItemUpgrade<RainbowUpgradeWrapper> {
 
     public ItemRainbowUpgrade() {
-        super("rainbow_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "rainbow_upgrade");
     }

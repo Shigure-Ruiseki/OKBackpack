@@ -24,7 +24,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemSmeltingUpgrade extends ItemUpgrade<SmeltingUpgradeWrapper> {
 
     public ItemSmeltingUpgrade() {
-        super("smelting_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "smelting_upgrade");
     }

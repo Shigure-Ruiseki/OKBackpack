@@ -18,7 +18,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemSurvivalInfinityUpgrade extends ItemUpgrade<InfinityUpgradeWrapper> {
 
     public ItemSurvivalInfinityUpgrade() {
-        super("survival_infinity_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "survival_infinity_upgrade");
     }

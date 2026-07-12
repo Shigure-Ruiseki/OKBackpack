@@ -16,7 +16,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemInceptionUpgrade extends ItemUpgrade<InceptionUpgradeWrapper> {
 
     public ItemInceptionUpgrade() {
-        super("inception_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "inception_upgrade");
     }
