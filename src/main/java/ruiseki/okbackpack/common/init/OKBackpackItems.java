@@ -3,8 +3,8 @@ package ruiseki.okbackpack.common.init;
 import java.util.function.Supplier;
 
 import net.minecraft.item.Item;
-import net.minecraftforge.fluids.FluidRegistry;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.common.item.anvil.ItemAnvilUpgrade;
 import ruiseki.okbackpack.common.item.arcane.ItemArcaneCraftingUpgrade;
@@ -75,7 +75,6 @@ import ruiseki.okbackpack.common.item.voiding.ItemAdvancedVoidUpgrade;
 import ruiseki.okbackpack.common.item.voiding.ItemVoidUpgrade;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.config.ModConfig;
-import ruiseki.okcore.Reference;
 import ruiseki.okcore.item.IItem;
 import ruiseki.okcore.registries.DeferredRegister;
 import ruiseki.okcore.registries.RegistryObject;
@@ -171,9 +170,7 @@ public final class OKBackpackItems {
     public static final RegistryObject<Item> ADVANCED_PUMP_UPGRADE = register(
         "advanced_pump_upgrade",
         ItemAdvancedPumpUpgrade::new);
-    public static final RegistryObject<Item> XP_PUMP_UPGRADE = register(
-        "xp_pump_upgrade",
-        ItemXpPumpUpgrade::new);
+    public static final RegistryObject<Item> XP_PUMP_UPGRADE = register("xp_pump_upgrade", ItemXpPumpUpgrade::new);
     public static final RegistryObject<Item> INFINITY_UPGRADE = register("infinity_upgrade", ItemInfinityUpgrade::new);
     public static final RegistryObject<Item> SURVIVAL_INFINITY_UPGRADE = register(
         "survival_infinity_upgrade",

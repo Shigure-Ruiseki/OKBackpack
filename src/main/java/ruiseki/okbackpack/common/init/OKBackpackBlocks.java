@@ -10,10 +10,10 @@ import java.util.function.Supplier;
 
 import net.minecraft.block.Block;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
-import ruiseki.okcore.Reference;
 import ruiseki.okcore.block.IBlock;
 import ruiseki.okcore.registries.DeferredRegister;
 import ruiseki.okcore.registries.RegistryObject;
