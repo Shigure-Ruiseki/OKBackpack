@@ -20,7 +20,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemAnvilUpgrade extends ItemUpgrade<AnvilUpgradeWrapper> {
 
     public ItemAnvilUpgrade() {
-        super("anvil_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "anvil_upgrade");
     }

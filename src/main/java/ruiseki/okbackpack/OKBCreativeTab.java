@@ -5,7 +5,7 @@ import net.minecraft.item.Item;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ruiseki.okbackpack.common.init.ModBlocks;
+import ruiseki.okbackpack.common.init.OKBackpackBlocks;
 import ruiseki.okcore.helper.LangHelpers;
 
 public class OKBCreativeTab extends CreativeTabs {
@@ -18,7 +18,7 @@ public class OKBCreativeTab extends CreativeTabs {
 
     @Override
     public Item getTabIconItem() {
-        return ModBlocks.BACKPACK_BASE.getItem();
+        return Item.getItemFromBlock(OKBackpackBlocks.BACKPACK_BASE.get());
     }
 
     @Override

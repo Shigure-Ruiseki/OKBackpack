@@ -21,7 +21,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemXpPumpUpgrade extends ItemUpgrade<XpPumpUpgradeWrapper> {
 
     public ItemXpPumpUpgrade() {
-        super("xp_pump_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "xp_pump_upgrade");
     }

@@ -20,7 +20,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemRestockUpgrade extends ItemUpgrade<RestockUpgradeWrapper> {
 
     public ItemRestockUpgrade() {
-        super("restock_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "restock_upgrade");
     }

@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
@@ -28,7 +30,7 @@ import ruiseki.okbackpack.common.helpers.BackpackJsonReader;
 import ruiseki.okbackpack.common.helpers.BackpackJsonWriter;
 import ruiseki.okbackpack.common.helpers.BackpackMaterial;
 import ruiseki.okbackpack.common.helpers.BackpackSettingsTemplate;
-import ruiseki.okbackpack.common.init.ModBlocks;
+import ruiseki.okbackpack.common.init.OKBackpackBlocks;
 import ruiseki.okcore.command.CommandMod;
 import ruiseki.okcore.init.ModBase;
 
@@ -272,38 +274,69 @@ public class CommandBackpack extends CommandMod {
             }
         }
         return files;
-    }
+    }// Helper methods for conversion between Material and Wrapper
 
-    // Helper methods for conversion between Material and Wrapper
     private ItemStack createBackpackFromMaterial(BackpackMaterial mat) {
-        String tier = mat.getBackpackTier();
+        String tier = mat.getBackpackTier()
+            .toLowerCase();
         ItemStack stack = null;
-        for (ModBlocks block : ModBlocks.VALUES) {
-            if (block.name()
-                .toLowerCase()
-                .contains(tier.toLowerCase())) {
-                stack = block.newItemStack();
+        Block targetBlock;
+
+        switch (tier) {
+            case "iron":
+                targetBlock = OKBackpackBlocks.BACKPACK_IRON.get();
                 break;
+            case "gold":
+                targetBlock = OKBackpackBlocks.BACKPACK_GOLD.get();
+                break;
+            case "diamond":
+                targetBlock = OKBackpackBlocks.BACKPACK_DIAMOND.get();
+                break;
+            case "obsidian":
+                targetBlock = OKBackpackBlocks.BACKPACK_OBSIDIAN.get();
+                break;
+            case "leather":
+            case "base":
+            default:
+                targetBlock = OKBackpackBlocks.BACKPACK_BASE.get();
+                break;
+        }
+
+        stack = new ItemStack(targetBlock);
+        if (stack.getItem() instanceof BlockBackpack.ItemBackpack) {
+            BackpackWrapper wrapper = new BackpackWrapper(stack, (BlockBackpack.ItemBackpack) stack.getItem());
+            applyMaterialToWrapper(mat, wrapper);
+            wrapper.writeToItem();
+        } else {
+            Item item = Item.getItemFromBlock(targetBlock);
+            if (item instanceof BlockBackpack.ItemBackpack) {
+                BackpackWrapper wrapper = new BackpackWrapper(stack, (BlockBackpack.ItemBackpack) item);
+                applyMaterialToWrapper(mat, wrapper);
+                wrapper.writeToItem();
             }
         }
-        if (stack == null) stack = ModBlocks.BACKPACK_BASE.newItemStack();
 
-        BackpackWrapper wrapper = new BackpackWrapper(stack, (BlockBackpack.ItemBackpack) stack.getItem());
-        applyMaterialToWrapper(mat, wrapper);
-        wrapper.writeToItem();
         return stack;
     }
 
     private BackpackMaterial createMaterialFromWrapper(BackpackWrapper wrapper) {
         BackpackMaterial mat = new BackpackMaterial();
-        String tier = "Base";
-        for (ModBlocks block : ModBlocks.VALUES) {
-            if (block.getItem() == wrapper.backpack.getItem()) {
-                tier = block.name()
-                    .replace("BACKPACK_", "");
-                break;
-            }
+        String tier = "leather";
+
+        Item currentItem = wrapper.backpack.getItem();
+
+        if (currentItem == Item.getItemFromBlock(OKBackpackBlocks.BACKPACK_IRON.get())) {
+            tier = "iron";
+        } else if (currentItem == Item.getItemFromBlock(OKBackpackBlocks.BACKPACK_GOLD.get())) {
+            tier = "gold";
+        } else if (currentItem == Item.getItemFromBlock(OKBackpackBlocks.BACKPACK_DIAMOND.get())) {
+            tier = "diamond";
+        } else if (currentItem == Item.getItemFromBlock(OKBackpackBlocks.BACKPACK_OBSIDIAN.get())) {
+            tier = "obsidian";
+        } else if (currentItem == Item.getItemFromBlock(OKBackpackBlocks.BACKPACK_BASE.get())) {
+            tier = "leather";
         }
+
         mat.setBackpackTier(tier);
         mat.setMainColor(BackpackMaterial.toHexColor(wrapper.getMainColor()));
         mat.setAccentColor(BackpackMaterial.toHexColor(wrapper.getAccentColor()));

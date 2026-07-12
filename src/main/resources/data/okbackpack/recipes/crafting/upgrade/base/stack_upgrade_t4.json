@@ -16,7 +16,7 @@
   ],
   "key": {
     "B": {
-      "ore": "itemNetherStar"
+      "item": "minecraft:nether_star"
     },
     "U": {
       "item": "okbackpack:stack_upgrade",

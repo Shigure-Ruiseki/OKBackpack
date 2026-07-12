@@ -4,13 +4,15 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.travelers.ItemTravelersUpgradeBase;
 
 public class ItemLapisUpgrade extends ItemTravelersUpgradeBase<LapisUpgradeWrapper> {
 
     public ItemLapisUpgrade() {
-        super("lapis_upgrade", "tooltip.backpack.lapis_upgrade");
+        super("tooltip.backpack.lapis_upgrade");
+        setTextureName(Reference.PREFIX_MOD + "lapis_upgrade");
     }
 
     @Override

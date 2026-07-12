@@ -20,7 +20,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemAdvancedMagnetUpgrade extends ItemUpgrade<AdvancedMagnetUpgradeWrapper> {
 
     public ItemAdvancedMagnetUpgrade() {
-        super("advanced_magnet_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "advanced_magnet_upgrade");
     }

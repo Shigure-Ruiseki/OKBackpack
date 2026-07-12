@@ -17,7 +17,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemSlimeUpgrade extends ItemUpgrade<SlimeUpgradeWrapper> {
 
     public ItemSlimeUpgrade() {
-        super("slime_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "slime_upgrade");
     }

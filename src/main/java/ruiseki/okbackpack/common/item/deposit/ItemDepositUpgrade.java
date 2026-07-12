@@ -20,7 +20,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemDepositUpgrade extends ItemUpgrade<DepositUpgradeWrapper> {
 
     public ItemDepositUpgrade() {
-        super("deposit_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "deposit_upgrade");
     }

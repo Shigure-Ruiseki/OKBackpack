@@ -17,7 +17,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemRedstoneUpgrade extends ItemUpgrade<RedstoneUpgradeWrapper> {
 
     public ItemRedstoneUpgrade() {
-        super("redstone_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "redstone_upgrade");
     }

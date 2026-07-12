@@ -20,7 +20,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemCompactingUpgrade extends ItemUpgrade<CompactingUpgradeWrapper> {
 
     public ItemCompactingUpgrade() {
-        super("compacting_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "compacting_upgrade");
     }

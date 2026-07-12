@@ -21,15 +21,11 @@ import ruiseki.okcore.item.ItemOK;
 
 public class ItemUpgrade<T extends IUpgradeWrapper> extends ItemOK implements IUpgradeItem<T> {
 
-    public ItemUpgrade(String name) {
-        super(name);
+    public ItemUpgrade() {
+        super();
         setNoRepair();
         setTextureName(Reference.PREFIX_MOD + "upgrade_base");
         this.setCreativeTab(OKBCreativeTab.INSTANCE);
-    }
-
-    public ItemUpgrade() {
-        this("upgrade_base");
     }
 
     public boolean hasTab() {

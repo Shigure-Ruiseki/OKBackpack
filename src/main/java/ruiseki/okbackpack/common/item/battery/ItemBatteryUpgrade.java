@@ -34,7 +34,7 @@ public class ItemBatteryUpgrade extends ItemUpgrade<BatteryUpgradeWrapper> {
     private BatterySlotWidget lastSlotWidget;
 
     public ItemBatteryUpgrade() {
-        super("battery_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "battery_upgrade");
     }

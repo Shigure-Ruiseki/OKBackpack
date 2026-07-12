@@ -17,7 +17,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemCakeUpgrade extends ItemUpgrade<CakeUpgradeWrapper> {
 
     public ItemCakeUpgrade() {
-        super("cake_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "cake_upgrade");
     }

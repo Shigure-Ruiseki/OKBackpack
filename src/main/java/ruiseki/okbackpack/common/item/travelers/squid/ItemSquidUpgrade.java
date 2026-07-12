@@ -17,7 +17,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemSquidUpgrade extends ItemUpgrade<SquidUpgradeWrapper> {
 
     public ItemSquidUpgrade() {
-        super("squid_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "squid_upgrade");
     }

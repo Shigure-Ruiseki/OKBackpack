@@ -44,6 +44,7 @@ import com.gtnewhorizon.gtnhlib.client.model.color.IBlockColor;
 import com.gtnewhorizons.angelica.api.IDynamicLightProducer;
 
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.OKBCreativeTab;
@@ -107,12 +108,22 @@ public class BlockBackpack extends BlockOK implements IBlockModelProvider, Block
         }, (world, x, y, z, value) -> {});
 
     public BlockBackpack(BackpackTier tier) {
-        super(tier.getId(), TEBackpack.class, Material.cloth);
+        super(Material.cloth);
         this.tier = tier;
         setStepSound(soundTypeCloth);
         setHardness(1f);
         setCreativeTab(OKBCreativeTab.INSTANCE);
         this.isFullSize = this.isOpaque = false;
+    }
+
+    @Override
+    public boolean hasTileEntity(int metadata) {
+        return true;
+    }
+
+    @Override
+    public void registerTileEntity(String name) {
+        GameRegistry.registerTileEntity(TEBackpack.class, name + "TileEntity");
     }
 
     public BackpackTier getTier() {
@@ -188,8 +199,8 @@ public class BlockBackpack extends BlockOK implements IBlockModelProvider, Block
     }
 
     @Override
-    public void registerComponent() {
-        super.registerComponent();
+    public void registerComponent(String name) {
+        super.registerComponent(name);
         BlockColor.registerBlockColors(new IBlockColor() {
 
             @Override

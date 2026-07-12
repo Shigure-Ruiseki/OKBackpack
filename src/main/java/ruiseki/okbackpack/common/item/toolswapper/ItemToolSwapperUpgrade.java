@@ -19,7 +19,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemToolSwapperUpgrade extends ItemUpgrade<ToolSwapperUpgradeWrapper> {
 
     public ItemToolSwapperUpgrade() {
-        super("tool_swapper_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "tool_swapper_upgrade");
     }

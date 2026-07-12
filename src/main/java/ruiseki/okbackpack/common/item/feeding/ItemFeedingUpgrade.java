@@ -20,7 +20,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemFeedingUpgrade extends ItemUpgrade<FeedingUpgradeWrapper> {
 
     public ItemFeedingUpgrade() {
-        super("feeding_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "feeding_upgrade");
     }

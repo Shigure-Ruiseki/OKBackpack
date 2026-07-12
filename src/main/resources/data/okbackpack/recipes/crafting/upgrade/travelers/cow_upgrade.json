@@ -6,22 +6,20 @@
       "value": true
     }
   ],
-  "recipe": {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-      "BLB",
-      "BUB",
-      "LML"
-    ],
-    "key": {
-      "B": { "item": "minecraft:beef" },
-      "L": { "item": "minecraft:leather" },
-      "M": { "item": "minecraft:milk_bucket" },
-      "U": { "item": "okbackpack:upgrade_base" }
-    },
-    "result": {
-      "item": "okbackpack:cow_upgrade",
-      "count": 1
-    }
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BLB",
+    "BUB",
+    "LML"
+  ],
+  "key": {
+    "B": { "item": "minecraft:beef" },
+    "L": { "item": "minecraft:leather" },
+    "M": { "item": "minecraft:milk_bucket" },
+    "U": { "item": "okbackpack:upgrade_base" }
+  },
+  "result": {
+    "item": "okbackpack:cow_upgrade",
+    "count": 1
   }
 }

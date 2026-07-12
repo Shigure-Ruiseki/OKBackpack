@@ -17,7 +17,7 @@ import com.github.bsideup.jabel.Desugar;
 
 import ruiseki.okbackpack.client.gui.interaction.BackpackGuiOpenHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
-import ruiseki.okbackpack.common.init.ModBlocks;
+import ruiseki.okbackpack.common.init.OKBackpackBlocks;
 import ruiseki.okcore.helper.BaublesHelpers;
 import tconstruct.client.tabs.AbstractTab;
 
@@ -33,7 +33,7 @@ public class OKBackpackInventoryTab extends AbstractTab {
     private TargetBackpack cachedTarget;
 
     public OKBackpackInventoryTab() {
-        super(0, 0, 0, ModBlocks.BACKPACK_BASE.newItemStack());
+        super(0, 0, 0, new ItemStack(OKBackpackBlocks.BACKPACK_BASE.get()));
     }
 
     @Override

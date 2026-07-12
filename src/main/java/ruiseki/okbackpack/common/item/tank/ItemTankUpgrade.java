@@ -36,7 +36,7 @@ public class ItemTankUpgrade extends ItemUpgrade<TankUpgradeWrapper> {
     private TankSlotWidget lastSlotWidget;
 
     public ItemTankUpgrade() {
-        super("tank_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "tank_upgrade");
     }

@@ -24,7 +24,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemBlastingUpgrade extends ItemUpgrade<BlastingUpgradeWrapper> {
 
     public ItemBlastingUpgrade() {
-        super("blasting_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "blasting_upgrade");
     }

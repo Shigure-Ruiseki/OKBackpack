@@ -20,7 +20,7 @@ import ruiseki.okcore.helper.LangHelpers;
 public class ItemFilterUpgrade extends ItemUpgrade<FilterUpgradeWrapper> {
 
     public ItemFilterUpgrade() {
-        super("filter_upgrade");
+        super();
         setMaxStackSize(1);
         setTextureName(Reference.PREFIX_MOD + "filter_upgrade");
     }

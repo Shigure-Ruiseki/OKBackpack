@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
@@ -18,11 +17,10 @@ public abstract class ItemTravelersUpgradeBase<T extends IUpgradeWrapper> extend
 
     private final String[] tooltipKeys;
 
-    protected ItemTravelersUpgradeBase(String name, String... tooltipKeys) {
-        super(name);
+    protected ItemTravelersUpgradeBase(String... tooltipKeys) {
+        super();
         this.tooltipKeys = tooltipKeys;
         setMaxStackSize(1);
-        setTextureName(Reference.PREFIX_MOD + name);
     }
 
     @Override
