@@ -13,8 +13,8 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.DelegatedStackHandlerSHRegistry;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.DelegatedItemHandler;
-import ruiseki.okcore.item.EmptyHandler;
-import ruiseki.okcore.item.IItemHandler;
+import ruiseki.okcore.item.handler.EmptyHandler;
+import ruiseki.okcore.item.handler.IItemHandler;
 
 public class DelegatedStackHandlerSH extends SyncHandler<DelegatedStackHandlerSH> {
 

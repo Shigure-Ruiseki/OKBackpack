@@ -17,7 +17,7 @@ import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.item.AdvancedUpgradeWrapper;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
-import ruiseki.okcore.item.IItemHandler;
+import ruiseki.okcore.item.handler.IItemHandler;
 
 public class AdvancedFeedingUpgradeWrapper extends AdvancedUpgradeWrapper implements IFeedingUpgrade {
 

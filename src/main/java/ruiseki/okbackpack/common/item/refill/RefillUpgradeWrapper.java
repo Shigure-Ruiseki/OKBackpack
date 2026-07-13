@@ -19,7 +19,7 @@ import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.ItemStackHelpers;
-import ruiseki.okcore.item.IItemHandler;
+import ruiseki.okcore.item.handler.IItemHandler;
 
 @Getter
 public class RefillUpgradeWrapper extends UpgradeWrapperBase implements IRefillUpgrade {

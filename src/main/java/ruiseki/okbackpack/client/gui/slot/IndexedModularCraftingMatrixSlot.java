@@ -1,6 +1,6 @@
 package ruiseki.okbackpack.client.gui.slot;
 
-import ruiseki.okcore.item.IItemHandler;
+import ruiseki.okcore.item.handler.IItemHandler;
 
 public class IndexedModularCraftingMatrixSlot extends ModularUpgradeWidgetSlot {
 

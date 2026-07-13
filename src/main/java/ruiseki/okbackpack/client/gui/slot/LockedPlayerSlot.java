@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
-import ruiseki.okcore.item.IItemHandler;
+import ruiseki.okcore.item.handler.IItemHandler;
 
 public class LockedPlayerSlot extends ModularSlot {
 

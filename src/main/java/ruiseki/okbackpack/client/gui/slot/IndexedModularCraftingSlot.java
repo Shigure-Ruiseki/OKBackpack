@@ -12,7 +12,7 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.gui.handler.InventoryCraftingWrapper;
-import ruiseki.okcore.item.IItemHandler;
+import ruiseki.okcore.item.handler.IItemHandler;
 
 public class IndexedModularCraftingSlot extends ModularCraftingSlot {
 

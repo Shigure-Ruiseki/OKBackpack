@@ -26,8 +26,8 @@ import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegister
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
-import ruiseki.okcore.item.EmptyHandler;
-import ruiseki.okcore.item.IItemHandler;
+import ruiseki.okcore.item.handler.EmptyHandler;
+import ruiseki.okcore.item.handler.IItemHandler;
 import thaumcraft.api.crafting.IArcaneRecipe;
 
 public class ArcaneCraftingSlotGroupFactory implements IUpgradeSlotGroupFactory {

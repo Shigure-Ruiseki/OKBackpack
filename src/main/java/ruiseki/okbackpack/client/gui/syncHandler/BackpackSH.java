@@ -9,7 +9,7 @@ import com.cleanroommc.modularui.value.sync.SyncHandler;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.BackpackSHRegistry;
-import ruiseki.okcore.item.PlayerMainInvWrapper;
+import ruiseki.okcore.item.capability.wrapper.PlayerMainInvWrapper;
 
 public class BackpackSH extends SyncHandler<BackpackSH> {
 

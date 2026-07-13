@@ -21,6 +21,7 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
+import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.experimental.Delegate;
@@ -29,12 +30,11 @@ import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
 import ruiseki.okbackpack.common.init.OKBackpackBlocks;
 import ruiseki.okbackpack.compat.thaumcraft.IVisChargeTarget;
-import ruiseki.okcore.energy.IOKEnergyHandler;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileEntityOK;
 
 public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHolder<SidedPosGuiData>,
-    TileEntityOK.ITickingTile, IOKEnergyHandler, IFluidHandler, IVisChargeTarget {
+    TileEntityOK.ITickingTile, IEnergyHandler, IFluidHandler, IVisChargeTarget {
 
     private int[] allSlots;
 
@@ -348,26 +348,15 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
     }
 
     @Override
-    public int getEnergyStored() {
+    public int getEnergyStored(ForgeDirection forgeDirection) {
         IBatteryUpgrade battery = getBatteryUpgrade();
         return battery != null ? battery.getEnergyStored() : 0;
     }
 
     @Override
-    public int getMaxEnergyStored() {
+    public int getMaxEnergyStored(ForgeDirection forgeDirection) {
         IBatteryUpgrade battery = getBatteryUpgrade();
         return battery != null ? battery.getMaxEnergyStored() : 0;
-    }
-
-    @Override
-    public void setEnergyStored(int energy) {
-        // Energy is managed by the battery upgrade internally
-    }
-
-    @Override
-    public int getEnergyTransfer() {
-        IBatteryUpgrade battery = getBatteryUpgrade();
-        return battery != null ? battery.getMaxTransfer() : 0;
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import ruiseki.okcore.item.ItemStackHandler;
+import ruiseki.okcore.item.handler.ItemStackHandler;
 
 public class BaseItemStackHandler extends ItemStackHandler {
 

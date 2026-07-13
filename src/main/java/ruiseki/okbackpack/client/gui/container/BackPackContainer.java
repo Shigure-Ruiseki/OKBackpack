@@ -49,7 +49,7 @@ import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
-import ruiseki.okcore.item.IItemHandlerModifiable;
+import ruiseki.okcore.item.handler.IItemHandlerModifiable;
 
 @Optional.Interface(iface = "com.cleanroommc.bogosorter.api.ISortableContainer", modid = "bogosorter")
 public class BackPackContainer extends ModularContainer

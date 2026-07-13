@@ -23,9 +23,9 @@ import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
-import ruiseki.okcore.item.IItemHandler;
-import ruiseki.okcore.item.ItemStackHandler;
-import ruiseki.okcore.item.PlayerMainInvWrapper;
+import ruiseki.okcore.item.capability.wrapper.PlayerMainInvWrapper;
+import ruiseki.okcore.item.handler.IItemHandler;
+import ruiseki.okcore.item.handler.ItemStackHandler;
 
 public class BackpackInventoryHelpers {
 

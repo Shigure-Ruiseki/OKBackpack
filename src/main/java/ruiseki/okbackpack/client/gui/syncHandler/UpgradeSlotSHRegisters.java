@@ -36,7 +36,7 @@ import ruiseki.okbackpack.api.wrapper.IXpPumpUpgrade;
 import ruiseki.okbackpack.api.wrapper.TargetSlot;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okcore.init.IInitListener;
-import ruiseki.okcore.item.ItemStackHandler;
+import ruiseki.okcore.item.handler.ItemStackHandler;
 
 public class UpgradeSlotSHRegisters implements IInitListener {
 

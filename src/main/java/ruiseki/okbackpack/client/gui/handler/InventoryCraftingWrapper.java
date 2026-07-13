@@ -10,8 +10,8 @@ import com.cleanroommc.modularui.core.mixins.early.minecraft.InventoryCraftingAc
 import com.cleanroommc.modularui.utils.Platform;
 
 import ruiseki.okcore.helper.ItemHandlerHelpers;
-import ruiseki.okcore.item.IItemHandler;
-import ruiseki.okcore.item.IItemHandlerModifiable;
+import ruiseki.okcore.item.handler.IItemHandler;
+import ruiseki.okcore.item.handler.IItemHandlerModifiable;
 
 /**
  * A crafting inventory which wraps a {@link IItemHandlerModifiable}. This inventory creates a content list which is

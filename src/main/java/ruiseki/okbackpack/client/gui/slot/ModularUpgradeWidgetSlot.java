@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
-import ruiseki.okcore.item.IItemHandler;
+import ruiseki.okcore.item.handler.IItemHandler;
 
 public class ModularUpgradeWidgetSlot extends ModularSlot {
 

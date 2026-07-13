@@ -19,7 +19,7 @@ import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 import ruiseki.okcore.init.IInitListener;
-import ruiseki.okcore.item.EmptyHandler;
+import ruiseki.okcore.item.handler.EmptyHandler;
 
 public class DelegatedStackHandlerSHRegisters implements IInitListener {
 
