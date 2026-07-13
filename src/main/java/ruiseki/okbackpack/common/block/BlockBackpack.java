@@ -43,6 +43,7 @@ import com.gtnewhorizon.gtnhlib.client.model.color.BlockColor;
 import com.gtnewhorizon.gtnhlib.client.model.color.IBlockColor;
 import com.gtnewhorizons.angelica.api.IDynamicLightProducer;
 
+import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -73,7 +74,6 @@ import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.block.BlockOK;
 import ruiseki.okcore.block.property.BlockProperty;
 import ruiseki.okcore.block.property.DirectionProperty;
-import ruiseki.okcore.energy.IOKEnergyItem;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemBlockBauble;
@@ -321,7 +321,7 @@ public class BlockBackpack extends BlockOK implements IBlockModelProvider, Block
 
     @Optional.Interface(iface = "com.gtnewhorizons.angelica.api.IDynamicLightProducer", modid = "angelica")
     public static class ItemBackpack extends ItemBlockBauble implements IGuiHolder<PlayerInventoryGuiData>,
-        IBaubleRender, IArmorRender, IOKEnergyItem, IDynamicLightProducer {
+        IBaubleRender, IArmorRender, IEnergyContainerItem, IDynamicLightProducer {
 
         protected BackpackTier tier = TierRegistry.getTier(LEATHER);
 
@@ -486,11 +486,6 @@ public class BlockBackpack extends BlockOK implements IBlockModelProvider, Block
         public int getEnergyStored(ItemStack container) {
             IBatteryUpgrade battery = getBatteryUpgrade(container);
             return battery != null ? battery.getEnergyStored() : 0;
-        }
-
-        @Override
-        public void setEnergyStored(ItemStack container, int energy) {
-            // Energy is managed by the battery upgrade internally
         }
 
         @Override

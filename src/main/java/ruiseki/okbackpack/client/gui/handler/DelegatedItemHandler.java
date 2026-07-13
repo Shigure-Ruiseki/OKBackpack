@@ -7,9 +7,9 @@ import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
 
-import ruiseki.okcore.item.EmptyHandler;
-import ruiseki.okcore.item.IItemHandler;
-import ruiseki.okcore.item.IItemHandlerModifiable;
+import ruiseki.okcore.item.handler.EmptyHandler;
+import ruiseki.okcore.item.handler.IItemHandler;
+import ruiseki.okcore.item.handler.IItemHandlerModifiable;
 
 public class DelegatedItemHandler implements IItemHandlerModifiable {
 

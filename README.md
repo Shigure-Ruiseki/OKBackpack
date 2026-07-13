@@ -7,7 +7,7 @@
 
 *   [ModularUI2 (>= 2.3.79)](https://github.com/GTNewHorizons/ModularUI2)
 *   [GTNHLib (>= 0.11.21)](https://github.com/GTNewHorizons/GTNHLib)
-*   [OKCore (>= 26.07.12.0)](https://github.com/Shigure-Ruiseki/OKCore)
+*   [OKCore (>= 26.07.13.0)](https://github.com/Shigure-Ruiseki/OKCore)
 
 ## Features:
 

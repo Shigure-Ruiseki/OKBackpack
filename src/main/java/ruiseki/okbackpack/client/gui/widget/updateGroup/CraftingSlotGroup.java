@@ -18,8 +18,8 @@ import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingMatrixSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
-import ruiseki.okcore.item.EmptyHandler;
-import ruiseki.okcore.item.IItemHandler;
+import ruiseki.okcore.item.handler.EmptyHandler;
+import ruiseki.okcore.item.handler.IItemHandler;
 
 public class CraftingSlotGroup implements IUpgradeSlotGroupFactory {
 

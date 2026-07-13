@@ -79,8 +79,8 @@ import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okcore.helper.ItemStackHelpers;
 import ruiseki.okcore.helper.LangHelpers;
-import ruiseki.okcore.item.PlayerInvWrapper;
-import ruiseki.okcore.item.PlayerMainInvWrapper;
+import ruiseki.okcore.item.capability.wrapper.PlayerInvWrapper;
+import ruiseki.okcore.item.capability.wrapper.PlayerMainInvWrapper;
 
 public class BackpackPanel extends ModularPanel implements IStoragePanel<BackpackPanel> {
 

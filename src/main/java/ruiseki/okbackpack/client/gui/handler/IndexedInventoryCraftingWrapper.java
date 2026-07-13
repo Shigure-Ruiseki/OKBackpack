@@ -3,7 +3,7 @@ package ruiseki.okbackpack.client.gui.handler;
 import net.minecraft.inventory.Container;
 
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade.CraftingDestination;
-import ruiseki.okcore.item.IItemHandlerModifiable;
+import ruiseki.okcore.item.handler.IItemHandlerModifiable;
 
 public class IndexedInventoryCraftingWrapper extends InventoryCraftingWrapper {
 
