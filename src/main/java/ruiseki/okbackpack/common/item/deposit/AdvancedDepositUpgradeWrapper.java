@@ -78,12 +78,12 @@ public class AdvancedDepositUpgradeWrapper extends AdvancedUpgradeWrapper implem
         }, side);
 
         if (transferred > 0) {
-            OKBackpack.instance.getPacketHandler()
+            OKBackpack._instance.getPacketHandler()
                 .sendToPlayer(
                     new PacketStatusMessage("gui.okbackpack.status.stacks_deposited", transferred),
                     (EntityPlayerMP) player);
         } else {
-            OKBackpack.instance.getPacketHandler()
+            OKBackpack._instance.getPacketHandler()
                 .sendToPlayer(
                     new PacketStatusMessage("gui.okbackpack.status.nothing_to_deposit"),
                     (EntityPlayerMP) player);

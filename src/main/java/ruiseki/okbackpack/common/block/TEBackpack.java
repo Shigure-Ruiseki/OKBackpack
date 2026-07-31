@@ -110,8 +110,8 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
     }
 
     @Override
-    protected void doUpdate() {
-        super.doUpdate();
+    protected void updateTileEntity() {
+        super.updateTileEntity();
 
         if (wrapper.tick(worldObj, getPos())) {
             markDirty();

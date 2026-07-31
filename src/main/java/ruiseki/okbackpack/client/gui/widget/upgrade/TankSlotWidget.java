@@ -181,7 +181,7 @@ public class TankSlotWidget extends Widget<TankSlotWidget> implements Interactab
 
     private Result handleTankClick() {
         // Send packet to server for tank cursor interaction
-        OKBackpack.instance.getPacketHandler()
+        OKBackpack._instance.getPacketHandler()
             .sendToServer(new PacketTankClick(slotIndex));
         return Result.SUCCESS;
     }

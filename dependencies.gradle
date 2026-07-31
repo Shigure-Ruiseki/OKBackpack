@@ -36,7 +36,7 @@
 dependencies {
     implementation("com.github.GTNewHorizons:GTNHLib:0.11.21:dev")
     implementation("com.github.GTNewHorizons:ModularUI2:2.3.79-1.7.10:dev")
-    implementation("com.github.Shigure-Ruiseki:OKCore:26.07.13.0:dev") { transitive = false }
+    implementation("com.github.Shigure-Ruiseki:OKCore:26.07.31.0:dev") { transitive = false }
 
     devOnlyNonPublishable("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
     devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.8.101-GTNH:dev")
@@ -45,7 +45,9 @@ dependencies {
     devOnlyNonPublishable("com.github.GTNewHorizons:Et-Futurum-Requiem:2.6.40-GTNH:dev") { transitive = false }
     devOnlyNonPublishable("curse.maven:cofh-core-69162:2388751")
     devOnlyNonPublishable('com.github.GTNewHorizons:FindIt:1.4.3:dev')
+    devOnlyNonPublishable("com.github.Shigure-Ruiseki:JFMUY:26.07.31.1:dev") { transitive = false }
 
+    runtimeOnlyNonPublishable("com.github.Shigure-Ruiseki:JFI:26.07.31.0:dev") { transitive = false }
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:AspectRecipeIndex:1.1.1:dev")
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:Hodgepodge:2.7.160:dev") { transitive = false }
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:BetterCrashes:1.4.5-GTNH:dev")

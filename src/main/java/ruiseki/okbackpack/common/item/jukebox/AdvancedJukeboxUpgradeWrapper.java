@@ -384,11 +384,11 @@ public class AdvancedJukeboxUpgradeWrapper extends UpgradeWrapperBase implements
                     z,
                     getCurrentRecordName(),
                     carrierEntityId);
-                OKBackpack.instance.getPacketHandler()
+                OKBackpack._instance.getPacketHandler()
                     .sendToAllAround(packet, targetPoint);
             } else if (progress % 10 == 0) {
                 var packet = new PacketJukeboxPositionUpdate(uuid, upgradeSlot, x, y, z);
-                OKBackpack.instance.getPacketHandler()
+                OKBackpack._instance.getPacketHandler()
                     .sendToAllAround(packet, targetPoint);
             }
         } else if (wasPlaying || pendingStop) {
@@ -403,7 +403,7 @@ public class AdvancedJukeboxUpgradeWrapper extends UpgradeWrapperBase implements
                 z,
                 "",
                 carrierEntityId);
-            OKBackpack.instance.getPacketHandler()
+            OKBackpack._instance.getPacketHandler()
                 .sendToAllAround(packet, targetPoint);
             ItemNBTHelpers.setBoolean(upgrade, PENDING_STOP_SYNC_TAG, false);
         }
@@ -438,11 +438,11 @@ public class AdvancedJukeboxUpgradeWrapper extends UpgradeWrapperBase implements
                     z,
                     getCurrentRecordName(),
                     -1);
-                OKBackpack.instance.getPacketHandler()
+                OKBackpack._instance.getPacketHandler()
                     .sendToAllAround(packet, targetPoint);
             } else if (progress % 10 == 0) {
                 var packet = new PacketJukeboxPositionUpdate(uuid, upgradeSlot, x, y, z);
-                OKBackpack.instance.getPacketHandler()
+                OKBackpack._instance.getPacketHandler()
                     .sendToAllAround(packet, targetPoint);
             }
         } else if (wasPlaying || pendingStop) {
@@ -457,7 +457,7 @@ public class AdvancedJukeboxUpgradeWrapper extends UpgradeWrapperBase implements
                 z,
                 "",
                 -1);
-            OKBackpack.instance.getPacketHandler()
+            OKBackpack._instance.getPacketHandler()
                 .sendToAllAround(packet, targetPoint);
             ItemNBTHelpers.setBoolean(upgrade, PENDING_STOP_SYNC_TAG, false);
         }

@@ -11,10 +11,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import ruiseki.okbackpack.ClientProxy;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.gui.interaction.BackpackGuiOpenHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
+import ruiseki.okbackpack.proxy.ClientProxy;
 
 @Mixin(GuiContainer.class)
 public abstract class MixinGuiContainerBackpackOpener extends GuiScreen {

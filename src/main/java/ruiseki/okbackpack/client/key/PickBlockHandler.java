@@ -49,14 +49,14 @@ public class PickBlockHandler implements IKeyHandler {
             QuickDrawResult quickDraw = findQuickDrawResult(player, wanted);
             if (quickDraw != null && mc.theWorld.isRemote) {
                 int currentSlot = player.inventory.currentItem;
-                OKBackpack.instance.getPacketHandler()
+                OKBackpack._instance.getPacketHandler()
                     .sendToServer(
                         new PacketBackpackNBT(
                             quickDraw.backpack.getSlotIndex(),
                             quickDraw.backpack.getWrapper()
                                 .getBackpackNBT(),
                             quickDraw.backpack.getInventoryType()));
-                OKBackpack.instance.getPacketHandler()
+                OKBackpack._instance.getPacketHandler()
                     .sendToServer(new PacketQuickDraw(currentSlot, quickDraw.stack));
                 return;
             }
@@ -81,14 +81,14 @@ public class PickBlockHandler implements IKeyHandler {
         }
 
         int currentSlot = player.inventory.currentItem;
-        OKBackpack.instance.getPacketHandler()
+        OKBackpack._instance.getPacketHandler()
             .sendToServer(
                 new PacketBackpackNBT(
                     ctx.backpack.getSlotIndex(),
                     ctx.backpack.getWrapper()
                         .getBackpackNBT(),
                     ctx.backpack.getInventoryType()));
-        OKBackpack.instance.getPacketHandler()
+        OKBackpack._instance.getPacketHandler()
             .sendToServer(new PacketQuickDraw(currentSlot, extracted));
     }
 

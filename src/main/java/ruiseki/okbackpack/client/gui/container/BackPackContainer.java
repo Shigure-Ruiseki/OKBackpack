@@ -224,7 +224,7 @@ public class BackPackContainer extends ModularContainer
                 && backpackSlotIndex != null
                 && player instanceof EntityPlayerMP playerMP) {
 
-                OKBackpack.instance.getPacketHandler()
+                OKBackpack._instance.getPacketHandler()
                     .sendToPlayer(
                         new PacketBackpackNBT(backpackSlotIndex, wrapper.getBackpackNBT(), wrapper.getType()),
                         playerMP);
