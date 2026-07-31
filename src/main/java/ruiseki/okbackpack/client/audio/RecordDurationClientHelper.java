@@ -65,7 +65,7 @@ public class RecordDurationClientHelper {
                     : recordName;
                 RecordDurationCache.putDuration(shortName, ticks);
 
-                OKBackpack.instance.getPacketHandler()
+                OKBackpack._instance.getPacketHandler()
                     .sendToServer(new PacketRecordDuration(shortName, ticks));
             }
         } catch (Exception ignored) {}

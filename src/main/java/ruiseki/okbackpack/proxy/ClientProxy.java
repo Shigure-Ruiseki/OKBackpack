@@ -1,10 +1,11 @@
-package ruiseki.okbackpack;
+package ruiseki.okbackpack.proxy;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 
+import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.client.audio.BackpackJukeboxSoundManager;
 import ruiseki.okbackpack.client.key.OpenBackpackHandler;
 import ruiseki.okbackpack.client.key.PickBlockHandler;
@@ -36,7 +37,7 @@ public class ClientProxy extends ClientProxyComponent {
 
     @Override
     public ModBase getMod() {
-        return OKBackpack.instance;
+        return OKBackpack._instance;
     }
 
     @Override

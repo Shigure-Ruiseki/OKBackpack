@@ -70,7 +70,7 @@ public class ToolSwapHandler implements IKeyHandler {
 
             case PLAYER_INVENTORY:
                 // Target tool is in main inventory — swap with current hand slot
-                OKBackpack.instance.getPacketHandler()
+                OKBackpack._instance.getPacketHandler()
                     .sendToServer(new PacketToolSwap(currentSlot, best.playerSlot));
                 break;
 
@@ -91,14 +91,14 @@ public class ToolSwapHandler implements IKeyHandler {
                         .insertItem(currentHand, false);
                 }
                 BackpackEntityHelpers.persistBackpack(ctx.backpack);
-                OKBackpack.instance.getPacketHandler()
+                OKBackpack._instance.getPacketHandler()
                     .sendToServer(
                         new PacketBackpackNBT(
                             ctx.backpack.slotIndex(),
                             ctx.backpack.wrapper()
                                 .getBackpackNBT(),
                             ctx.backpack.inventoryType()));
-                OKBackpack.instance.getPacketHandler()
+                OKBackpack._instance.getPacketHandler()
                     .sendToServer(new PacketQuickDraw(currentSlot, extracted));
                 break;
         }

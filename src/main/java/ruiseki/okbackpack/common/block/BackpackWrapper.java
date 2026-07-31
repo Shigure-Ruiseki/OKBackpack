@@ -608,7 +608,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         var targetPoint = new NetworkRegistry.TargetPoint(player.worldObj.provider.dimensionId, x, y, z, 64);
         for (int slot : pendingJukeboxStops) {
             var packet = new PacketJukeboxPlaybackState(uuid, slot, false, 0, 0, x, y, z, "", carrierEntityId);
-            OKBackpack.instance.getPacketHandler()
+            OKBackpack._instance.getPacketHandler()
                 .sendToAllAround(packet, targetPoint);
         }
         pendingJukeboxStops.clear();
@@ -622,7 +622,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         var targetPoint = new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 64);
         for (int slot : pendingJukeboxStops) {
             var packet = new PacketJukeboxPlaybackState(uuid, slot, false, 0, 0, x, y, z, "", -1);
-            OKBackpack.instance.getPacketHandler()
+            OKBackpack._instance.getPacketHandler()
                 .sendToAllAround(packet, targetPoint);
         }
         pendingJukeboxStops.clear();
@@ -636,7 +636,7 @@ public class BackpackWrapper implements IBackpackWrapper {
             if (stack == null) continue;
             if (!ItemNBTHelpers.getBoolean(stack, IJukeboxUpgrade.PLAYING_TAG, false)) continue;
             var packet = new PacketJukeboxPlaybackState(uuid, i, false, 0, 0, x, y, z, "", -1);
-            OKBackpack.instance.getPacketHandler()
+            OKBackpack._instance.getPacketHandler()
                 .sendToAllAround(packet, targetPoint);
             IUpgradeWrapper wrapper = upgradeHandler.getWrapperInSlot(i);
             if (wrapper instanceof IJukeboxUpgrade jukebox) {

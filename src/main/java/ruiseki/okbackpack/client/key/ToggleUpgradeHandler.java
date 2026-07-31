@@ -48,7 +48,7 @@ public class ToggleUpgradeHandler implements IKeyHandler {
                     String message = LangHelpers.localize(langKey, upgradeName);
                     Minecraft.getMinecraft().ingameGUI.func_110326_a("\u00a7f" + message, true);
 
-                    OKBackpack.instance.getPacketHandler()
+                    OKBackpack._instance.getPacketHandler()
                         .sendToServer(
                             new PacketToggleUpgrade(context.slotIndex(), upgradeSlot, context.inventoryType()));
                     return true;

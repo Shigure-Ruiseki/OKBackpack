@@ -4,8 +4,12 @@ plugins {
 }
 
 minecraft {
-    //Creates a tag in Tags with the above generated mod version, instead of the "clean" one
+    def cleanVersion = project.modVersion.toString().split('-')[0].split('\\+')[0]
+
+    injectedTags.put("VERSION", cleanVersion)
+
     injectedTags.put("RAW_VERSION", project.modVersion)
+    injectedTags.put("MC_VERSION", project.minecraftVersion)
     injectedTags.put("MOD_ID", project.modId)
     injectedTags.put("MOD_NAME", project.modName)
     injectedTags.put("MOD_GROUP", project.modGroup)

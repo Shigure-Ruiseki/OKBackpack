@@ -41,28 +41,26 @@ import ruiseki.okbackpack.compat.tic.TConstructTabCompat;
 import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.data.condition.ConfigCondition;
 import ruiseki.okcore.helper.MinecraftHelpers;
-import ruiseki.okcore.init.ModBase;
+import ruiseki.okcore.init.ModBaseVersionable;
 import ruiseki.okcore.proxy.ICommonProxy;
+import ruiseki.okcore.tracking.Versions;
 
 @Mod(
     modid = Reference.MOD_ID,
     name = Reference.MOD_NAME,
-    version = Reference.VERSION,
-    dependencies = Reference.DEPENDENCIES,
+    version = Reference.MOD_VERSION,
+    dependencies = Reference.MOD_DEPENDENCIES,
     guiFactory = Reference.GUI_FACTORY)
-public class OKBackpack extends ModBase {
+public class OKBackpack extends ModBaseVersionable {
 
     @SidedProxy(serverSide = Reference.PROXY_COMMON, clientSide = Reference.PROXY_CLIENT)
     public static ICommonProxy proxy;
 
     @Mod.Instance(Reference.MOD_ID)
-    public static OKBackpack instance;
+    public static OKBackpack _instance;
 
     public OKBackpack() {
-        super(Reference.MOD_ID, Reference.MOD_NAME);
-        putGenericReference(REFKEY_MOD_VERSION, Reference.VERSION);
-        putGenericReference(REFKEY_VERSION_CHECKER, ModConfig.useVersionChecker);
-        putGenericReference(REFKEY_VERSION_CHECKER_URL, Reference.UPDATE_URL);
+        super(Reference.MOD_ID, Reference.MOD_NAME, Reference.MOD_VERSION);
 
         ConfigCondition.registerConfig(
             new ResourceLocation(Reference.MOD_ID, "enableTravelersUpgrades"),
@@ -90,6 +88,9 @@ public class OKBackpack extends ModBase {
         if (MinecraftHelpers.isClientSide()) {
             ModelRegistry.registerModid(Reference.MOD_ID);
             RenderingRegistry.registerBlockHandler(JsonModelISBRH.INSTANCE);
+        }
+        if (ModConfig.useVersionChecker) {
+            Versions.registerMod(this, this, Reference.UPDATE_URL);
         }
     }
 
@@ -162,7 +163,7 @@ public class OKBackpack extends ModBase {
      * @param message The message to show.
      */
     public static void okLog(String message) {
-        OKBackpack.instance.log(Level.INFO, message);
+        OKBackpack._instance.log(Level.INFO, message);
     }
 
     /**
@@ -172,10 +173,10 @@ public class OKBackpack extends ModBase {
      * @param message The message to show.
      */
     public static void okLog(Level level, String message) {
-        OKBackpack.instance.log(level, message);
+        OKBackpack._instance.log(level, message);
     }
 
     public static void okLog(Level level, String message, Object... params) {
-        OKBackpack.instance.log(level, message, params);
+        OKBackpack._instance.log(level, message, params);
     }
 }

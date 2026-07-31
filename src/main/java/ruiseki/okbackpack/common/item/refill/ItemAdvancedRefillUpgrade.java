@@ -7,7 +7,6 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import ruiseki.okbackpack.ClientProxy;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
@@ -17,6 +16,7 @@ import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.AdvancedRefillUpgradeWidget;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
+import ruiseki.okbackpack.proxy.ClientProxy;
 import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemAdvancedRefillUpgrade extends ItemUpgrade<AdvancedRefillUpgradeWrapper> {

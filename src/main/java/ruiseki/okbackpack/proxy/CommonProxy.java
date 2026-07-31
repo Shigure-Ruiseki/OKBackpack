@@ -1,8 +1,9 @@
-package ruiseki.okbackpack;
+package ruiseki.okbackpack.proxy;
 
 import net.minecraftforge.common.MinecraftForge;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.common.event.BackpackEventHandler;
 import ruiseki.okbackpack.common.event.ToolSwapEventHandler;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
@@ -23,7 +24,7 @@ public class CommonProxy extends CommonProxyComponent {
 
     @Override
     public ModBase getMod() {
-        return OKBackpack.instance;
+        return OKBackpack._instance;
     }
 
     @Override

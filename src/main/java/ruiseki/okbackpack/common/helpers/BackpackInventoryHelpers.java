@@ -420,7 +420,7 @@ public class BackpackInventoryHelpers {
                 (BlockBackpack.ItemBackpack) backpackStack.getItem());
             ItemStack extracted = wrapper.extractItem(wanted, wanted.getMaxStackSize(), false);
 
-            OKBackpack.instance.getPacketHandler()
+            OKBackpack._instance.getPacketHandler()
                 .sendToServer(new PacketBackpackNBT(i, wrapper.getBackpackNBT(), type));
             if (extracted != null && extracted.stackSize > 0) {
                 return extracted;
