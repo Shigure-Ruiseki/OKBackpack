@@ -48,22 +48,32 @@ public class CompactingRecipeCache {
             .getRecipeList();
 
         for (IRecipe recipe : recipes) {
-            tryCache(recipe, world);
+            try {
+                tryCache(recipe, world);
+            } catch (Exception ignored) {
+                // Protect against malformed recipes from third-party mods
+            }
         }
 
         // Build reverse maps for reversibility check
         for (Map.Entry<String, CompactingResult> entry : cache2x2.entrySet()) {
             String outputKey = makeKey(entry.getValue().output);
-            reverseMap2x2.put(outputKey, entry.getKey());
+            if (!outputKey.isEmpty()) {
+                reverseMap2x2.put(outputKey, entry.getKey());
+            }
         }
         for (Map.Entry<String, CompactingResult> entry : cache3x3.entrySet()) {
             String outputKey = makeKey(entry.getValue().output);
-            reverseMap3x3.put(outputKey, entry.getKey());
+            if (!outputKey.isEmpty()) {
+                reverseMap3x3.put(outputKey, entry.getKey());
+            }
         }
     }
 
     private void tryCache(IRecipe recipe, World world) {
         // Check if it's a shaped recipe with uniform input in a 2x2 or 3x3 grid
+        if (recipe == null) return;
+
         int width = -1;
         int height = -1;
         ItemStack[] inputs = null;
@@ -91,23 +101,24 @@ public class CompactingRecipeCache {
 
     private void tryCacheUniform(IRecipe recipe, ItemStack[] inputs, int gridSize, Map<String, CompactingResult> cache,
         World world) {
-        // All input slots must be the same non-null item
+        // All input slots must be valid, non-null items
         ItemStack first = inputs[0];
-        if (first == null) return;
+        if (!isValidStack(first)) return;
 
         for (int i = 1; i < gridSize; i++) {
-            if (inputs[i] == null) return;
+            if (!isValidStack(inputs[i])) return;
             if (!inputs[i].isItemEqual(first)) return;
         }
 
         // Verify recipe produces a valid output
         ItemStack output = getRecipeOutput(recipe, first, gridSize, world);
-        if (output == null) return;
+        if (!isValidStack(output)) return;
 
         // Don't cache if output is same as input
         if (output.isItemEqual(first)) return;
 
         String key = makeKey(first);
+        if (key.isEmpty()) return;
 
         // Only cache the first found recipe per input item (deterministic)
         if (!cache.containsKey(key)) {
@@ -116,16 +127,21 @@ public class CompactingRecipeCache {
     }
 
     private ItemStack getRecipeOutput(IRecipe recipe, ItemStack input, int gridSize, World world) {
-        int dim = gridSize == 4 ? 2 : 3;
-        InventoryCrafting crafting = new InventoryCrafting(new DummyContainer(), dim, dim);
-        for (int i = 0; i < gridSize; i++) {
-            ItemStack copy = input.copy();
-            copy.stackSize = 1;
-            crafting.setInventorySlotContents(i, copy);
-        }
+        try {
+            int dim = gridSize == 4 ? 2 : 3;
+            InventoryCrafting crafting = new InventoryCrafting(new DummyContainer(), dim, dim);
+            for (int i = 0; i < gridSize; i++) {
+                ItemStack copy = input.copy();
+                copy.stackSize = 1;
+                crafting.setInventorySlotContents(i, copy);
+            }
 
-        if (recipe.matches(crafting, world)) {
-            return recipe.getCraftingResult(crafting);
+            if (recipe.matches(crafting, world)) {
+                return recipe.getCraftingResult(crafting);
+            }
+        } catch (Throwable ignored) {
+            // Guard against OreDictionary NPEs triggered by corrupt recipes during recipe.matches(...)
+            return null;
         }
         return null;
     }
@@ -137,16 +153,31 @@ public class CompactingRecipeCache {
         for (int i = 0; i < oreInputs.length; i++) {
             Object input = oreInputs[i];
             if (input instanceof ItemStack stack) {
+                if (!isValidStack(stack)) return null;
                 resolved[i] = stack;
             } else if (input instanceof List) {
                 List<ItemStack> list = (List<ItemStack>) input;
                 if (list.isEmpty()) return null;
-                resolved[i] = list.get(0);
+
+                // Find the first valid item stack in the list
+                ItemStack validCandidate = null;
+                for (ItemStack stack : list) {
+                    if (isValidStack(stack)) {
+                        validCandidate = stack;
+                        break;
+                    }
+                }
+                if (validCandidate == null) return null;
+                resolved[i] = validCandidate;
             } else {
                 return null;
             }
         }
         return resolved;
+    }
+
+    private boolean isValidStack(ItemStack stack) {
+        return stack != null && stack.getItem() != null;
     }
 
     /**
@@ -158,9 +189,10 @@ public class CompactingRecipeCache {
      * @return The compacting result, or null if none found
      */
     public CompactingResult findCompactingRecipe(ItemStack stack, boolean allow3x3, boolean onlyReversible) {
-        if (stack == null) return null;
+        if (!isValidStack(stack)) return null;
 
         String key = makeKey(stack);
+        if (key.isEmpty()) return null;
 
         // Prefer 3x3 (higher compression) over 2x2
         if (allow3x3) {
@@ -187,6 +219,7 @@ public class CompactingRecipeCache {
      * This means: the output item has a recipe where it produces gridSize of some item.
      */
     private boolean isReversible(ItemStack output, int gridSize) {
+        if (!isValidStack(output)) return false;
         String outputKey = makeKey(output);
 
         // Check if any recipe uses this output as input in the other direction
