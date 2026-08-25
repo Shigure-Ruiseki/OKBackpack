@@ -50,7 +50,6 @@ import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackSettingsTemplate;
 import ruiseki.okbackpack.common.helpers.UpgradeFeatureHelper;
-import ruiseki.okbackpack.common.init.OKBackpackBlocks;
 import ruiseki.okbackpack.common.network.PacketJukeboxPlaybackState;
 import ruiseki.okbackpack.compat.thaumcraft.IUpgradeVisChargeTarget;
 import ruiseki.okcore.datastructure.BlockPos;
@@ -1234,7 +1233,8 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     private void destroySleepingBagIfLoaded(World world) {
         if (!world.blockExists(sleepingBagX, sleepingBagY, sleepingBagZ)) return;
-        if (world.getBlock(sleepingBagX, sleepingBagY, sleepingBagZ) == OKBackpackBlocks.SLEEPING_BAG.get()) {
+        if (world.getBlock(sleepingBagX, sleepingBagY, sleepingBagZ)
+            == BlockSleepingBagConfig._instance.getInstance()) {
             world.func_147480_a(sleepingBagX, sleepingBagY, sleepingBagZ, false);
         }
     }

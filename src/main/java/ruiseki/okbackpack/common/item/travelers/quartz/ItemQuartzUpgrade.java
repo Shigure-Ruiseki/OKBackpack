@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.travelers.ItemTravelersUpgradeBase;
 
@@ -12,7 +11,6 @@ public class ItemQuartzUpgrade extends ItemTravelersUpgradeBase<QuartzUpgradeWra
 
     public ItemQuartzUpgrade() {
         super("tooltip.backpack.quartz_upgrade");
-        setTextureName(Reference.PREFIX_MOD + "quartz_upgrade");
     }
 
     @Override

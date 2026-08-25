@@ -25,12 +25,16 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockBackpack;
+import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
+import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
+import ruiseki.okbackpack.common.block.BlockIronBackpackConfig;
+import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
+import ruiseki.okbackpack.common.block.BlockObsidianBackpackConfig;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackJsonReader;
 import ruiseki.okbackpack.common.helpers.BackpackJsonWriter;
 import ruiseki.okbackpack.common.helpers.BackpackMaterial;
 import ruiseki.okbackpack.common.helpers.BackpackSettingsTemplate;
-import ruiseki.okbackpack.common.init.OKBackpackBlocks;
 import ruiseki.okcore.command.CommandMod;
 import ruiseki.okcore.init.ModBase;
 
@@ -284,21 +288,21 @@ public class CommandBackpack extends CommandMod {
 
         switch (tier) {
             case "iron":
-                targetBlock = OKBackpackBlocks.BACKPACK_IRON.get();
+                targetBlock = BlockIronBackpackConfig._instance.getInstance();
                 break;
             case "gold":
-                targetBlock = OKBackpackBlocks.BACKPACK_GOLD.get();
+                targetBlock = BlockGoldBackpackConfig._instance.getInstance();
                 break;
             case "diamond":
-                targetBlock = OKBackpackBlocks.BACKPACK_DIAMOND.get();
+                targetBlock = BlockDiamondBackpackConfig._instance.getInstance();
                 break;
             case "obsidian":
-                targetBlock = OKBackpackBlocks.BACKPACK_OBSIDIAN.get();
+                targetBlock = BlockObsidianBackpackConfig._instance.getInstance();
                 break;
             case "leather":
             case "base":
             default:
-                targetBlock = OKBackpackBlocks.BACKPACK_BASE.get();
+                targetBlock = BlockLeatherBackpackConfig._instance.getInstance();
                 break;
         }
 
@@ -325,15 +329,15 @@ public class CommandBackpack extends CommandMod {
 
         Item currentItem = wrapper.backpack.getItem();
 
-        if (currentItem == Item.getItemFromBlock(OKBackpackBlocks.BACKPACK_IRON.get())) {
+        if (currentItem == Item.getItemFromBlock(BlockIronBackpackConfig._instance.getInstance())) {
             tier = "iron";
-        } else if (currentItem == Item.getItemFromBlock(OKBackpackBlocks.BACKPACK_GOLD.get())) {
+        } else if (currentItem == Item.getItemFromBlock(BlockGoldBackpackConfig._instance.getInstance())) {
             tier = "gold";
-        } else if (currentItem == Item.getItemFromBlock(OKBackpackBlocks.BACKPACK_DIAMOND.get())) {
+        } else if (currentItem == Item.getItemFromBlock(BlockDiamondBackpackConfig._instance.getInstance())) {
             tier = "diamond";
-        } else if (currentItem == Item.getItemFromBlock(OKBackpackBlocks.BACKPACK_OBSIDIAN.get())) {
+        } else if (currentItem == Item.getItemFromBlock(BlockObsidianBackpackConfig._instance.getInstance())) {
             tier = "obsidian";
-        } else if (currentItem == Item.getItemFromBlock(OKBackpackBlocks.BACKPACK_BASE.get())) {
+        } else if (currentItem == Item.getItemFromBlock(BlockLeatherBackpackConfig._instance.getInstance())) {
             tier = "leather";
         }
 

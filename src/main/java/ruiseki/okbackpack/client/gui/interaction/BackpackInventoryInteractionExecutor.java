@@ -6,9 +6,9 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
-import ruiseki.okbackpack.config.ModConfig;
 
 public final class BackpackInventoryInteractionExecutor {
 
@@ -18,14 +18,14 @@ public final class BackpackInventoryInteractionExecutor {
     private BackpackInventoryInteractionExecutor() {}
 
     public static boolean isSupportedClick(int slotId, int mouseButton, int mode) {
-        if (!ModConfig.enableBackpackInventoryInteraction) {
+        if (!GeneralConfig.enableBackpackInventoryInteraction) {
             return false;
         }
         return slotId >= 0 && mouseButton == RIGHT_MOUSE_BUTTON && mode == PICKUP_MODE;
     }
 
     public static boolean tryExecute(Container container, EntityPlayer player, int slotId, int mouseButton, int mode) {
-        if (!ModConfig.enableBackpackInventoryInteraction) {
+        if (!GeneralConfig.enableBackpackInventoryInteraction) {
             return false;
         }
 

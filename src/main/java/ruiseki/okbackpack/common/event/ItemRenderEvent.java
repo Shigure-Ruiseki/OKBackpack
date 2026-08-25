@@ -13,7 +13,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.client.renderer.player.IPlayerItemRender;
 import ruiseki.okbackpack.client.renderer.player.PlayerRenderContext;
-import ruiseki.okcore.helper.BaublesHelpers;
+import ruiseki.okbackpack.common.helpers.BaublesHelpers;
 
 public class ItemRenderEvent {
 

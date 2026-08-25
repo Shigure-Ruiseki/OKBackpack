@@ -6,12 +6,12 @@ import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.client.gui.slot.AnvilOutputModularSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularArcaneSlot;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
-import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 
 public final class BackpackInventoryInteractionAnalyzer {
@@ -19,7 +19,7 @@ public final class BackpackInventoryInteractionAnalyzer {
     private BackpackInventoryInteractionAnalyzer() {}
 
     public static BackpackInventoryInteractionResult analyze(EntityPlayer player, Slot slot, ItemStack cursorStack) {
-        if (!ModConfig.enableBackpackInventoryInteraction) {
+        if (!GeneralConfig.enableBackpackInventoryInteraction) {
             return BackpackInventoryInteractionResult.NONE;
         }
 

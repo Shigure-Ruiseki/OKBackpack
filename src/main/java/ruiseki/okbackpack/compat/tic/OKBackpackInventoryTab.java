@@ -16,9 +16,9 @@ import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.github.bsideup.jabel.Desugar;
 
 import ruiseki.okbackpack.client.gui.interaction.BackpackGuiOpenHelpers;
+import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
-import ruiseki.okbackpack.common.init.OKBackpackBlocks;
-import ruiseki.okcore.helper.BaublesHelpers;
+import ruiseki.okbackpack.common.helpers.BaublesHelpers;
 import tconstruct.client.tabs.AbstractTab;
 
 public class OKBackpackInventoryTab extends AbstractTab {
@@ -33,7 +33,7 @@ public class OKBackpackInventoryTab extends AbstractTab {
     private TargetBackpack cachedTarget;
 
     public OKBackpackInventoryTab() {
-        super(0, 0, 0, new ItemStack(OKBackpackBlocks.BACKPACK_BASE.get()));
+        super(0, 0, 0, new ItemStack(BlockLeatherBackpackConfig._instance.getInstance()));
     }
 
     @Override

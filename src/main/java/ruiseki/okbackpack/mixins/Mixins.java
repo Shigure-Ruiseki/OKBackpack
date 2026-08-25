@@ -5,24 +5,24 @@ import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.compat.Mods;
-import ruiseki.okbackpack.config.ModConfig;
 
 @RequiredArgsConstructor
 public enum Mixins implements IMixins {
 
     SPIDER_CLIMB(new MixinBuilder("Spider climb mixin").addCommonMixins("minecraft.MixinEntityLivingBase")
-        .setApplyIf(() -> ModConfig.enableTravelersUpgrades)
+        .setApplyIf(() -> GeneralConfig.enableTravelersUpgrades)
         .setPhase(Phase.EARLY)),
 
     GHAST_NEUTRAL(new MixinBuilder("Ghast neutral mixin").addCommonMixins("minecraft.MixinEntityGhast")
-        .setApplyIf(() -> ModConfig.enableTravelersUpgrades)
+        .setApplyIf(() -> GeneralConfig.enableTravelersUpgrades)
         .setPhase(Phase.EARLY)),
 
     THAUMCRAFT(new MixinBuilder("Thaumcraft Mixin")
         .addCommonMixins("thaumcraft.MixinTileMagicWorkbench", "thaumcraft.MixinTileMagicWorkbenchCharger")
         .setPhase(Phase.LATE)
-        .setApplyIf(() -> ModConfig.enableArcaneCraftingUpgrade)
+        .setApplyIf(() -> GeneralConfig.enableArcaneCraftingUpgrade)
         .addRequiredMod(Mods.Thaumcraft)),
 
     GUI_BACKPACK_OPENER(new MixinBuilder("Backpack GUI opener")
@@ -39,7 +39,7 @@ public enum Mixins implements IMixins {
             "modularui2.MixinItemSlotBackpackInteraction",
             "minecraft.MixinGuiContainerBackpackInteraction",
             "minecraft.MixinPlayerControllerMPBackpackInteraction")
-        .setApplyIf(() -> ModConfig.enableBackpackInventoryInteraction)
+        .setApplyIf(() -> GeneralConfig.enableBackpackInventoryInteraction)
         .setPhase(Phase.EARLY)),
 
     MUI2(new MixinBuilder("Mui2 Mixin").addClientMixins("modularui2.ItemSlotInvoker")

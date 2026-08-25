@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
@@ -19,7 +18,6 @@ public class ItemCactusUpgrade extends ItemUpgrade<CactusUpgradeWrapper> {
     public ItemCactusUpgrade() {
         super();
         setMaxStackSize(1);
-        setTextureName(Reference.PREFIX_MOD + "cactus_upgrade");
     }
 
     @Override

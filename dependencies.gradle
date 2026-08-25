@@ -34,9 +34,9 @@
  * For more details, see https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph
  */
 dependencies {
-    implementation("com.github.GTNewHorizons:GTNHLib:0.11.37:dev")
-    implementation("com.github.Shigure-Ruiseki:OKCore:ae48d9f431:dev") { transitive = false }
-    devOnlyNonPublishable("com.github.GTNewHorizons:ModularUI2:2.3.85-1.7.10:dev")
+    implementation("com.github.GTNewHorizons:GTNHLib:0.11.43:dev")
+    implementation("com.github.GTNewHorizons:ModularUI2:2.3.87-1.7.10:dev")
+    implementation("com.github.Shigure-Ruiseki:OKCore:26.08.25.0:dev") { transitive = false }
 
     devOnlyNonPublishable("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
     devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.8.125-GTNH:dev")

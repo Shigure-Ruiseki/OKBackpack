@@ -11,7 +11,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -39,16 +38,13 @@ import com.gtnewhorizon.gtnhlib.api.BlockModelInfo;
 import com.gtnewhorizon.gtnhlib.api.IBlockModelProvider;
 import com.gtnewhorizon.gtnhlib.client.model.BakedModelQuadContext;
 import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
-import com.gtnewhorizon.gtnhlib.client.model.color.BlockColor;
 import com.gtnewhorizon.gtnhlib.client.model.color.IBlockColor;
 import com.gtnewhorizons.angelica.api.IDynamicLightProducer;
 
 import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ruiseki.okbackpack.OKBCreativeTab;
 import ruiseki.okbackpack.api.ITintable;
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
@@ -71,14 +67,14 @@ import ruiseki.okbackpack.common.block.property.TierProperty;
 import ruiseki.okbackpack.common.entity.EntityBackpack;
 import ruiseki.okbackpack.common.helpers.InventoryInteractionHelpers;
 import ruiseki.okbackpack.compat.Mods;
-import ruiseki.okcore.block.BlockOK;
+import ruiseki.okcore.block.BlockTile;
 import ruiseki.okcore.block.property.BlockProperty;
 import ruiseki.okcore.block.property.DirectionProperty;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemBlockBauble;
 
-public class BlockBackpack extends BlockOK implements IBlockModelProvider, BlockModelInfo {
+public class BlockBackpack extends BlockTile implements IBlockModelProvider, BlockModelInfo, IBlockColor {
 
     protected final BackpackTier tier;
 
@@ -108,22 +104,20 @@ public class BlockBackpack extends BlockOK implements IBlockModelProvider, Block
         }, (world, x, y, z, value) -> {});
 
     public BlockBackpack(BackpackTier tier) {
-        super(Material.cloth);
+        super(Material.cloth, TEBackpack.class);
         this.tier = tier;
         setStepSound(soundTypeCloth);
         setHardness(1f);
-        setCreativeTab(OKBCreativeTab.INSTANCE);
-        this.isFullSize = this.isOpaque = false;
     }
 
     @Override
-    public boolean hasTileEntity(int metadata) {
-        return true;
+    public boolean isOpaqueCube() {
+        return false;
     }
 
     @Override
-    public void registerTileEntity(String name) {
-        GameRegistry.registerTileEntity(TEBackpack.class, name + "TileEntity");
+    public boolean renderAsNormalBlock() {
+        return false;
     }
 
     public BackpackTier getTier() {
@@ -194,42 +188,29 @@ public class BlockBackpack extends BlockOK implements IBlockModelProvider, Block
     }
 
     @Override
-    public Class<? extends ItemBlock> getItemBlockClass() {
-        return ItemBackpack.class;
+    public int colorMultiplier(@Nullable IBlockAccess world, int x, int y, int z, int tintIndex) {
+        if (world == null) return -1;
+
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (!(te instanceof TEBackpack backpack)) return -1;
+
+        return switch (tintIndex) {
+            case 0 -> backpack.getMainColor();
+            case 1 -> backpack.getAccentColor();
+            default -> -1;
+        };
     }
 
     @Override
-    public void registerComponent(String name) {
-        super.registerComponent(name);
-        BlockColor.registerBlockColors(new IBlockColor() {
+    public int colorMultiplier(@Nullable ItemStack stack, int tintIndex) {
+        if (stack == null) return -1;
 
-            @Override
-            public int colorMultiplier(@Nullable ItemStack stack, int tintIndex) {
-                if (stack == null) return -1;
-
-                NBTTagCompound compound = ItemNBTHelpers.getCompound(stack, BackpackWrapper.BACKPACK_NBT, true);
-                return switch (tintIndex) {
-                    case 0 -> compound != null ? compound.getInteger(ITintable.MAIN_COLOR) : 0xFFCC613A;
-                    case 1 -> compound != null ? compound.getInteger(ITintable.ACCENT_COLOR) : 0xFF622E1A;
-                    default -> -1;
-                };
-            }
-
-            @Override
-            public int colorMultiplier(@Nullable IBlockAccess world, int x, int y, int z, int tintIndex) {
-                if (world == null) return -1;
-
-                TileEntity te = world.getTileEntity(x, y, z);
-                if (!(te instanceof TEBackpack backpack)) return -1;
-
-                return switch (tintIndex) {
-                    case 0 -> backpack.getMainColor();
-                    case 1 -> backpack.getAccentColor();
-                    default -> -1;
-                };
-            }
-
-        }, this);
+        NBTTagCompound compound = ItemNBTHelpers.getCompound(stack, BackpackWrapper.BACKPACK_NBT, true);
+        return switch (tintIndex) {
+            case 0 -> compound != null ? compound.getInteger(ITintable.MAIN_COLOR) : 0xFFCC613A;
+            case 1 -> compound != null ? compound.getInteger(ITintable.ACCENT_COLOR) : 0xFF622E1A;
+            default -> -1;
+        };
     }
 
     @Override

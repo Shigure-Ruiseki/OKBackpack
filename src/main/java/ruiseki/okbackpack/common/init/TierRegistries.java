@@ -5,7 +5,11 @@ import net.minecraft.util.ResourceLocation;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
-import ruiseki.okbackpack.config.ModConfig;
+import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
+import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
+import ruiseki.okbackpack.common.block.BlockIronBackpackConfig;
+import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
+import ruiseki.okbackpack.common.block.BlockObsidianBackpackConfig;
 import ruiseki.okcore.init.IInitListener;
 
 public class TierRegistries implements IInitListener {
@@ -23,36 +27,36 @@ public class TierRegistries implements IInitListener {
         TierRegistry.register(
             new BackpackTier(
                 LEATHER,
-                ModConfig.leatherBackpackSlots,
-                ModConfig.leatherUpgradeSlots,
+                BlockLeatherBackpackConfig.leatherBackpackSlots,
+                BlockLeatherBackpackConfig.leatherUpgradeSlots,
                 new ResourceLocation(Reference.MOD_ID, "leather_clips")));
 
         TierRegistry.register(
             new BackpackTier(
                 IRON,
-                ModConfig.ironBackpackSlots,
-                ModConfig.ironUpgradeSlots,
+                BlockIronBackpackConfig.ironBackpackSlots,
+                BlockIronBackpackConfig.ironUpgradeSlots,
                 new ResourceLocation(Reference.MOD_ID, "iron_clips")));
 
         TierRegistry.register(
             new BackpackTier(
                 GOLD,
-                ModConfig.goldBackpackSlots,
-                ModConfig.goldUpgradeSlots,
+                BlockGoldBackpackConfig.goldBackpackSlots,
+                BlockGoldBackpackConfig.goldUpgradeSlots,
                 new ResourceLocation(Reference.MOD_ID, "gold_clips")));
 
         TierRegistry.register(
             new BackpackTier(
                 DIAMOND,
-                ModConfig.diamondBackpackSlots,
-                ModConfig.diamondUpgradeSlots,
+                BlockDiamondBackpackConfig.diamondBackpackSlots,
+                BlockDiamondBackpackConfig.diamondUpgradeSlots,
                 new ResourceLocation(Reference.MOD_ID, "diamond_clips")));
 
         TierRegistry.register(
             new BackpackTier(
                 OBSIDIAN,
-                ModConfig.obsidianBackpackSlots,
-                ModConfig.obsidianUpgradeSlots,
+                BlockObsidianBackpackConfig.obsidianBackpackSlots,
+                BlockObsidianBackpackConfig.obsidianUpgradeSlots,
                 new ResourceLocation(Reference.MOD_ID, "obsidian_clips")));
     }
 }

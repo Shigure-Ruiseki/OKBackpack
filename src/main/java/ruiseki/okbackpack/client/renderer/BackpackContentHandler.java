@@ -31,11 +31,11 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
-import ruiseki.okbackpack.config.ModConfig;
 
 @SideOnly(Side.CLIENT)
 public class BackpackContentHandler {
@@ -117,7 +117,7 @@ public class BackpackContentHandler {
         public Dimension getSize() {
             if (sortedContents.isEmpty()) return new Dimension(0, 0);
             FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-            int maxPerRow = ModConfig.tooltipMaxItemsPerRow;
+            int maxPerRow = GeneralConfig.tooltipMaxItemsPerRow;
             int rows = 1 + (sortedContents.size() - 1) / maxPerRow;
 
             int itemsOnLine = Math.min(sortedContents.size(), maxPerRow);
@@ -136,7 +136,7 @@ public class BackpackContentHandler {
             Minecraft mc = Minecraft.getMinecraft();
             FontRenderer font = mc.fontRenderer;
             RenderItem itemRender = RenderItem.getInstance();
-            int maxPerRow = ModConfig.tooltipMaxItemsPerRow;
+            int maxPerRow = GeneralConfig.tooltipMaxItemsPerRow;
 
             GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
             GL11.glPushMatrix();

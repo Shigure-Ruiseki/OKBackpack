@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
@@ -19,7 +18,6 @@ public class ItemSquidUpgrade extends ItemUpgrade<SquidUpgradeWrapper> {
     public ItemSquidUpgrade() {
         super();
         setMaxStackSize(1);
-        setTextureName(Reference.PREFIX_MOD + "squid_upgrade");
     }
 
     @Override

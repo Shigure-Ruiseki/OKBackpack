@@ -12,10 +12,10 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
+import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.compat.Mods;
-import ruiseki.okbackpack.config.ModConfig;
 
 public final class BackpackInventoryInteractionOverlay {
 
@@ -26,7 +26,7 @@ public final class BackpackInventoryInteractionOverlay {
 
     public static BackpackInventoryInteractionResult getRenderableResult(EntityPlayer player, Slot slot,
         ItemStack cursorStack) {
-        if (!ModConfig.enableBackpackInventoryInteraction) {
+        if (!GeneralConfig.enableBackpackInventoryInteraction) {
             return BackpackInventoryInteractionResult.NONE;
         }
 
@@ -74,7 +74,7 @@ public final class BackpackInventoryInteractionOverlay {
     }
 
     public static List<String> buildTooltipLines(EntityPlayer player, Slot slot, ItemStack cursorStack) {
-        if (!ModConfig.enableBackpackInventoryInteraction) {
+        if (!GeneralConfig.enableBackpackInventoryInteraction) {
             return Collections.emptyList();
         }
 

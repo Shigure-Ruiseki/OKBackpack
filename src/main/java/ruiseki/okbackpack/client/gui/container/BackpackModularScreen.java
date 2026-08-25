@@ -8,8 +8,8 @@ import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 
+import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.Reference;
-import ruiseki.okbackpack.config.ModConfig;
 
 public class BackpackModularScreen extends ModularScreen {
 
@@ -20,7 +20,7 @@ public class BackpackModularScreen extends ModularScreen {
     @Override
     public void onOpen() {
         GuiScreen inventoryParent = resolveInventoryParent();
-        boolean reopenInventoryParent = ModConfig.enableInventoryBackpackCloseReturnsToInventory
+        boolean reopenInventoryParent = GeneralConfig.enableInventoryBackpackCloseReturnsToInventory
             && inventoryParent != null
             && isPlayerInventoryBackpack();
 

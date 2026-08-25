@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.widget.Widget;
 
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
@@ -36,7 +35,6 @@ public class ItemBatteryUpgrade extends ItemUpgrade<BatteryUpgradeWrapper> {
     public ItemBatteryUpgrade() {
         super();
         setMaxStackSize(1);
-        setTextureName(Reference.PREFIX_MOD + "battery_upgrade");
     }
 
     @Override
