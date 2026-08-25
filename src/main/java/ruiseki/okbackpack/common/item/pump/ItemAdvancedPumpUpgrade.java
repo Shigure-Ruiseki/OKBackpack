@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.widget.Widget;
 
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
@@ -23,7 +22,6 @@ public class ItemAdvancedPumpUpgrade extends ItemUpgrade<AdvancedPumpUpgradeWrap
     public ItemAdvancedPumpUpgrade() {
         super();
         setMaxStackSize(1);
-        setTextureName(Reference.PREFIX_MOD + "advanced_pump_upgrade");
     }
 
     @Override

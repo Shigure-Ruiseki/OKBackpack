@@ -12,10 +12,10 @@ import net.minecraft.world.World;
 
 import org.joml.Vector3d;
 
+import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IMagnetUpgrade;
 import ruiseki.okbackpack.common.item.pickup.AdvancedPickupUpgradeWrapper;
-import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
@@ -63,12 +63,12 @@ public class AdvancedMagnetUpgradeWrapper extends AdvancedPickupUpgradeWrapper i
         if (player.ticksExisted % 2 != 0) return false;
 
         AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(
-            player.posX - ModConfig.magnetRange,
-            player.posY - ModConfig.magnetRange,
-            player.posZ - ModConfig.magnetRange,
-            player.posX + ModConfig.magnetRange,
-            player.posY + ModConfig.magnetRange,
-            player.posZ + ModConfig.magnetRange);
+            player.posX - GeneralConfig.magnetRange,
+            player.posY - GeneralConfig.magnetRange,
+            player.posZ - GeneralConfig.magnetRange,
+            player.posX + GeneralConfig.magnetRange,
+            player.posY + GeneralConfig.magnetRange,
+            player.posZ + GeneralConfig.magnetRange);
 
         List<Entity> entities = getMagnetEntities(player.worldObj, aabb);
         if (entities.isEmpty()) return false;
@@ -97,12 +97,12 @@ public class AdvancedMagnetUpgradeWrapper extends AdvancedPickupUpgradeWrapper i
         double centerZ = pos.z + 0.5;
 
         AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(
-            centerX - ModConfig.magnetRange,
-            centerY - ModConfig.magnetRange,
-            centerZ - ModConfig.magnetRange,
-            centerX + ModConfig.magnetRange,
-            centerY + ModConfig.magnetRange,
-            centerZ + ModConfig.magnetRange);
+            centerX - GeneralConfig.magnetRange,
+            centerY - GeneralConfig.magnetRange,
+            centerZ - GeneralConfig.magnetRange,
+            centerX + GeneralConfig.magnetRange,
+            centerY + GeneralConfig.magnetRange,
+            centerZ + GeneralConfig.magnetRange);
 
         List<Entity> entities = getMagnetEntities(world, aabb);
         if (entities.isEmpty()) return false;

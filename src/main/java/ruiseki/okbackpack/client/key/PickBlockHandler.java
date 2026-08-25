@@ -17,10 +17,10 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.wrapper.IRefillUpgrade;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackHandSwapHelpers;
+import ruiseki.okbackpack.common.helpers.BaublesHelpers;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.common.network.PacketQuickDraw;
 import ruiseki.okcore.client.key.IKeyHandler;
-import ruiseki.okcore.helper.BaublesHelpers;
 import ruiseki.okcore.helper.ItemStackHelpers;
 
 public class PickBlockHandler implements IKeyHandler {

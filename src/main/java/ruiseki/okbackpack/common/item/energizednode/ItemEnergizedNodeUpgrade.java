@@ -12,7 +12,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
@@ -31,7 +30,6 @@ public class ItemEnergizedNodeUpgrade extends ItemUpgrade<EnergizedNodeUpgradeWr
     public ItemEnergizedNodeUpgrade() {
         super();
         setMaxStackSize(1);
-        setTextureName(Reference.PREFIX_MOD + "energized_node_upgrade");
     }
 
     @Override

@@ -1,6 +1,6 @@
 package ruiseki.okbackpack.compat.bauble;
 
-import ruiseki.okcore.helper.BaublesHelpers;
+import ruiseki.okbackpack.common.helpers.BaublesHelpers;
 import ruiseki.okcore.init.IInitListener;
 
 public class BaubleCompat implements IInitListener {

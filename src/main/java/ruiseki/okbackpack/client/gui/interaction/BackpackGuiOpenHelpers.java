@@ -11,7 +11,7 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
-import ruiseki.okcore.helper.BaublesHelpers;
+import ruiseki.okbackpack.common.helpers.BaublesHelpers;
 
 public final class BackpackGuiOpenHelpers {
 

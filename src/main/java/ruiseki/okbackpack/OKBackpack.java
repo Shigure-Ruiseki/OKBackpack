@@ -27,10 +27,9 @@ import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedValueSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotGroupRegisters;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
+import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
 import ruiseki.okbackpack.common.command.CommandBackpack;
 import ruiseki.okbackpack.common.init.ModOreDicts;
-import ruiseki.okbackpack.common.init.OKBackpackBlocks;
-import ruiseki.okbackpack.common.init.OKBackpackItems;
 import ruiseki.okbackpack.common.init.TierRegistries;
 import ruiseki.okbackpack.common.recipe.CompactingRecipeCache;
 import ruiseki.okbackpack.common.recipe.ModRecipes;
@@ -38,12 +37,13 @@ import ruiseki.okbackpack.compat.bauble.BaubleCompat;
 import ruiseki.okbackpack.compat.findit.FindItCompat;
 import ruiseki.okbackpack.compat.structurelib.StructureLibCompat;
 import ruiseki.okbackpack.compat.tic.TConstructTabCompat;
-import ruiseki.okbackpack.config.ModConfig;
+import ruiseki.okcore.config.ConfigHandler;
+import ruiseki.okcore.config.extendedconfig.BlockItemConfigReference;
 import ruiseki.okcore.data.condition.ConfigCondition;
 import ruiseki.okcore.helper.MinecraftHelpers;
+import ruiseki.okcore.init.ItemCreativeTab;
 import ruiseki.okcore.init.ModBaseVersionable;
 import ruiseki.okcore.proxy.ICommonProxy;
-import ruiseki.okcore.tracking.Versions;
 
 @Mod(
     modid = Reference.MOD_ID,
@@ -64,7 +64,7 @@ public class OKBackpack extends ModBaseVersionable {
 
         ConfigCondition.registerConfig(
             new ResourceLocation(Reference.MOD_ID, "enableTravelersUpgrades"),
-            ModConfig.enableTravelersUpgrades);
+            GeneralConfig.enableTravelersUpgrades);
 
         addInitListeners(new BaubleCompat());
         addInitListeners(new StructureLibCompat());
@@ -83,14 +83,9 @@ public class OKBackpack extends ModBaseVersionable {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
-        OKBackpackBlocks.register();
-        OKBackpackItems.register();
         if (MinecraftHelpers.isClientSide()) {
             ModelRegistry.registerModid(Reference.MOD_ID);
             RenderingRegistry.registerBlockHandler(JsonModelISBRH.INSTANCE);
-        }
-        if (ModConfig.useVersionChecker) {
-            Versions.registerMod(this, this, Reference.UPDATE_URL);
         }
     }
 
@@ -149,7 +144,17 @@ public class OKBackpack extends ModBaseVersionable {
 
     @Override
     public CreativeTabs constructDefaultCreativeTab() {
-        return OKBCreativeTab.INSTANCE;
+        return new ItemCreativeTab(this, new BlockItemConfigReference(BlockLeatherBackpackConfig.class));
+    }
+
+    @Override
+    public void onGeneralConfigsRegister(ConfigHandler configHandler) {
+        configHandler.add(new GeneralConfig());
+    }
+
+    @Override
+    public void onMainConfigsRegister(ConfigHandler configHandler) {
+        Configs.registerBlocks(configHandler);
     }
 
     @Override

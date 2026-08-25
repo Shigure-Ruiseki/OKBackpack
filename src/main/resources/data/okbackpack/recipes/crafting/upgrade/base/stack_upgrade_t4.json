@@ -1,9 +1,9 @@
 {
   "conditions": [
     {
-      "type": "okcore:not",
+      "type": "forge:not",
       "value": {
-        "type": "okcore:mod_loaded",
+        "type": "forge:mod_loaded",
         "modid": "etfuturum"
       }
     }

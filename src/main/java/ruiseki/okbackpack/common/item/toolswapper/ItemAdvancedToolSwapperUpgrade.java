@@ -7,7 +7,6 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
@@ -26,7 +25,6 @@ public class ItemAdvancedToolSwapperUpgrade extends ItemUpgrade<AdvancedToolSwap
     public ItemAdvancedToolSwapperUpgrade() {
         super();
         setMaxStackSize(1);
-        setTextureName(Reference.PREFIX_MOD + "advanced_tool_swapper_upgrade");
     }
 
     @Override

@@ -19,7 +19,6 @@ import ruiseki.okbackpack.api.entity.IBackpackCarrierEntity;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockBackpack;
-import ruiseki.okcore.helper.BaublesHelpers;
 
 public final class BackpackEntityHelpers {
 

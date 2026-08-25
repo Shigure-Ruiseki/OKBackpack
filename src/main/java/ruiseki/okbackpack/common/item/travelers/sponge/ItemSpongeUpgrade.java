@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.travelers.ItemTravelersUpgradeBase;
 
@@ -12,7 +11,6 @@ public class ItemSpongeUpgrade extends ItemTravelersUpgradeBase<SpongeUpgradeWra
 
     public ItemSpongeUpgrade() {
         super("tooltip.backpack.sponge_upgrade");
-        setTextureName(Reference.PREFIX_MOD + "sponge_upgrade");
     }
 
     @Override

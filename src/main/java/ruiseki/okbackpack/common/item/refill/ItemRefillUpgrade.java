@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
@@ -22,7 +21,6 @@ public class ItemRefillUpgrade extends ItemUpgrade<RefillUpgradeWrapper> {
     public ItemRefillUpgrade() {
         super();
         setMaxStackSize(1);
-        setTextureName(Reference.PREFIX_MOD + "refill_upgrade");
     }
 
     @Override

@@ -55,9 +55,10 @@ import ruiseki.okbackpack.api.wrapper.IWitherUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
+import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
-import ruiseki.okbackpack.common.init.OKBackpackBlocks;
+import ruiseki.okbackpack.common.helpers.BaublesHelpers;
 import ruiseki.okbackpack.common.item.travelers.blaze.BlazeUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.creeper.CreeperUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.ghast.GhastUpgradeHelpers;
@@ -66,7 +67,6 @@ import ruiseki.okbackpack.common.item.travelers.lapis.LapisUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.quiver.QuiverUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.rainbow.RainbowUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.slime.SlimeUpgradeWrapper;
-import ruiseki.okcore.helper.BaublesHelpers;
 
 public class BackpackEventHandler {
 
@@ -105,7 +105,7 @@ public class BackpackEventHandler {
         EntityPlayer player = event.entityPlayer;
         ChunkCoordinates bedLocation = player.getBedLocation(player.dimension);
         if (bedLocation != null && player.worldObj.getBlock(bedLocation.posX, bedLocation.posY, bedLocation.posZ)
-            == OKBackpackBlocks.SLEEPING_BAG.get()) {
+            == BlockSleepingBagConfig._instance.getInstance()) {
             if (BlockSleepingBag.isSleepingInPortableBag(player)) {
                 BlockSleepingBag.packPortableSleepingBag(player);
                 BackpackProperty.get(player)

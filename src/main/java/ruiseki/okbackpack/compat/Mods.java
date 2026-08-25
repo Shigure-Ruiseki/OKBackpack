@@ -14,6 +14,8 @@ import cpw.mods.fml.common.Loader;
 public enum Mods implements IMod, ITargetMod {
 
     // spotless:off
+    Baubles("Baubles"),
+    BaublesExpanded("Baubles|Expanded"),
     NotEnoughItems("NotEnoughItems"),
     InventoryBogoSorter("bogosorter"),
     CodeChickenCore("CodeChickenCore"),

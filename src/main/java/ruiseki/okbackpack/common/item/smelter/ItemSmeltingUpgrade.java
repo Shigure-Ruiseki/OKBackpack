@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
@@ -26,7 +25,6 @@ public class ItemSmeltingUpgrade extends ItemUpgrade<SmeltingUpgradeWrapper> {
     public ItemSmeltingUpgrade() {
         super();
         setMaxStackSize(1);
-        setTextureName(Reference.PREFIX_MOD + "smelting_upgrade");
     }
 
     @Override

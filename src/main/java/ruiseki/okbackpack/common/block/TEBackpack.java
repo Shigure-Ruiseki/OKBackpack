@@ -28,7 +28,6 @@ import lombok.experimental.Delegate;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
-import ruiseki.okbackpack.common.init.OKBackpackBlocks;
 import ruiseki.okbackpack.compat.thaumcraft.IVisChargeTarget;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileEntityOK;
@@ -310,7 +309,7 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
 
     public void removeSleepingBag(World world) {
         if (sleepingBagDeployed && world.blockExists(sbx, sby, sbz)
-            && world.getBlock(sbx, sby, sbz) == OKBackpackBlocks.SLEEPING_BAG.get())
+            && world.getBlock(sbx, sby, sbz) == BlockSleepingBagConfig._instance.getInstance())
             world.func_147480_a(sbx, sby, sbz, false);
 
         sleepingBagDeployed = false;

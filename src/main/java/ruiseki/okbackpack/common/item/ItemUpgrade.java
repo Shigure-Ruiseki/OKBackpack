@@ -8,8 +8,6 @@ import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.widget.Widget;
 
-import ruiseki.okbackpack.OKBCreativeTab;
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
@@ -17,15 +15,13 @@ import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okcore.helper.LangHelpers;
-import ruiseki.okcore.item.ItemOK;
+import ruiseki.okcore.item.ItemBase;
 
-public class ItemUpgrade<T extends IUpgradeWrapper> extends ItemOK implements IUpgradeItem<T> {
+public class ItemUpgrade<T extends IUpgradeWrapper> extends ItemBase implements IUpgradeItem<T> {
 
     public ItemUpgrade() {
         super();
         setNoRepair();
-        setTextureName(Reference.PREFIX_MOD + "upgrade_base");
-        this.setCreativeTab(OKBCreativeTab.INSTANCE);
     }
 
     public boolean hasTab() {

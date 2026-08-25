@@ -7,11 +7,16 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
+import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
+import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
+import ruiseki.okbackpack.common.block.BlockIronBackpackConfig;
+import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
+import ruiseki.okbackpack.common.block.BlockObsidianBackpackConfig;
 import ruiseki.okbackpack.common.helpers.UpgradeFeatureHelper;
-import ruiseki.okbackpack.common.init.OKBackpackBlocks;
-import ruiseki.okbackpack.common.init.OKBackpackItems;
+import ruiseki.okbackpack.common.item.ItemUpgradeConfig;
+import ruiseki.okbackpack.common.item.arcane.ItemArcaneCraftingUpgradeConfig;
+import ruiseki.okbackpack.common.item.energizednode.ItemEnergizedNodeUpgradeConfig;
 import ruiseki.okbackpack.compat.Mods;
-import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.enums.EnumDye;
 import ruiseki.okcore.init.IInitListener;
 import thaumcraft.api.ThaumcraftApi;
@@ -36,7 +41,7 @@ public class ModRecipes implements IInitListener {
         // Leather Backpack
         GameRegistry.addRecipe(
             new ShapedOreRecipe(
-                new ItemStack(OKBackpackBlocks.BACKPACK_BASE.get()),
+                new ItemStack(BlockLeatherBackpackConfig._instance.getInstance()),
                 "SLS",
                 "SCS",
                 "LLL",
@@ -50,51 +55,51 @@ public class ModRecipes implements IInitListener {
         // Iron Backpack
         GameRegistry.addRecipe(
             new BackpackUpgradeRecipe(
-                new ItemStack(OKBackpackBlocks.BACKPACK_IRON.get()),
-                ModConfig.ironBackpackSlots,
-                ModConfig.ironUpgradeSlots,
+                new ItemStack(BlockIronBackpackConfig._instance.getInstance()),
+                BlockIronBackpackConfig.ironBackpackSlots,
+                BlockIronBackpackConfig.ironUpgradeSlots,
                 "CCC",
                 "CBC",
                 "CCC",
                 'C',
                 "ingotIron",
                 'B',
-                new ItemStack(OKBackpackBlocks.BACKPACK_BASE.get())));
+                new ItemStack(BlockLeatherBackpackConfig._instance.getInstance())));
 
         // Gold Backpack
         GameRegistry.addRecipe(
             new BackpackUpgradeRecipe(
-                new ItemStack(OKBackpackBlocks.BACKPACK_GOLD.get()),
-                ModConfig.goldBackpackSlots,
-                ModConfig.goldUpgradeSlots,
+                new ItemStack(BlockGoldBackpackConfig._instance.getInstance()),
+                BlockGoldBackpackConfig.goldBackpackSlots,
+                BlockGoldBackpackConfig.goldUpgradeSlots,
                 "CCC",
                 "CBC",
                 "CCC",
                 'C',
                 "ingotGold",
                 'B',
-                new ItemStack(OKBackpackBlocks.BACKPACK_IRON.get())));
+                new ItemStack(BlockIronBackpackConfig._instance.getInstance())));
 
         // Diamond Backpack
         GameRegistry.addRecipe(
             new BackpackUpgradeRecipe(
-                new ItemStack(OKBackpackBlocks.BACKPACK_DIAMOND.get()),
-                ModConfig.diamondBackpackSlots,
-                ModConfig.diamondUpgradeSlots,
+                new ItemStack(BlockDiamondBackpackConfig._instance.getInstance()),
+                BlockDiamondBackpackConfig.diamondBackpackSlots,
+                BlockDiamondBackpackConfig.diamondUpgradeSlots,
                 "CCC",
                 "CBC",
                 "CCC",
                 'C',
                 "gemDiamond",
                 'B',
-                new ItemStack(OKBackpackBlocks.BACKPACK_GOLD.get())));
+                new ItemStack(BlockGoldBackpackConfig._instance.getInstance())));
 
         // Obsidian Backpack
         GameRegistry.addRecipe(
             new BackpackUpgradeRecipe(
-                new ItemStack(OKBackpackBlocks.BACKPACK_OBSIDIAN.get()),
-                ModConfig.obsidianBackpackSlots,
-                ModConfig.obsidianUpgradeSlots,
+                new ItemStack(BlockObsidianBackpackConfig._instance.getInstance()),
+                BlockObsidianBackpackConfig.obsidianBackpackSlots,
+                BlockObsidianBackpackConfig.obsidianUpgradeSlots,
                 "CSC",
                 "SBS",
                 "CSC",
@@ -103,7 +108,7 @@ public class ModRecipes implements IInitListener {
                 'C',
                 "blockObsidian",
                 'B',
-                new ItemStack(OKBackpackBlocks.BACKPACK_DIAMOND.get())));
+                new ItemStack(BlockDiamondBackpackConfig._instance.getInstance())));
 
         // Dye Recipes
         BackpackDyeRecipes recipes = new BackpackDyeRecipes();
@@ -120,35 +125,35 @@ public class ModRecipes implements IInitListener {
                     .getColor();
 
                 recipes.registerDyeRecipes(
-                    new ItemStack(OKBackpackBlocks.BACKPACK_BASE.get()),
+                    new ItemStack(BlockLeatherBackpackConfig._instance.getInstance()),
                     accentOre,
                     mainOre,
                     accentColor,
                     mainColor);
 
                 recipes.registerDyeRecipes(
-                    new ItemStack(OKBackpackBlocks.BACKPACK_IRON.get()),
+                    new ItemStack(BlockIronBackpackConfig._instance.getInstance()),
                     accentOre,
                     mainOre,
                     accentColor,
                     mainColor);
 
                 recipes.registerDyeRecipes(
-                    new ItemStack(OKBackpackBlocks.BACKPACK_GOLD.get()),
+                    new ItemStack(BlockGoldBackpackConfig._instance.getInstance()),
                     accentOre,
                     mainOre,
                     accentColor,
                     mainColor);
 
                 recipes.registerDyeRecipes(
-                    new ItemStack(OKBackpackBlocks.BACKPACK_DIAMOND.get()),
+                    new ItemStack(BlockDiamondBackpackConfig._instance.getInstance()),
                     accentOre,
                     mainOre,
                     accentColor,
                     mainColor);
 
                 recipes.registerDyeRecipes(
-                    new ItemStack(OKBackpackBlocks.BACKPACK_OBSIDIAN.get()),
+                    new ItemStack(BlockObsidianBackpackConfig._instance.getInstance()),
                     accentOre,
                     mainOre,
                     accentColor,
@@ -163,7 +168,7 @@ public class ModRecipes implements IInitListener {
             // Arcane Crafting Upgrade
             ThaumcraftApi.addArcaneCraftingRecipe(
                 "ARCTABLE",
-                new ItemStack(OKBackpackItems.ARCANE_CRAFTING_UPGRADE.get()),
+                new ItemStack(ItemArcaneCraftingUpgradeConfig._instance.getInstance()),
                 new AspectList().add(Aspect.AIR, 10)
                     .add(Aspect.EARTH, 10)
                     .add(Aspect.FIRE, 10)
@@ -180,13 +185,13 @@ public class ModRecipes implements IInitListener {
                 'I',
                 "ingotIron",
                 'U',
-                new ItemStack(OKBackpackItems.BASE_UPGRADE.get()));
+                new ItemStack(ItemUpgradeConfig._instance.getInstance()));
         }
 
         // Energized Node Upgrade
         ThaumcraftApi.addArcaneCraftingRecipe(
             "VISPOWER",
-            new ItemStack(OKBackpackItems.ENERGIZED_NODE_UPGRADE.get()),
+            new ItemStack(ItemEnergizedNodeUpgradeConfig._instance.getInstance()),
             new AspectList().add(Aspect.AIR, 50)
                 .add(Aspect.EARTH, 50)
                 .add(Aspect.FIRE, 50)
@@ -205,7 +210,7 @@ public class ModRecipes implements IInitListener {
             'S',
             new ItemStack(ConfigBlocks.blockStoneDevice, 1, 10),
             'U',
-            new ItemStack(OKBackpackItems.BASE_UPGRADE.get()));
+            new ItemStack(ItemUpgradeConfig._instance.getInstance()));
     }
 
 }

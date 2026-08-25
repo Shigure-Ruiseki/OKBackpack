@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "okcore:config",
+      "type": "forge:config",
       "id": "okbackpack:enableTravelersUpgrades",
       "value": true
     }

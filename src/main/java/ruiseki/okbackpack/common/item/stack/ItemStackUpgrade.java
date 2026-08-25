@@ -26,7 +26,6 @@ import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okbackpack.common.item.battery.BatteryUpgradeWrapper;
 import ruiseki.okbackpack.common.item.tank.ItemTankUpgrade;
 import ruiseki.okbackpack.common.item.tank.TankUpgradeWrapper;
-import ruiseki.okbackpack.config.ModConfig;
 import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
@@ -140,13 +139,13 @@ public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
 
     public static double multiplier(ItemStack stack) {
         return switch (stack.getItemDamage()) {
-            case META_UPGRADE_T2 -> ModConfig.stackUpgradeTier2Mul;
-            case META_UPGRADE_T3 -> ModConfig.stackUpgradeTier3Mul;
-            case META_UPGRADE_T4 -> ModConfig.stackUpgradeTier4Mul;
-            case META_UPGRADE_OMEGA -> ModConfig.stackUpgradeTierOmegaMul;
-            case META_UPGRADE_STARTER -> ModConfig.stackUpgradeStarterMul;
+            case META_UPGRADE_T2 -> ItemStackUpgradeConfig.stackUpgradeTier2Mul;
+            case META_UPGRADE_T3 -> ItemStackUpgradeConfig.stackUpgradeTier3Mul;
+            case META_UPGRADE_T4 -> ItemStackUpgradeConfig.stackUpgradeTier4Mul;
+            case META_UPGRADE_OMEGA -> ItemStackUpgradeConfig.stackUpgradeTierOmegaMul;
+            case META_UPGRADE_STARTER -> ItemStackUpgradeConfig.stackUpgradeStarterMul;
             case META_DOWNGRADE_T1, META_DOWNGRADE_T2, META_DOWNGRADE_T3 -> divisorFraction(stack);
-            default -> ModConfig.stackUpgradeTier1Mul;
+            default -> ItemStackUpgradeConfig.stackUpgradeTier1Mul;
         };
     }
 
@@ -161,9 +160,9 @@ public class ItemStackUpgrade extends ItemUpgrade<StackUpgradeWrapper> {
 
     public static int divisor(ItemStack stack) {
         return switch (stack.getItemDamage()) {
-            case META_DOWNGRADE_T2 -> ModConfig.stackDowngradeTier2Div;
-            case META_DOWNGRADE_T3 -> ModConfig.stackDowngradeTier3Div;
-            default -> ModConfig.stackDowngradeTier1Div;
+            case META_DOWNGRADE_T2 -> ItemStackUpgradeConfig.stackDowngradeTier2Div;
+            case META_DOWNGRADE_T3 -> ItemStackUpgradeConfig.stackDowngradeTier3Div;
+            default -> ItemStackUpgradeConfig.stackDowngradeTier1Div;
         };
     }
 

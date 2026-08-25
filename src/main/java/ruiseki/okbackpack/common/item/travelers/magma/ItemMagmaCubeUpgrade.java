@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.common.item.travelers.ItemTravelersUpgradeBase;
 
@@ -12,7 +11,6 @@ public class ItemMagmaCubeUpgrade extends ItemTravelersUpgradeBase<MagmaCubeUpgr
 
     public ItemMagmaCubeUpgrade() {
         super("tooltip.backpack.magma_cube_upgrade");
-        setTextureName(Reference.PREFIX_MOD + "magma_cube_upgrade");
     }
 
     @Override

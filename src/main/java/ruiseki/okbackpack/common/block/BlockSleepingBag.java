@@ -26,10 +26,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
-import ruiseki.okbackpack.common.init.OKBackpackBlocks;
-import ruiseki.okcore.block.BlockOK;
+import ruiseki.okcore.block.BlockBase;
 
-public class BlockSleepingBag extends BlockOK {
+public class BlockSleepingBag extends BlockBase {
 
     private static final int[][] footBlockToHeadBlockMap = new int[][] { { 0, 1 }, { -1, 0 }, { 0, -1 }, { 1, 0 } };
 
@@ -58,7 +57,16 @@ public class BlockSleepingBag extends BlockOK {
         super(Material.cloth);
         this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.1F, 1.0F);
         this.setHardness(0F);
-        this.isFullSize = this.isOpaque = false;
+    }
+
+    @Override
+    public boolean isOpaqueCube() {
+        return false;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
     }
 
     /**
@@ -394,7 +402,7 @@ public class BlockSleepingBag extends BlockOK {
     private static void removeOtherPart(World world, int x, int y, int z, SleepingBagPlacement placement) {
         int otherX = x == placement.footX() && z == placement.footZ() ? placement.headX() : placement.footX();
         int otherZ = x == placement.footX() && z == placement.footZ() ? placement.headZ() : placement.footZ();
-        if (world.getBlock(otherX, y, otherZ) == OKBackpackBlocks.SLEEPING_BAG.get()) {
+        if (world.getBlock(otherX, y, otherZ) == BlockSleepingBagConfig._instance.getInstance()) {
             world.setBlockToAir(otherX, y, otherZ);
         }
     }
@@ -405,7 +413,7 @@ public class BlockSleepingBag extends BlockOK {
             return false;
         }
 
-        Block sleepingBag = OKBackpackBlocks.SLEEPING_BAG.get();
+        Block sleepingBag = BlockSleepingBagConfig._instance.getInstance();
         if (world.setBlock(placement.footX(), placement.footY(), placement.footZ(), sleepingBag, meta, 3)) {
             world.playSoundAtEntity(player, Block.soundTypeCloth.func_150496_b(), 0.5f, 1.0f);
             if (world.setBlock(placement.headX(), placement.headY(), placement.headZ(), sleepingBag, meta + 8, 3)) {
