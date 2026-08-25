@@ -42,13 +42,13 @@ public class ItemStackUpgradeConfig extends ItemConfig {
         comment = "Stack multiplier for Omega Stack Upgrade.")
     public static double stackUpgradeTierOmegaMul = 33554431.0;
 
-    @ConfigurableProperty(category = ConfigurableTypeCategory.CORE, comment = "Stack divisor for Tier 1 Downgrade.")
+    @ConfigurableProperty(category = ConfigurableTypeCategory.ITEM, comment = "Stack divisor for Tier 1 Downgrade.")
     public static int stackDowngradeTier1Div = 8;
 
-    @ConfigurableProperty(category = ConfigurableTypeCategory.CORE, comment = "Stack divisor for Tier 2 Downgrade.")
+    @ConfigurableProperty(category = ConfigurableTypeCategory.ITEM, comment = "Stack divisor for Tier 2 Downgrade.")
     public static int stackDowngradeTier2Div = 16;
 
-    @ConfigurableProperty(category = ConfigurableTypeCategory.CORE, comment = "Stack divisor for Tier 3 Downgrade.")
+    @ConfigurableProperty(category = ConfigurableTypeCategory.ITEM, comment = "Stack divisor for Tier 3 Downgrade.")
     public static int stackDowngradeTier3Div = 32;
 
     /**
