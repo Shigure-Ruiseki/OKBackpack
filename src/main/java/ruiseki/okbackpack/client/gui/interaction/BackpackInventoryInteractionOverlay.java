@@ -117,7 +117,7 @@ public final class BackpackInventoryInteractionOverlay {
                 .getMethod("drawMultilineTip", FontRenderer.class, int.class, int.class, List.class);
             drawMultilineTip.invoke(null, fontRenderer, mouseX + 12, mouseY - 12, lines);
             return true;
-        } catch (ReflectiveOperationException ignored) {
+        } catch (Throwable ignored) {
             return false;
         }
     }
