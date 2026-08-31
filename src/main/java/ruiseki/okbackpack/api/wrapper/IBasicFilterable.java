@@ -3,7 +3,7 @@ package ruiseki.okbackpack.api.wrapper;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
-import ruiseki.okcore.helper.ItemStackHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 
 public interface IBasicFilterable {
 
@@ -25,14 +25,14 @@ public interface IBasicFilterable {
         switch (getFilterType()) {
             case WHITELIST:
                 for (ItemStack s : getFilterItems().getStacks()) {
-                    if (ItemStackHelpers.areItemsEqualIgnoreDurability(s, check)) {
+                    if (ItemHelpers.areItemsEqualIgnoreDurability(s, check)) {
                         return true;
                     }
                 }
                 return false;
             case BLACKLIST:
                 for (ItemStack s : getFilterItems().getStacks()) {
-                    if (ItemStackHelpers.areItemsEqualIgnoreDurability(s, check)) {
+                    if (ItemHelpers.areItemsEqualIgnoreDurability(s, check)) {
                         return false;
                     }
                 }

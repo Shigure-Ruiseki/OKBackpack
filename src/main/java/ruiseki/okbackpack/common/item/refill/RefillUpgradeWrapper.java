@@ -17,8 +17,8 @@ import ruiseki.okbackpack.api.wrapper.TargetSlot;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.okcore.datastructure.BlockPos;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.ItemNBTHelpers;
-import ruiseki.okcore.helper.ItemStackHelpers;
 import ruiseki.okcore.item.handler.IItemHandler;
 
 @Getter
@@ -201,7 +201,7 @@ public class RefillUpgradeWrapper extends UpgradeWrapperBase implements IRefillU
         int range = (targetSlot == TargetSlot.ANY) ? player.inventory.mainInventory.length : 9;
         for (int i = 0; i < range; i++) {
             ItemStack stack = player.inventory.mainInventory[i];
-            if (stack != null && ItemStackHelpers.areItemsEqualIgnoreDurability(stack, filter)) {
+            if (stack != null && ItemHelpers.areItemsEqualIgnoreDurability(stack, filter)) {
                 total += stack.stackSize;
             }
         }
@@ -216,7 +216,7 @@ public class RefillUpgradeWrapper extends UpgradeWrapperBase implements IRefillU
         for (int slot = 0; slot < handler.getSlots(); slot++) {
             ItemStack stack = handler.getStackInSlot(slot);
             if (stack == null || stack.stackSize <= 0) continue;
-            if (!ItemStackHelpers.areItemsEqualIgnoreDurability(stack, filter)) continue;
+            if (!ItemHelpers.areItemsEqualIgnoreDurability(stack, filter)) continue;
             totalAvailable += stack.stackSize;
             if (totalAvailable >= maxCount) return maxCount;
         }
@@ -234,7 +234,7 @@ public class RefillUpgradeWrapper extends UpgradeWrapperBase implements IRefillU
         for (int slot = 0; slot < handler.getSlots() && remaining > 0; slot++) {
             ItemStack stack = handler.getStackInSlot(slot);
             if (stack == null || stack.stackSize <= 0) continue;
-            if (!ItemStackHelpers.areItemsEqualIgnoreDurability(stack, filter)) continue;
+            if (!ItemHelpers.areItemsEqualIgnoreDurability(stack, filter)) continue;
 
             int toTake = Math.min(remaining, stack.stackSize);
             ItemStack extracted = handler.extractItem(slot, toTake, false);

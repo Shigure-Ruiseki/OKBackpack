@@ -10,7 +10,7 @@ import ruiseki.okbackpack.api.handler.ILockedItemHandler;
 import ruiseki.okbackpack.api.handler.IMemoryItemHandler;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
-import ruiseki.okcore.helper.ItemStackHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 
 public class BackpackItemStackHandler extends BaseItemStackHandler implements IMemoryItemHandler, ILockedItemHandler {
 
@@ -44,7 +44,7 @@ public class BackpackItemStackHandler extends BaseItemStackHandler implements IM
         if (memorizedSlotRespectNbtList.get(slot)) {
             return ItemStack.areItemStacksEqual(stack, memorizedSlotStack.get(slot));
         }
-        return ItemStackHelpers.areItemsEqualIgnoreDurability(stack, memorizedSlotStack.get(slot));
+        return ItemHelpers.areItemsEqualIgnoreDurability(stack, memorizedSlotStack.get(slot));
     }
 
     @Override
