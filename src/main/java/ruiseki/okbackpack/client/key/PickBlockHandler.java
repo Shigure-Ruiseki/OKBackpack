@@ -21,7 +21,7 @@ import ruiseki.okbackpack.common.helpers.BaublesHelpers;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.common.network.PacketQuickDraw;
 import ruiseki.okcore.client.key.IKeyHandler;
-import ruiseki.okcore.helper.ItemStackHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 
 public class PickBlockHandler implements IKeyHandler {
 
@@ -97,7 +97,7 @@ public class PickBlockHandler implements IKeyHandler {
         if (baublesInventory != null) {
             for (int i = 0; i < baublesInventory.getSizeInventory(); i++) {
                 ItemStack stack = baublesInventory.getStackInSlot(i);
-                if (stack != null && ItemStackHelpers.areStacksEqual(stack, wanted)) {
+                if (stack != null && ItemHelpers.areItemsEqual(stack, wanted)) {
                     return true;
                 }
             }
@@ -105,13 +105,13 @@ public class PickBlockHandler implements IKeyHandler {
 
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
-            if (stack != null && ItemStackHelpers.areStacksEqual(stack, wanted)) {
+            if (stack != null && ItemHelpers.areItemsEqual(stack, wanted)) {
                 return true;
             }
         }
 
         for (ItemStack stack : player.inventory.armorInventory) {
-            if (stack != null && ItemStackHelpers.areStacksEqual(stack, wanted)) {
+            if (stack != null && ItemHelpers.areItemsEqual(stack, wanted)) {
                 return true;
             }
         }

@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
-import ruiseki.okcore.helper.ItemStackHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 
 public interface IAdvancedFilterable extends IBasicFilterable {
 
@@ -159,7 +159,7 @@ public interface IAdvancedFilterable extends IBasicFilterable {
 
         boolean flag;
         if (isIgnoreDurability()) {
-            flag = ItemStackHelpers.areItemsEqualIgnoreDurability(filterStack, stack);
+            flag = ItemHelpers.areItemsEqualIgnoreDurability(filterStack, stack);
         } else {
             flag = filterStack.isItemEqual(stack);
         }
