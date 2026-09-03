@@ -7,7 +7,6 @@ import net.minecraft.item.Item;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okcore.config.ConfigurableProperty;
-import ruiseki.okcore.config.ConfigurableTypeCategory;
 import ruiseki.okcore.config.extendedconfig.BlockContainerConfig;
 
 public class BlockDiamondBackpackConfig extends BlockContainerConfig {
@@ -17,13 +16,9 @@ public class BlockDiamondBackpackConfig extends BlockContainerConfig {
      */
     public static BlockDiamondBackpackConfig _instance;
 
-    @ConfigurableProperty(
-        category = ConfigurableTypeCategory.BLOCK,
-        comment = "Number of item slots for Diamond Backpack.")
+    @ConfigurableProperty(category = "block", comment = "Number of item slots for Diamond Backpack.")
     public static int diamondBackpackSlots = 108;
-    @ConfigurableProperty(
-        category = ConfigurableTypeCategory.BLOCK,
-        comment = "Number of upgrade slots for Diamond Backpack.")
+    @ConfigurableProperty(category = "block", comment = "Number of upgrade slots for Diamond Backpack.")
     public static int diamondUpgradeSlots = 5;
 
     /**

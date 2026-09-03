@@ -7,7 +7,6 @@ import net.minecraft.item.Item;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okcore.config.ConfigurableProperty;
-import ruiseki.okcore.config.ConfigurableTypeCategory;
 import ruiseki.okcore.config.extendedconfig.BlockContainerConfig;
 
 public class BlockGoldBackpackConfig extends BlockContainerConfig {
@@ -17,14 +16,10 @@ public class BlockGoldBackpackConfig extends BlockContainerConfig {
      */
     public static BlockGoldBackpackConfig _instance;
 
-    @ConfigurableProperty(
-        category = ConfigurableTypeCategory.BLOCK,
-        comment = "Number of item slots for Gold Backpack.")
+    @ConfigurableProperty(category = "block", comment = "Number of item slots for Gold Backpack.")
     public static int goldBackpackSlots = 81;
 
-    @ConfigurableProperty(
-        category = ConfigurableTypeCategory.BLOCK,
-        comment = "Number of upgrade slots for Gold Backpack.")
+    @ConfigurableProperty(category = "block", comment = "Number of upgrade slots for Gold Backpack.")
     public static int goldUpgradeSlots = 3;
 
     /**

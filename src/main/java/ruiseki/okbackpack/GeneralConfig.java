@@ -4,7 +4,6 @@ import org.apache.logging.log4j.Level;
 
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.ConfigurableType;
-import ruiseki.okcore.config.ConfigurableTypeCategory;
 import ruiseki.okcore.config.extendedconfig.DummyConfig;
 import ruiseki.okcore.tracking.Versions;
 
@@ -14,43 +13,41 @@ import ruiseki.okcore.tracking.Versions;
 public class GeneralConfig extends DummyConfig {
 
     @ConfigurableProperty(
-        category = ConfigurableTypeCategory.CORE,
+        category = "core",
         comment = "Config version for " + Reference.MOD_NAME + ".\nDO NOT EDIT MANUALLY!")
     public static String version = Reference.MOD_VERSION;
 
-    @ConfigurableProperty(
-        category = ConfigurableTypeCategory.CORE,
-        comment = "If the version checker should be enabled.")
+    @ConfigurableProperty(category = "core", comment = "If the version checker should be enabled.")
     public static boolean useVersionChecker = true;
 
-    @ConfigurableProperty(category = ConfigurableTypeCategory.CORE, comment = "Magnet Upgrade item suction range.")
+    @ConfigurableProperty(category = "core", comment = "Magnet Upgrade item suction range.")
     public static int magnetRange = 5;
 
     // --- Feature Toggles ---
 
     @ConfigurableProperty(
-        category = ConfigurableTypeCategory.CORE,
+        category = "core",
         comment = "Enable all travelers upgrade items, recipes, runtime behaviors, and related mixins.")
     public static boolean enableTravelersUpgrades = true;
 
     @ConfigurableProperty(
-        category = ConfigurableTypeCategory.CORE,
+        category = "core",
         comment = "Enable the arcane crafting upgrade item, recipes, runtime behaviors, and Thaumcraft mixins.")
     public static boolean enableArcaneCraftingUpgrade = true;
 
     @ConfigurableProperty(
-        category = ConfigurableTypeCategory.CORE,
+        category = "core",
         comment = "Enable Backpack inventory interaction mixins, runtime logic, and GUI rendering.",
         requiresMcRestart = true)
     public static boolean enableBackpackInventoryInteraction = true;
 
     @ConfigurableProperty(
-        category = ConfigurableTypeCategory.CORE,
+        category = "core",
         comment = "When a backpack is opened from the player inventory, closing it returns to the inventory screen.")
     public static boolean enableInventoryBackpackCloseReturnsToInventory = true;
 
     @ConfigurableProperty(
-        category = ConfigurableTypeCategory.CORE,
+        category = "core",
         comment = "Maximum number of item stacks to display per row in the backpack tooltip.")
     public static int tooltipMaxItemsPerRow = 9;
 
