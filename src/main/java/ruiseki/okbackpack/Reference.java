@@ -5,8 +5,8 @@ public class Reference {
     public static final String MOD_ID = Tags.MOD_ID;
     public static final String MOD_NAME = Tags.MOD_NAME;
     public static final String MOD_VERSION = Tags.VERSION;
-    public static final String MOD_DEPENDENCIES = "required-after:gtnhlib@[0.11.21,);"
-        + "required-after:modularui2@[2.3.79-1.7.10,);"
+    public static final String MOD_DEPENDENCIES = "required-after:gtnhlib@[0.11.45,);"
+        + "required-after:modularui2@[2.3.88-1.7.10,);"
         + "required-after:okcore;"
         + "after:Baubles;"
         + "after:TConstruct;"

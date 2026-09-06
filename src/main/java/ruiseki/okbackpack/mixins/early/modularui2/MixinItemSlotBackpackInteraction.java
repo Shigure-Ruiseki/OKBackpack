@@ -75,12 +75,23 @@ public abstract class MixinItemSlotBackpackInteraction {
             return;
         }
 
+        ItemStack backpackStack = result.getBackpackStack();
+        if (backpackStack == null) {
+            return;
+        }
+
+        List<String> backpackTooltip = backpackStack
+            .getTooltip(minecraft.thePlayer, minecraft.gameSettings.advancedItemTooltips);
+        if (backpackTooltip == null || backpackTooltip.isEmpty()) {
+            return;
+        }
+
         BackpackInventoryInteractionOverlay.renderTooltip(
             minecraft.fontRenderer,
             lines,
             context.getAbsMouseX(),
             context.getAbsMouseY(),
-            (tooltipLines, x, y) -> RichTooltip.injectRichTooltip(result.getBackpackStack(), tooltipLines, x, y));
+            (tooltipLines, x, y) -> RichTooltip.injectRichTooltip(backpackStack, tooltipLines, x, y));
         ci.cancel();
     }
 }
