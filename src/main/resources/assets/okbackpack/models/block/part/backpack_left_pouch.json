@@ -2,10 +2,10 @@
   "credit": "Made with Blockbench",
   "texture_size": [32, 32],
   "textures": {
-    "particle": "okbackpack:block/backpack_cloth",
-    "cloth": "okbackpack:block/backpack_cloth",
-    "border": "okbackpack:block/backpack_border",
-    "clips": "okbackpack:block/leather_clips"
+    "particle": "okbackpack:blocks/backpack_cloth",
+    "cloth": "okbackpack:blocks/backpack_cloth",
+    "border": "okbackpack:blocks/backpack_border",
+    "clips": "okbackpack:blocks/leather_clips"
   },
   "elements": [
     {
