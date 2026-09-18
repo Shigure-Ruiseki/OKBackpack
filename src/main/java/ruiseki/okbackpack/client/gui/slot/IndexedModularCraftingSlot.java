@@ -12,6 +12,7 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.gui.handler.InventoryCraftingWrapper;
+import ruiseki.okcore.client.mui.gui.component.slot.ItemHandlerAdapter;
 import ruiseki.okcore.item.handler.IItemHandler;
 
 public class IndexedModularCraftingSlot extends ModularCraftingSlot {
@@ -21,7 +22,7 @@ public class IndexedModularCraftingSlot extends ModularCraftingSlot {
     protected final int upgradeSlotIndex;
 
     public IndexedModularCraftingSlot(int upgradeSlotIndex, IStorageWrapper wrapper, IItemHandler inv, int invIndex) {
-        super(inv, invIndex);
+        super(new ItemHandlerAdapter(inv), invIndex);
         this.wrapper = wrapper;
         this.upgradeSlotIndex = upgradeSlotIndex;
         canPut(false);

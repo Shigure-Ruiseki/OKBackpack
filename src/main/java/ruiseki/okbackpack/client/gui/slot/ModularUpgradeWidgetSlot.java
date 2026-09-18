@@ -2,11 +2,10 @@ package ruiseki.okbackpack.client.gui.slot;
 
 import net.minecraft.item.ItemStack;
 
-import com.cleanroommc.modularui.widgets.slot.ModularSlot;
-
+import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
 import ruiseki.okcore.item.handler.IItemHandler;
 
-public class ModularUpgradeWidgetSlot extends ModularSlot {
+public class ModularUpgradeWidgetSlot extends ModularItemSlot {
 
     public final int upgradeSlotIndex;
 

@@ -7,8 +7,6 @@ import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.cleanroommc.modularui.widgets.slot.ModularSlot;
-
 import lombok.Getter;
 import lombok.Setter;
 import ruiseki.okbackpack.api.IStorageWrapper;
@@ -17,8 +15,9 @@ import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.common.item.infinity.InfinityUpgradeWrapper;
 import ruiseki.okbackpack.common.item.infinity.ItemInfinityUpgrade;
 import ruiseki.okbackpack.common.item.infinity.ItemSurvivalInfinityUpgrade;
+import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
 
-public class ModularUpgradeSlot extends ModularSlot {
+public class ModularUpgradeSlot extends ModularItemSlot {
 
     protected final IStorageWrapper wrapper;
 

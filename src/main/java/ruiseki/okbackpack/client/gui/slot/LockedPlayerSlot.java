@@ -2,11 +2,10 @@ package ruiseki.okbackpack.client.gui.slot;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.cleanroommc.modularui.widgets.slot.ModularSlot;
-
+import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
 import ruiseki.okcore.item.handler.IItemHandler;
 
-public class LockedPlayerSlot extends ModularSlot {
+public class LockedPlayerSlot extends ModularItemSlot {
 
     public LockedPlayerSlot(IItemHandler itemHandler, int index) {
         super(itemHandler, index);

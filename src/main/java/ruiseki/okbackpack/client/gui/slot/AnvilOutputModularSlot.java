@@ -5,14 +5,13 @@ import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.cleanroommc.modularui.widgets.slot.ModularSlot;
-
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IAnvilUpgrade;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
+import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
 import ruiseki.okcore.item.handler.IItemHandler;
 
-public class AnvilOutputModularSlot extends ModularSlot {
+public class AnvilOutputModularSlot extends ModularItemSlot {
 
     private final IStorageWrapper storageWrapper;
     private final int upgradeSlotIndex;
