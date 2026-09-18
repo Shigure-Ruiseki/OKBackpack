@@ -10,6 +10,7 @@ import ruiseki.okbackpack.client.gui.slot.ModularUpgradeWidgetSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.syncHandler.FilterSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedFloatSH;
+import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
 
 public class SmeltingSlotGroupFactory implements IUpgradeSlotGroupFactory {
 
@@ -43,7 +44,7 @@ public class SmeltingSlotGroupFactory implements IUpgradeSlotGroupFactory {
         group.put("smelting_fuel", fuelSlot);
 
         // Output slot (index 2) - extraction only
-        ModularSlot outputSlot = new ModularSlot(smeltingInvHandler.delegatedStackHandler, 2);
+        ModularSlot outputSlot = new ModularItemSlot(smeltingInvHandler.delegatedStackHandler, 2);
         outputSlot.slotGroup("smelting_slots_" + group.slotIndex);
         outputSlot.canPut(false);
         group.syncManager.syncValue("smelting_slot_" + group.slotIndex, 2, new ItemSlotSH(outputSlot));

@@ -3,12 +3,11 @@ package ruiseki.okbackpack.client.gui.slot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import com.cleanroommc.modularui.widgets.slot.ModularSlot;
-
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 
-public class ModularBackpackSlot extends ModularSlot {
+public class ModularBackpackSlot extends ModularItemSlot {
 
     protected final IStorageWrapper wrapper;
 

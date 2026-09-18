@@ -11,6 +11,7 @@ import ruiseki.okbackpack.client.gui.slot.ModularUpgradeWidgetSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedFloatSH;
 import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedIntSH;
+import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
 
 public class TankSlotGroupFactory implements IUpgradeSlotGroupFactory {
 
@@ -44,7 +45,7 @@ public class TankSlotGroupFactory implements IUpgradeSlotGroupFactory {
         group.put("tank_output", outputSlot);
 
         // Input result slot (index 2) - emptied containers
-        ModularSlot inputResultSlot = new ModularSlot(tankInvHandler.delegatedStackHandler, 2) {
+        ModularSlot inputResultSlot = new ModularItemSlot(tankInvHandler.delegatedStackHandler, 2) {
 
             @Override
             public boolean isItemValid(ItemStack stack) {
@@ -56,7 +57,7 @@ public class TankSlotGroupFactory implements IUpgradeSlotGroupFactory {
         group.put("tank_input_result", inputResultSlot);
 
         // Output result slot (index 3) - filled containers
-        ModularSlot outputResultSlot = new ModularSlot(tankInvHandler.delegatedStackHandler, 3) {
+        ModularSlot outputResultSlot = new ModularItemSlot(tankInvHandler.delegatedStackHandler, 3) {
 
             @Override
             public boolean isItemValid(ItemStack stack) {

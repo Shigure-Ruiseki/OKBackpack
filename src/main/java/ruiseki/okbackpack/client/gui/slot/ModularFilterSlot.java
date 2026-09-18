@@ -1,10 +1,9 @@
 package ruiseki.okbackpack.client.gui.slot;
 
-import com.cleanroommc.modularui.widgets.slot.ModularSlot;
-
+import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
 import ruiseki.okcore.item.handler.IItemHandler;
 
-public class ModularFilterSlot extends ModularSlot {
+public class ModularFilterSlot extends ModularItemSlot {
 
     public ModularFilterSlot(IItemHandler itemHandler, int index) {
         super(itemHandler, index);
