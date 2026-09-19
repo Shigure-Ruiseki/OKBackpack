@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,7 +25,9 @@ import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.github.bsideup.jabel.Desugar;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import ruiseki.okbackpack.OKBackpack;
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.SortType;
 import ruiseki.okbackpack.api.tier.BackpackTier;
@@ -1330,7 +1333,10 @@ public class BackpackWrapper implements IBackpackWrapper {
         }
 
         if (tier != null) {
-            return LangHelpers.localize("tile." + tier.getId() + ".name");
+            Block block = GameRegistry.findBlock(Reference.MOD_ID, tier.getId());
+            if (block != null) {
+                return LangHelpers.localize(block.getUnlocalizedName() + ".name");
+            }
         }
         return LangHelpers.localize("container.inventory");
     }
