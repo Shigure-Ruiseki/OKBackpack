@@ -5,7 +5,6 @@ import static ruiseki.okbackpack.common.init.TierRegistries.OBSIDIAN;
 import net.minecraft.item.Item;
 
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.BlockContainerConfig;
 
@@ -26,12 +25,7 @@ public class BlockObsidianBackpackConfig extends BlockContainerConfig {
      * Make a new instance.
      */
     public BlockObsidianBackpackConfig() {
-        super(
-            OKBackpack._instance,
-            true,
-            "obsidian_backpack",
-            null,
-            config -> new BlockBackpack(TierRegistry.getTier(OBSIDIAN)));
+        super(OKBackpack._instance, true, "obsidian_backpack", null, config -> new BlockBackpack(OBSIDIAN));
     }
 
     @Override

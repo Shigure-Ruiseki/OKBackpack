@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -124,7 +123,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     public BackpackWrapper(ItemStack backpack, BlockBackpack.ItemBackpack item) {
-        this(backpack, item.tier);
+        this(backpack, item.getTier());
     }
 
     public BackpackWrapper(ItemStack backpack, BackpackTier tier) {
@@ -1371,9 +1370,6 @@ public class BackpackWrapper implements IBackpackWrapper {
     public String getTierInventoryName() {
         if (tier == null) return null;
 
-        Block block = tier.getBlock();
-        if (block == null) return null;
-
-        return LangHelpers.localize(block.getUnlocalizedName() + ".name");
+        return TierRegistry.getDisplayName(tier);
     }
 }

@@ -83,8 +83,6 @@ import ruiseki.okcore.item.ItemBlockBauble;
 
 public class BlockBackpack extends BlockTile implements IBlockModelProvider, BlockModelInfo, IBlockColor {
 
-    protected final BackpackTier tier;
-
     @BlockProperty
     public final static DirectionProperty DIRECTION_PROPERTY = DirectionProperty
         .facing(ForgeDirection.NORTH, (world, x, y, z) -> {
@@ -101,21 +99,21 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
         });
 
     @BlockProperty
-    public final static TierProperty TIER_PROPERTY = TierProperty
-        .tier(TierRegistry.getTier(LEATHER), (world, x, y, z) -> {
-            Block block = world.getBlock(x, y, z);
-            if (block instanceof BlockBackpack backpack) {
-                return backpack.getTier();
-            }
-            return TierRegistry.getTier(LEATHER);
-        }, (world, x, y, z, value) -> {});
+    public final static TierProperty TIER_PROPERTY = TierProperty.tier(LEATHER, (world, x, y, z) -> {
+        Block block = world.getBlock(x, y, z);
+        if (block instanceof BlockBackpack backpack) {
+            return backpack.getTierId();
+        }
+        return LEATHER;
+    }, (world, x, y, z, value) -> {});
 
-    public BlockBackpack(BackpackTier tier) {
+    private final String tierId;
+
+    public BlockBackpack(String tierId) {
         super(Material.cloth, TEBackpack.class);
-        this.tier = tier;
+        this.tierId = tierId;
         setStepSound(soundTypeCloth);
         setHardness(1f);
-        tier.setBlock(this);
     }
 
     @Override
@@ -128,8 +126,25 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
         return false;
     }
 
+    /**
+     * Returns the id of the tier of this block.
+     * <p>
+     * The id is stored instead of the tier object because the blocks are created before the tiers are
+     * registered, so an early lookup would hand every block the fallback tier.
+     *
+     * @return the tier id, never {@code null}
+     */
+    public String getTierId() {
+        return tierId;
+    }
+
+    /**
+     * Returns the tier of this block, resolved at the time of the call.
+     *
+     * @return the tier, or the fallback tier when the id is not registered
+     */
     public BackpackTier getTier() {
-        return tier;
+        return TierRegistry.getTier(tierId);
     }
 
     @Override
@@ -296,8 +311,9 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
-        TEBackpack backpack = new TEBackpack(tier);
-        backpack.setWrapper(new BackpackWrapper(tier));
+        BackpackTier resolvedTier = getTier();
+        TEBackpack backpack = new TEBackpack(resolvedTier);
+        backpack.setWrapper(new BackpackWrapper(resolvedTier));
         return backpack;
     }
 
@@ -447,17 +463,21 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
     public static class ItemBackpack extends ItemBlockBauble implements IGuiHolder<PlayerInventoryGuiData>,
         IBaubleRender, IArmorRender, IEnergyContainerItem, IDynamicLightProducer {
 
-        protected BackpackTier tier = TierRegistry.getTier(LEATHER);
+        private String tierId = LEATHER;
 
         public ItemBackpack(Block block) {
             super(block);
             if (block instanceof BlockBackpack backpack) {
-                this.tier = backpack.getTier();
+                this.tierId = backpack.getTierId();
             }
         }
 
+        public String getTierId() {
+            return tierId;
+        }
+
         public BackpackTier getTier() {
-            return tier;
+            return TierRegistry.getTier(tierId);
         }
 
         private @Nullable IBatteryUpgrade getBatteryUpgrade(ItemStack stack) {

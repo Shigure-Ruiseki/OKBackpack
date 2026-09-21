@@ -5,7 +5,6 @@ import static ruiseki.okbackpack.common.init.TierRegistries.GOLD;
 import net.minecraft.item.Item;
 
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.BlockContainerConfig;
 
@@ -26,12 +25,7 @@ public class BlockGoldBackpackConfig extends BlockContainerConfig {
      * Make a new instance.
      */
     public BlockGoldBackpackConfig() {
-        super(
-            OKBackpack._instance,
-            true,
-            "gold_backpack",
-            null,
-            config -> new BlockBackpack(TierRegistry.getTier(GOLD)));
+        super(OKBackpack._instance, true, "gold_backpack", null, config -> new BlockBackpack(GOLD));
     }
 
     @Override

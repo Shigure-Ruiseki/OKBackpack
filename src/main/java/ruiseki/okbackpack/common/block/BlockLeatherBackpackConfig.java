@@ -5,7 +5,6 @@ import static ruiseki.okbackpack.common.init.TierRegistries.LEATHER;
 import net.minecraft.item.Item;
 
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.BlockContainerConfig;
 
@@ -26,12 +25,7 @@ public class BlockLeatherBackpackConfig extends BlockContainerConfig {
      * Make a new instance.
      */
     public BlockLeatherBackpackConfig() {
-        super(
-            OKBackpack._instance,
-            true,
-            "leather_backpack",
-            null,
-            config -> new BlockBackpack(TierRegistry.getTier(LEATHER)));
+        super(OKBackpack._instance, true, "leather_backpack", null, config -> new BlockBackpack(LEATHER));
     }
 
     @Override

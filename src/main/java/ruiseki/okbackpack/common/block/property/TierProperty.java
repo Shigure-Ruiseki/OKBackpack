@@ -12,35 +12,33 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.gtnewhorizon.gtnhlib.blockstate.core.InvalidPropertyTextException;
 
-import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okcore.block.property.IProperty;
 import ruiseki.okcore.block.property.PropertyGetter;
 import ruiseki.okcore.block.property.PropertySetter;
 
-public interface TierProperty extends IProperty<BackpackTier> {
+public interface TierProperty extends IProperty<String> {
 
     @Override
     default Type getType() {
-        return BackpackTier.class;
+        return String.class;
     }
 
-    default JsonElement serialize(BackpackTier value) {
+    default JsonElement serialize(String value) {
         return new JsonPrimitive(this.stringify(value));
     }
 
-    default BackpackTier deserialize(JsonElement element) {
+    default String deserialize(JsonElement element) {
         return element.isJsonPrimitive() && element.getAsJsonPrimitive()
-            .isString() ? this.parse(element.getAsString()) : TierRegistry.getTier(LEATHER);
+            .isString() ? this.parse(element.getAsString()) : LEATHER;
     }
 
-    default String stringify(BackpackTier value) {
-        return value.getId()
-            .toLowerCase();
+    default String stringify(String value) {
+        return value == null ? LEATHER : value.toLowerCase();
     }
 
-    default BackpackTier parse(String text) throws InvalidPropertyTextException {
+    default String parse(String text) throws InvalidPropertyTextException {
         if (text == null || text.isEmpty()) {
             throw new InvalidPropertyTextException("Empty tier id");
         }
@@ -51,29 +49,29 @@ public interface TierProperty extends IProperty<BackpackTier> {
             throw new InvalidPropertyTextException("Unknown backpack tier: " + text);
         }
 
-        return TierRegistry.getTier(id);
+        return id;
     }
 
-    static AbstractTierProperty tier(BackpackTier defaultValue, PropertyGetter<BackpackTier> getter,
-        PropertySetter<BackpackTier> setter) {
+    static AbstractTierProperty tier(String defaultValue, PropertyGetter<String> getter,
+        PropertySetter<String> setter) {
         return construct("tier", defaultValue, getter, setter);
     }
 
-    static AbstractTierProperty construct(String name, BackpackTier defaultValue,
-        final PropertyGetter<BackpackTier> getter, final PropertySetter<BackpackTier> setter) {
+    static AbstractTierProperty construct(String name, String defaultValue, final PropertyGetter<String> getter,
+        final PropertySetter<String> setter) {
         return new AbstractTierProperty(name, defaultValue) {
 
-            public BackpackTier getValue(ItemStack stack) {
-                return stack.getItem() instanceof BlockBackpack.ItemBackpack backpack ? backpack.getTier()
+            public String getValue(ItemStack stack) {
+                return stack.getItem() instanceof BlockBackpack.ItemBackpack backpack ? backpack.getTierId()
                     : this.getDefaultValue();
             }
 
-            public BackpackTier getValue(IBlockAccess w, int x, int y, int z) {
-                BackpackTier r = getter.get(w, x, y, z);
+            public String getValue(IBlockAccess w, int x, int y, int z) {
+                String r = getter.get(w, x, y, z);
                 return r != null ? r : this.getDefaultValue();
             }
 
-            public void setValue(World w, int x, int y, int z, BackpackTier v) {
+            public void setValue(World w, int x, int y, int z, String v) {
                 setter.accept(w, x, y, z, v);
             }
         };
@@ -82,9 +80,9 @@ public interface TierProperty extends IProperty<BackpackTier> {
     public abstract static class AbstractTierProperty implements TierProperty {
 
         private String name;
-        private BackpackTier defaultValue;
+        private String defaultValue;
 
-        public AbstractTierProperty(String name, BackpackTier defaultValue) {
+        public AbstractTierProperty(String name, String defaultValue) {
             this.name = name;
             this.defaultValue = defaultValue;
         }
@@ -94,7 +92,7 @@ public interface TierProperty extends IProperty<BackpackTier> {
             return this;
         }
 
-        public BackpackTier getDefaultValue() {
+        public String getDefaultValue() {
             return this.defaultValue;
         }
 
