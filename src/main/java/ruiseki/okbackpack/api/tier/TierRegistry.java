@@ -18,7 +18,18 @@ public class TierRegistry {
     }
 
     public static BackpackTier getTier(String id) {
-        return REGISTRY.getOrDefault(id, REGISTRY.get(LEATHER));
+        BackpackTier tier = REGISTRY.get(id);
+        if (tier != null) return tier;
+
+        return getLeatherTier();
+    }
+
+    public static boolean isRegistered(String id) {
+        return id != null && REGISTRY.containsKey(id);
+    }
+
+    private static BackpackTier getLeatherTier() {
+        return REGISTRY.get(LEATHER);
     }
 
     public static Set<String> getTierIds() {

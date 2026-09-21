@@ -41,11 +41,17 @@ public interface TierProperty extends IProperty<BackpackTier> {
     }
 
     default BackpackTier parse(String text) throws InvalidPropertyTextException {
-        try {
-            return TierRegistry.getTier(text.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidPropertyTextException("Invalid ForgeDirection", e);
+        if (text == null || text.isEmpty()) {
+            throw new InvalidPropertyTextException("Empty tier id");
         }
+
+        // Tier ids are stored lowercase, so the lookup must not upper case the text or it always misses.
+        String id = text.toLowerCase();
+        if (!TierRegistry.isRegistered(id)) {
+            throw new InvalidPropertyTextException("Unknown backpack tier: " + text);
+        }
+
+        return TierRegistry.getTier(id);
     }
 
     static AbstractTierProperty tier(BackpackTier defaultValue, PropertyGetter<BackpackTier> getter,

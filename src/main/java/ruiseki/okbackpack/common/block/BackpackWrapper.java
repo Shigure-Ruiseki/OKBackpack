@@ -136,8 +136,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         this.accentColor = 0xFF622E1A;
         this.sortType = SortType.BY_NAME;
         this.lockBackpack = false;
-        this.uuid = UUID.randomUUID()
-            .toString();
+        this.uuid = resolveUuid(backpack);
         this.playerUuid = "";
         this.keepTab = true;
         this.shiftClickIntoOpenTab = false;
@@ -755,6 +754,19 @@ public class BackpackWrapper implements IBackpackWrapper {
             return null;
         }
         return backpack.getTagCompound();
+    }
+
+    private static String resolveUuid(@Nullable ItemStack backpack) {
+        if (backpack != null) {
+            NBTTagCompound existing = ItemNBTHelpers.getCompound(backpack, BACKPACK_NBT, false);
+            if (existing != null && existing.hasKey(UUID_TAG, 8)) {
+                String stored = existing.getString(UUID_TAG);
+                if (!stored.isEmpty()) return stored;
+            }
+        }
+
+        return UUID.randomUUID()
+            .toString();
     }
 
     public ItemStack findStackByUUID(EntityPlayer player) {
