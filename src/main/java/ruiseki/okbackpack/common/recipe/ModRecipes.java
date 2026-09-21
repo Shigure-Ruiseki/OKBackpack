@@ -34,7 +34,6 @@ public class ModRecipes implements IInitListener {
 
         if (step == Step.POSTINIT) {
             blockRecipes();
-            BackpackRecipeLoader.publishRecipes();
             if (Mods.Thaumcraft.isModLoaded()) {
                 thaumcraftRecipes();
             }
