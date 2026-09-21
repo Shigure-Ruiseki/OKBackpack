@@ -7,14 +7,20 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.particle.EntityDiggingFX;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -45,6 +51,7 @@ import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.ITintable;
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
@@ -76,8 +83,6 @@ import ruiseki.okcore.item.ItemBlockBauble;
 
 public class BlockBackpack extends BlockTile implements IBlockModelProvider, BlockModelInfo, IBlockColor {
 
-    protected final BackpackTier tier;
-
     @BlockProperty
     public final static DirectionProperty DIRECTION_PROPERTY = DirectionProperty
         .facing(ForgeDirection.NORTH, (world, x, y, z) -> {
@@ -94,18 +99,19 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
         });
 
     @BlockProperty
-    public final static TierProperty TIER_PROPERTY = TierProperty
-        .tier(TierRegistry.getTier(LEATHER), (world, x, y, z) -> {
-            Block block = world.getBlock(x, y, z);
-            if (block instanceof BlockBackpack backpack) {
-                return backpack.getTier();
-            }
-            return TierRegistry.getTier(LEATHER);
-        }, (world, x, y, z, value) -> {});
+    public final static TierProperty TIER_PROPERTY = TierProperty.tier(LEATHER, (world, x, y, z) -> {
+        Block block = world.getBlock(x, y, z);
+        if (block instanceof BlockBackpack backpack) {
+            return backpack.getTierId();
+        }
+        return LEATHER;
+    }, (world, x, y, z, value) -> {});
 
-    public BlockBackpack(BackpackTier tier) {
+    private final String tierId;
+
+    public BlockBackpack(String tierId) {
         super(Material.cloth, TEBackpack.class);
-        this.tier = tier;
+        this.tierId = tierId;
         setStepSound(soundTypeCloth);
         setHardness(1f);
     }
@@ -120,8 +126,106 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
         return false;
     }
 
+    /**
+     * Returns the id of the tier of this block.
+     * <p>
+     * The id is stored instead of the tier object because the blocks are created before the tiers are
+     * registered, so an early lookup would hand every block the fallback tier.
+     *
+     * @return the tier id, never {@code null}
+     */
+    public String getTierId() {
+        return tierId;
+    }
+
+    /**
+     * Returns the tier of this block, resolved at the time of the call.
+     *
+     * @return the tier, or the fallback tier when the id is not registered
+     */
     public BackpackTier getTier() {
-        return tier;
+        return TierRegistry.getTier(tierId);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        blockIcon = iconRegister.registerIcon(Reference.PREFIX_MOD + "backpack_cloth");
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean addDestroyEffects(World world, int x, int y, int z, int metadata, EffectRenderer effectRenderer) {
+        IIcon icon = blockIcon;
+        if (icon == null) return super.addDestroyEffects(world, x, y, z, metadata, effectRenderer);
+
+        for (int particleX = 0; particleX < 4; particleX++) {
+            for (int particleY = 0; particleY < 4; particleY++) {
+                for (int particleZ = 0; particleZ < 4; particleZ++) {
+                    double offsetX = (particleX + 0.5D) / 4D;
+                    double offsetY = (particleY + 0.5D) / 4D;
+                    double offsetZ = (particleZ + 0.5D) / 4D;
+
+                    EntityDiggingFX particle = new EntityDiggingFX(
+                        world,
+                        x + offsetX,
+                        y + offsetY,
+                        z + offsetZ,
+                        offsetX - 0.5D,
+                        offsetY - 0.5D,
+                        offsetZ - 0.5D,
+                        this,
+                        metadata);
+
+                    particle.setParticleIcon(icon);
+                    effectRenderer.addEffect(particle.applyColourMultiplier(x, y, z));
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean addHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer) {
+        IIcon icon = blockIcon;
+        if (icon == null) return super.addHitEffects(world, target, effectRenderer);
+
+        int x = target.blockX;
+        int y = target.blockY;
+        int z = target.blockZ;
+        int metadata = world.getBlockMetadata(x, y, z);
+
+        ForgeDirection side = ForgeDirection.getOrientation(target.sideHit);
+        double offsetX = world.rand.nextDouble() * 0.6D + 0.2D;
+        double offsetY = world.rand.nextDouble() * 0.6D + 0.2D;
+        double offsetZ = world.rand.nextDouble() * 0.6D + 0.2D;
+
+        if (side == ForgeDirection.DOWN) offsetY = 0.1D;
+        if (side == ForgeDirection.UP) offsetY = 0.9D;
+        if (side == ForgeDirection.NORTH) offsetZ = 0.1D;
+        if (side == ForgeDirection.SOUTH) offsetZ = 0.9D;
+        if (side == ForgeDirection.WEST) offsetX = 0.1D;
+        if (side == ForgeDirection.EAST) offsetX = 0.9D;
+
+        EntityDiggingFX particle = new EntityDiggingFX(
+            world,
+            x + offsetX,
+            y + offsetY,
+            z + offsetZ,
+            0.0D,
+            0.0D,
+            0.0D,
+            this,
+            metadata);
+
+        particle.setParticleIcon(icon);
+        particle.multiplyVelocity(0.2F)
+            .multipleParticleScaleBy(0.6F);
+        effectRenderer.addEffect(particle.applyColourMultiplier(x, y, z));
+
+        return true;
     }
 
     @Override
@@ -153,14 +257,6 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
             return Float.MAX_VALUE;
         }
         return super.getExplosionResistance(exploder, world, x, y, z, explosionX, explosionY, explosionZ);
-    }
-
-    @Override
-    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
-        if (hasAdminProtection(world, x, y, z)) {
-            return;
-        }
-        super.onBlockExploded(world, x, y, z, explosion);
     }
 
     @Override
@@ -214,16 +310,79 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
     }
 
     @Override
-    public TileEntity createTileEntity(World world, int metadata) {
-        TEBackpack backpack = new TEBackpack();
-        BackpackWrapper wrapper = new BackpackWrapper(tier);
-        backpack.setWrapper(wrapper);
+    public TileEntity createNewTileEntity(World world, int metadata) {
+        BackpackTier resolvedTier = getTier();
+        TEBackpack backpack = new TEBackpack(resolvedTier);
+        backpack.setWrapper(new BackpackWrapper(resolvedTier));
         return backpack;
     }
 
     @Override
     public boolean shouldDropInventory(World world, int x, int y, int z) {
+        // The contents travel inside the dropped backpack item, so the tile inventory must never be spilled
+        // into the world on top of that.
         return false;
+    }
+
+    @Override
+    public boolean isDropBlockItem(IBlockAccess world, int x, int y, int z, int fortune) {
+        return false;
+    }
+
+    @Override
+    public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
+        if (world.isRemote) {
+            return super.removedByPlayer(world, player, x, y, z, willHarvest);
+        }
+
+        ItemStack drop = createBackpackDrop(world, x, y, z, world.getBlockMetadata(x, y, z));
+        boolean removed = super.removedByPlayer(world, player, x, y, z, willHarvest);
+
+        if (removed && drop != null) {
+            dropBlockAsItem(world, x, y, z, drop);
+        }
+
+        return removed;
+    }
+
+    @Override
+    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
+        if (hasAdminProtection(world, x, y, z)) {
+            return;
+        }
+
+        if (!world.isRemote) {
+            ItemStack drop = createBackpackDrop(world, x, y, z, world.getBlockMetadata(x, y, z));
+            if (drop != null) {
+                dropBlockAsItem(world, x, y, z, drop);
+            }
+        }
+
+        super.onBlockExploded(world, x, y, z, explosion);
+    }
+
+    private ItemStack createBackpackDrop(World world, int x, int y, int z, int meta) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (!(te instanceof TEBackpack backpack)) return null;
+
+        BackpackWrapper wrapper = backpack.getWrapper();
+        if (wrapper == null) return null;
+
+        Item item = getItemDropped(meta, world.rand, 0);
+        if (item == null) return null;
+
+        return createBackpackDrop(new ItemStack(item, 1, damageDropped(meta)), wrapper);
+    }
+
+    private static ItemStack createBackpackDrop(ItemStack drop, BackpackWrapper wrapper) {
+        NBTTagCompound root = drop.getTagCompound();
+        if (root == null) {
+            root = new NBTTagCompound();
+        }
+
+        root.setTag(BackpackWrapper.BACKPACK_NBT, wrapper.serializeNBT());
+        drop.setTagCompound(root);
+        return drop;
     }
 
     @Override
@@ -304,17 +463,21 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
     public static class ItemBackpack extends ItemBlockBauble implements IGuiHolder<PlayerInventoryGuiData>,
         IBaubleRender, IArmorRender, IEnergyContainerItem, IDynamicLightProducer {
 
-        protected BackpackTier tier = TierRegistry.getTier(LEATHER);
+        private String tierId = LEATHER;
 
         public ItemBackpack(Block block) {
             super(block);
             if (block instanceof BlockBackpack backpack) {
-                this.tier = backpack.getTier();
+                this.tierId = backpack.getTierId();
             }
         }
 
+        public String getTierId() {
+            return tierId;
+        }
+
         public BackpackTier getTier() {
-            return tier;
+            return TierRegistry.getTier(tierId);
         }
 
         private @Nullable IBatteryUpgrade getBatteryUpgrade(ItemStack stack) {

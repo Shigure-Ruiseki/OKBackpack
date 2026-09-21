@@ -5,7 +5,6 @@ import static ruiseki.okbackpack.common.init.TierRegistries.IRON;
 import net.minecraft.item.Item;
 
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.BlockContainerConfig;
 
@@ -25,12 +24,7 @@ public class BlockIronBackpackConfig extends BlockContainerConfig {
      * Make a new instance.
      */
     public BlockIronBackpackConfig() {
-        super(
-            OKBackpack._instance,
-            true,
-            "iron_backpack",
-            null,
-            config -> new BlockBackpack(TierRegistry.getTier(IRON)));
+        super(OKBackpack._instance, true, "iron_backpack", null, config -> new BlockBackpack(IRON));
     }
 
     @Override

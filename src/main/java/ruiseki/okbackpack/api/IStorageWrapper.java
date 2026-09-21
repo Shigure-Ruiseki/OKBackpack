@@ -27,6 +27,8 @@ public interface IStorageWrapper extends IItemHandlerModifiable, IItemHandler, I
     String BACKPACK_SLOTS = "BackpackSlots";
     String UPGRADE_SLOTS = "UpgradeSlots";
 
+    String TIER_TAG = "Tier";
+
     String TAB_INDEX_TAG = "TabIndex";
 
     String CUSTOM_NAME_TAG = "CustomName";

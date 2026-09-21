@@ -13,6 +13,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.cleanroommc.modularui.api.IGuiHolder;
 import com.cleanroommc.modularui.factory.GuiFactories;
 import com.cleanroommc.modularui.factory.SidedPosGuiData;
@@ -25,6 +27,7 @@ import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.experimental.Delegate;
+import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
@@ -56,27 +59,23 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
     protected final TileEntityOK.ITickingTile tickingTileComponent = new TileEntityOK.TickingTileComponent(this);
 
     public TEBackpack() {
-        wrapper = new BackpackWrapper();
-        this.wrapper.setInventorySlotChangeHandler(new Runnable() {
+        this(null);
+    }
 
-            @Override
-            public void run() {
-                markDirty();
-                onSendUpdate();
-            }
+    public TEBackpack(@Nullable BackpackTier tier) {
+        wrapper = tier == null ? new BackpackWrapper() : new BackpackWrapper(tier);
+        this.wrapper.setInventorySlotChangeHandler(() -> {
+            markDirty();
+            onSendUpdate();
         });
         refreshAccessibleSlots();
     }
 
     public void setWrapper(BackpackWrapper wrapper) {
         this.wrapper = wrapper;
-        this.wrapper.setInventorySlotChangeHandler(new Runnable() {
-
-            @Override
-            public void run() {
-                markDirty();
-                onSendUpdate();
-            }
+        this.wrapper.setInventorySlotChangeHandler(() -> {
+            markDirty();
+            onSendUpdate();
         });
         refreshAccessibleSlots();
     }

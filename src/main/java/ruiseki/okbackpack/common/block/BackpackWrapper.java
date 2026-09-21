@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -25,9 +24,7 @@ import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.github.bsideup.jabel.Desugar;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.SortType;
 import ruiseki.okbackpack.api.tier.BackpackTier;
@@ -126,7 +123,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     public BackpackWrapper(ItemStack backpack, BlockBackpack.ItemBackpack item) {
-        this(backpack, item.tier);
+        this(backpack, item.getTier());
     }
 
     public BackpackWrapper(ItemStack backpack, BackpackTier tier) {
@@ -138,8 +135,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         this.accentColor = 0xFF622E1A;
         this.sortType = SortType.BY_NAME;
         this.lockBackpack = false;
-        this.uuid = UUID.randomUUID()
-            .toString();
+        this.uuid = resolveUuid(backpack);
         this.playerUuid = "";
         this.keepTab = true;
         this.shiftClickIntoOpenTab = false;
@@ -759,6 +755,19 @@ public class BackpackWrapper implements IBackpackWrapper {
         return backpack.getTagCompound();
     }
 
+    private static String resolveUuid(@Nullable ItemStack backpack) {
+        if (backpack != null) {
+            NBTTagCompound existing = ItemNBTHelpers.getCompound(backpack, BACKPACK_NBT, false);
+            if (existing != null && existing.hasKey(UUID_TAG, 8)) {
+                String stored = existing.getString(UUID_TAG);
+                if (!stored.isEmpty()) return stored;
+            }
+        }
+
+        return UUID.randomUUID()
+            .toString();
+    }
+
     public ItemStack findStackByUUID(EntityPlayer player) {
         if (player == null || uuid == null || uuid.isEmpty()) return backpack;
 
@@ -826,6 +835,9 @@ public class BackpackWrapper implements IBackpackWrapper {
 
         tag.setInteger(BACKPACK_SLOTS, backpackSlots);
         tag.setInteger(UPGRADE_SLOTS, upgradeSlots);
+        if (tier != null && tier.getId() != null) {
+            tag.setString(TIER_TAG, tier.getId());
+        }
         tag.setInteger(MAIN_COLOR, mainColor);
         tag.setInteger(ACCENT_COLOR, accentColor);
 
@@ -891,6 +903,21 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public void deserializeNBT(NBTTagCompound tag) {
         if (tag == null) return;
+
+        if (tag.hasKey(TIER_TAG, 8)) {
+            String tierId = tag.getString(TIER_TAG);
+            // The registry is only populated after the tiers are registered, so an unknown id is left alone
+            // rather than being replaced by the default tier.
+            if (TierRegistry.isRegistered(tierId)) {
+                BackpackTier loadedTier = TierRegistry.getTier(tierId);
+                if (loadedTier != null && loadedTier != this.tier) {
+                    this.tier = loadedTier;
+                    this.backpackSlots = Math.max(this.backpackSlots, loadedTier.getBackpackSlots());
+                    this.upgradeSlots = Math.max(this.upgradeSlots, loadedTier.getUpgradeSlots());
+                }
+            }
+        }
+
         if (tag.hasKey(BACKPACK_SLOTS, 3)) {
             int loadedSlots = tag.getInteger(BACKPACK_SLOTS);
             if (loadedSlots > this.backpackSlots) {
@@ -1332,12 +1359,17 @@ public class BackpackWrapper implements IBackpackWrapper {
             return this.customName;
         }
 
-        if (tier != null) {
-            Block block = GameRegistry.findBlock(Reference.MOD_ID, tier.getId());
-            if (block != null) {
-                return LangHelpers.localize(block.getUnlocalizedName() + ".name");
-            }
+        String tierName = getTierInventoryName();
+        if (tierName != null) {
+            return tierName;
         }
+
         return LangHelpers.localize("container.inventory");
+    }
+
+    public String getTierInventoryName() {
+        if (tier == null) return null;
+
+        return TierRegistry.getDisplayName(tier);
     }
 }
