@@ -8,7 +8,7 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.client.gui.slot.CustomBackgroundSlot;
 import ruiseki.okbackpack.common.item.battery.BatteryUpgradeWrapper;
-import ruiseki.okcore.client.OKCGuiTextures;
+import ruiseki.okcore.client.mui.OKCGuiTextures;
 
 public class BatteryUpgradeWidget extends ExpandedUpgradeTabWidget<BatteryUpgradeWrapper> {
 
