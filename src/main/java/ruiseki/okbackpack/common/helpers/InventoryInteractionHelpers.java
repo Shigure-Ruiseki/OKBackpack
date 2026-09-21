@@ -81,34 +81,18 @@ public class InventoryInteractionHelpers {
             if (stack == null || stack.stackSize <= 0) continue;
             if (!filter.test(stack)) continue;
 
+            int originalSize = stack.stackSize;
             ItemStack toInsert = ItemHandlerHelpers.copyStackWithSize(stack, stack.stackSize);
 
             int inserted = insertIntoInventory(target, toInsert, accessibleSlots, false);
             if (inserted > 0) {
-                // Deduct exactly what the target accepted from the slot that was read, so the deposited items
-                // always match the ones removed from the backpack.
-                if (deductFromSlot(backpackWrapper, bpSlot, inserted) > 0) {
-                    transferred++;
-                }
+                // Deduct transferred amount from backpack
+                backpackWrapper.extractItem(bpSlot, inserted, false);
+                transferred++;
             }
         }
 
         return transferred;
-    }
-
-    public static int deductFromSlot(IStorageWrapper backpackWrapper, int slot, int amount) {
-        if (amount <= 0) return 0;
-
-        ItemStack current = backpackWrapper.getStackInSlot(slot);
-        if (current == null) return 0;
-
-        int toRemove = Math.min(amount, current.stackSize);
-        if (toRemove <= 0) return 0;
-
-        backpackWrapper.getStackHandler()
-            .extractItem(slot, toRemove, false);
-
-        return toRemove;
     }
 
     /**
