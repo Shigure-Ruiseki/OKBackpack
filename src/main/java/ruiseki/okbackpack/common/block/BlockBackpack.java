@@ -2,6 +2,7 @@ package ruiseki.okbackpack.common.block;
 
 import static ruiseki.okbackpack.common.init.TierRegistries.LEATHER;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -78,6 +79,8 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
 
     protected final BackpackTier tier;
 
+    protected NBTTagCompound capturedWrapperNbt;
+
     @BlockProperty
     public final static DirectionProperty DIRECTION_PROPERTY = DirectionProperty
         .facing(ForgeDirection.NORTH, (world, x, y, z) -> {
@@ -108,6 +111,7 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
         this.tier = tier;
         setStepSound(soundTypeCloth);
         setHardness(1f);
+        tier.setBlock(this);
     }
 
     @Override
@@ -223,7 +227,58 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
 
     @Override
     public boolean shouldDropInventory(World world, int x, int y, int z) {
+        // The contents are carried by the backpack item itself through the wrapper NBT, so the tile inventory
+        // must never be spilled into the world on top of that.
         return false;
+    }
+
+    @Override
+    protected void onPreBlockDestroyed(World world, int x, int y, int z, @Nullable EntityPlayer player) {
+        super.onPreBlockDestroyed(world, x, y, z, player);
+
+        if (world.isRemote) {
+            capturedWrapperNbt = null;
+            return;
+        }
+
+        TileEntity te = world.getTileEntity(x, y, z);
+        capturedWrapperNbt = te instanceof TEBackpack backpack && backpack.getWrapper() != null ? backpack.getWrapper()
+            .serializeNBT() : null;
+    }
+
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int meta, int fortune) {
+        ArrayList<ItemStack> drops = super.getDrops(world, x, y, z, meta, fortune);
+
+        if (world.isRemote || drops.isEmpty()) return drops;
+
+        NBTTagCompound contents = capturedWrapperNbt;
+        capturedWrapperNbt = null;
+
+        if (contents == null) {
+            TileEntity te = world.getTileEntity(x, y, z);
+            if (te instanceof TEBackpack backpack && backpack.getWrapper() != null) {
+                contents = backpack.getWrapper()
+                    .serializeNBT();
+            }
+        }
+
+        if (contents == null) return drops;
+
+        for (ItemStack drop : drops) {
+            if (!(drop.getItem() instanceof ItemBackpack)) continue;
+
+            NBTTagCompound root = drop.getTagCompound();
+            if (root == null) {
+                root = new NBTTagCompound();
+                drop.setTagCompound(root);
+            }
+
+            root.setTag(BackpackWrapper.BACKPACK_NBT, contents);
+            drop.setTagCompound(root);
+        }
+
+        return drops;
     }
 
     @Override

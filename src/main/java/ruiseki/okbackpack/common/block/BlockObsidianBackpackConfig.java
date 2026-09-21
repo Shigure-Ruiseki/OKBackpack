@@ -1,6 +1,6 @@
 package ruiseki.okbackpack.common.block;
 
-import static ruiseki.okbackpack.common.init.TierRegistries.LEATHER;
+import static ruiseki.okbackpack.common.init.TierRegistries.OBSIDIAN;
 
 import net.minecraft.item.Item;
 
@@ -31,7 +31,7 @@ public class BlockObsidianBackpackConfig extends BlockContainerConfig {
             true,
             "obsidian_backpack",
             null,
-            config -> new BlockBackpack(TierRegistry.getTier(LEATHER)));
+            config -> new BlockBackpack(TierRegistry.getTier(OBSIDIAN)));
     }
 
     @Override

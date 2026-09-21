@@ -1,8 +1,10 @@
 package ruiseki.okbackpack.api.tier;
 
+import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BackpackTier {
 
@@ -10,6 +12,7 @@ public class BackpackTier {
     private final int backpackSlots;
     private final int upgradeSlots;
     private final ResourceLocation clipTexturePath;
+    private Block block;
 
     public BackpackTier(@NotNull String id, int backpackSlots, int upgradeSlots,
         @NotNull ResourceLocation clipTexturePath) {
@@ -33,5 +36,13 @@ public class BackpackTier {
 
     public ResourceLocation getClipTexturePath() {
         return clipTexturePath;
+    }
+
+    public @Nullable Block getBlock() {
+        return block;
+    }
+
+    public void setBlock(@NotNull Block block) {
+        this.block = block;
     }
 }

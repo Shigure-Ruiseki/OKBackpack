@@ -25,9 +25,7 @@ import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.github.bsideup.jabel.Desugar;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.SortType;
 import ruiseki.okbackpack.api.tier.BackpackTier;
@@ -1332,12 +1330,20 @@ public class BackpackWrapper implements IBackpackWrapper {
             return this.customName;
         }
 
-        if (tier != null) {
-            Block block = GameRegistry.findBlock(Reference.MOD_ID, tier.getId());
-            if (block != null) {
-                return LangHelpers.localize(block.getUnlocalizedName() + ".name");
-            }
+        String tierName = getTierInventoryName();
+        if (tierName != null) {
+            return tierName;
         }
+
         return LangHelpers.localize("container.inventory");
+    }
+
+    public String getTierInventoryName() {
+        if (tier == null) return null;
+
+        Block block = tier.getBlock();
+        if (block == null) return null;
+
+        return LangHelpers.localize(block.getUnlocalizedName() + ".name");
     }
 }
