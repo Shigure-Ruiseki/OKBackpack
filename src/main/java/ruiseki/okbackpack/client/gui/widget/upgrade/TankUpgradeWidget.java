@@ -10,7 +10,7 @@ import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.slot.CustomBackgroundSlot;
 import ruiseki.okbackpack.common.item.tank.TankUpgradeWrapper;
-import ruiseki.okcore.client.OKCGuiTextures;
+import ruiseki.okcore.client.mui.OKCGuiTextures;
 
 public class TankUpgradeWidget extends ExpandedUpgradeTabWidget<TankUpgradeWrapper> {
 

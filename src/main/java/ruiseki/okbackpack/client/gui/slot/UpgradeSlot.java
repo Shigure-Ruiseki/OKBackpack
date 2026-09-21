@@ -1,6 +1,6 @@
 package ruiseki.okbackpack.client.gui.slot;
 
-import static ruiseki.okcore.client.OKCGuiTextures.EMPTY_UPGRADE;
+import static ruiseki.okcore.client.mui.OKCGuiTextures.EMPTY_UPGRADE;
 
 import com.cleanroommc.modularui.drawable.GuiDraw;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
