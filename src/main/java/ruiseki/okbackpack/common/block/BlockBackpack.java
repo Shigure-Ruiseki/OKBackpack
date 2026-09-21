@@ -295,10 +295,9 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
     }
 
     @Override
-    public TileEntity createTileEntity(World world, int metadata) {
+    public TileEntity createNewTileEntity(World world, int metadata) {
         TEBackpack backpack = new TEBackpack(tier);
-        BackpackWrapper wrapper = new BackpackWrapper(tier);
-        backpack.setWrapper(wrapper);
+        backpack.setWrapper(new BackpackWrapper(tier));
         return backpack;
     }
 

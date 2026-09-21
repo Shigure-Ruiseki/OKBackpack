@@ -836,6 +836,9 @@ public class BackpackWrapper implements IBackpackWrapper {
 
         tag.setInteger(BACKPACK_SLOTS, backpackSlots);
         tag.setInteger(UPGRADE_SLOTS, upgradeSlots);
+        if (tier != null && tier.getId() != null) {
+            tag.setString(TIER_TAG, tier.getId());
+        }
         tag.setInteger(MAIN_COLOR, mainColor);
         tag.setInteger(ACCENT_COLOR, accentColor);
 
@@ -901,6 +904,21 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public void deserializeNBT(NBTTagCompound tag) {
         if (tag == null) return;
+
+        if (tag.hasKey(TIER_TAG, 8)) {
+            String tierId = tag.getString(TIER_TAG);
+            // The registry is only populated after the tiers are registered, so an unknown id is left alone
+            // rather than being replaced by the default tier.
+            if (TierRegistry.isRegistered(tierId)) {
+                BackpackTier loadedTier = TierRegistry.getTier(tierId);
+                if (loadedTier != null && loadedTier != this.tier) {
+                    this.tier = loadedTier;
+                    this.backpackSlots = Math.max(this.backpackSlots, loadedTier.getBackpackSlots());
+                    this.upgradeSlots = Math.max(this.upgradeSlots, loadedTier.getUpgradeSlots());
+                }
+            }
+        }
+
         if (tag.hasKey(BACKPACK_SLOTS, 3)) {
             int loadedSlots = tag.getInteger(BACKPACK_SLOTS);
             if (loadedSlots > this.backpackSlots) {
