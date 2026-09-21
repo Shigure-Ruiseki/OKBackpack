@@ -8,7 +8,7 @@ import ruiseki.okcore.item.handler.IItemHandlerModifiable;
 public class IndexedInventoryCraftingWrapper extends InventoryCraftingWrapper {
 
     private final int upgradeSlotIndex;
-    private CraftingDestination craftingDestination = CraftingDestination.INVENTORY;
+    private CraftingDestination craftingDestination = CraftingDestination.BACKPACK;
 
     public IndexedInventoryCraftingWrapper(int upgradeSlotIndex, Container cont, int width, int height,
         IItemHandlerModifiable delegate, int startIndex) {

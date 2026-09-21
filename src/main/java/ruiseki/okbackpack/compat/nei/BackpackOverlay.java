@@ -19,7 +19,10 @@ import codechicken.nei.recipe.DefaultOverlayHandler;
 import codechicken.nei.recipe.GuiOverlayButton;
 import codechicken.nei.recipe.IRecipeHandler;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
+import ruiseki.okbackpack.api.wrapper.IStorageUpgrade;
+import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
+import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.client.gui.slot.CraftingSlotInfo;
 import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.client.gui.slot.ModularFilterSlot;
@@ -148,18 +151,22 @@ public class BackpackOverlay extends DefaultOverlayHandler {
 
         // backpack inventory
         for (int i = 0; i < container.wrapper.getSlots(); i++) {
-            ItemStack stack = container.wrapper.getStackInSlot(i);
-            if (stack != null && stack.stackSize > 0) {
-                invStacks.add(stack.copy());
+            addPresenceStack(invStacks, container.wrapper.getStackInSlot(i));
+        }
+
+        // inner inventories of storage upgrades, which includes crafting and arcane grids
+        for (IUpgradeWrapper upgradeWrapper : container.wrapper.getUpgradeHandler()
+            .getSlotWrappers()
+            .values()) {
+            if (upgradeWrapper instanceof IStorageUpgrade storageUpgrade) {
+                addStoragePresenceStacks(invStacks, storageUpgrade.getStorage());
             }
         }
 
         // player inventory
         if (player != null) {
             for (ItemStack stack : player.inventory.mainInventory) {
-                if (stack != null && stack.stackSize > 0) {
-                    invStacks.add(stack.copy());
-                }
+                addPresenceStack(invStacks, stack);
             }
         }
 
@@ -182,6 +189,20 @@ public class BackpackOverlay extends DefaultOverlayHandler {
         }
 
         return itemPresenceSlots;
+    }
+
+    private static void addPresenceStack(List<ItemStack> target, ItemStack stack) {
+        if (stack != null && stack.stackSize > 0) {
+            target.add(stack.copy());
+        }
+    }
+
+    private static void addStoragePresenceStacks(List<ItemStack> target, BaseItemStackHandler storage) {
+        if (storage == null) return;
+
+        for (int slot = 0; slot < storage.getSlots(); slot++) {
+            addPresenceStack(target, storage.getStackInSlot(slot));
+        }
     }
 
     private static int getSlotIndex(PositionedStack ps) {

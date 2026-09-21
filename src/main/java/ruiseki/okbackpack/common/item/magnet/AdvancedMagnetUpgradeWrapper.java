@@ -133,7 +133,7 @@ public class AdvancedMagnetUpgradeWrapper extends AdvancedPickupUpgradeWrapper i
                         storageLoaded = true;
                     }
 
-                    ItemStack remaining = storage.insertItem(stack, false);
+                    ItemStack remaining = storage.insertItem(stack.copy(), false);
 
                     if (remaining == null || remaining.stackSize != stack.stackSize) {
                         storageChanged = true;
@@ -142,7 +142,7 @@ public class AdvancedMagnetUpgradeWrapper extends AdvancedPickupUpgradeWrapper i
                     if (remaining == null || remaining.stackSize <= 0) {
                         entity.setDead();
                     } else {
-                        itemEntity.setEntityItemStack(remaining);
+                        itemEntity.setEntityItemStack(remaining.copy());
                     }
 
                     continue;
