@@ -520,6 +520,8 @@ public class BackpackEventHandler {
     @SubscribeEvent
     public void onPlayerPickup(EntityItemPickupEvent event) {
         EntityPlayer player = event.entityPlayer;
+        if (player == null || player.worldObj.isRemote) return;
+
         ItemStack stack = event.item.getEntityItem()
             .copy();
 
@@ -554,7 +556,7 @@ public class BackpackEventHandler {
 
             World world = event.item.worldObj;
 
-            EntityItem newItem = new EntityItem(world, event.item.posX, event.item.posY, event.item.posZ, stack);
+            EntityItem newItem = new EntityItem(world, event.item.posX, event.item.posY, event.item.posZ, stack.copy());
 
             newItem.delayBeforeCanPickup = 0;
             world.spawnEntityInWorld(newItem);

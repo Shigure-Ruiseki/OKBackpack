@@ -132,7 +132,7 @@ public class MagnetUpgradeWrapper extends PickupUpgradeWrapper implements IMagne
                         storageLoaded = true;
                     }
 
-                    ItemStack remaining = storage.insertItem(stack, false);
+                    ItemStack remaining = storage.insertItem(stack.copy(), false);
 
                     if (remaining == null || remaining.stackSize != stack.stackSize) {
                         storageChanged = true;
@@ -141,7 +141,7 @@ public class MagnetUpgradeWrapper extends PickupUpgradeWrapper implements IMagne
                     if (remaining == null || remaining.stackSize <= 0) {
                         entity.setDead();
                     } else {
-                        itemEntity.setEntityItemStack(remaining);
+                        itemEntity.setEntityItemStack(remaining.copy());
                     }
 
                     continue;

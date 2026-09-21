@@ -79,7 +79,6 @@ import ruiseki.okbackpack.client.renderer.RenderHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.LangHelpers;
-import ruiseki.okcore.item.capability.wrapper.PlayerInvWrapper;
 import ruiseki.okcore.item.capability.wrapper.PlayerMainInvWrapper;
 
 public class BackpackPanel extends ModularPanel implements IStoragePanel<BackpackPanel> {
@@ -275,8 +274,9 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
     public void modifyPlayerSlot(PanelSyncManager syncManager, InventoryType inventoryType, int slotIndex,
         EntityPlayer player) {
         if (inventoryType == InventoryTypes.BAUBLES) return;
-        ModularSlot slot = new LockedPlayerSlot(new PlayerInvWrapper(player.inventory), slotIndex)
-            .slotGroup("player_inventory");
+        // The handler must stay a ModularUI player wrapper, otherwise integrations such as
+        // Inventory Bogo Sorter cannot recognise these as player inventory slots.
+        ModularSlot slot = new LockedPlayerSlot(player.inventory, slotIndex).slotGroup("player_inventory");
         syncManager.itemSlot("player", slotIndex, slot);
     }
 

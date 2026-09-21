@@ -82,6 +82,7 @@ public class BackpackItemStackHandler extends BaseItemStackHandler implements IM
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         if (!isVisualSlot(slot)) return stack;
         if (stack == null) return null;
+        if (!isItemValid(slot, stack)) return stack;
 
         ItemStack existing = stacks.get(slot);
 
@@ -102,7 +103,7 @@ public class BackpackItemStackHandler extends BaseItemStackHandler implements IM
 
         if (!simulate) {
             if (existing == null) {
-                stacks.set(slot, reachedLimit ? ItemHandlerHelpers.copyStackWithSize(stack, limit) : stack);
+                stacks.set(slot, ItemHandlerHelpers.copyStackWithSize(stack, reachedLimit ? limit : stack.stackSize));
             } else {
                 existing.stackSize += (reachedLimit ? limit : stack.stackSize);
             }

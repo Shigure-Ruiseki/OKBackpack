@@ -6,10 +6,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import com.cleanroommc.bogosorter.BogoSortAPI;
+import com.cleanroommc.bogosorter.api.ICustomInsertable;
 import com.cleanroommc.bogosorter.api.SortRule;
 import com.cleanroommc.bogosorter.common.sort.ClientItemSortRule;
 import com.cleanroommc.bogosorter.common.sort.ClientSortData;
@@ -17,6 +19,7 @@ import com.cleanroommc.bogosorter.common.sort.ItemCompareHelper;
 import com.cleanroommc.bogosorter.common.sort.ItemSortContainer;
 import com.cleanroommc.bogosorter.common.sort.NbtSortRule;
 import com.cleanroommc.bogosorter.common.sort.SortHandler;
+import com.cleanroommc.bogosorter.mixins.early.minecraft.SlotAccessor;
 
 import cpw.mods.fml.common.Optional;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -26,11 +29,12 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.BackpackSHRegistry;
+import ruiseki.okbackpack.client.gui.container.BackPackContainer;
+import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
+import ruiseki.okcore.helper.ItemHandlerHelpers;
 
 public class BackpackBogoSorterServerCompat {
-
-    private BackpackBogoSorterServerCompat() {}
 
     @Optional.Method(modid = "bogosorter")
     public static void register() {
@@ -38,10 +42,44 @@ public class BackpackBogoSorterServerCompat {
             sort(handler.wrapper, buf);
             handler.wrapper.markDirty();
         });
+        BogoSortAPI.INSTANCE.addCustomInsertable(BackPackContainer.class, new BackpackInsertable());
+    }
+
+    @Optional.Interface(modid = "bogosorter", iface = "com.cleanroommc.bogosorter.api.ICustomInsertable")
+    public static class BackpackInsertable implements ICustomInsertable {
+
+        @Optional.Method(modid = "bogosorter")
+        @Override
+        public ItemStack insert(Container container, List<SlotAccessor> slots, ItemStack stack, boolean emptyOnly) {
+            if (!(container instanceof BackPackContainer backpackContainer)) return stack;
+
+            ItemStack remaining = stack;
+            for (SlotAccessor slot : slots) {
+                if (remaining == null || remaining.stackSize <= 0) break;
+                if (!(backpackContainer.getSlot(slot.getSlotNumber()) instanceof ModularBackpackSlot backpackSlot)) {
+                    continue;
+                }
+
+                ItemStack inSlot = backpackSlot.getStack();
+                if (emptyOnly != (inSlot == null)) continue;
+                if (emptyOnly && !backpackSlot.isItemValid(remaining)) continue;
+                if (!emptyOnly && !ItemHandlerHelpers.canItemStacksStack(inSlot, remaining)) continue;
+
+                int before = remaining.stackSize;
+                ItemStack result = backpackContainer.wrapper
+                    .insertItem(backpackSlot.getSlotIndex(), remaining.copy(), false);
+                int inserted = before - (result == null ? 0 : result.stackSize);
+                if (inserted <= 0) continue;
+
+                remaining = result;
+            }
+
+            return remaining;
+        }
     }
 
     @Optional.Method(modid = "bogosorter")
-    private static void sort(IStorageWrapper wrapper, PacketBuffer buf) throws IOException {
+    public static void sort(IStorageWrapper wrapper, PacketBuffer buf) throws IOException {
         List<SortRule<ItemStack>> itemRules = readItemRules(buf);
         List<NbtSortRule> nbtRules = readNbtRules(buf);
         Int2ObjectMap<ClientSortData> clientData = readClientData(buf);
@@ -62,7 +100,8 @@ public class BackpackBogoSorterServerCompat {
         rebuildSlots(wrapper, sortableSlots, sortedItems);
     }
 
-    private static List<SortRule<ItemStack>> readItemRules(PacketBuffer buf) {
+    @Optional.Method(modid = "bogosorter")
+    public static List<SortRule<ItemStack>> readItemRules(PacketBuffer buf) {
         int size = buf.readVarIntFromBuffer();
         List<SortRule<ItemStack>> rules = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
@@ -75,7 +114,8 @@ public class BackpackBogoSorterServerCompat {
         return rules;
     }
 
-    private static List<NbtSortRule> readNbtRules(PacketBuffer buf) {
+    @Optional.Method(modid = "bogosorter")
+    public static List<NbtSortRule> readNbtRules(PacketBuffer buf) {
         int size = buf.readVarIntFromBuffer();
         List<NbtSortRule> rules = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
@@ -88,7 +128,8 @@ public class BackpackBogoSorterServerCompat {
         return rules;
     }
 
-    private static Int2ObjectMap<ClientSortData> readClientData(PacketBuffer buf) throws IOException {
+    @Optional.Method(modid = "bogosorter")
+    public static Int2ObjectMap<ClientSortData> readClientData(PacketBuffer buf) throws IOException {
         int size = buf.readVarIntFromBuffer();
         Int2ObjectMap<ClientSortData> result = new Int2ObjectOpenHashMap<>(size);
         for (int i = 0; i < size; i++) {
@@ -100,7 +141,8 @@ public class BackpackBogoSorterServerCompat {
         return result;
     }
 
-    private static IntList collectSortableSlots(IStorageWrapper wrapper) {
+    @Optional.Method(modid = "bogosorter")
+    public static IntList collectSortableSlots(IStorageWrapper wrapper) {
         IntList slots = new IntArrayList(wrapper.getSlots());
         for (int i = 0; i < wrapper.getSlots(); i++) {
             if (!wrapper.isSlotMemorized(i) && !wrapper.isSlotLocked(i)) {
@@ -110,7 +152,8 @@ public class BackpackBogoSorterServerCompat {
         return slots;
     }
 
-    private static List<ItemSortContainer> collectItems(IStorageWrapper wrapper, IntList sortableSlots,
+    @Optional.Method(modid = "bogosorter")
+    public static List<ItemSortContainer> collectItems(IStorageWrapper wrapper, IntList sortableSlots,
         Int2ObjectMap<ClientSortData> clientData) {
         List<ItemSortContainer> result = new ArrayList<>(sortableSlots.size());
         Object2ObjectOpenCustomHashMap<ItemStack, ItemSortContainer> merged = new Object2ObjectOpenCustomHashMap<>(
@@ -133,7 +176,8 @@ public class BackpackBogoSorterServerCompat {
         return result;
     }
 
-    private static Comparator<ItemSortContainer> createComparator(List<SortRule<ItemStack>> itemRules) {
+    @Optional.Method(modid = "bogosorter")
+    public static Comparator<ItemSortContainer> createComparator(List<SortRule<ItemStack>> itemRules) {
         return (left, right) -> {
             for (SortRule<ItemStack> rule : itemRules) {
                 int result = rule instanceof ClientItemSortRule clientRule ? clientRule.compareServer(left, right)
@@ -147,7 +191,8 @@ public class BackpackBogoSorterServerCompat {
         };
     }
 
-    private static void rebuildSlots(IStorageWrapper wrapper, IntList sortableSlots,
+    @Optional.Method(modid = "bogosorter")
+    public static void rebuildSlots(IStorageWrapper wrapper, IntList sortableSlots,
         List<ItemSortContainer> sortedItems) {
         int itemIndex = 0;
         ItemSortContainer current = sortedItems.get(itemIndex);
@@ -173,7 +218,8 @@ public class BackpackBogoSorterServerCompat {
         }
     }
 
-    private static int getStackLimit(IStorageWrapper wrapper, ItemStack stack) {
+    @Optional.Method(modid = "bogosorter")
+    public static int getStackLimit(IStorageWrapper wrapper, ItemStack stack) {
         double rawLimit = stack.getMaxStackSize() * wrapper.applyStackLimitModifiers();
         if (rawLimit >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
         return (int) Math.ceil(rawLimit);

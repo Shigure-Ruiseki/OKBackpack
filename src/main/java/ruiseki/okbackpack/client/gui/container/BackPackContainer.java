@@ -1,5 +1,6 @@
 package ruiseki.okbackpack.client.gui.container;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.IStorageContainer;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
+import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade.CraftingDestination;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
@@ -61,6 +63,7 @@ public class BackPackContainer extends ModularContainer
     private static final int DROP_TO_WORLD = -999;
     private static final int LEFT_MOUSE = 0;
     private static final int RIGHT_MOUSE = 1;
+    private static final int BACKPACK_SLOT_GROUP_PRIORITY = 10;
     private static final int BOGO_BUTTON_SLEEPING_BAG_GAP = 2;
     private static final int SLEEPING_BAG_BUTTON_SIZE = 14;
     private static final int SLEEPING_BAG_RIGHT_OFFSET = 35;
@@ -78,7 +81,26 @@ public class BackPackContainer extends ModularContainer
 
     @Optional.Method(modid = "bogosorter")
     @Override
-    public void buildSortingContext(ISortingContextBuilder builder) {}
+    public void buildSortingContext(ISortingContextBuilder builder) {
+        List<Slot> backpackSlots = new ArrayList<>();
+        for (Slot slot : inventorySlots) {
+            if (slot instanceof ModularBackpackSlot) {
+                backpackSlots.add(slot);
+            }
+        }
+        if (backpackSlots.size() < 2) return;
+
+        int rowSize = (int) backpackSlots.stream()
+            .map(slot -> slot.xDisplayPosition)
+            .distinct()
+            .count();
+        builder.addSlotGroupOf(backpackSlots, Math.max(1, rowSize))
+            .priority(BACKPACK_SLOT_GROUP_PRIORITY);
+
+        // Player slots are left to Bogo Sorter, which discovers them through BogoSortAPI.isPlayerSlot.
+        // Registering them here would create groups without the player/hotbar flags, which breaks
+        // shortcut target resolution and adds an extra sort button above the hotbar.
+    }
 
     @Optional.Method(modid = "bogosorter")
     @Override
@@ -529,12 +551,18 @@ public class BackPackContainer extends ModularContainer
             if (inventoryCrafting == null) {
                 transferItemFiltered(fromSlot, fromStack, slot -> PLAYER_INV.equals(slot.getSlotGroupName()));
             } else {
-                transferCraftingDestinationItem(fromSlot, fromStack, inventoryCrafting.getCraftingDestination());
+                transferCraftingDestinationItem(
+                    fromSlot,
+                    fromStack,
+                    refreshCraftingDestination(craftingSlot.getUpgradeSlotIndex(), inventoryCrafting));
             }
         } else if (fromSlot instanceof IndexedModularCraftingMatrixSlot matrixSlot) {
             IndexedInventoryCraftingWrapper inventoryCrafting = getInventoryCrafting(matrixSlot);
             if (inventoryCrafting != null) {
-                transferCraftingDestinationItem(fromSlot, fromStack, inventoryCrafting.getCraftingDestination());
+                transferCraftingDestinationItem(
+                    fromSlot,
+                    fromStack,
+                    refreshCraftingDestination(matrixSlot.getUpgradeSlotIndex(), inventoryCrafting));
             }
         }
         if (fromSlot instanceof ModularUpgradeSlot upgradeSlot) {
@@ -583,6 +611,18 @@ public class BackPackContainer extends ModularContainer
 
     private IndexedInventoryCraftingWrapper getInventoryCrafting(ModularUpgradeWidgetSlot slot) {
         return inventoryCraftingInstances.get(slot.getUpgradeSlotIndex());
+    }
+
+    private CraftingDestination refreshCraftingDestination(int upgradeSlotIndex,
+        IndexedInventoryCraftingWrapper inventoryCrafting) {
+        IUpgradeWrapper upgradeWrapper = wrapper.getUpgradeHandler()
+            .getWrapperInSlot(upgradeSlotIndex);
+        if (upgradeWrapper instanceof ICraftingUpgrade craftingUpgrade) {
+            CraftingDestination destination = craftingUpgrade.getCraftingDes();
+            inventoryCrafting.setCraftingDestination(destination);
+            return destination;
+        }
+        return inventoryCrafting.getCraftingDestination();
     }
 
     private void transferCraftingDestinationItem(ModularSlot fromSlot, ItemStack fromStack,

@@ -36,7 +36,7 @@
 dependencies {
     implementation("com.github.GTNewHorizons:GTNHLib:0.11.48:dev")
     implementation("com.github.GTNewHorizons:ModularUI2:2.3.90-1.7.10:dev")
-    implementation("com.github.Shigure-Ruiseki:OKCore:26.09.18.1:dev") { transitive = false }
+    implementation("com.github.Shigure-Ruiseki:OKCore:26.09.19.2:dev") { transitive = false }
 
     devOnlyNonPublishable("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
     devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.8.125-GTNH:dev")
@@ -56,6 +56,7 @@ dependencies {
 
     compileOnlyApi('com.github.GTNewHorizons:Angelica:2.2.5:dev') { transitive = false }
     compileOnlyApi("com.github.GTNewHorizons:InventoryBogoSorter:1.3.46-GTNH:dev") { transitive = false }
+    // runtimeOnlyNonPublishable("com.github.GTNewHorizons:InventoryBogoSorter:1.3.46-GTNH:dev")
     compileOnlyApi("com.github.GTNewHorizons:CodeChickenCore:1.4.17:dev") { transitive = false }
     compileOnlyApi("com.github.GTNewHorizons:StructureLib:1.4.42:dev") { transitive = false }
     compileOnly("com.github.GTNewHorizons:ModularUI:1.3.4:dev") { transitive = false }

@@ -17,7 +17,9 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import com.cleanroommc.bogosorter.BogoSortAPI;
+import com.cleanroommc.bogosorter.ClientEventHandler;
 import com.cleanroommc.bogosorter.api.SortRule;
+import com.cleanroommc.bogosorter.client.keybinds.KeyBind;
 import com.cleanroommc.bogosorter.client.keybinds.control.BSKeybinds;
 import com.cleanroommc.bogosorter.common.config.SortRulesConfig;
 import com.cleanroommc.bogosorter.common.sort.SortHandler;
@@ -42,12 +44,30 @@ public class BackpackBogoSorterClientCompat {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onKeyboardInput(KeyboardInputEvent.Pre event) {
+        forwardInputToBogo(event, false);
         trySortHoveredBackpack(event);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onMouseInput(MouseInputEvent.Pre event) {
+        forwardInputToBogo(event, true);
         trySortHoveredBackpack(event);
+    }
+
+    /**
+     * Bogo Sorter updates its shortcut key state and executes shortcuts from a low priority listener.
+     * ModularUI handles the same mouse event at a higher priority and cancels it whenever a slot is
+     * clicked, so the event never reaches Bogo Sorter and its configured shortcuts stop working.
+     * Forwarding the input here, before ModularUI cancels it, keeps Bogo Sorter's own key
+     * configuration authoritative.
+     */
+    private void forwardInputToBogo(GuiScreenEvent event, boolean fromMouse) {
+        if (!(event.gui instanceof GuiContainer gui)) return;
+
+        KeyBind.checkKeys(ClientEventHandler.getTicks());
+        if (ClientEventHandler.handleInput(gui, fromMouse)) {
+            event.setCanceled(true);
+        }
     }
 
     private void trySortHoveredBackpack(GuiScreenEvent event) {
