@@ -28,8 +28,13 @@ public class ModRecipes implements IInitListener {
 
     @Override
     public void onInit(Step step) {
+        if (step == Step.PREINIT) {
+            BackpackRecipeLoader.registerTypes();
+        }
+
         if (step == Step.POSTINIT) {
             blockRecipes();
+            BackpackRecipeLoader.publishRecipes();
             if (Mods.Thaumcraft.isModLoaded()) {
                 thaumcraftRecipes();
             }
