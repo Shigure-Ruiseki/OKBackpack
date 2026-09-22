@@ -50,7 +50,7 @@ public class FilterSlotSH extends PhantomItemSlotSH {
         } else if (id == SYNC_ITEM_SIMPLE) {
             if (!isPhantom()) return;
             ItemStack itemStack = NetworkUtils.readItemStack(buf);
-            int button = buf.readVarIntFromBuffer(); // TODO whats this 1.12
+            int button = buf.readVarIntFromBuffer();
             phantomClick(new MouseData(Side.SERVER, button, false, false, false), itemStack);
         }
     }
