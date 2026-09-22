@@ -11,10 +11,6 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okcore.recipe.IRecipeOK;
 import ruiseki.okcore.recipe.RecipeManager;
 import ruiseki.okcore.recipe.RecipeRegistry;
-import ruiseki.okcore.recipe.type.crafting.shaped.ShapedRecipeSerializer;
-import ruiseki.okcore.recipe.type.crafting.shaped.ShapedRecipeType;
-import ruiseki.okcore.recipe.type.crafting.shapless.ShapelessRecipeSerializer;
-import ruiseki.okcore.recipe.type.crafting.shapless.ShapelessRecipeType;
 
 public class BackpackRecipeLoader {
 
@@ -22,20 +18,7 @@ public class BackpackRecipeLoader {
 
     public static final ResourceLocation SHAPELESS_TYPE_ID = new ResourceLocation("minecraft", "crafting_shapeless");
 
-    private static boolean registered;
-
     protected BackpackRecipeLoader() {}
-
-    public static void registerTypes() {
-        if (registered) return;
-        registered = true;
-
-        RecipeRegistry.registerType(SHAPED_TYPE_ID, ShapedRecipeType.INSTANCE);
-        RecipeRegistry.registerSerializer(SHAPED_TYPE_ID, new ShapedRecipeSerializer());
-
-        RecipeRegistry.registerType(SHAPELESS_TYPE_ID, ShapelessRecipeType.INSTANCE);
-        RecipeRegistry.registerSerializer(SHAPELESS_TYPE_ID, new ShapelessRecipeSerializer());
-    }
 
     public static int publishRecipes() {
         RecipeManager manager = RecipeManager.getManager();
