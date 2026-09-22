@@ -14,6 +14,7 @@ public class UpgradeWrapperBase implements IUpgradeWrapper, IDirtable {
     protected final ItemStack upgrade;
     protected final IStorageWrapper storage;
     protected final Consumer<ItemStack> upgradeConsumer;
+    protected boolean dirty;
 
     public UpgradeWrapperBase(ItemStack upgrade, IStorageWrapper storage, Consumer<ItemStack> upgradeConsumer) {
         this.upgrade = upgrade;
@@ -59,21 +60,21 @@ public class UpgradeWrapperBase implements IUpgradeWrapper, IDirtable {
 
     @Override
     public boolean isDirty() {
-        return ItemNBTHelpers.getBoolean(upgrade, DIRTY_TAG, false);
+        return dirty;
     }
 
     @Override
     public void markDirty() {
-        ItemNBTHelpers.setBoolean(upgrade, DIRTY_TAG, true);
+        this.dirty = true;
     }
 
     @Override
     public void markClean() {
-        ItemNBTHelpers.setBoolean(upgrade, DIRTY_TAG, false);
+        this.dirty = false;
     }
 
     @Override
     public void setDirty(boolean value) {
-        ItemNBTHelpers.setBoolean(upgrade, DIRTY_TAG, value);
+        this.dirty = value;
     }
 }
