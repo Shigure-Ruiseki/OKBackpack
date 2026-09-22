@@ -31,7 +31,6 @@ import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
 import ruiseki.okbackpack.common.command.CommandBackpack;
 import ruiseki.okbackpack.common.init.ModOreDicts;
 import ruiseki.okbackpack.common.init.TierRegistries;
-import ruiseki.okbackpack.common.recipe.BackpackRecipeLoader;
 import ruiseki.okbackpack.common.recipe.CompactingRecipeCache;
 import ruiseki.okbackpack.common.recipe.ModRecipes;
 import ruiseki.okbackpack.compat.bauble.BaubleCompat;
@@ -127,8 +126,6 @@ public class OKBackpack extends ModBaseVersionable {
             .initialize(
                 MinecraftServer.getServer()
                     .getEntityWorld());
-
-        BackpackRecipeLoader.publishRecipes();
     }
 
     @Override
