@@ -95,6 +95,11 @@ public class BackPackContainer extends ModularContainer
             .distinct()
             .count();
         builder.addSlotGroupOf(backpackSlots, Math.max(1, rowSize))
+            .buttonPosSetter((slotGroup, buttonPos) -> {
+                buttonPos.setHorizontal();
+                buttonPos.setTopRight();
+                buttonPos.setPos((20 + rowSize * 18) - SLEEPING_BAG_RIGHT_OFFSET - SLEEPING_BAG_BUTTON_SIZE, 5);
+            })
             .priority(BACKPACK_SLOT_GROUP_PRIORITY);
 
         // Player slots are left to Bogo Sorter, which discovers them through BogoSortAPI.isPlayerSlot.
