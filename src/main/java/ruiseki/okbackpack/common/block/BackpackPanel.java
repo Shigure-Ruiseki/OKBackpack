@@ -548,7 +548,7 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
     }
 
     public void addSearchBar() {
-        searchBarWidget = (BackpackSearchBarWidget) new BackpackSearchBarWidget(this).widthRel(0.70f)
+        searchBarWidget = (BackpackSearchBarWidget) new BackpackSearchBarWidget(this).widthRel(0.68f)
             .height(10)
             .top(5)
             .left(5);
