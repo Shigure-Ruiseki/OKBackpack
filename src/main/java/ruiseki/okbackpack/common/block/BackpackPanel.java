@@ -293,8 +293,6 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                         Interactable.playButtonClickSound();
                         boolean reverse = !Interactable.hasShiftDown();
 
-                        BackpackInventoryHelpers.sortInventory(wrapper, reverse);
-
                         backpackSyncHandler.syncToServer(
                             BackpackSH.getId(BackpackSHRegisters.UPDATE_SORT_INV),
                             buf -> buf.writeBoolean(reverse));

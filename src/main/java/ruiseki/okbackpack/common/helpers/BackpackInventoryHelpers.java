@@ -1,6 +1,5 @@
 package ruiseki.okbackpack.common.helpers;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +18,10 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
+import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockBackpack;
+import ruiseki.okbackpack.common.block.TEBackpack;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.item.capability.wrapper.PlayerMainInvWrapper;
@@ -29,7 +30,20 @@ import ruiseki.okcore.item.handler.ItemStackHandler;
 
 public class BackpackInventoryHelpers {
 
+    public static int getExtendedStackLimit(TEBackpack backpack, int slot, ItemStack stack) {
+        if (backpack == null || stack == null) return 0;
+        return backpack.getWrapper()
+            .getStackHandler()
+            .getStackLimit(slot, stack);
+    }
+
     public static void sortInventory(IStorageWrapper wrapper, boolean reverse) {
+        BackpackItemStackHandler storage = wrapper.getStackHandler();
+        ItemStack[] snapshot = new ItemStack[wrapper.getSlots()];
+        for (int i = 0; i < snapshot.length; i++) {
+            ItemStack stack = storage.getStackInSlot(i);
+            snapshot[i] = stack == null ? null : stack.copy();
+        }
 
         // Phase 1: memory slot
         for (int i = 0; i < wrapper.getSlots(); i++) {
@@ -38,7 +52,7 @@ public class BackpackInventoryHelpers {
             ItemStack mem = wrapper.getMemoryStack(i);
             if (mem == null) continue;
 
-            ItemStack inSlot = wrapper.getStackInSlot(i);
+            ItemStack inSlot = snapshot[i];
 
             double stackMod = wrapper.applyStackLimitModifiers();
             double rawLimit = mem.getMaxStackSize() * stackMod;
@@ -52,11 +66,12 @@ public class BackpackInventoryHelpers {
             for (int j = 0; j < wrapper.getSlots(); j++) {
                 if (i == j || wrapper.isSlotLocked(j)) continue;
 
-                ItemStack other = wrapper.getStackInSlot(j);
+                ItemStack other = snapshot[j];
                 if (other == null || other.stackSize <= 0) continue;
 
-                boolean match = wrapper.isMemoryStackRespectNBT(i) ? ItemStack.areItemStacksEqual(mem, other)
-                    : other.isItemEqual(mem);
+                boolean match = other.isItemEqual(mem)
+                    && (!wrapper.isMemoryStackRespectNBT(i) || ItemStack.areItemStackTagsEqual(mem, other))
+                    && (inSlot == null || ItemHandlerHelpers.canItemStacksStack(inSlot, other));
 
                 if (!match) continue;
 
@@ -65,14 +80,14 @@ public class BackpackInventoryHelpers {
                 if (inSlot == null) {
                     inSlot = other.copy();
                     inSlot.stackSize = move;
-                    wrapper.setStackInSlot(i, inSlot);
+                    snapshot[i] = inSlot;
                 } else {
                     inSlot.stackSize += move;
                 }
 
                 other.stackSize -= move;
                 if (other.stackSize <= 0) {
-                    wrapper.setStackInSlot(j, null);
+                    snapshot[j] = null;
                 }
 
                 need -= move;
@@ -85,7 +100,7 @@ public class BackpackInventoryHelpers {
             if (wrapper.isSlotLocked(i)) continue;
 
             boolean isMem = wrapper.isSlotMemorized(i);
-            ItemStack baseStack = wrapper.getStackInSlot(i);
+            ItemStack baseStack = snapshot[i];
             if (baseStack == null) continue;
 
             double mergeMod = wrapper.applyStackLimitModifiers();
@@ -95,7 +110,7 @@ public class BackpackInventoryHelpers {
             for (int j = i + 1; j < wrapper.getSlots(); j++) {
                 if (isMem != wrapper.isSlotMemorized(j) || wrapper.isSlotLocked(j)) continue;
 
-                ItemStack stack = wrapper.getStackInSlot(j);
+                ItemStack stack = snapshot[j];
                 if (!ItemHandlerHelpers.canItemStacksStack(baseStack, stack)) continue;
                 if (stack.stackSize <= 0) continue;
 
@@ -106,7 +121,7 @@ public class BackpackInventoryHelpers {
                     stack.stackSize -= diff;
 
                     if (stack.stackSize <= 0) {
-                        wrapper.setStackInSlot(j, null);
+                        snapshot[j] = null;
                     }
                 } else if (diff == 0) break;
             }
@@ -114,15 +129,9 @@ public class BackpackInventoryHelpers {
 
         // Phase 3: collect items
         List<ItemStack> sorted = new ArrayList<>();
-        List<Map.Entry<ItemStack, Integer>> inPlace = new ArrayList<>();
-
         for (int i = 0; i < wrapper.getSlots(); i++) {
-            ItemStack stack = wrapper.getStackInSlot(i);
-
-            if (wrapper.isSlotMemorized(i) || wrapper.isSlotLocked(i)) {
-                inPlace.add(new AbstractMap.SimpleEntry<>(stack, i));
-            } else {
-                sorted.add(stack);
+            if (!wrapper.isSlotMemorized(i) && !wrapper.isSlotLocked(i)) {
+                sorted.add(snapshot[i]);
             }
         }
 
@@ -164,17 +173,14 @@ public class BackpackInventoryHelpers {
         });
 
         // Phase 5: rebuild inventory
-        while (sorted.size() < wrapper.getSlots()) {
-            sorted.add(null);
+        int sortedIndex = 0;
+        for (int i = 0; i < snapshot.length; i++) {
+            ItemStack stack = wrapper.isSlotMemorized(i) || wrapper.isSlotLocked(i) ? snapshot[i]
+                : sorted.get(sortedIndex++);
+            storage.setStackInSlot(i, stack == null ? null : stack.copy());
         }
 
-        for (Map.Entry<ItemStack, Integer> entry : inPlace) {
-            sorted.set(entry.getValue(), entry.getKey());
-        }
-
-        for (int i = 0; i < sorted.size(); i++) {
-            wrapper.setStackInSlot(i, sorted.get(i)); // FIX
-        }
+        wrapper.markDirty();
     }
 
     private static List<String> oreNames(ItemStack stack) {
