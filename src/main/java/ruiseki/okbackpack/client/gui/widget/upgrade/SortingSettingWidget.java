@@ -10,6 +10,7 @@ import com.cleanroommc.modularui.utils.GlStateManager;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
+import cpw.mods.fml.common.Optional;
 import lombok.Getter;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
@@ -21,6 +22,7 @@ import ruiseki.okbackpack.client.gui.widget.TabWidget;
 import ruiseki.okbackpack.client.gui.widget.TabWidget.ExpandDirection;
 import ruiseki.okbackpack.common.block.BackpackSettingPanel;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
+import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
 
 public class SortingSettingWidget extends ExpandedTabWidget {
 
@@ -76,6 +78,7 @@ public class SortingSettingWidget extends ExpandedTabWidget {
                     for (BackpackSlotSH syncHandler : (BackpackSlotSH[]) panel.getStorageSlotSH()) {
                         syncHandler.syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_SLOT_LOCK));
                     }
+                    refreshBogoSortingContext();
 
                     return true;
                 }
@@ -96,6 +99,7 @@ public class SortingSettingWidget extends ExpandedTabWidget {
                     for (BackpackSlotSH syncHandler : (BackpackSlotSH[]) panel.getStorageSlotSH()) {
                         syncHandler.syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_SLOT_LOCK));
                     }
+                    refreshBogoSortingContext();
 
                     return true;
                 }
@@ -159,6 +163,11 @@ public class SortingSettingWidget extends ExpandedTabWidget {
             });
         phantomTabWidget.getTabIcon()
             .tooltipAutoUpdate(true);
+    }
+
+    @Optional.Method(modid = "bogosorter")
+    private static void refreshBogoSortingContext() {
+        BackpackBogoSorterClientCompat.invalidateSortingContext();
     }
 
     public int getCurrentColor() {

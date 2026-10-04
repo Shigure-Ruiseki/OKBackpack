@@ -22,6 +22,7 @@ public enum Mods implements IMod, ITargetMod {
     StructureLib("structurelib"),
     EtFuturum("etfuturum"),
     TConstruct("TConstruct"),
+    LogisticsPipes("LogisticsPipes"),
     Thaumcraft("Thaumcraft"),
     FindIt("findit"),
     ;

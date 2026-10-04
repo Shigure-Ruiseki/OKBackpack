@@ -24,6 +24,7 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import cofh.api.energy.IEnergyHandler;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.experimental.Delegate;
@@ -34,9 +35,11 @@ import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
 import ruiseki.okbackpack.compat.thaumcraft.IVisChargeTarget;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileEntityOK;
+import tconstruct.api.IExtendedStackLimitProvider;
 
+@Optional.Interface(iface = "tconstruct.api.IExtendedStackLimitProvider", modid = "TConstruct")
 public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHolder<SidedPosGuiData>,
-    TileEntityOK.ITickingTile, IEnergyHandler, IFluidHandler, IVisChargeTarget {
+    TileEntityOK.ITickingTile, IEnergyHandler, IFluidHandler, IVisChargeTarget, IExtendedStackLimitProvider {
 
     private int[] allSlots;
 
@@ -225,18 +228,9 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
 
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack) {
-        if (slot < 0 || slot >= getSizeInventory()) {
-            return;
-        }
+        if (slot < 0 || slot >= getSizeInventory()) return;
 
-        if (stack == null) {
-            wrapper.setStackInSlot(slot, null);
-        }
-
-        if (stack != null && stack.stackSize > getInventoryStackLimit()) {
-            stack.stackSize = getInventoryStackLimit();
-        }
-
+        if (stack != null && stack.stackSize > getExtendedStackLimit(slot, stack)) return;
         wrapper.setStackInSlot(slot, stack);
     }
 
@@ -256,6 +250,14 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
         double raw = 64.0 * mod;
         if (raw >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
         return (int) Math.ceil(raw);
+    }
+
+    public int getExtendedStackLimit(int slot, ItemStack stack) {
+        if (stack == null) {
+            return 0;
+        }
+        return wrapper.getStackHandler()
+            .getStackLimit(slot, stack);
     }
 
     @Override

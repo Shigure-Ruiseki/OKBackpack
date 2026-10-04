@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
@@ -21,14 +22,21 @@ import com.cleanroommc.bogosorter.ClientEventHandler;
 import com.cleanroommc.bogosorter.api.SortRule;
 import com.cleanroommc.bogosorter.client.keybinds.KeyBind;
 import com.cleanroommc.bogosorter.client.keybinds.control.BSKeybinds;
+import com.cleanroommc.bogosorter.common.config.BogoSorterConfig;
 import com.cleanroommc.bogosorter.common.config.SortRulesConfig;
+import com.cleanroommc.bogosorter.common.sort.ButtonHandler;
+import com.cleanroommc.bogosorter.common.sort.GuiSortingContext;
+import com.cleanroommc.bogosorter.common.sort.SlotGroup;
 import com.cleanroommc.bogosorter.common.sort.SortHandler;
 import com.cleanroommc.bogosorter.common.sort.color.ItemColorHelper;
 import com.cleanroommc.modularui.api.event.KeyboardInputEvent;
 import com.cleanroommc.modularui.api.event.MouseInputEvent;
 import com.cleanroommc.modularui.core.mixins.early.minecraft.GuiContainerAccessor;
+import com.cleanroommc.modularui.core.mixins.early.minecraft.GuiScreenAccessor;
+import com.cleanroommc.modularui.screen.GuiScreenWrapper;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
@@ -44,13 +52,13 @@ public class BackpackBogoSorterClientCompat {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onKeyboardInput(KeyboardInputEvent.Pre event) {
-        forwardInputToBogo(event, false);
+        if (forwardInputToBogo(event, false)) return;
         trySortHoveredBackpack(event);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onMouseInput(MouseInputEvent.Pre event) {
-        forwardInputToBogo(event, true);
+        if (forwardInputToBogo(event, true)) return;
         trySortHoveredBackpack(event);
     }
 
@@ -61,13 +69,13 @@ public class BackpackBogoSorterClientCompat {
      * Forwarding the input here, before ModularUI cancels it, keeps Bogo Sorter's own key
      * configuration authoritative.
      */
-    private void forwardInputToBogo(GuiScreenEvent event, boolean fromMouse) {
-        if (!(event.gui instanceof GuiContainer gui)) return;
+    private boolean forwardInputToBogo(GuiScreenEvent event, boolean fromMouse) {
+        if (!(event.gui instanceof GuiContainer gui)) return false;
 
         KeyBind.checkKeys(ClientEventHandler.getTicks());
-        if (ClientEventHandler.handleInput(gui, fromMouse)) {
-            event.setCanceled(true);
-        }
+        boolean handled = ClientEventHandler.handleInput(gui, fromMouse);
+        if (handled) event.setCanceled(true);
+        return handled;
     }
 
     private void trySortHoveredBackpack(GuiScreenEvent event) {
@@ -77,7 +85,9 @@ public class BackpackBogoSorterClientCompat {
         if (!canSortNow()) return;
 
         Slot hoveredSlot = ((GuiContainerAccessor) gui).getHoveredSlot();
-        if (!(hoveredSlot instanceof ModularBackpackSlot)) return;
+        if (!(hoveredSlot instanceof ModularBackpackSlot backpackSlot)) return;
+        if (container.wrapper.isSlotLocked(backpackSlot.getSlotIndex())
+            || container.wrapper.isSlotMemorized(backpackSlot.getSlotIndex())) return;
 
         sortBackpack(container);
         event.setCanceled(true);
@@ -104,6 +114,26 @@ public class BackpackBogoSorterClientCompat {
 
         BackpackBogoSorterClientCompat.writeSortRequest(syncHandler, container);
         SortHandler.playSortSound();
+    }
+
+    @Optional.Method(modid = "bogosorter")
+    public static void invalidateSortingContext() {
+        GuiSortingContext.cleanup();
+        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+        if (!(screen instanceof GuiContainer gui) || !(gui.inventorySlots instanceof BackPackContainer)
+            || screen instanceof GuiScreenWrapper) return;
+
+        List<GuiButton> buttons = ((GuiScreenAccessor) gui).getButtonList();
+        buttons.removeIf(ButtonHandler.SortButton.class::isInstance);
+        if (!BogoSorterConfig.buttonEnabled) return;
+
+        for (SlotGroup group : GuiSortingContext.getOrCreate(gui.inventorySlots)
+            .getSlotGroups()) {
+            if (group.canBeSorted() && group.getPosSetter() != null) {
+                buttons.add(new ButtonHandler.SortButton(group, true));
+                buttons.add(new ButtonHandler.SortButton(group, false));
+            }
+        }
     }
 
     private static BackpackSH findBackpackSyncHandler(BackPackContainer container) {

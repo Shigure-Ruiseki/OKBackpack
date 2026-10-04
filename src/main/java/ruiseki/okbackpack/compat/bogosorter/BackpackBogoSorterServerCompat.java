@@ -30,6 +30,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.BackpackSHRegistry;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
+import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
@@ -161,11 +162,12 @@ public class BackpackBogoSorterServerCompat {
 
         for (int i = 0; i < sortableSlots.size(); i++) {
             int slotIndex = sortableSlots.getInt(i);
-            ItemStack stack = wrapper.getStackInSlot(slotIndex);
+            ItemStack stack = wrapper.getStackHandler()
+                .getStackInSlot(slotIndex);
             if (stack == null || stack.stackSize <= 0) continue;
 
             ItemSortContainer existing = merged.get(stack);
-            if (existing == null) {
+            if (existing == null || existing.getAmount() > Integer.MAX_VALUE - stack.stackSize) {
                 ItemSortContainer container = new ItemSortContainer(stack, clientData.get(slotIndex));
                 merged.put(stack, container);
                 result.add(container);
@@ -194,23 +196,24 @@ public class BackpackBogoSorterServerCompat {
     @Optional.Method(modid = "bogosorter")
     public static void rebuildSlots(IStorageWrapper wrapper, IntList sortableSlots,
         List<ItemSortContainer> sortedItems) {
+        BackpackItemStackHandler storage = wrapper.getStackHandler();
         int itemIndex = 0;
         ItemSortContainer current = sortedItems.get(itemIndex);
 
         for (int i = 0; i < sortableSlots.size(); i++) {
             int slotIndex = sortableSlots.getInt(i);
             if (current == null) {
-                wrapper.setStackInSlot(slotIndex, null);
+                storage.setStackInSlot(slotIndex, null);
                 continue;
             }
 
             int limit = getStackLimit(wrapper, current.getItemStack());
             if (limit <= 0) {
-                wrapper.setStackInSlot(slotIndex, null);
+                storage.setStackInSlot(slotIndex, null);
                 continue;
             }
 
-            wrapper.setStackInSlot(slotIndex, current.makeStack(limit));
+            storage.setStackInSlot(slotIndex, current.makeStack(limit));
             if (!current.canMakeStack()) {
                 itemIndex++;
                 current = itemIndex < sortedItems.size() ? sortedItems.get(itemIndex) : null;

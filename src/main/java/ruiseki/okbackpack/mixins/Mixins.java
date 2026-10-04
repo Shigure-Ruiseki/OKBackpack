@@ -25,16 +25,20 @@ public enum Mixins implements IMixins {
         .setApplyIf(() -> GeneralConfig.enableArcaneCraftingUpgrade)
         .addRequiredMod(Mods.Thaumcraft)),
 
-    TINKERS_CONSTRUCT(new MixinBuilder("TConstruct backpack slot compatibility")
-        .addCommonMixins("tconstruct.MixinCraftingStationContainer")
-        .setPhase(Phase.LATE)
-        .addRequiredMod(Mods.TConstruct)),
-
     TINKERS_BOGO_SORTER(new MixinBuilder("TConstruct Bogo Sorter compatibility")
         .addCommonMixins("bogosorter.MixinSortHandler", "bogosorter.MixinBogoSortAPI")
         .setPhase(Phase.LATE)
         .addRequiredMod(Mods.TConstruct)
         .addRequiredMod(Mods.InventoryBogoSorter)),
+
+    LOGISTICS_PIPES(new MixinBuilder("Logistics Pipes extended backpack capacity compatibility")
+        .addCommonMixins(
+            "logisticspipes.MixinInventoryUtil",
+            "logisticspipes.MixinTransactorSimple",
+            "logisticspipes.MixinInventoryIteratorSimple",
+            "logisticspipes.MixinInventoryIteratorSided")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(Mods.LogisticsPipes)),
 
     GUI_BACKPACK_OPENER(new MixinBuilder("Backpack GUI opener")
         .addSidedMixins(

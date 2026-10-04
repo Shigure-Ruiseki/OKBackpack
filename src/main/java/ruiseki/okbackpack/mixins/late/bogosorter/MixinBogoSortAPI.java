@@ -18,8 +18,9 @@ import com.cleanroommc.bogosorter.api.ICustomInsertable;
 import com.cleanroommc.bogosorter.mixins.early.minecraft.SlotAccessor;
 import com.cleanroommc.modularui.utils.item.ItemHandlerHelper;
 
-import ruiseki.okbackpack.common.block.TEBackpack;
-import tconstruct.tools.gui.ChestSlot;
+import ruiseki.okbackpack.client.gui.container.BackPackContainer;
+import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
+import tconstruct.api.ExtendedStackLimitHelper;
 import tconstruct.tools.inventory.CraftingStationContainer;
 
 @Mixin(value = BogoSortAPI.class, remap = false)
@@ -45,8 +46,9 @@ public abstract class MixinBogoSortAPI {
             if (stack == null || stack.stackSize <= 0) break;
 
             Slot actualSlot = container.getSlot(slot.getSlotNumber());
-            if (actualSlot instanceof ChestSlot && slot.getInventory() instanceof TEBackpack backpack) {
-                stack = insertIntoBackpackSlot(slot, backpack, stack, emptyOnly);
+            if (actualSlot instanceof ModularBackpackSlot
+                || ExtendedStackLimitHelper.hasExtendedStackLimit(actualSlot)) {
+                stack = insertIntoBackpackSlot(container, actualSlot, slot, stack, emptyOnly);
             } else {
                 stack = ShortcutHandler.insert(slot, stack, emptyOnly);
             }
@@ -55,21 +57,21 @@ public abstract class MixinBogoSortAPI {
     }
 
     @Unique
-    private static ItemStack insertIntoBackpackSlot(SlotAccessor slot, TEBackpack backpack, ItemStack stack,
-        boolean emptyOnly) {
-        ItemStack stored = backpack.getStackInSlot(slot.callGetSlotIndex());
+    private static ItemStack insertIntoBackpackSlot(Container container, Slot actualSlot, SlotAccessor slot,
+        ItemStack stack, boolean emptyOnly) {
+        ItemStack stored = slot.callGetStack();
         boolean hasStoredStack = stored != null && stored.stackSize > 0;
 
         if (emptyOnly) {
             if (hasStoredStack || !slot.callIsItemValid(stack)) return stack;
 
-            int amount = Math.min(stack.stackSize, backpack.getInventoryStackLimit());
+            int amount = Math.min(stack.stackSize, getBackpackStackLimit(container, actualSlot, stack));
             if (amount <= 0) return stack;
 
             ItemStack placed = stack.copy();
             placed.stackSize = amount;
             stack.stackSize -= amount;
-            slot.callPutStack(placed);
+            putStack(container, actualSlot, placed);
             return stack.stackSize == 0 ? null : stack;
         }
 
@@ -77,14 +79,35 @@ public abstract class MixinBogoSortAPI {
             return stack;
         }
 
-        int available = Math.max(0, backpack.getInventoryStackLimit() - stored.stackSize);
+        int available = Math.max(0, getBackpackStackLimit(container, actualSlot, stored) - stored.stackSize);
         int amount = Math.min(stack.stackSize, available);
         if (amount <= 0) return stack;
 
         ItemStack merged = stored.copy();
         merged.stackSize += amount;
         stack.stackSize -= amount;
-        slot.callPutStack(merged);
+        putStack(container, actualSlot, merged);
         return stack.stackSize == 0 ? null : stack;
+    }
+
+    @Unique
+    private static int getBackpackStackLimit(Container container, Slot slot, ItemStack stack) {
+        if (slot instanceof ModularBackpackSlot backpackSlot
+            && container instanceof BackPackContainer backpackContainer) {
+            return backpackContainer.wrapper.getStackHandler()
+                .getStackLimit(backpackSlot.getSlotIndex(), stack);
+        }
+        return ExtendedStackLimitHelper.getStackLimit(slot, stack);
+    }
+
+    @Unique
+    private static void putStack(Container container, Slot slot, ItemStack stack) {
+        if (slot instanceof ModularBackpackSlot backpackSlot
+            && container instanceof BackPackContainer backpackContainer) {
+            backpackContainer.wrapper.getStackHandler()
+                .setStackInSlot(backpackSlot.getSlotIndex(), stack);
+            return;
+        }
+        slot.putStack(stack);
     }
 }
