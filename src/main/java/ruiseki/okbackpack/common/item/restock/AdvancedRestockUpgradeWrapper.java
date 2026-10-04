@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable.FilterType;
 import ruiseki.okbackpack.api.wrapper.IRestockUpgrade;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.helpers.InventoryInteractionHelpers;
@@ -44,6 +45,11 @@ public class AdvancedRestockUpgradeWrapper extends AdvancedUpgradeWrapper implem
         if (type == null) type = RestockFilterType.ALLOW;
         ItemNBTHelpers.setInt(upgrade, RESTOCK_FILTER_TYPE_TAG, type.ordinal());
         save();
+    }
+
+    @Override
+    public FilterType getFilterType() {
+        return getRestockFilterType() == RestockFilterType.BLOCK ? FilterType.BLACKLIST : FilterType.WHITELIST;
     }
 
     @Override
@@ -111,13 +117,6 @@ public class AdvancedRestockUpgradeWrapper extends AdvancedUpgradeWrapper implem
         if (!isEnabled()) return false;
         if (!hasAnyFilterItem()) return true;
 
-        RestockFilterType filterType = getRestockFilterType();
-        // Delegates to AdvancedUpgradeWrapper's advanced matching (ITEM/MOD/ORE_DICT)
-        boolean matchesFilter = super.checkFilter(check);
-
-        return switch (filterType) {
-            case ALLOW, STORAGE -> matchesFilter;
-            case BLOCK -> !matchesFilter;
-        };
+        return super.checkFilter(check);
     }
 }

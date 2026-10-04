@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable.FilterType;
 import ruiseki.okbackpack.api.wrapper.IDepositUpgrade;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.helpers.InventoryInteractionHelpers;
@@ -44,6 +45,11 @@ public class AdvancedDepositUpgradeWrapper extends AdvancedUpgradeWrapper implem
         if (type == null) type = DepositFilterType.ALLOW;
         ItemNBTHelpers.setInt(upgrade, DEPOSIT_FILTER_TYPE_TAG, type.ordinal());
         save();
+    }
+
+    @Override
+    public FilterType getFilterType() {
+        return getDepositFilterType() == DepositFilterType.BLOCK ? FilterType.BLACKLIST : FilterType.WHITELIST;
     }
 
     @Override
@@ -105,13 +111,6 @@ public class AdvancedDepositUpgradeWrapper extends AdvancedUpgradeWrapper implem
         if (!isEnabled()) return false;
         if (!hasAnyFilterItem()) return true;
 
-        DepositFilterType filterType = getDepositFilterType();
-        // Delegates to AdvancedUpgradeWrapper's advanced matching (ITEM/MOD/ORE_DICT)
-        boolean matchesFilter = super.checkFilter(check);
-
-        return switch (filterType) {
-            case ALLOW, INVENTORY -> matchesFilter;
-            case BLOCK -> !matchesFilter;
-        };
+        return super.checkFilter(check);
     }
 }

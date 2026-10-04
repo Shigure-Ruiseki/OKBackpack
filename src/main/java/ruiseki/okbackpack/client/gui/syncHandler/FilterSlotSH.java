@@ -1,16 +1,10 @@
 package ruiseki.okbackpack.client.gui.syncHandler;
 
-import java.io.IOException;
-
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 
-import com.cleanroommc.modularui.network.NetworkUtils;
 import com.cleanroommc.modularui.utils.MouseData;
 import com.cleanroommc.modularui.value.sync.PhantomItemSlotSH;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
-
-import cpw.mods.fml.relauncher.Side;
 
 public class FilterSlotSH extends PhantomItemSlotSH {
 
@@ -42,21 +36,4 @@ public class FilterSlotSH extends PhantomItemSlotSH {
 
     }
 
-    @Override
-    public void readOnServer(int id, PacketBuffer buf) throws IOException {
-        super.readOnServer(id, buf);
-        if (id == SYNC_CLICK) {
-            phantomClick(MouseData.readPacket(buf));
-        } else if (id == SYNC_ITEM_SIMPLE) {
-            if (!isPhantom()) return;
-            ItemStack itemStack = NetworkUtils.readItemStack(buf);
-            int button = buf.readVarIntFromBuffer();
-            phantomClick(new MouseData(Side.SERVER, button, false, false, false), itemStack);
-        }
-    }
-
-    @Override
-    public boolean isAllowC2S() {
-        return true;
-    }
 }
