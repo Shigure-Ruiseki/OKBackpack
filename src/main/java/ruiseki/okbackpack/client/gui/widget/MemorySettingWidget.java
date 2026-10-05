@@ -31,7 +31,7 @@ public class MemorySettingWidget extends ExpandedTabWidget {
     private final CyclicVariantButtonWidget respectNBTButton;
 
     public MemorySettingWidget(IStoragePanel<?> panel, BackpackSettingPanel settingPanel, TabWidget parentTabWidget) {
-        super(2, OKBGuiTextures.BRAIN_ICON, "gui.backpack.memory_settings", 80, ExpandDirection.RIGHT);
+        super(2, OKBGuiTextures.BRAIN_ICON, "gui.backpack.memory_settings", 100, ExpandDirection.RIGHT);
 
         this.panel = panel;
         this.wrapper = panel.getWrapper();

@@ -53,7 +53,7 @@ public class SortingSettingWidget extends ExpandedTabWidget {
     private final TabWidget parentTabWidget;
 
     public SortingSettingWidget(IStoragePanel<?> panel, BackpackSettingPanel settingPanel, TabWidget parentTabWidget) {
-        super(2, OKBGuiTextures.NO_SORT_ICON, "gui.backpack.sorting_settings", 80, ExpandDirection.RIGHT);
+        super(2, OKBGuiTextures.NO_SORT_ICON, "gui.backpack.sorting_settings", 100, ExpandDirection.RIGHT);
 
         this.panel = panel;
         this.wrapper = (BackpackWrapper) panel.getWrapper();

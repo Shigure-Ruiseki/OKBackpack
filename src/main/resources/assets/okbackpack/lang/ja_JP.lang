@@ -204,6 +204,9 @@ gui.backpack.lock_backpack.tooltip=他のプレイヤがこのリュックを開
 gui.backpack.unlock_backpack=他のプレイヤも開ける
 gui.backpack.unlock_backpack.tooltip=どのプレイヤでもこのリュックを開くことができます
 
+gui.backpack.main_color=メインカラー
+gui.backpack.accent_color=アクセントカラー
+
 gui.backpack.keep_tab=開いたタブを記憶: ON
 gui.backpack.keep_tab.tooltip=リュックを閉じて再び開いた時に現在開いているアップグレードタブは開いたままになります
 gui.backpack.not_keep_tab=開いたタブを記憶: OFF
