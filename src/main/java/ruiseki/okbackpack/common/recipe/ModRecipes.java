@@ -17,7 +17,6 @@ import ruiseki.okbackpack.common.item.ItemUpgradeConfig;
 import ruiseki.okbackpack.common.item.arcane.ItemArcaneCraftingUpgradeConfig;
 import ruiseki.okbackpack.common.item.energizednode.ItemEnergizedNodeUpgradeConfig;
 import ruiseki.okbackpack.compat.Mods;
-import ruiseki.okcore.enums.EnumDye;
 import ruiseki.okcore.init.IInitListener;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -109,57 +108,6 @@ public class ModRecipes implements IInitListener {
                 "blockObsidian",
                 'B',
                 new ItemStack(BlockDiamondBackpackConfig._instance.getInstance())));
-
-        // Dye Recipes
-        BackpackDyeRecipes recipes = new BackpackDyeRecipes();
-
-        for (int i = 0; i < 16; i++) {
-            for (int j = 0; j < 16; j++) {
-
-                String accentOre = EnumDye.DYE_ORE_NAMES[i];
-                String mainOre = EnumDye.DYE_ORE_NAMES[j];
-
-                int accentColor = EnumDye.fromIndex(i)
-                    .getColor();
-                int mainColor = EnumDye.fromIndex(j)
-                    .getColor();
-
-                recipes.registerDyeRecipes(
-                    new ItemStack(BlockLeatherBackpackConfig._instance.getInstance()),
-                    accentOre,
-                    mainOre,
-                    accentColor,
-                    mainColor);
-
-                recipes.registerDyeRecipes(
-                    new ItemStack(BlockIronBackpackConfig._instance.getInstance()),
-                    accentOre,
-                    mainOre,
-                    accentColor,
-                    mainColor);
-
-                recipes.registerDyeRecipes(
-                    new ItemStack(BlockGoldBackpackConfig._instance.getInstance()),
-                    accentOre,
-                    mainOre,
-                    accentColor,
-                    mainColor);
-
-                recipes.registerDyeRecipes(
-                    new ItemStack(BlockDiamondBackpackConfig._instance.getInstance()),
-                    accentOre,
-                    mainOre,
-                    accentColor,
-                    mainColor);
-
-                recipes.registerDyeRecipes(
-                    new ItemStack(BlockObsidianBackpackConfig._instance.getInstance()),
-                    accentOre,
-                    mainOre,
-                    accentColor,
-                    mainColor);
-            }
-        }
     }
 
     @Optional.Method(modid = "Thaumcraft")
