@@ -63,6 +63,7 @@ public class BackPackContainer extends ModularContainer
     private static final int DROP_TO_WORLD = -999;
     private static final int LEFT_MOUSE = 0;
     private static final int RIGHT_MOUSE = 1;
+    private static final int THROW = 4;
     private static final int BACKPACK_SLOT_GROUP_PRIORITY = 10;
     private static final int BOGO_BUTTON_SLEEPING_BAG_GAP = 2;
     private static final int SLEEPING_BAG_BUTTON_SIZE = 14;
@@ -82,25 +83,46 @@ public class BackPackContainer extends ModularContainer
     @Optional.Method(modid = "bogosorter")
     @Override
     public void buildSortingContext(ISortingContextBuilder builder) {
+        List<Slot> allBackpackSlots = new ArrayList<>();
         List<Slot> backpackSlots = new ArrayList<>();
         for (Slot slot : inventorySlots) {
-            if (slot instanceof ModularBackpackSlot) {
-                backpackSlots.add(slot);
+            if (slot instanceof ModularBackpackSlot backpackSlot) {
+                allBackpackSlots.add(slot);
+                if (!wrapper.isSlotLocked(backpackSlot.getSlotIndex())
+                    && !wrapper.isSlotMemorized(backpackSlot.getSlotIndex())) {
+                    backpackSlots.add(slot);
+                }
             }
         }
         if (backpackSlots.size() < 2) return;
 
-        int rowSize = (int) backpackSlots.stream()
+        int visualRowSize = (int) allBackpackSlots.stream()
             .map(slot -> slot.xDisplayPosition)
             .distinct()
             .count();
-        builder.addSlotGroupOf(backpackSlots, Math.max(1, rowSize))
+        int rowSize = Math.max(1, Math.min(visualRowSize, backpackSlots.size()));
+        int topY = allBackpackSlots.stream()
+            .mapToInt(slot -> slot.yDisplayPosition)
+            .min()
+            .orElse(0);
+        int topRightX = allBackpackSlots.stream()
+            .filter(slot -> slot.yDisplayPosition == topY)
+            .mapToInt(slot -> slot.xDisplayPosition)
+            .max()
+            .orElse(0);
+        builder.addSlotGroupOf(backpackSlots, rowSize)
+            .priority(BACKPACK_SLOT_GROUP_PRIORITY)
             .buttonPosSetter((slotGroup, buttonPos) -> {
+                if (slotGroup.getSlots()
+                    .isEmpty()) {
+                    buttonPos.setEnabled(false);
+                    return;
+                }
+
                 buttonPos.setHorizontal();
                 buttonPos.setTopRight();
-                buttonPos.setPos((20 + rowSize * 18) - SLEEPING_BAG_RIGHT_OFFSET - SLEEPING_BAG_BUTTON_SIZE, 5);
-            })
-            .priority(BACKPACK_SLOT_GROUP_PRIORITY);
+                buttonPos.setPos(topRightX + 17, topY - 14);
+            });
 
         // Player slots are left to Bogo Sorter, which discovers them through BogoSortAPI.isPlayerSlot.
         // Registering them here would create groups without the player/hotbar flags, which breaks
@@ -264,7 +286,7 @@ public class BackPackContainer extends ModularContainer
         super.onContainerClosed(player);
 
         // Final sync before closing - ensure all changes are saved
-        if (!getGuiData().isClient()) {
+        if (!getGuiData().isClient() && wrapper.isDirty()) {
             // Process any pending jukebox stops before closing
             if (wrapper instanceof BackpackWrapper bw) {
                 bw.processPendingJukeboxStops(player);
@@ -276,6 +298,10 @@ public class BackPackContainer extends ModularContainer
 
     @Override
     public ItemStack slotClick(int slotId, int mouseButton, int mode, EntityPlayer player) {
+        if (mode == THROW && handleOversizedThrow(slotId, mouseButton, player)) {
+            return Platform.EMPTY_STACK;
+        }
+
         ClickType clickTypeIn = ClickType.fromNumber(mode);
 
         InventoryPlayer playerInventory = player.inventory;
@@ -533,6 +559,27 @@ public class BackPackContainer extends ModularContainer
         }
 
         return super.slotClick(slotId, mouseButton, mode, player);
+    }
+
+    private boolean handleOversizedThrow(int slotId, int mouseButton, EntityPlayer player) {
+        if (player.inventory.getItemStack() != null || slotId < 0 || slotId >= inventorySlots.size()) return false;
+
+        Slot slot = getSlot(slotId);
+        ItemStack stack = slot.getStack();
+        if (stack == null || stack.stackSize <= stack.getMaxStackSize() || !slot.canTakeStack(player)) return false;
+
+        int amount = mouseButton == RIGHT_MOUSE ? stack.getMaxStackSize() : 1;
+        ItemStack dropped = slot.decrStackSize(amount);
+        if (dropped == null || dropped.stackSize <= 0) return false;
+
+        if (slot.getStack() == null || slot.getStack().stackSize <= 0) {
+            slot.putStack(null);
+        }
+        slot.onPickupFromSlot(player, dropped);
+        player.dropPlayerItemWithRandomChoice(dropped, true);
+        slot.onSlotChanged();
+        detectAndSendChanges();
+        return true;
     }
 
     @Override

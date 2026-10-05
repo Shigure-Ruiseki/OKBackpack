@@ -10,8 +10,10 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -29,25 +31,31 @@ import com.cleanroommc.bogosorter.mixins.early.minecraft.SlotAccessor;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
-import ruiseki.okbackpack.common.block.TEBackpack;
-import tconstruct.tools.gui.ChestSlot;
-import tconstruct.tools.inventory.CraftingStationContainer;
+import ruiseki.okbackpack.client.gui.container.BackPackContainer;
+import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
+import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
+import tconstruct.api.ExtendedStackLimitHelper;
 
 @Mixin(value = SortHandler.class, remap = false)
 public abstract class MixinSortHandler {
 
+    @Final
     @Shadow
     private Container container;
 
+    @Final
     @Shadow
     private Int2ObjectMap<ClientSortData> clientSortData;
 
+    @Final
     @Shadow
     private EntityPlayer player;
 
+    @Final
     @Shadow
     private Comparator<ItemSortContainer> containerComparator;
 
+    @Final
     @Shadow
     private List<NbtSortRule> nbtSortRules;
 
@@ -64,10 +72,10 @@ public abstract class MixinSortHandler {
 
     @Inject(method = "sortHorizontal", at = @At("HEAD"), cancellable = true, remap = false)
     private void okbackpack$sortBackpackStacks(SlotGroup slotGroup, CallbackInfo ci) {
-        List<SlotAccessor> slots = getSortableSlots(slotGroup);
+        List<SlotAccessor> slots = getEffectiveSortableSlots(slotGroup);
         boolean hasBackpackSlot = false;
         for (SlotAccessor slot : slots) {
-            if (isBackpackChestSlot(slot)) {
+            if (hasExtendedStackLimit(slot)) {
                 hasBackpackSlot = true;
                 break;
             }
@@ -90,7 +98,7 @@ public abstract class MixinSortHandler {
         ItemSortContainer current = items.pollFirst();
         for (SlotAccessor slot : slots) {
             if (current == null) {
-                slot.callPutStack(null);
+                putStack(slot, null);
                 continue;
             }
 
@@ -99,12 +107,12 @@ public abstract class MixinSortHandler {
             if (limit <= 0) continue;
 
             if (preventSplit(stack)) {
-                slot.callPutStack(stack);
+                putStack(slot, stack);
                 current = items.pollFirst();
                 continue;
             }
 
-            slot.callPutStack(current.makeStack(limit));
+            putStack(slot, current.makeStack(limit));
             if (!current.canMakeStack()) {
                 current = items.pollFirst();
             }
@@ -120,12 +128,10 @@ public abstract class MixinSortHandler {
     @Inject(method = "gatherItems", at = @At("HEAD"), cancellable = true, remap = false)
     private void okbackpack$gatherBackpackItems(SlotGroup slotGroup,
         CallbackInfoReturnable<LinkedList<ItemSortContainer>> cir) {
-        if (!(container instanceof CraftingStationContainer)) return;
-
-        List<SlotAccessor> slots = getSortableSlots(slotGroup);
+        List<SlotAccessor> slots = getEffectiveSortableSlots(slotGroup);
         boolean hasBackpackSlot = false;
         for (SlotAccessor slot : slots) {
-            if (isBackpackChestSlot(slot)) {
+            if (hasExtendedStackLimit(slot)) {
                 hasBackpackSlot = true;
                 break;
             }
@@ -145,7 +151,7 @@ public abstract class MixinSortHandler {
                 result.add(current);
             } else {
                 ItemSortContainer existing = merged.get(stack);
-                if (existing == null) {
+                if (existing == null || existing.getAmount() > Integer.MAX_VALUE - stack.stackSize) {
                     merged.put(stack, current);
                     result.add(current);
                 } else {
@@ -157,30 +163,74 @@ public abstract class MixinSortHandler {
         cir.setReturnValue(result);
     }
 
+    @Unique
     private ItemStack getStack(SlotAccessor slot) {
-        if (!isBackpackChestSlot(slot)) {
-            return slot.callGetStack();
+        Slot actualSlot = getActualSlot(slot);
+        if (actualSlot instanceof ModularBackpackSlot backpackSlot
+            && container instanceof BackPackContainer backpackContainer) {
+            return backpackContainer.wrapper.getStackHandler()
+                .getStackInSlot(backpackSlot.getSlotIndex());
         }
-        return slot.getInventory()
-            .getStackInSlot(slot.callGetSlotIndex());
+        return hasExtendedStackLimit(slot) ? actualSlot.getStack() : slot.callGetStack();
     }
 
-    private boolean isBackpackChestSlot(SlotAccessor slot) {
-        Slot actualSlot = container.getSlot(slot.getSlotNumber());
-        return actualSlot instanceof ChestSlot && slot.getInventory() instanceof TEBackpack;
+    @Unique
+    private boolean hasExtendedStackLimit(SlotAccessor slot) {
+        Slot actualSlot = getActualSlot(slot);
+        return actualSlot instanceof ModularBackpackSlot || ExtendedStackLimitHelper.hasExtendedStackLimit(actualSlot);
     }
 
+    @Unique
     private static boolean preventSplit(ItemStack stack) {
         return BogoSorterConfig.preventSplit && stack.getMaxStackSize() == 1;
     }
 
+    @Unique
     private int getSortingLimit(SlotAccessor slot, ItemStack stack) {
-        if (isBackpackChestSlot(slot)) {
-            return Math.max(
-                0,
-                slot.getInventory()
-                    .getInventoryStackLimit());
+        Slot actualSlot = getActualSlot(slot);
+        if (actualSlot instanceof ModularBackpackSlot backpackSlot
+            && container instanceof BackPackContainer backpackContainer) {
+            return backpackContainer.wrapper.getStackHandler()
+                .getStackLimit(backpackSlot.getSlotIndex(), stack);
+        }
+        if (hasExtendedStackLimit(slot)) {
+            return ExtendedStackLimitHelper.getStackLimit(actualSlot, stack);
         }
         return Math.min(slot.callGetSlotStackLimit(), stack.getMaxStackSize());
+    }
+
+    @Unique
+    private List<SlotAccessor> getEffectiveSortableSlots(SlotGroup slotGroup) {
+        List<SlotAccessor> slots = getSortableSlots(slotGroup);
+        if (!(container instanceof BackPackContainer backpackContainer)) return slots;
+
+        List<SlotAccessor> result = new LinkedList<>();
+        for (SlotAccessor slot : slots) {
+            Slot actualSlot = getActualSlot(slot);
+            if (actualSlot instanceof ModularBackpackSlot backpackSlot
+                && (backpackContainer.wrapper.isSlotLocked(backpackSlot.getSlotIndex())
+                    || backpackContainer.wrapper.isSlotMemorized(backpackSlot.getSlotIndex()))) {
+                continue;
+            }
+            result.add(slot);
+        }
+        return result;
+    }
+
+    @Unique
+    private void putStack(SlotAccessor slot, ItemStack stack) {
+        Slot actualSlot = getActualSlot(slot);
+        if (actualSlot instanceof ModularBackpackSlot backpackSlot
+            && container instanceof BackPackContainer backpackContainer) {
+            BackpackItemStackHandler storage = backpackContainer.wrapper.getStackHandler();
+            storage.setStackInSlot(backpackSlot.getSlotIndex(), stack);
+            return;
+        }
+        slot.callPutStack(stack);
+    }
+
+    @Unique
+    private Slot getActualSlot(SlotAccessor slot) {
+        return container.getSlot(slot.getSlotNumber());
     }
 }

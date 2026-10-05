@@ -180,16 +180,19 @@ public final class BackpackEntityHelpers {
         if (context == null) return;
 
         if (context.carrier() instanceof EntityPlayer player) {
-            context.wrapper()
-                .writeToItem(player);
+            BackpackWrapper wrapper = context.wrapper();
+            wrapper.writeToItem(player);
             if (player.openContainer instanceof BackPackContainer container && context.matches(container)) {
                 container.detectAndSendChanges();
+            } else {
+                wrapper.markClean();
             }
             return;
         }
 
-        context.wrapper()
-            .writeToItem();
+        BackpackWrapper wrapper = context.wrapper();
+        wrapper.writeToItem();
+        wrapper.markClean();
     }
 
     private static boolean visitInventory(EntityPlayer player, IInventory inventory, InventoryType type,
@@ -237,6 +240,9 @@ public final class BackpackEntityHelpers {
 
     private static BackpackWrapper resolveWrapper(EntityPlayer player, ItemStack stack, InventoryType type,
         int slotIndex) {
+        BackpackWrapper openWrapper = getOpenBackpackWrapper(player, stack);
+        if (openWrapper != null) return openWrapper;
+
         if (player.openContainer instanceof BackPackContainer container && type == container.wrapper.getType()
             && slotIndex == container.wrapper.getSlotIndex()
             && container.wrapper instanceof BackpackWrapper wrapper) {
@@ -355,8 +361,9 @@ public final class BackpackEntityHelpers {
                 case 8 -> 31 * hash + tag.getString(key)
                     .hashCode();
                 case 10 -> 31 * hash + deepHash(tag.getCompoundTag(key));
-                case 9 -> 31 * hash + tag.getTagList(key, 10)
-                    .tagCount();
+                case 9 -> 31 * hash + tag.getTag(key)
+                    .toString()
+                    .hashCode();
                 default -> 31 * hash + tag.getTag(key)
                     .toString()
                     .hashCode();

@@ -45,13 +45,17 @@ public interface IMagnetUpgrade extends ITickable {
 
         if (isCollectItem()) {
             for (EntityItem item : items) {
-                if (canCollectItem(item.getEntityItem())) {
+                if (!item.isDead && canCollectItem(item.getEntityItem())) {
                     result.add(item);
                 }
             }
         }
         if (isCollectExp()) {
-            result.addAll(xps);
+            for (EntityXPOrb xp : xps) {
+                if (!xp.isDead) {
+                    result.add(xp);
+                }
+            }
         }
 
         return new ArrayList<>(result);

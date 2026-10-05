@@ -1,18 +1,11 @@
 package ruiseki.okbackpack.common.item.magnet;
 
-import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import org.joml.Vector3d;
-
-import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IMagnetUpgrade;
 import ruiseki.okbackpack.common.item.pickup.PickupUpgradeWrapper;
@@ -58,103 +51,17 @@ public class MagnetUpgradeWrapper extends PickupUpgradeWrapper implements IMagne
     }
 
     @Override
+    public boolean canPickup(ItemStack stack) {
+        return isCollectItem() && canCollectItem(stack);
+    }
+
+    @Override
     public boolean tick(EntityPlayer player) {
-        if (player.ticksExisted % 2 != 0) return false;
-
-        AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(
-            player.posX - GeneralConfig.magnetRange,
-            player.posY - GeneralConfig.magnetRange,
-            player.posZ - GeneralConfig.magnetRange,
-            player.posX + GeneralConfig.magnetRange,
-            player.posY + GeneralConfig.magnetRange,
-            player.posZ + GeneralConfig.magnetRange);
-
-        List<Entity> entities = getMagnetEntities(player.worldObj, aabb);
-        if (entities.isEmpty()) return false;
-
-        int pulled = 0;
-        for (Entity entity : entities) {
-            if (pulled++ > 20) {
-                break;
-            }
-            Vector3d target = new Vector3d(
-                player.posX,
-                player.posY - (player.worldObj.isRemote ? 1.62 : 0) + 0.75,
-                player.posZ);
-            setEntityMotionFromVector(entity, target, 0.45F);
-        }
-
-        return false;
+        return MagnetUpgradeHelpers.tickPlayer(this, player);
     }
 
     @Override
     public boolean tick(World world, BlockPos pos) {
-        if (world.getWorldTime() % 2 != 0) return false;
-
-        double centerX = pos.x + 0.5;
-        double centerY = pos.y + 0.5;
-        double centerZ = pos.z + 0.5;
-
-        AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(
-            centerX - GeneralConfig.magnetRange,
-            centerY - GeneralConfig.magnetRange,
-            centerZ - GeneralConfig.magnetRange,
-            centerX + GeneralConfig.magnetRange,
-            centerY + GeneralConfig.magnetRange,
-            centerZ + GeneralConfig.magnetRange);
-
-        List<Entity> entities = getMagnetEntities(world, aabb);
-        if (entities.isEmpty()) return false;
-
-        int pulled = 0;
-        boolean storageLoaded = false;
-        boolean storageChanged = false;
-
-        for (Entity entity : entities) {
-            if (pulled++ > 20) break;
-
-            double dx = centerX;
-            double dy = centerY + 0.25;
-            double dz = centerZ;
-
-            if (!world.isRemote && entity instanceof EntityItem itemEntity) {
-
-                if (itemEntity.delayBeforeCanPickup > 0) continue;
-
-                ItemStack stack = itemEntity.getEntityItem();
-                if (stack == null || !canCollectItem(stack)) continue;
-
-                double distSq = entity.getDistanceSq(dx, dy, dz);
-
-                if (distSq < 2.25) { // ~1.5 block
-                    if (!storageLoaded) {
-                        storage.readFromItem();
-                        storageLoaded = true;
-                    }
-
-                    ItemStack remaining = storage.insertItem(stack.copy(), false);
-
-                    if (remaining == null || remaining.stackSize != stack.stackSize) {
-                        storageChanged = true;
-                    }
-
-                    if (remaining == null || remaining.stackSize <= 0) {
-                        entity.setDead();
-                    } else {
-                        itemEntity.setEntityItemStack(remaining.copy());
-                    }
-
-                    continue;
-                }
-            }
-
-            setEntityMotionFromVector(entity, new Vector3d(dx, dy, dz), 0.45F);
-        }
-
-        if (storageChanged) {
-            storage.writeToItem();
-        }
-
-        return true;
+        return MagnetUpgradeHelpers.tickStorage(this, storage, world, pos);
     }
 }

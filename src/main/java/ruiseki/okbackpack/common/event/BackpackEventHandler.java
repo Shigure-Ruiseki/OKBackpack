@@ -11,7 +11,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.player.EntityPlayer;
@@ -521,9 +520,20 @@ public class BackpackEventHandler {
     public void onPlayerPickup(EntityItemPickupEvent event) {
         EntityPlayer player = event.entityPlayer;
         if (player == null || player.worldObj.isRemote) return;
+        if (event.item == null || event.item.isDead) {
+            event.setCanceled(true);
+            return;
+        }
 
-        ItemStack stack = event.item.getEntityItem()
-            .copy();
+        ItemStack entityStack = event.item.getEntityItem();
+        if (entityStack == null || entityStack.stackSize <= 0) {
+            event.item.setDead();
+            event.setCanceled(true);
+            return;
+        }
+
+        ItemStack stack = entityStack.copy();
+        int initialSize = stack.stackSize;
 
         IInventory baubles = BaublesHelpers.getBaubles(player);
         stack = attemptPickup(player, baubles, stack, InventoryTypes.BAUBLES);
@@ -531,6 +541,11 @@ public class BackpackEventHandler {
         if (stack != null) {
             IInventory inventory = player.inventory;
             stack = attemptPickup(player, inventory, stack, InventoryTypes.PLAYER);
+        }
+
+        if (event.item.isDead) {
+            event.setCanceled(true);
+            return;
         }
 
         if (stack == null || stack.stackSize <= 0) {
@@ -550,16 +565,9 @@ public class BackpackEventHandler {
                     - player.getRNG()
                         .nextFloat())
                     * 0.7F + 1.0F) * 2.0F);
-        } else if (stack.stackSize != event.item.getEntityItem().stackSize) {
-            event.item.setDead();
+        } else if (stack.stackSize != initialSize) {
+            event.item.setEntityItemStack(stack.copy());
             event.setCanceled(true);
-
-            World world = event.item.worldObj;
-
-            EntityItem newItem = new EntityItem(world, event.item.posX, event.item.posY, event.item.posZ, stack.copy());
-
-            newItem.delayBeforeCanPickup = 0;
-            world.spawnEntityInWorld(newItem);
         }
     }
 
@@ -575,7 +583,7 @@ public class BackpackEventHandler {
 
             ItemStack before = pickupStack.copy();
             ItemStack result = context.getWrapper()
-                .insertItem(pickupStack, false);
+                .insertItem(pickupStack.copy(), false);
             boolean changed = result == null || result.stackSize != before.stackSize;
 
             if (changed) {
