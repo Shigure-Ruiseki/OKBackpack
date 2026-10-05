@@ -204,6 +204,9 @@ gui.backpack.lock_backpack.tooltip=阻止其他玩家打开此背包
 gui.backpack.unlock_backpack=其他玩家可打开
 gui.backpack.unlock_backpack.tooltip=任何玩家都可以打开此背包
 
+gui.backpack.main_color=主颜色
+gui.backpack.accent_color=强调色
+
 gui.backpack.keep_tab=保持标签页打开：开
 gui.backpack.keep_tab.tooltip=关闭并重新打开背包界面时当前打开的升级标签页将保持打开
 gui.backpack.not_keep_tab=保持标签页打开：关

@@ -204,6 +204,9 @@ gui.backpack.lock_backpack.tooltip=Other players are prevented from opening this
 gui.backpack.unlock_backpack=Another player can open
 gui.backpack.unlock_backpack.tooltip=Any player can open this backpack
 
+gui.backpack.main_color=Main Color
+gui.backpack.accent_color=Accent Color
+
 gui.backpack.keep_tab=Keep Tab Open: ON
 gui.backpack.keep_tab.tooltip=Currently opened upgrade tab will remain open when backpack GUI is closed and reopened
 gui.backpack.not_keep_tab=Keep Tab Open: OFF

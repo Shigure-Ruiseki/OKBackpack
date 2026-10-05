@@ -74,12 +74,15 @@ public class BackpackSHRegisters implements IInitListener {
                 boolean tab = buf.readBoolean();
                 boolean shiftClick = buf.readBoolean();
                 boolean keepSearch = buf.readBoolean();
+                int mainColor = buf.readInt();
+                int accentColor = buf.readInt();
                 handler.wrapper.setUsePlayerSettings(usePlayerSettings);
                 handler.wrapper.setLockStorage(lock);
                 handler.wrapper.setPlayerUUID(playerUuid);
                 handler.wrapper.setKeepTab(tab);
                 handler.wrapper.setShiftClickIntoOpenTab(shiftClick);
                 handler.wrapper.setKeepSearchPhrase(keepSearch);
+                handler.wrapper.setColors(mainColor, accentColor);
 
                 if (usePlayerSettings) {
                     BackpackProperty property = BackpackProperty.get(

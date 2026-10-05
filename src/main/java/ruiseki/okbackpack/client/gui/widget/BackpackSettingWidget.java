@@ -3,9 +3,13 @@ package ruiseki.okbackpack.client.gui.widget;
 import java.util.Arrays;
 import java.util.List;
 
+import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.drawable.Rectangle;
 import com.cleanroommc.modularui.screen.RichTooltip;
+import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
+import com.cleanroommc.modularui.widgets.ColorPickerDialog;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okbackpack.api.IStoragePanel;
@@ -30,6 +34,11 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
     private final CyclicVariantButtonWidget tabButton;
     private final CyclicVariantButtonWidget searchButton;
     private final CyclicVariantButtonWidget lockButton;
+
+    private final ButtonWidget<?> mainColorButton;
+    private final ButtonWidget<?> accentColorButton;
+    private final Rectangle mainColorPreview;
+    private final Rectangle accentColorPreview;
 
     private static final List<CyclicVariantButtonWidget.Variant> SHIFT_CLICK_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
@@ -60,15 +69,15 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
             OKBGuiTextures.LOCK_BACKPACK_ICON));
 
     public BackpackSettingWidget(IStoragePanel<?> panel, BackpackSettingPanel settingPanel, TabWidget parentTabWidget) {
-        super(3, OKBGuiTextures.BACKPACK_ICON, "gui.backpack.backpack_settings", 100, TabWidget.ExpandDirection.RIGHT);
+        super(3, OKBGuiTextures.BACKPACK_ICON, "gui.backpack.backpack_settings", 120, TabWidget.ExpandDirection.RIGHT);
 
         this.panel = panel;
         this.wrapper = panel.getWrapper();
         this.settingPanel = settingPanel;
         this.parentTabWidget = parentTabWidget;
 
-        modeButton = new ButtonWidget<>().pos(6, 28)
-            .size(60, 18)
+        modeButton = new ButtonWidget<>().pos(6, 26)
+            .size(60, 16)
             .onMousePressed(mouseButton -> {
                 if (mouseButton == 0) {
                     wrapper.setUsePlayerSettings(!wrapper.isUsePlayerSettings());
@@ -100,12 +109,6 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
                 }
                 tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
             });
-
-        Flow buttonRow = Flow.row()
-            .pos(6, 48)
-            .height(20)
-            .coverChildrenWidth()
-            .childPadding(0);
 
         shiftClickButton = new CyclicVariantButtonWidget(
             SHIFT_CLICK_VARIANTS,
@@ -233,13 +236,79 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
         })
             .tooltipAutoUpdate(true);
 
-        buttonRow.child(shiftClickButton)
+        Flow buttonRow = Flow.row()
+            .pos(6, 44)
+            .height(20)
+            .coverChildrenWidth()
+            .childPadding(0)
+            .child(shiftClickButton)
             .child(tabButton)
             .child(searchButton)
             .child(lockButton);
 
+        mainColorPreview = new Rectangle().color(wrapper.getMainColor());
+        IPanelHandler colorPicker1 = IPanelHandler
+            .simple(settingPanel, (mainPanel, player) -> new ColorPickerDialog("color_picker1", newColor -> {
+                mainColorPreview.color(newColor);
+                wrapper.setColors(newColor, wrapper.getAccentColor());
+                syncButtonStates();
+                updateWrapper();
+            }, mainColorPreview.getColor(), true).setDraggable(true)
+                .relative(settingPanel)
+                .top(0)
+                .rightRel(1f), true);
+        mainColorButton = new ButtonWidget<>().name("color picker button 1")
+            .size(18, 18)
+            .background(mainColorPreview)
+            .disableHoverBackground()
+            .onMousePressed(mouseButton -> {
+                if (mouseButton == 0) {
+                    colorPicker1.openPanel();
+                    return true;
+                }
+                return false;
+            })
+            .tooltipStatic(
+                tooltip -> tooltip.addLine(IKey.lang("gui.backpack.main_color"))
+                    .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+
+        accentColorPreview = new Rectangle().color(wrapper.getAccentColor());
+        IPanelHandler colorPicker2 = IPanelHandler
+            .simple(settingPanel, (mainPanel, player) -> new ColorPickerDialog("color_picker2", newColor -> {
+                accentColorPreview.color(newColor);
+                wrapper.setColors(wrapper.getMainColor(), newColor);
+                syncButtonStates();
+                updateWrapper();
+            }, accentColorPreview.getColor(), true).setDraggable(true)
+                .relative(settingPanel)
+                .top(0)
+                .leftRel(1f), true);
+        accentColorButton = new ButtonWidget<>().name("color picker button 2")
+            .size(18, 18)
+            .background(accentColorPreview)
+            .disableHoverBackground()
+            .onMousePressed(mouseButton -> {
+                if (mouseButton == 0) {
+                    colorPicker2.openPanel();
+                    return true;
+                }
+                return false;
+            })
+            .tooltipStatic(
+                tooltip -> tooltip.addLine(IKey.lang("gui.backpack.accent_color"))
+                    .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+
+        Flow colorRow = Flow.row()
+            .pos(6, 66)
+            .height(20)
+            .coverChildrenWidth()
+            .childPadding(4)
+            .child(mainColorButton)
+            .child(accentColorButton);
+
         child(modeButton);
         child(buttonRow);
+        child(colorRow);
         syncButtonStates();
 
         phantomTabWidget.getTabIcon()
@@ -308,6 +377,8 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
         tabButton.setIndex(getKeepTabValue() ? 0 : 1);
         searchButton.setIndex(getKeepSearchValue() ? 1 : 0);
         lockButton.setIndex(getLockStorageValue() ? 1 : 0);
+        mainColorPreview.color(Color.withAlpha(wrapper.getMainColor(), 255));
+        accentColorPreview.color(Color.withAlpha(wrapper.getAccentColor(), 255));
     }
 
     private void updateWrapper() {
@@ -322,6 +393,8 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
                 buffer.writeBoolean(getKeepTabValue());
                 buffer.writeBoolean(getShiftClickIntoOpenTabValue());
                 buffer.writeBoolean(getKeepSearchValue());
+                buffer.writeInt(wrapper.getMainColor());
+                buffer.writeInt(wrapper.getAccentColor());
             });
     }
 }
