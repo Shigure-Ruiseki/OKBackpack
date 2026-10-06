@@ -17,6 +17,7 @@ public class DelegatedFloatSH extends DelegatedValueSH<Float, DelegatedFloatSH>
     public DelegatedFloatSH(IStorageWrapper wrapper, int slotIndex) {
         super(wrapper, slotIndex);
         this.delegatedSupplier = new DelegatedFloatSupplier(() -> 0f);
+        this.cache = 0f;
     }
 
     public void setDelegatedSupplier(FloatSupplier delegated) {

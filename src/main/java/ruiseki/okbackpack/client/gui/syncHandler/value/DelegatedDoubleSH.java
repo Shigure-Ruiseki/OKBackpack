@@ -16,6 +16,7 @@ public class DelegatedDoubleSH extends DelegatedValueSH<Double, DelegatedDoubleS
     public DelegatedDoubleSH(IStorageWrapper wrapper, int slotIndex) {
         super(wrapper, slotIndex);
         this.delegatedSupplier = new DelegatedDoubleSupplier(() -> 0);
+        this.cache = 0d;
     }
 
     public void setDelegatedSupplier(DelegatedDoubleSupplier delegated) {

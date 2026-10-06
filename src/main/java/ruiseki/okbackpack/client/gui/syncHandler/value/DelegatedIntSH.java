@@ -18,6 +18,7 @@ public class DelegatedIntSH extends DelegatedValueSH<Integer, DelegatedIntSH>
     public DelegatedIntSH(IStorageWrapper wrapper, int slotIndex) {
         super(wrapper, slotIndex);
         this.delegatedSupplier = new DelegatedIntSupplier(() -> 0);
+        this.cache = 0;
     }
 
     public void setDelegatedSupplier(IntSupplier delegated) {
