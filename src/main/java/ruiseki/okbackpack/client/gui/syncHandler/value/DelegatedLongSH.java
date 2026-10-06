@@ -18,6 +18,7 @@ public class DelegatedLongSH extends DelegatedValueSH<Long, DelegatedLongSH>
     public DelegatedLongSH(IStorageWrapper wrapper, int slotIndex) {
         super(wrapper, slotIndex);
         this.delegatedSupplier = new DelegatedLongSupplier(() -> 0);
+        this.cache = 0L;
     }
 
     public void setDelegatedSupplier(LongSupplier delegated) {

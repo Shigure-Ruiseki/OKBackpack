@@ -16,6 +16,7 @@ public class DelegatedStringSH extends DelegatedValueSH<String, DelegatedStringS
     public DelegatedStringSH(IStorageWrapper wrapper, int slotIndex) {
         super(wrapper, slotIndex);
         this.delegatedSupplier = new DelegatedStringSupplier(() -> "");
+        this.cache = "";
     }
 
     public void setDelegatedSupplier(Supplier<String> delegated) {

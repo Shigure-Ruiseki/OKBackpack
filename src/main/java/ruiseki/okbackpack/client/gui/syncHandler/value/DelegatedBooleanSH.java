@@ -15,6 +15,7 @@ public class DelegatedBooleanSH extends DelegatedValueSH<Boolean, DelegatedBoole
     public DelegatedBooleanSH(IStorageWrapper wrapper, int slotIndex) {
         super(wrapper, slotIndex);
         this.delegatedSupplier = new DelegatedBooleanSupplier(() -> false);
+        this.cache = false;
     }
 
     public void setDelegatedSupplier(DelegatedBooleanSupplier delegated) {
