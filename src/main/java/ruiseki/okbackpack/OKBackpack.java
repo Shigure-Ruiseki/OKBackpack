@@ -46,6 +46,7 @@ import ruiseki.okcore.helper.MinecraftHelpers;
 import ruiseki.okcore.init.ItemCreativeTab;
 import ruiseki.okcore.init.ModBaseVersionable;
 import ruiseki.okcore.proxy.ICommonProxy;
+import ruiseki.storagecore.client.gui.sync.StorageSHRegisters;
 
 @Mod(
     modid = Reference.MOD_ID,
@@ -88,6 +89,9 @@ public class OKBackpack extends ModBaseVersionable {
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
         Capabilities.register();
+
+        StorageSHRegisters.load();
+
         if (MinecraftHelpers.isClientSide()) {
             ModelRegistry.registerModid(Reference.MOD_ID);
             RenderingRegistry.registerBlockHandler(JsonModelISBRH.INSTANCE);

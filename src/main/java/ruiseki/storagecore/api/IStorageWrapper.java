@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import org.jetbrains.annotations.Nullable;
 
+import ruiseki.okcore.inventory.SortBy;
 import ruiseki.storagecore.inventory.InventoryHandler;
 
 public interface IStorageWrapper {
@@ -22,11 +23,19 @@ public interface IStorageWrapper {
 
     Optional<UUID> getContentsUuid();
 
+    UUID getOrCreateContentsUuid();
+
     int getMainColor();
 
     int getAccentColor();
 
     void setColors(int mainColor, int accentColor);
+
+    void setSortBy(SortBy sortBy);
+
+    SortBy getSortBy();
+
+    void sort();
 
     void onContentsNbtUpdated();
 
@@ -74,6 +83,11 @@ public interface IStorageWrapper {
         }
 
         @Override
+        public UUID getOrCreateContentsUuid() {
+            return UUID.randomUUID();
+        }
+
+        @Override
         public int getMainColor() {
             return -1;
         }
@@ -85,6 +99,21 @@ public interface IStorageWrapper {
 
         @Override
         public void setColors(int mainColor, int accentColor) {
+
+        }
+
+        @Override
+        public void setSortBy(SortBy sortBy) {
+
+        }
+
+        @Override
+        public SortBy getSortBy() {
+            return SortBy.NAME;
+        }
+
+        @Override
+        public void sort() {
 
         }
 

@@ -44,6 +44,10 @@ public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData>
         return true;
     }
 
+    public IBackpackWrapper getWrapper() {
+        return backpackWrapper;
+    }
+
     @Override
     public ModularScreen createScreen(PosGuiData data, ModularPanel mainPanel) {
         return new BackpackGuiHolder.TileEntityGuiHolder<>(backpackWrapper).createScreen(data, mainPanel);

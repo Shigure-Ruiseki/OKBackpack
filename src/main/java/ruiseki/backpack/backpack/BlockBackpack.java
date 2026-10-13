@@ -7,6 +7,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -69,5 +70,15 @@ public class BlockBackpack extends BlockTile {
         return TileHelpers.get(worldIn, x, y, z, TileBackpack.class)
             .map(tile -> tile.onBlockActivated(worldIn, player, ForgeDirection.getOrientation(side), subX, subY, subZ))
             .orElse(super.onBlockActivated(worldIn, x, y, z, player, side, subX, subY, subZ));
+    }
+
+    @Override
+    public boolean shouldDropInventory(World world, int x, int y, int z) {
+        return false;
+    }
+
+    @Override
+    public boolean isDropBlockItem(IBlockAccess world, int x, int y, int z, int fortune) {
+        return false;
     }
 }

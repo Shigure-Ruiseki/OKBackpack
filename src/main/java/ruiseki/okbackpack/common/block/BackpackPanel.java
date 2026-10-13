@@ -44,7 +44,7 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStorageContainer;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
-import ruiseki.okbackpack.api.SortType;
+import ruiseki.okbackpack.api.SortBy;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
@@ -312,13 +312,13 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
             12,
             (index) -> {
 
-                SortType nextSortType = SortType.values()[index];
+                SortBy nextSortBy = SortBy.values()[index];
 
-                wrapper.setSortType(nextSortType);
+                wrapper.setSortType(nextSortBy);
 
                 backpackSyncHandler.syncToServer(
                     BackpackSH.getId(BackpackSHRegisters.UPDATE_SET_SORT_TYPE),
-                    buf -> NetworkUtils.writeEnumValue(buf, nextSortType));
+                    buf -> NetworkUtils.writeEnumValue(buf, nextSortBy));
 
             }).setEnabledIf(cyclicVariantButtonWidget -> !settingPanel.isPanelOpen())
                 .top(4)

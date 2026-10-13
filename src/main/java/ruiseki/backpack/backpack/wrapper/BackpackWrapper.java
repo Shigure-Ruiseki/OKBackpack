@@ -1,6 +1,10 @@
 package ruiseki.backpack.backpack.wrapper;
 
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.item.ItemStack;
@@ -11,6 +15,9 @@ import org.jetbrains.annotations.Nullable;
 import ruiseki.backpack.backpack.BackpackStorage;
 import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okcore.helper.NBTHelpers;
+import ruiseki.okcore.inventory.InventorySorter;
+import ruiseki.okcore.inventory.ItemStackKey;
+import ruiseki.okcore.inventory.SortBy;
 import ruiseki.storagecore.inventory.InventoryHandler;
 
 public class BackpackWrapper implements IBackpackWrapper {
@@ -19,8 +26,12 @@ public class BackpackWrapper implements IBackpackWrapper {
     public static final int DEFAULT_BORDER_COLOR = 6434330;
     private static final String CLOTH_COLOR_TAG = "clothColor";
     private static final String BORDER_COLOR_TAG = "borderColor";
+    private static final String OPEN_TAB_ID_TAG = "openTabId";
+    private static final String SORT_BY_TAG = "sortBy";
     private static final String CONTENTS_UUID_TAG = "contentsUuid";
     private static final String INVENTORY_SLOTS_TAG = "inventorySlots";
+    private static final String UPGRADE_SLOTS_TAG = "upgradeSlots";
+    private static final String COLUMNS_TAKEN_TAG = "columnsTaken";
 
     @Nullable
     private ItemStack backpack;
@@ -73,7 +84,8 @@ public class BackpackWrapper implements IBackpackWrapper {
         return NBTHelpers.getUniqueId(backpack, CONTENTS_UUID_TAG);
     }
 
-    private UUID getOrCreateContentsUuid() {
+    @Override
+    public UUID getOrCreateContentsUuid() {
         Optional<UUID> contentsUuid = getContentsUuid();
         if (contentsUuid.isPresent()) {
             return contentsUuid.get();
@@ -137,6 +149,34 @@ public class BackpackWrapper implements IBackpackWrapper {
         NBTHelpers.setInteger(backpack, CLOTH_COLOR_TAG, mainColor);
         NBTHelpers.setInteger(backpack, BORDER_COLOR_TAG, accentColor);
         backpackSaveHandler.run();
+    }
+
+    @Override
+    public void setSortBy(SortBy sortBy) {
+        NBTHelpers.setString(backpack, SORT_BY_TAG, sortBy.getName());
+        backpackSaveHandler.run();
+    }
+
+    @Override
+    public SortBy getSortBy() {
+        return NBTHelpers.getEnumConstant(backpack, SORT_BY_TAG, SortBy::fromName)
+            .orElse(SortBy.NAME);
+    }
+
+    @Override
+    public void sort() {
+        Set<Integer> slotIndexesExcludedFromSort = new HashSet<>();
+        InventorySorter.sortHandler(getInventoryHandler(), getComparator(), slotIndexesExcludedFromSort);
+    }
+
+    private Comparator<Map.Entry<ItemStackKey, Integer>> getComparator() {
+        return switch (getSortBy()) {
+            case MOD_ID -> InventorySorter.BY_MOD_ID;
+            case COUNT -> InventorySorter.BY_COUNT;
+            case TAG -> InventorySorter.BY_TAG;
+            case NAME -> InventorySorter.BY_NAME;
+            case ORE_DICT -> InventorySorter.BY_ORE_DICT;
+        };
     }
 
     @Override
