@@ -20,6 +20,8 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import ruiseki.backpack.Capabilities;
+import ruiseki.backpack.backpack.BackpackStorage;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
@@ -62,6 +64,8 @@ public class OKBackpack extends ModBaseVersionable {
     public OKBackpack() {
         super(Reference.MOD_ID, Reference.MOD_NAME, Reference.MOD_VERSION);
 
+        registerWorldStorage(BackpackStorage.getInstance(this));
+
         ConfigCondition.registerConfig(
             new ResourceLocation(Reference.MOD_ID, "enableTravelersUpgrades"),
             GeneralConfig.enableTravelersUpgrades);
@@ -83,6 +87,7 @@ public class OKBackpack extends ModBaseVersionable {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+        Capabilities.register();
         if (MinecraftHelpers.isClientSide()) {
             ModelRegistry.registerModid(Reference.MOD_ID);
             RenderingRegistry.registerBlockHandler(JsonModelISBRH.INSTANCE);

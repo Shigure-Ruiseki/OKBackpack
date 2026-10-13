@@ -1,5 +1,6 @@
 package ruiseki.okbackpack;
 
+import ruiseki.backpack.backpack.BlockBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockIronBackpackConfig;
@@ -165,5 +166,7 @@ public class Configs {
             }
             configHandler.add(new ItemEnergizedNodeUpgradeConfig());
         }
+
+        configHandler.add(new BlockBackpackConfig());
     }
 }
