@@ -1,26 +1,37 @@
 package ruiseki.backpack.backpack;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
+import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.cleanroommc.modularui.widget.ParentWidget;
+import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.client.gui.container.BackpackContainer;
 import ruiseki.backpack.client.gui.container.BackpackGuiContainer;
+import ruiseki.backpack.client.gui.slot.BackpackSlot;
 import ruiseki.backpack.client.gui.slot.LockedPlayerSlot;
 import ruiseki.backpack.client.gui.sync.BackpackSH;
 import ruiseki.backpack.client.gui.sync.BackpackSlotSH;
+import ruiseki.okbackpack.client.gui.OKBGuiTextures;
+import ruiseki.okcore.helper.ItemHelpers;
+import ruiseki.okcore.inventory.ItemStackKey;
 import ruiseki.storagecore.client.gui.slot.ModularStorageSlot;
 import ruiseki.storagecore.client.gui.sync.StorageSlotSH;
+import ruiseki.storagecore.client.gui.widget.StorageList;
 import ruiseki.storagecore.client.gui.widget.StoragePanel;
+import ruiseki.storagecore.client.gui.widget.StorageSlotGrid;
 import ruiseki.storagecore.inventory.InventoryHandler;
 
 public class BackpackPanel extends StoragePanel {
@@ -44,6 +55,27 @@ public class BackpackPanel extends StoragePanel {
     }
 
     @Override
+    protected StorageList addInventoryGrid() {
+        this.storageSlotGrid = StorageSlotGrid.builder()
+            .matrix(this.rowSize, 6, 'I')
+            .key(
+                'I',
+                index -> new BackpackSlot().syncHandler(getStorageSlotSHs()[index])
+                    .setEnabledIf(slot -> {
+                        if (this.searchValue.getStringValue()
+                            .isEmpty()) return true;
+                        ItemStack stack = slot.getSlot()
+                            .getStack();
+                        if (ItemHelpers.isEmpty(stack)) return false;
+                        ItemStackKey key = ItemStackKey.of(stack);
+                        return this.searchNode.matches(key);
+                    }))
+            .slotGroup("storage_inventory")
+            .build();
+        return this.storageList = new StorageList(this, 0).child(this.storageSlotGrid);
+    }
+
+    @Override
     protected void constructInventorySH() {
         InventoryHandler handler = this.getWrapper()
             .getInventoryHandler();
@@ -56,6 +88,26 @@ public class BackpackPanel extends StoragePanel {
             this.storageSlotSHs[i] = syncHandler;
         }
         this.syncManager.registerSlotGroup(new SlotGroup("storage_inventory", handler.getSlots(), 100, true));
+    }
+
+    @Override
+    protected ParentWidget<?> addTransferBar() {
+        return super.addTransferBar().child(
+            new ButtonWidget<>().size(14)
+                .overlay(OKBGuiTextures.SLEEPING_BAG)
+                .onMousePressed(mouseButton -> {
+                    if (mouseButton == 0) {
+                        // TODO: add sleeping bag
+                        // this.getStorageSH().syncToServer(BackpackSHRegistries);
+                        return true;
+                    }
+                    return false;
+                })
+                .tooltipAutoUpdate(true)
+                .tooltipDynamic(tooltip -> {
+                    tooltip.addLine(IKey.lang("gui.backpack.sleeping_bag"));
+                    tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+                }));
     }
 
     public void modifyPlayerSlot(PanelSyncManager syncManager, InventoryType inventoryType, int slotIndex,

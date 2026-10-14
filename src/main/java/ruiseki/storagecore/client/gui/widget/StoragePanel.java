@@ -10,10 +10,10 @@ import net.minecraft.tileentity.TileEntity;
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
-import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.network.NetworkUtils;
 import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.StringValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
@@ -43,6 +43,7 @@ import ruiseki.storagecore.client.gui.slot.ModularStorageSlot;
 import ruiseki.storagecore.client.gui.sync.StorageSH;
 import ruiseki.storagecore.client.gui.sync.StorageSHRegisters;
 import ruiseki.storagecore.client.gui.sync.StorageSlotSH;
+import ruiseki.storagecore.helper.StorageInventoryHelpers;
 import ruiseki.storagecore.inventory.InventoryHandler;
 
 public class StoragePanel extends ModularPanel {
@@ -145,12 +146,12 @@ public class StoragePanel extends ModularPanel {
         int visibleRows = Math.min(rows, maxRows);
 
         // set panel height
-        int calculatedHeight = visibleRows * slotSize + 118;
+        int calculatedHeight = visibleRows * slotSize + 120;
         this.height(Math.max(calculatedHeight, BackpackSettingPanel.getCompactMinimumPanelHeight()));
 
         // set list height
         this.inventoryHeight = visibleRows * slotSize;
-        this.storageList.maxSize(this.inventoryHeight);
+        this.storageList.height(this.inventoryHeight);
         this.storageList.scheduleResize();
 
         this.scheduleResize();
@@ -165,7 +166,7 @@ public class StoragePanel extends ModularPanel {
         this.child(
             IKey.lang(this.getPlayer().inventory.getInventoryName())
                 .asWidget()
-                .left(8)
+                .left(10)
                 .bottom(85));
     }
 
@@ -177,21 +178,22 @@ public class StoragePanel extends ModularPanel {
                 .childPadding(2)
                 .pos(10, 6)
                 .child(addToolBar())
-                .child(addInventoryGrid()));
+                .child(addInventoryGrid())
+                .child(addTransferBar()));
     }
 
     // Search/Sort
     protected ParentWidget<?> addToolBar() {
         this.searchValue = new StringValue("");
         return Flow.row()
-            .widthRel(0.983f)
+            // .setEnabledIf(w -> !settingPanel.isPanelOpen())
+            .widthRel(0.98f)
             .coverChildrenHeight()
             .leftRel(0f)
             // Search
             .child(
                 new TextFieldWidget().background(OKBGuiTextures.VANILLA_SEARCH_BACKGROUND)
                     .leftRel(0f)
-                    .top(1)
                     .value(this.searchValue)
                     .onUpdateListener(widget -> {
                         String search = this.searchValue.getStringValue();
@@ -199,7 +201,7 @@ public class StoragePanel extends ModularPanel {
                         if (this.storageSlotGrid != null) this.storageSlotGrid.refreshGridLayout();
                     })
                     .widthRel(0.675f)
-                    .height(10))
+                    .height(12))
             .child(
                 Flow.row()
                     .coverChildren()
@@ -248,7 +250,7 @@ public class StoragePanel extends ModularPanel {
     }
 
     // Inventory Grid
-    protected IWidget addInventoryGrid() {
+    protected StorageList addInventoryGrid() {
         this.storageSlotGrid = StorageSlotGrid.builder()
             .matrix(this.rowSize, 6, 'I')
             .key(
@@ -282,6 +284,82 @@ public class StoragePanel extends ModularPanel {
         }
         this.getSyncManager()
             .registerSlotGroup(new SlotGroup("storage_inventory", handler.getSlots(), 100, true));
+    }
+
+    // Transfer Bar
+    protected ParentWidget<?> addTransferBar() {
+        Flow transferRow = Flow.row()
+            // .setEnabledIf(w -> !settingPanel.isPanelOpen())
+            .coverChildren()
+            .reverseLayout()
+            .childPadding(2)
+            .rightRel(0.02f);
+
+        // Player -> Storage
+        transferRow.child(
+            new ShiftButtonWidget(OKBGuiTextures.DOT_UP_ARROW_ICON, OKBGuiTextures.SOLID_UP_ARROW_ICON).size(12)
+                .onMousePressed(mouseButton -> {
+                    if (mouseButton == 0) {
+                        boolean transferMatched = !Interactable.hasShiftDown();
+
+                        Interactable.playButtonClickSound();
+                        StorageInventoryHelpers
+                            .transferPlayerToStorage(this.getWrapper(), this.getPlayerInventory(), transferMatched);
+                        this.getStorageSH()
+                            .syncToServer(
+                                StorageSHRegisters.TRANSFER_TO_STORAGE,
+                                buf -> buf.writeBoolean(transferMatched));
+                        return true;
+                    }
+                    return false;
+                })
+                .tooltipAutoUpdate(true)
+                .tooltipDynamic(tooltip -> {
+                    if (Interactable.hasShiftDown()) {
+                        tooltip.addLine(IKey.lang("gui.storage.transfer_to_backpack_inv"));
+                    } else {
+                        tooltip.addLine(IKey.lang("gui.storage.transfer_to_backpack_inv_matched_1"))
+                            .addLine(
+                                IKey.lang("gui.storage.transfer_to_backpack_inv_matched_2")
+                                    .style(IKey.GRAY));
+                    }
+
+                    tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+                }));
+
+        // Storage -> Player
+        transferRow.child(
+            new ShiftButtonWidget(OKBGuiTextures.DOT_DOWN_ARROW_ICON, OKBGuiTextures.SOLID_DOWN_ARROW_ICON).size(12)
+                .onMousePressed(mouseButton -> {
+                    if (mouseButton == 0) {
+                        boolean transferMatched = !Interactable.hasShiftDown();
+
+                        Interactable.playButtonClickSound();
+                        StorageInventoryHelpers
+                            .transferStorageToPlayer(this.getWrapper(), this.getPlayerInventory(), transferMatched);
+                        this.getStorageSH()
+                            .syncToServer(
+                                StorageSHRegisters.TRANSFER_TO_PLAYER,
+                                buf -> buf.writeBoolean(transferMatched));
+                        return true;
+                    }
+                    return false;
+                })
+                .tooltipAutoUpdate(true)
+                .tooltipDynamic(tooltip -> {
+                    if (Interactable.hasShiftDown()) {
+                        tooltip.addLine(IKey.lang("gui.storage.transfer_to_player_inv"));
+                    } else {
+                        tooltip.addLine(IKey.lang("gui.storage.transfer_to_player_inv_matched_1"))
+                            .addLine(
+                                IKey.lang("gui.storage.transfer_to_player_inv_matched_2")
+                                    .style(IKey.GRAY));
+                    }
+
+                    tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+                }));
+
+        return transferRow;
     }
 
     public PanelSyncManager getSyncManager() {

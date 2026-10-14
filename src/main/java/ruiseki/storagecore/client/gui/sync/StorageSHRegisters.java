@@ -6,6 +6,7 @@ import com.cleanroommc.modularui.network.NetworkUtils;
 
 import ruiseki.okbackpack.Reference;
 import ruiseki.okcore.inventory.SortBy;
+import ruiseki.storagecore.helper.StorageInventoryHelpers;
 
 public class StorageSHRegisters {
 
@@ -13,6 +14,12 @@ public class StorageSHRegisters {
 
     public static final ResourceLocation SORT = new ResourceLocation(Reference.MOD_ID, "storage_sort");
     public static final ResourceLocation SORT_BY = new ResourceLocation(Reference.MOD_ID, "storage_sort_by");
+    public static final ResourceLocation TRANSFER_TO_STORAGE = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_transfer_to_storage");
+    public static final ResourceLocation TRANSFER_TO_PLAYER = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_transfer_to_player");
 
     public static void load() {
 
@@ -26,6 +33,16 @@ public class StorageSHRegisters {
             SortBy sortBy = NetworkUtils.readEnumValue(buf, SortBy.class);
             handler.getWrapper()
                 .setSortBy(sortBy);
+        });
+        REGISTRY.registerServer(TRANSFER_TO_STORAGE, (handler, buf) -> {
+            boolean transferMatched = buf.readBoolean();
+            StorageInventoryHelpers
+                .transferPlayerToStorage(handler.getWrapper(), handler.getPlayerInventory(), transferMatched);
+        });
+        REGISTRY.registerServer(TRANSFER_TO_PLAYER, (handler, buf) -> {
+            boolean transferMatched = buf.readBoolean();
+            StorageInventoryHelpers
+                .transferStorageToPlayer(handler.getWrapper(), handler.getPlayerInventory(), transferMatched);
         });
     }
 
