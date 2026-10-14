@@ -10,13 +10,18 @@ import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
+import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.client.gui.container.BackpackContainer;
 import ruiseki.backpack.client.gui.container.BackpackGuiContainer;
+import ruiseki.backpack.client.gui.slot.LockedPlayerSlot;
 import ruiseki.backpack.client.gui.sync.BackpackSH;
-import ruiseki.okbackpack.client.gui.slot.LockedPlayerSlot;
+import ruiseki.backpack.client.gui.sync.BackpackSlotSH;
+import ruiseki.storagecore.client.gui.slot.ModularStorageSlot;
+import ruiseki.storagecore.client.gui.sync.StorageSlotSH;
 import ruiseki.storagecore.client.gui.widget.StoragePanel;
+import ruiseki.storagecore.inventory.InventoryHandler;
 
 public class BackpackPanel extends StoragePanel {
 
@@ -35,7 +40,22 @@ public class BackpackPanel extends StoragePanel {
 
     @Override
     protected void constructStorageHandler() {
-        this.storageSH = new BackpackSH(this.getPlayerInventory(), this.getWrapper(), this);
+        this.storageSH = new BackpackSH(this.getPlayerInventory(), this.getWrapper(), this.getPanel());
+    }
+
+    @Override
+    protected void constructInventorySH() {
+        InventoryHandler handler = this.getWrapper()
+            .getInventoryHandler();
+        this.storageSlotSHs = new StorageSlotSH[handler.getSlots()];
+        for (int i = 0; i < handler.getSlots(); i++) {
+            ModularStorageSlot slot = new ModularStorageSlot(handler, i, this.getWrapper(), this.getPanel());
+            slot.slotGroup("storage_inventory");
+            StorageSlotSH syncHandler = new BackpackSlotSH(slot, this.getWrapper(), this.getPanel());
+            this.syncManager.syncValue("storage", i, syncHandler);
+            this.storageSlotSHs[i] = syncHandler;
+        }
+        this.syncManager.registerSlotGroup(new SlotGroup("storage_inventory", handler.getSlots(), 100, true));
     }
 
     public void modifyPlayerSlot(PanelSyncManager syncManager, InventoryType inventoryType, int slotIndex,

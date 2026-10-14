@@ -82,7 +82,8 @@ public class ItemBackpack extends ItemBlockMetadata implements IGuiHolder<Player
             private void initCap() {
                 if (this.wrapper == null) {
                     this.wrapper = new BackpackWrapper(stack, tierId);
-                    if (this.wrapper.getContentsUuid().isEmpty()) {
+                    if (this.wrapper.getContentsUuid()
+                        .isEmpty()) {
                         this.wrapper.getOrCreateContentsUuid();
                     }
                 }

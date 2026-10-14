@@ -11,4 +11,8 @@ public class StorageContainer extends ModularContainer {
     public StorageContainer(IStorageWrapper wrapper) {
         this.wrapper = wrapper;
     }
+
+    public IStorageWrapper getWrapper() {
+        return wrapper;
+    }
 }

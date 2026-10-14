@@ -44,11 +44,14 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     private Runnable onInventoryHandlerRefresh = () -> {};
 
-    public BackpackWrapper(ItemStack backpack, String tierId) {
+    public boolean isDirty;
+
+    public BackpackWrapper(@Nullable ItemStack backpack, String tierId) {
         this.backpack = backpack;
         this.tierId = tierId;
     }
 
+    @Override
     public InventoryHandler getInventoryHandler() {
         if (handler == null) {
             handler = new InventoryHandler(54, this, getBackpackContentsNbt(), () -> {
@@ -60,8 +63,13 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     @Override
-    public ItemStack getBackpack() {
+    public @Nullable ItemStack getBackpack() {
         return this.backpack;
+    }
+
+    @Override
+    public void setBackpack(@Nullable ItemStack stack) {
+        this.backpack = stack;
     }
 
     @Override
@@ -148,6 +156,23 @@ public class BackpackWrapper implements IBackpackWrapper {
     public void setColors(int mainColor, int accentColor) {
         NBTHelpers.setInteger(backpack, CLOTH_COLOR_TAG, mainColor);
         NBTHelpers.setInteger(backpack, BORDER_COLOR_TAG, accentColor);
+        backpackSaveHandler.run();
+    }
+
+    @Override
+    public Optional<Integer> getOpenTabId() {
+        return NBTHelpers.getInteger(backpack, OPEN_TAB_ID_TAG);
+    }
+
+    @Override
+    public void setOpenTabId(int openTabId) {
+        NBTHelpers.setInteger(backpack, OPEN_TAB_ID_TAG, openTabId);
+        backpackSaveHandler.run();
+    }
+
+    @Override
+    public void removeOpenTabId() {
+        NBTHelpers.removeTag(backpack, OPEN_TAB_ID_TAG);
         backpackSaveHandler.run();
     }
 

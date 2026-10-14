@@ -227,6 +227,7 @@ public class OKBGuiTextures {
     public static final UITexture TOGGLE_DISABLE_ICON = icon("disable", 0, 128, 4, 10);
     public static final UITexture TOGGLE_ENABLE_ICON = icon("enable", 4, 128, 4, 10);
     public static final UITexture SMALL_M_ICON = icon("small_m", 0, 156, 12, 12);
+    public static final UITexture SMALL_T_ICON = icon("small_a", 12, 144, 12, 12);
     public static final UITexture SMALL_A_ICON = icon("small_a", 24, 144, 12, 12);
     public static final UITexture SMALL_1_ICON = icon("small_1", 36, 144, 12, 12);
     public static final UITexture SMALL_O_ICON = icon("small_ore_dict", 64, 144, 12, 12);

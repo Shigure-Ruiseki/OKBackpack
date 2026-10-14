@@ -31,6 +31,12 @@ public interface IStorageWrapper {
 
     void setColors(int mainColor, int accentColor);
 
+    Optional<Integer> getOpenTabId();
+
+    void setOpenTabId(int openTabId);
+
+    void removeOpenTabId();
+
     void setSortBy(SortBy sortBy);
 
     SortBy getSortBy();
@@ -99,6 +105,21 @@ public interface IStorageWrapper {
 
         @Override
         public void setColors(int mainColor, int accentColor) {
+
+        }
+
+        @Override
+        public Optional<Integer> getOpenTabId() {
+            return Optional.empty();
+        }
+
+        @Override
+        public void setOpenTabId(int openTabId) {
+
+        }
+
+        @Override
+        public void removeOpenTabId() {
 
         }
 

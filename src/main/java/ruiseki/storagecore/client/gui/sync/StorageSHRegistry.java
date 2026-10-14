@@ -7,6 +7,8 @@ import java.util.Map;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
+import com.cleanroommc.modularui.value.sync.SyncHandler;
+
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -15,12 +17,12 @@ import ruiseki.okcore.helper.Helpers;
 public final class StorageSHRegistry {
 
     @FunctionalInterface
-    public interface Handler<S> {
+    public interface Handler<S extends SyncHandler<S>> {
 
         void handle(S handler, PacketBuffer buf) throws IOException;
     }
 
-    public static final class Entry<S> {
+    public static final class Entry<S extends SyncHandler<S>> {
 
         private final Class<S> type;
 
@@ -56,8 +58,9 @@ public final class StorageSHRegistry {
             return this;
         }
 
-        private static <S> void putUnique(Map<ResourceLocation, Handler<S>> handlers, ResourceLocation id,
-            Handler<S> handler) {
+        private static <S extends SyncHandler<S>> void putUnique(Map<ResourceLocation, Handler<S>> handlers,
+            ResourceLocation id, Handler<S> handler) {
+
             if (id == null || handler == null) {
                 throw new IllegalArgumentException("Sync handler ID and handler must not be null");
             }
@@ -101,7 +104,7 @@ public final class StorageSHRegistry {
     private StorageSHRegistry() {}
 
     @SuppressWarnings("unchecked")
-    public static synchronized <S> Entry<S> get(Class<S> type) {
+    public static synchronized <S extends SyncHandler<S>> Entry<S> get(Class<S> type) {
         Entry<?> entry = REGISTRIES.get(type);
 
         if (entry == null) {
@@ -199,7 +202,8 @@ public final class StorageSHRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    private static void invoke(Handler<?> handler, Object instance, PacketBuffer buf) throws IOException {
-        ((Handler<Object>) handler).handle(instance, buf);
+
+    private static void invoke(Handler handler, Object instance, PacketBuffer buf) throws IOException {
+        handler.handle((SyncHandler) instance, buf);
     }
 }

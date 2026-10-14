@@ -29,7 +29,6 @@ import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.ShiftButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.TileWidget;
 import ruiseki.okbackpack.common.block.BackpackSettingPanel;
-import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
@@ -40,8 +39,10 @@ import ruiseki.okcore.item.capability.wrapper.PlayerMainInvWrapper;
 import ruiseki.storagecore.api.IStorageWrapper;
 import ruiseki.storagecore.client.gui.container.StorageContainer;
 import ruiseki.storagecore.client.gui.container.StorageGuiContainer;
+import ruiseki.storagecore.client.gui.slot.ModularStorageSlot;
 import ruiseki.storagecore.client.gui.sync.StorageSH;
 import ruiseki.storagecore.client.gui.sync.StorageSHRegisters;
+import ruiseki.storagecore.client.gui.sync.StorageSlotSH;
 import ruiseki.storagecore.inventory.InventoryHandler;
 
 public class StoragePanel extends ModularPanel {
@@ -52,7 +53,8 @@ public class StoragePanel extends ModularPanel {
             OKBGuiTextures.SMALL_A_ICON),
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.storage.sort_by_mod_id"), OKBGuiTextures.SMALL_M_ICON),
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.storage.sort_by_count"), OKBGuiTextures.SMALL_1_ICON),
-        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.storage.sort_by_ore_dict"), OKBGuiTextures.SMALL_O_ICON));
+        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.storage.sort_by_ore_dict"), OKBGuiTextures.SMALL_O_ICON),
+        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.storage.sort_by_tag"), OKBGuiTextures.SMALL_T_ICON));
 
     protected final EntityPlayer player;
     protected final PanelSyncManager syncManager;
@@ -61,6 +63,7 @@ public class StoragePanel extends ModularPanel {
     protected final TileEntity tile;
 
     protected StorageSH storageSH;
+    protected StorageSlotSH[] storageSlotSHs;
     protected PlayerMainInvWrapper playerInventory;
 
     protected int width;
@@ -95,6 +98,8 @@ public class StoragePanel extends ModularPanel {
         this.constructStorageHandler();
         this.getSyncManager()
             .syncValue("storage_syncer", this.getStorageSH());
+
+        this.constructInventorySH();
 
         this.constructSettings();
     }
@@ -178,24 +183,28 @@ public class StoragePanel extends ModularPanel {
     // Search/Sort
     protected ParentWidget<?> addToolBar() {
         this.searchValue = new StringValue("");
-        return new ParentWidget<>().width(this.width - 22)
+        return Flow.row()
+            .widthRel(0.983f)
             .coverChildrenHeight()
+            .leftRel(0f)
             // Search
             .child(
                 new TextFieldWidget().background(OKBGuiTextures.VANILLA_SEARCH_BACKGROUND)
-                    .left(-2)
-                    .top(2)
+                    .leftRel(0f)
+                    .top(1)
                     .value(this.searchValue)
                     .onUpdateListener(widget -> {
                         String search = this.searchValue.getStringValue();
                         this.searchNode = search.isEmpty() ? null : SearchParser.parse(search);
                         if (this.storageSlotGrid != null) this.storageSlotGrid.refreshGridLayout();
                     })
-                    .widthRel(0.68f)
+                    .widthRel(0.675f)
                     .height(10))
             .child(
-                new ParentWidget<>().size(12)
-                    .right(0)
+                Flow.row()
+                    .coverChildren()
+                    .childPadding(2)
+                    .rightRel(0f)
                     // Sort
                     .child(
                         new ButtonWidget<>().overlay(OKBGuiTextures.SOLID_DOWN_ARROW_ICON)
@@ -208,7 +217,6 @@ public class StoragePanel extends ModularPanel {
                                 }
                                 return false;
                             })
-                            .right(28)
                             .size(12)
                             .tooltip(tooltip -> { tooltip.addLine(IKey.lang("gui.storage.sort")); }))
                     // Sort Type
@@ -228,8 +236,7 @@ public class StoragePanel extends ModularPanel {
                                     .syncToServer(
                                         StorageSHRegisters.SORT_BY,
                                         buf -> NetworkUtils.writeEnumValue(buf, nextSortBy));
-                            }).right(14)
-                                .size(12))
+                            }).size(12))
                     // Upgrade Index
                     .child(
                         new ShiftButtonWidget(OKBGuiTextures.DOT_UP_ARROW_ICON, OKBGuiTextures.DOT_DOWN_ARROW_ICON)
@@ -237,20 +244,16 @@ public class StoragePanel extends ModularPanel {
                                 // TODO: add change upgrade index
                                 return true;
                             })
-                            .size(12)
-                            .right(0)));
+                            .size(12)));
     }
 
     // Inventory Grid
     protected IWidget addInventoryGrid() {
-        InventoryHandler handler = this.getWrapper()
-            .getInventoryHandler();
-        this.syncManager.registerSlotGroup(new SlotGroup("storage_inventory", handler.getSlots(), 100, true));
         this.storageSlotGrid = StorageSlotGrid.builder()
             .matrix(this.rowSize, 6, 'I')
             .key(
                 'I',
-                index -> new ItemSlot().slot(new ModularItemSlot(handler, index))
+                index -> new ItemSlot().syncHandler(getStorageSlotSHs()[index])
                     .setEnabledIf(slot -> {
                         if (this.searchValue.getStringValue()
                             .isEmpty()) return true;
@@ -263,6 +266,22 @@ public class StoragePanel extends ModularPanel {
             .slotGroup("storage_inventory")
             .build();
         return this.storageList = new StorageList(this, 0).child(this.storageSlotGrid);
+    }
+
+    protected void constructInventorySH() {
+        InventoryHandler handler = this.getWrapper()
+            .getInventoryHandler();
+        this.storageSlotSHs = new StorageSlotSH[handler.getSlots()];
+        for (int i = 0; i < handler.getSlots(); i++) {
+            ModularStorageSlot slot = new ModularStorageSlot(handler, i, this.getWrapper(), this.getPanel());
+            slot.slotGroup("storage_inventory");
+            StorageSlotSH syncHandler = new StorageSlotSH(slot, this.getWrapper(), this);
+            this.getSyncManager()
+                .syncValue("storage", i, syncHandler);
+            this.storageSlotSHs[i] = syncHandler;
+        }
+        this.getSyncManager()
+            .registerSlotGroup(new SlotGroup("storage_inventory", handler.getSlots(), 100, true));
     }
 
     public PanelSyncManager getSyncManager() {
@@ -296,5 +315,9 @@ public class StoragePanel extends ModularPanel {
 
     public PlayerMainInvWrapper getPlayerInventory() {
         return playerInventory;
+    }
+
+    public StorageSlotSH[] getStorageSlotSHs() {
+        return storageSlotSHs;
     }
 }

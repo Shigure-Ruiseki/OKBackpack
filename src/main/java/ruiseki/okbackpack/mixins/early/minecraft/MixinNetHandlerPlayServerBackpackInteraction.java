@@ -1,7 +1,9 @@
 package ruiseki.okbackpack.mixins.early.minecraft;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C0EPacketClickWindow;
 import net.minecraft.network.play.server.S32PacketConfirmTransaction;
 
@@ -11,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import ruiseki.backpack.client.gui.container.BackpackContainer;
 import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionExecutor;
 
 @Mixin(NetHandlerPlayServer.class)
@@ -43,5 +46,18 @@ public abstract class MixinNetHandlerPlayServerBackpackInteraction {
         playerEntity.playerNetServerHandler
             .sendPacket(new S32PacketConfirmTransaction(packetIn.func_149548_c(), packetIn.func_149547_f(), true));
         ci.cancel();
+    }
+
+    @Inject(
+        method = "processPlayerBlockPlacement(Lnet/minecraft/network/play/client/C08PacketPlayerBlockPlacement;)V",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/inventory/Container;getSlotFromInventory(Lnet/minecraft/inventory/IInventory;I)Lnet/minecraft/inventory/Slot;"))
+    private void okbackpack$updateBackpackReference(C08PacketPlayerBlockPlacement packet, CallbackInfo ci) {
+        if (playerEntity.openContainer instanceof BackpackContainer container) {
+            ItemStack currentStack = playerEntity.inventory.getCurrentItem();
+            container.getWrapper()
+                .setBackpack(currentStack);
+        }
     }
 }

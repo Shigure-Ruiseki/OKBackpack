@@ -5,10 +5,12 @@ import ruiseki.storagecore.client.gui.container.StorageContainer;
 
 public class BackpackContainer extends StorageContainer {
 
-    protected final IBackpackWrapper wrapper;
-
     public BackpackContainer(IBackpackWrapper wrapper) {
         super(wrapper);
-        this.wrapper = wrapper;
+    }
+
+    @Override
+    public IBackpackWrapper getWrapper() {
+        return (IBackpackWrapper) super.getWrapper();
     }
 }

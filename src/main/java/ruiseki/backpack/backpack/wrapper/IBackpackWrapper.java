@@ -12,6 +12,8 @@ public interface IBackpackWrapper extends IStorageWrapper {
 
     ItemStack getBackpack();
 
+    void setBackpack(ItemStack stack);
+
     void setSlotNumbers(int numberOfInventorySlots, int numberOfUpgradeSlots);
 
     void setContentsUuid(UUID storageUuid);
@@ -49,6 +51,11 @@ public interface IBackpackWrapper extends IStorageWrapper {
         @Override
         public ItemStack getBackpack() {
             return backpack;
+        }
+
+        @Override
+        public void setBackpack(ItemStack stack) {
+
         }
 
         @Override
