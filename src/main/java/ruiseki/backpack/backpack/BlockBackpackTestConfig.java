@@ -6,11 +6,11 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.common.init.TierRegistries;
 import ruiseki.okcore.config.extendedconfig.BlockContainerConfig;
 
-public class BlockBackpackConfig extends BlockContainerConfig {
+public class BlockBackpackTestConfig extends BlockContainerConfig {
 
-    public static BlockBackpackConfig _instance = null;
+    public static BlockBackpackTestConfig _instance = null;
 
-    public BlockBackpackConfig() {
+    public BlockBackpackTestConfig() {
         super(
             OKBackpack._instance,
             true,

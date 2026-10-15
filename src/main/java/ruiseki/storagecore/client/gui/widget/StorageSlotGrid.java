@@ -148,6 +148,7 @@ public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlo
 
         private final Char2ObjectMap<IntFunction<T>> keys = new Char2ObjectOpenHashMap<>();
 
+        private int maxSlots = Integer.MAX_VALUE;
         private String slotGroupName;
         private SlotGroup slotGroup;
 
@@ -174,6 +175,14 @@ public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlo
                 this.matrix.add(row);
             }
 
+            return this;
+        }
+
+        public Builder<T> maxSlots(int maxSlots) {
+            if (maxSlots < 0) {
+                throw new IllegalArgumentException("maxSlots must not be negative");
+            }
+            this.maxSlots = maxSlots;
             return this;
         }
 
@@ -212,12 +221,12 @@ public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlo
 
             grid.slotGroup(this.slotGroup);
             grid.slotGroup(this.slotGroupName);
-
             grid.compactRows(this.compactRows);
             grid.collapseDisabledChild(this.collapseDisabledChild);
 
             int rowIndex = 0;
             int maxColumns = 0;
+            int createdSlots = 0;
 
             Map<Character, Integer> charCount = new HashMap<>();
 
@@ -229,19 +238,22 @@ public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlo
                     charCount.put(c, index + 1);
 
                     IntFunction<T> factory = this.keys.get(c);
-
                     if (factory == null) {
                         continue;
                     }
 
-                    T widget = factory.apply(index);
+                    if (createdSlots >= this.maxSlots) {
+                        continue;
+                    }
 
+                    T widget = factory.apply(index);
                     if (widget == null) {
                         continue;
                     }
 
                     grid.setGridPosition(widget, col, rowIndex);
                     grid.child(widget);
+                    createdSlots++;
                 }
 
                 maxColumns = Math.max(maxColumns, row.length());
@@ -250,7 +262,6 @@ public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlo
 
             grid.gridColumns = maxColumns;
             grid.slotSize(this.slotSize);
-
             grid.refreshGridLayout();
 
             return grid;

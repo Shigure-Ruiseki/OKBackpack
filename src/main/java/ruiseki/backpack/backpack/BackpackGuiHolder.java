@@ -18,17 +18,19 @@ import ruiseki.storagecore.client.gui.container.StorageScreen;
 
 public class BackpackGuiHolder extends StorageGuiHolder<BackpackPanel> {
 
-    protected final IBackpackWrapper wrapper;
-
     public BackpackGuiHolder(IBackpackWrapper wrapper) {
         super(wrapper);
-        this.wrapper = wrapper;
     }
 
     @Override
     protected BackpackPanel constructPanel(PanelSyncManager syncManager, UISettings settings, EntityPlayer player,
         TileEntity tile, int width) {
-        return new BackpackPanel(player, tile, syncManager, settings, wrapper, width);
+        return new BackpackPanel(player, tile, syncManager, settings, this.getWrapper(), width);
+    }
+
+    @Override
+    public IBackpackWrapper getWrapper() {
+        return (IBackpackWrapper) super.getWrapper();
     }
 
     public static final class ItemStackGuiHolder extends BackpackGuiHolder

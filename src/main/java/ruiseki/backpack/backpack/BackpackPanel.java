@@ -56,11 +56,18 @@ public class BackpackPanel extends StoragePanel {
 
     @Override
     protected StorageList addInventoryGrid() {
+        int inventorySlots = this.getWrapper()
+            .getInventoryHandler()
+            .getSlots();
+        int columns = this.getWrapper()
+            .getNumberOfSlotColumns();
+        int rows = (int) Math.ceil((double) inventorySlots / columns);
         this.storageSlotGrid = StorageSlotGrid.builder()
-            .matrix(this.rowSize, 6, 'I')
+            .matrix(columns, rows, 'I')
+            .maxSlots(inventorySlots)
             .key(
                 'I',
-                index -> new BackpackSlot().syncHandler(getStorageSlotSHs()[index])
+                i -> new BackpackSlot().syncHandler(this.getStorageSlotSH(i))
                     .setEnabledIf(slot -> {
                         if (this.searchValue.getStringValue()
                             .isEmpty()) return true;

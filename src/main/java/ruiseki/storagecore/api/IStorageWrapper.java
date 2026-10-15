@@ -8,8 +8,10 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import org.jetbrains.annotations.Nullable;
 
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.SortBy;
 import ruiseki.storagecore.inventory.InventoryHandler;
+import ruiseki.storagecore.upgrades.UpgradeHandler;
 
 public interface IStorageWrapper {
 
@@ -20,6 +22,12 @@ public interface IStorageWrapper {
     }
 
     InventoryHandler getInventoryHandler();
+
+    default void setUpgradeCachesInvalidatedHandler(Runnable handler) {
+        // noop
+    }
+
+    UpgradeHandler getUpgradeHandler();
 
     Optional<UUID> getContentsUuid();
 
@@ -47,6 +55,34 @@ public interface IStorageWrapper {
 
     void setPersistent(boolean persistent);
 
+    void refreshInventoryForUpgradeProcessing();
+
+    void refreshInventoryForInputOutput();
+
+    void setColumnsTaken(int columnsTaken, boolean hasChanged);
+
+    int getColumnsTaken();
+
+    default boolean useWideLayout() {
+        return false;
+    }
+
+    default int getNumberOfSlotRows() {
+        return 0;
+    }
+
+    default int getNumberOfSlotColumns() {
+        return 0;
+    }
+
+    default ItemStack getWrappedStorageStack() {
+        return ItemHelpers.EMPTY;
+    }
+
+    default int getBaseStackSizeMultiplier() {
+        return 1;
+    }
+
     default void onInit() {
         getInventoryHandler().onInit();
     }
@@ -59,6 +95,9 @@ public interface IStorageWrapper {
 
         @Nullable
         private InventoryHandler inventoryHandler;
+
+        @Nullable
+        private UpgradeHandler upgradeHandler;
 
         protected NoopStorageWrapper() {
 
@@ -81,6 +120,14 @@ public interface IStorageWrapper {
                 };
             }
             return inventoryHandler;
+        }
+
+        @Override
+        public UpgradeHandler getUpgradeHandler() {
+            if (upgradeHandler == null) {
+                upgradeHandler = new UpgradeHandler(0, this, new NBTTagCompound(), () -> {}, () -> {});
+            }
+            return upgradeHandler;
         }
 
         @Override
@@ -146,6 +193,26 @@ public interface IStorageWrapper {
         @Override
         public void setPersistent(boolean persistent) {
 
+        }
+
+        @Override
+        public void refreshInventoryForUpgradeProcessing() {
+
+        }
+
+        @Override
+        public void refreshInventoryForInputOutput() {
+
+        }
+
+        @Override
+        public void setColumnsTaken(int columnsTaken, boolean hasChanged) {
+
+        }
+
+        @Override
+        public int getColumnsTaken() {
+            return 0;
         }
 
         @Override

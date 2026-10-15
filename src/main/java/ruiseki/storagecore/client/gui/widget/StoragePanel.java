@@ -1,5 +1,6 @@
 package ruiseki.storagecore.client.gui.widget;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,11 +41,14 @@ import ruiseki.storagecore.api.IStorageWrapper;
 import ruiseki.storagecore.client.gui.container.StorageContainer;
 import ruiseki.storagecore.client.gui.container.StorageGuiContainer;
 import ruiseki.storagecore.client.gui.slot.ModularStorageSlot;
+import ruiseki.storagecore.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.storagecore.client.gui.sync.StorageSH;
 import ruiseki.storagecore.client.gui.sync.StorageSHRegisters;
 import ruiseki.storagecore.client.gui.sync.StorageSlotSH;
+import ruiseki.storagecore.client.gui.sync.UpgradeSlotSH;
 import ruiseki.storagecore.helper.StorageInventoryHelpers;
 import ruiseki.storagecore.inventory.InventoryHandler;
+import ruiseki.storagecore.upgrades.UpgradeHandler;
 
 public class StoragePanel extends ModularPanel {
 
@@ -65,16 +69,19 @@ public class StoragePanel extends ModularPanel {
 
     protected StorageSH storageSH;
     protected StorageSlotSH[] storageSlotSHs;
+    protected UpgradeSlotSH[] upgradeSlotSHs;
     protected PlayerMainInvWrapper playerInventory;
 
     protected int width;
-    protected int rowSize;
+    protected int gridColumn;
     protected int inventoryHeight;
     protected StringValue searchValue;
     protected SearchNode searchNode;
 
     protected StorageList storageList;
     protected StorageSlotGrid<ItemSlot> storageSlotGrid;
+    protected UpgradeSlotGroup upgradeSlotGroup;
+    protected List<ItemSlot> upgradeSlots = new ArrayList<>();
 
     public StoragePanel(EntityPlayer player, TileEntity tile, PanelSyncManager syncManager, UISettings settings,
         IStorageWrapper wrapper, int width) {
@@ -87,8 +94,8 @@ public class StoragePanel extends ModularPanel {
         this.wrapper = wrapper;
 
         this.width(this.width = width);
-        int calculated = (width - 14) / ItemSlot.SIZE;
-        this.rowSize = Math.clamp(calculated, 9, 12);
+        this.gridColumn = this.getWrapper()
+            .getNumberOfSlotColumns();
 
         this.getSyncManager()
             .bindPlayerInventory(player);
@@ -101,6 +108,7 @@ public class StoragePanel extends ModularPanel {
             .syncValue("storage_syncer", this.getStorageSH());
 
         this.constructInventorySH();
+        this.constructUpgradeSH();
 
         this.constructSettings();
     }
@@ -136,7 +144,7 @@ public class StoragePanel extends ModularPanel {
         int totalSlots = this.getWrapper()
             .getInventoryHandler()
             .getSlots();
-        int rows = (totalSlots + this.rowSize - 1) / this.rowSize;
+        int rows = (totalSlots + this.gridColumn - 1) / this.gridColumn;
 
         int screenHeight = getScreen() != null ? getScreen().getScreenArea().height : 240;
 
@@ -251,11 +259,18 @@ public class StoragePanel extends ModularPanel {
 
     // Inventory Grid
     protected StorageList addInventoryGrid() {
+        int inventorySlots = this.getWrapper()
+            .getInventoryHandler()
+            .getSlots();
+        int columns = this.getWrapper()
+            .getNumberOfSlotColumns();
+        int rows = (int) Math.ceil((double) inventorySlots / columns);
         this.storageSlotGrid = StorageSlotGrid.builder()
-            .matrix(this.rowSize, 6, 'I')
+            .matrix(columns, rows, 'I')
+            .maxSlots(inventorySlots)
             .key(
                 'I',
-                index -> new ItemSlot().syncHandler(getStorageSlotSHs()[index])
+                i -> new ItemSlot().syncHandler(this.getStorageSlotSH(i))
                     .setEnabledIf(slot -> {
                         if (this.searchValue.getStringValue()
                             .isEmpty()) return true;
@@ -279,7 +294,7 @@ public class StoragePanel extends ModularPanel {
             slot.slotGroup("storage_inventory");
             StorageSlotSH syncHandler = new StorageSlotSH(slot, this.getWrapper(), this);
             this.getSyncManager()
-                .syncValue("storage", i, syncHandler);
+                .syncValue("storages", i, syncHandler);
             this.storageSlotSHs[i] = syncHandler;
         }
         this.getSyncManager()
@@ -362,6 +377,43 @@ public class StoragePanel extends ModularPanel {
         return transferRow;
     }
 
+    public void addUpgradeSlots() {
+        this.upgradeSlotGroup = new UpgradeSlotGroup(this.getWrapper(), this.getPanel());
+        this.upgradeSlotGroup.name("upgrade_inventory")
+            .resizer()
+            .size(
+                23,
+                10 + this.getWrapper()
+                    .getUpgradeHandler()
+                    .getSlots() * ItemSlot.SIZE)
+            .left(-21);
+        for (int i = 0; i < this.getWrapper()
+            .getUpgradeHandler()
+            .getSlots(); i++) {
+            UpgradeSlot slot = new UpgradeSlot(this.getWrapper(), this.getPanel(), i);
+            slot.syncHandler(this.getUpgradeSlotSH(i))
+                .pos(5, 5 + i * ItemSlot.SIZE)
+                .name("slot_" + i);
+            this.upgradeSlots.add(slot);
+            this.upgradeSlotGroup.child(slot);
+        }
+        this.child(this.upgradeSlotGroup);
+    }
+
+    protected void constructUpgradeSH() {
+        UpgradeHandler handler = this.getWrapper()
+            .getUpgradeHandler();
+        this.upgradeSlotSHs = new UpgradeSlotSH[handler.getSlots()];
+        for (int i = 0; i < handler.getSlots(); i++) {
+            ModularUpgradeSlot slot = new ModularUpgradeSlot(handler, i, this.getWrapper(), this.getPanel());
+            slot.slotGroup("upgrade_inventory");
+            UpgradeSlotSH syncHandler = new UpgradeSlotSH(slot, this.wrapper, this);
+            this.syncManager.syncValue("upgrades", i, syncHandler);
+            this.upgradeSlotSHs[i] = syncHandler;
+        }
+        this.syncManager.registerSlotGroup(new SlotGroup("upgrade_inventory", 1, 99, true));
+    }
+
     public PanelSyncManager getSyncManager() {
         return syncManager;
     }
@@ -396,6 +448,18 @@ public class StoragePanel extends ModularPanel {
     }
 
     public StorageSlotSH[] getStorageSlotSHs() {
-        return storageSlotSHs;
+        return this.storageSlotSHs;
+    }
+
+    public StorageSlotSH getStorageSlotSH(int i) {
+        return this.getStorageSlotSHs()[i];
+    }
+
+    public UpgradeSlotSH[] getUpgradeSlotSHs() {
+        return this.upgradeSlotSHs;
+    }
+
+    public UpgradeSlotSH getUpgradeSlotSH(int i) {
+        return this.getUpgradeSlotSHs()[i];
     }
 }

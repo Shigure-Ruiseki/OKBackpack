@@ -19,14 +19,15 @@ import ruiseki.storagecore.client.gui.widget.StoragePanel;
 
 public class StorageGuiHolder<T extends StoragePanel> {
 
-    protected final IStorageWrapper wrapper;
+    private final IStorageWrapper wrapper;
 
     public StorageGuiHolder(IStorageWrapper wrapper) {
         this.wrapper = wrapper;
     }
 
     public T buildUI(PanelSyncManager syncManager, UISettings settings, EntityPlayer player, TileEntity tile) {
-        int width = 20 + 9 * ItemSlot.SIZE;
+        int width = 20 + this.getWrapper()
+            .getNumberOfSlotColumns() * ItemSlot.SIZE;
         return constructPanel(syncManager, settings, player, tile, width);
     }
 
@@ -39,6 +40,11 @@ public class StorageGuiHolder<T extends StoragePanel> {
     protected void addCommonWidgets(StoragePanel panel) {
         panel.addDisplayName();
         panel.addMainLayout();
+        panel.addUpgradeSlots();
+    }
+
+    public IStorageWrapper getWrapper() {
+        return wrapper;
     }
 
     public static final class TileEntityGuiHolder<T extends StoragePanel> extends StorageGuiHolder<T>

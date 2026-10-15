@@ -26,7 +26,7 @@ public class StorageList extends ListWidget<StorageSlotGrid<?>, StorageList> {
         if (initialScroll > 0) {
             this.pendingScroll = initialScroll;
         }
-        width(panel.rowSize * ItemSlot.SIZE + thickness * 2);
+        width(panel.gridColumn * ItemSlot.SIZE + thickness * 2);
         showScrollShadows(false);
         crossAxisAlignment(Alignment.CrossAxis.START);
     }
@@ -67,7 +67,7 @@ public class StorageList extends ListWidget<StorageSlotGrid<?>, StorageList> {
                 return false;
             }
 
-            int x = panel.rowSize * ItemSlot.SIZE + getThickness() - 2;
+            int x = panel.gridColumn * ItemSlot.SIZE + getThickness() - 2;
             int y = 0;
 
             int w = getThickness() + 2;
@@ -81,7 +81,7 @@ public class StorageList extends ListWidget<StorageSlotGrid<?>, StorageList> {
             IDrawable texture) {
             boolean isOtherActive = isOtherScrollBarActive(area, true);
             int l = this.getScrollBarLength(area);
-            int x = panel.rowSize * ItemSlot.SIZE + getThickness() - 2;
+            int x = panel.gridColumn * ItemSlot.SIZE + getThickness() - 2;
             int y = 0;
             int w = getThickness() + 2;
             int h = area.height;

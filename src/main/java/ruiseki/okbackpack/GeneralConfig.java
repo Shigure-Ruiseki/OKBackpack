@@ -1,15 +1,12 @@
+
 package ruiseki.okbackpack;
 
 import org.apache.logging.log4j.Level;
 
 import ruiseki.okcore.config.ConfigurableProperty;
-import ruiseki.okcore.config.ConfigurableType;
 import ruiseki.okcore.config.extendedconfig.DummyConfig;
 import ruiseki.okcore.tracking.Versions;
 
-/**
- * General config for OKBackpack using OKCore config system.
- */
 public class GeneralConfig extends DummyConfig {
 
     @ConfigurableProperty(
@@ -23,7 +20,7 @@ public class GeneralConfig extends DummyConfig {
     @ConfigurableProperty(category = "core", comment = "Magnet Upgrade item suction range.")
     public static int magnetRange = 5;
 
-    // --- Feature Toggles ---
+    // Feature toggles
 
     @ConfigurableProperty(
         category = "core",
@@ -51,11 +48,6 @@ public class GeneralConfig extends DummyConfig {
         comment = "Maximum number of item stacks to display per row in the backpack tooltip.")
     public static int tooltipMaxItemsPerRow = 9;
 
-    /**
-     * Config type instance.
-     */
-    public static ConfigurableType TYPE = ConfigurableType.DUMMY;
-
     public GeneralConfig() {
         super(OKBackpack._instance, true, "general", null);
     }
@@ -66,7 +58,8 @@ public class GeneralConfig extends DummyConfig {
             getMod().log(
                 Level.WARN,
                 "The config file of " + Reference.MOD_NAME
-                    + " is out of date and might cause problems, please remove it so it can be regenerated.");
+                    + " is out of date and might cause problems, "
+                    + "please remove it so it can be regenerated.");
         }
 
         if (useVersionChecker) {

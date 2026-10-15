@@ -3,9 +3,11 @@ package ruiseki.backpack.backpack.wrapper;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.IntConsumer;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,12 +15,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import org.jetbrains.annotations.Nullable;
 
 import ruiseki.backpack.backpack.BackpackStorage;
+import ruiseki.backpack.backpack.ItemBackpack;
+import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.tier.TierRegistry;
+import ruiseki.okcore.helper.Helpers;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.NBTHelpers;
 import ruiseki.okcore.inventory.InventorySorter;
 import ruiseki.okcore.inventory.ItemStackKey;
 import ruiseki.okcore.inventory.SortBy;
 import ruiseki.storagecore.inventory.InventoryHandler;
+import ruiseki.storagecore.upgrades.UpgradeHandler;
 
 public class BackpackWrapper implements IBackpackWrapper {
 
@@ -41,10 +48,13 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Nullable
     private InventoryHandler handler;
+    @Nullable
+    private UpgradeHandler upgradeHandler = null;
+
+    private IntConsumer onSlotsChange = diff -> {};
 
     private Runnable onInventoryHandlerRefresh = () -> {};
-
-    public boolean isDirty;
+    private Runnable upgradeCachesInvalidatedHandler = () -> {};
 
     public BackpackWrapper(@Nullable ItemStack backpack, String tierId) {
         this.backpack = backpack;
@@ -52,39 +62,147 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     @Override
-    public InventoryHandler getInventoryHandler() {
-        if (handler == null) {
-            handler = new InventoryHandler(54, this, getBackpackContentsNbt(), () -> {
-                this.markBackpackContentsDirty();
-                this.inventorySlotChangeHandler.run();
-            });
-        }
-        return handler;
-    }
-
-    @Override
-    public @Nullable ItemStack getBackpack() {
-        return this.backpack;
-    }
-
-    @Override
-    public void setBackpack(@Nullable ItemStack stack) {
-        this.backpack = stack;
-    }
-
-    @Override
-    public void setContentsUuid(UUID storageUuid) {
-        NBTHelpers.setUniqueId(backpack, CONTENTS_UUID_TAG, storageUuid);
-    }
-
-    @Override
     public void setSaveHandler(Runnable saveHandler) {
         backpackSaveHandler = saveHandler;
+        refreshInventoryForUpgradeProcessing();
     }
 
     @Override
     public void setInventorySlotChangeHandler(Runnable slotChangeHandler) {
         inventorySlotChangeHandler = slotChangeHandler;
+    }
+
+    // @Override
+    // public ITrackedContentsItemHandler getInventoryForUpgradeProcessing() {
+    // if (inventoryModificationHandler == null) {
+    // inventoryModificationHandler = new InventoryModificationHandler(this);
+    // }
+    // return inventoryModificationHandler.getModifiedInventoryHandler();
+    // }
+
+    @Override
+    public InventoryHandler getInventoryHandler() {
+        if (handler == null) {
+            handler = new InventoryHandler(
+                getNumberOfInventorySlots() - (getNumberOfSlotRows() * getColumnsTaken()),
+                this,
+                getBackpackContentsNbt(),
+                () -> {
+                    this.markBackpackContentsDirty();
+                    this.inventorySlotChangeHandler.run();
+                });
+            // handler.addListener(getSettingsHandler().getTypeCategory(ItemDisplaySettingsCategory.class)::itemChanged);
+        }
+        return handler;
+    }
+
+    private int getNumberOfInventorySlots() {
+        Optional<Integer> inventorySlots = NBTHelpers.getInteger(backpack, INVENTORY_SLOTS_TAG);
+
+        if (inventorySlots.isPresent()) {
+            return inventorySlots.get();
+        }
+
+        int itemInventorySlots = ((ItemBackpack) backpack.getItem()).getNumberOfSlots();
+        setNumberOfInventorySlots(itemInventorySlots);
+        return itemInventorySlots;
+    }
+
+    @Override
+    public boolean useWideLayout() {
+        return getNumberOfInventorySlots() > 81;
+    }
+
+    @Override
+    public int getNumberOfSlotRows() {
+        return (int) Math.ceil((double) getNumberOfInventorySlots() / (useWideLayout() ? 12 : 9));
+    }
+
+    @Override
+    public int getNumberOfSlotColumns() {
+        return useWideLayout() ? 12 : 9;
+    }
+
+    private void setNumberOfInventorySlots(int itemInventorySlots) {
+        NBTHelpers.setInteger(backpack, INVENTORY_SLOTS_TAG, itemInventorySlots);
+    }
+
+    private NBTTagCompound getBackpackContentsNbt() {
+        return BackpackStorage.get()
+            .getOrCreateBackpackContents(getOrCreateContentsUuid());
+    }
+
+    private void markBackpackContentsDirty() {
+        BackpackStorage.get()
+            .markDirty();
+    }
+
+    // @Override
+    // public ITrackedContentsItemHandler getInventoryForInputOutput() {
+    // if (inventoryIOHandler == null) {
+    // inventoryIOHandler = new InventoryIOHandler(this);
+    // }
+    // return inventoryIOHandler.getFilteredItemHandler();
+    // }
+
+    @Override
+    public UpgradeHandler getUpgradeHandler() {
+        if (upgradeHandler == null) {
+            if (getContentsUuid().isPresent()) {
+                upgradeHandler = new UpgradeHandler(
+                    getNumberOfUpgradeSlots(),
+                    this,
+                    getBackpackContentsNbt(),
+                    this::markBackpackContentsDirty,
+                    () -> {
+                        if (handler != null) {
+                            handler.clearListeners();
+                            // handler.setBaseSlotLimit(StackUpgradeItem.getInventorySlotLimit(this));
+                        }
+                        getInventoryHandler().clearListeners();
+                        // handler.addListener(getSettingsHandler().getTypeCategory(ItemDisplaySettingsCategory.class)::itemChanged);
+                        // inventoryIOHandler = null;
+                        // inventoryModificationHandler = null;
+                        // fluidHandlerInitialized = false;
+                        // fluidHandler = null;
+                        // energyStorageInitialized = false;
+                        // energyStorage = null;
+                        // upgradeCachesInvalidatedHandler.run();
+                    }) {
+
+                    @Override
+                    public boolean isItemValid(int slot, ItemStack stack) {
+                        // noinspection ConstantConditions - by this time the upgrade has registryName so it can't be
+                        // null
+                        return super.isItemValid(slot, stack)
+                            && (ItemHelpers.isEmpty(stack) || OKBackpack._instance.getModId()
+                                .equals(
+                                    Objects.requireNonNull(Helpers.getLocation(stack))
+                                        .getResourceDomain()));
+                    }
+                };
+            } else {
+                upgradeHandler = Noop.INSTANCE.getUpgradeHandler();
+            }
+        }
+        return upgradeHandler;
+    }
+
+    @Override
+    public void setUpgradeCachesInvalidatedHandler(Runnable handler) {
+        upgradeCachesInvalidatedHandler = handler;
+    }
+
+    private int getNumberOfUpgradeSlots() {
+        Optional<Integer> upgradeSlots = NBTHelpers.getInteger(backpack, UPGRADE_SLOTS_TAG);
+
+        if (upgradeSlots.isPresent()) {
+            return upgradeSlots.get();
+        }
+
+        int itemUpgradeSlots = ((ItemBackpack) backpack.getItem()).getNumberOfUpgradeSlots();
+        setNumberOfUpgradeSlots(itemUpgradeSlots);
+        return itemUpgradeSlots;
     }
 
     @Override
@@ -106,27 +224,17 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     private void clearDummyHandlers() {
-        // if (upgradeHandler == Noop.INSTANCE.getUpgradeHandler()) {
-        // upgradeHandler = null;
-        // }
+        if (upgradeHandler == Noop.INSTANCE.getUpgradeHandler()) {
+            upgradeHandler = null;
+        }
         // if (settingsHandler == Noop.INSTANCE.getSettingsHandler()) {
         // settingsHandler = null;
         // }
     }
 
-    private NBTTagCompound getBackpackContentsNbt() {
-        return BackpackStorage.get()
-            .getOrCreateBackpackContents(getOrCreateContentsUuid());
-    }
-
-    private void markBackpackContentsDirty() {
-        BackpackStorage.get()
-            .markDirty();
-    }
-
     private void migrateBackpackContents(UUID newUuid) {
         migrateNbtTag(newUuid, InventoryHandler.INVENTORY_TAG);
-
+        migrateNbtTag(newUuid, UpgradeHandler.UPGRADE_INVENTORY_TAG);
     }
 
     private void migrateNbtTag(UUID newUuid, String key) {
@@ -178,7 +286,7 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public void setSortBy(SortBy sortBy) {
-        NBTHelpers.setString(backpack, SORT_BY_TAG, sortBy.getName());
+        NBTHelpers.setString(backpack, SORT_BY_TAG, sortBy.getSerializedName());
         backpackSaveHandler.run();
     }
 
@@ -205,27 +313,96 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     @Override
-    public void onContentsNbtUpdated() {
-        handler = null;
-        // upgradeHandler = null;
-        // refreshInventoryForUpgradeProcessing();
-        onInventoryHandlerRefresh.run();
+    public @Nullable ItemStack getBackpack() {
+        return this.backpack;
+    }
+
+    @Override
+    public void setBackpack(@Nullable ItemStack stack) {
+        this.backpack = stack;
+    }
+
+    @Override
+    public void refreshInventoryForInputOutput() {
+        // inventoryIOHandler = null;
+        upgradeCachesInvalidatedHandler.run();
     }
 
     @Override
     public void setPersistent(boolean persistent) {
         getInventoryHandler().setPersistent(persistent);
-        // getUpgradeHandler().setPersistent(persistent);
+        getUpgradeHandler().setPersistent(persistent);
     }
 
     @Override
     public void setSlotNumbers(int numberOfInventorySlots, int numberOfUpgradeSlots) {
         setNumberOfInventorySlots(numberOfInventorySlots);
-        // setNumberOfUpgradeSlots(numberOfUpgradeSlots);
+        setNumberOfUpgradeSlots(numberOfUpgradeSlots);
     }
 
-    private void setNumberOfInventorySlots(int itemInventorySlots) {
-        NBTHelpers.setInteger(backpack, INVENTORY_SLOTS_TAG, itemInventorySlots);
+    @Override
+    public void setContentsUuid(UUID storageUuid) {
+        NBTHelpers.setUniqueId(backpack, CONTENTS_UUID_TAG, storageUuid);
+    }
+
+    @Override
+    public void removeContentsUuid() {
+        getContentsUuid().ifPresent(BackpackStorage.get()::removeBackpackContents);
+        removeContentsUUIDTag();
+    }
+
+    @Override
+    public void removeContentsUUIDTag() {
+        NBTHelpers.removeTag(backpack, CONTENTS_UUID_TAG);
+    }
+
+    @Override
+    public void setColumnsTaken(int columnsTaken, boolean hasChanged) {
+        int originalColumnsTaken = getColumnsTaken();
+        NBTHelpers.setInteger(backpack, COLUMNS_TAKEN_TAG, columnsTaken);
+        if (hasChanged) {
+            int diff = (columnsTaken - originalColumnsTaken) * getNumberOfSlotRows();
+            onSlotsChange.accept(diff);
+        }
+        backpackSaveHandler.run();
+    }
+
+    @Override
+    public int getColumnsTaken() {
+        return NBTHelpers.getInteger(backpack, COLUMNS_TAKEN_TAG)
+            .orElse(0);
+    }
+
+    @Override
+    public void onContentsNbtUpdated() {
+        handler = null;
+        upgradeHandler = null;
+        refreshInventoryForUpgradeProcessing();
+        onInventoryHandlerRefresh.run();
+    }
+
+    @Override
+    public void registerOnSlotsChangeListener(IntConsumer onSlotsChange) {
+        this.onSlotsChange = onSlotsChange;
+    }
+
+    private void setNumberOfUpgradeSlots(int numberOfUpgradeSlots) {
+        NBTHelpers.setInteger(backpack, UPGRADE_SLOTS_TAG, numberOfUpgradeSlots);
+    }
+
+    @Override
+    public void refreshInventoryForUpgradeProcessing() {
+        // inventoryModificationHandler = null;
+        // fluidHandler = null;
+        // fluidHandlerInitialized = false;
+        // energyStorage = null;
+        // energyStorageInitialized = false;
+        refreshInventoryForInputOutput();
+    }
+
+    @Override
+    public void unregisterOnSlotsChangeListener() {
+        onSlotsChange = diff -> {};
     }
 
     @Override
@@ -236,6 +413,11 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public void unregisterOnInventoryHandlerRefreshListener() {
         onInventoryHandlerRefresh = () -> {};
+    }
+
+    @Override
+    public ItemStack getWrappedStorageStack() {
+        return this.getBackpack();
     }
 
     @Override

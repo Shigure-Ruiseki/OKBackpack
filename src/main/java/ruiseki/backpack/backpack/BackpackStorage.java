@@ -73,7 +73,7 @@ public class BackpackStorage extends WorldStorage {
         });
     }
 
-    public void removeContents(UUID uuid) {
+    public void removeBackpackContents(UUID uuid) {
         contents.remove(uuid);
     }
 

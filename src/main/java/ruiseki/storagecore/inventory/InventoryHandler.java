@@ -19,6 +19,7 @@ import ruiseki.storagecore.api.IStorageWrapper;
 public class InventoryHandler extends ItemStackHandler {
 
     public static final String INVENTORY_TAG = "inventory";
+    private static final String PARTITIONER_TAG = "partitioner";
     private static final String REAL_COUNT_TAG = "realCount";
     private final IStorageWrapper wrapper;
     private final NBTTagCompound contentsNbt;
@@ -98,7 +99,6 @@ public class InventoryHandler extends ItemStackHandler {
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        super.deserializeNBT(nbt);
         setSize(nbt.hasKey("Size", Constants.NBT.TAG_INT) ? nbt.getInteger("Size") : stacks.size());
         NBTTagList tagList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < tagList.tagCount(); i++) {

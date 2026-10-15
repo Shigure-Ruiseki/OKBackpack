@@ -1,6 +1,7 @@
 package ruiseki.backpack.backpack;
 
 import java.util.List;
+import java.util.function.IntSupplier;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +24,8 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import ruiseki.backpack.Capabilities;
 import ruiseki.backpack.backpack.wrapper.BackpackWrapper;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
+import ruiseki.okbackpack.api.tier.BackpackTier;
+import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
 import ruiseki.okbackpack.common.init.TierRegistries;
 import ruiseki.okcore.capabilities.Capability;
@@ -34,12 +37,32 @@ import ruiseki.okcore.item.ItemBlockMetadata;
 public class ItemBackpack extends ItemBlockMetadata implements IGuiHolder<PlayerInventoryGuiData> {
 
     private String tierId = TierRegistries.LEATHER;
+    private BackpackTier tier = null;
+    private final IntSupplier numberOfSlots;
+    private final IntSupplier numberOfUpgradeSlots;
 
     public ItemBackpack(Block block) {
         super(block);
         if (block instanceof BlockBackpack backpack) {
             this.tierId = backpack.getTierId();
         }
+        this.numberOfSlots = () -> getTier().getBackpackSlots();
+        this.numberOfUpgradeSlots = () -> getTier().getUpgradeSlots();
+    }
+
+    public BackpackTier getTier() {
+        if (this.tier == null) {
+            this.tier = TierRegistry.getTier(tierId);
+        }
+        return this.tier;
+    }
+
+    public int getNumberOfSlots() {
+        return numberOfSlots.getAsInt();
+    }
+
+    public int getNumberOfUpgradeSlots() {
+        return numberOfUpgradeSlots.getAsInt();
     }
 
     @Override
