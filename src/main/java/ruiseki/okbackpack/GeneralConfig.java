@@ -3,9 +3,11 @@ package ruiseki.okbackpack;
 
 import org.apache.logging.log4j.Level;
 
+import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.DummyConfig;
 import ruiseki.okcore.tracking.Versions;
+import ruiseki.storagecore.config.MaxUpgradesPerStorageConfig;
 
 public class GeneralConfig extends DummyConfig {
 
@@ -47,6 +49,15 @@ public class GeneralConfig extends DummyConfig {
         category = "core",
         comment = "Maximum number of item stacks to display per row in the backpack tooltip.")
     public static int tooltipMaxItemsPerRow = 9;
+
+    @ConfigurableProperty(
+        category = "core",
+        comment = "Maximum number of upgrades per backpack. Format: UpgradeRegistryPath|Max or UpgradeGroup|Max, separated by semicolons.",
+        configLocation = ConfigLocation.SERVER,
+        changedCallback = MaxUpgradesPerStorageConfig.class)
+    public static String maxUpgradesPerStorage = "stack|3;cooking|1;jukebox_upgrade|1";
+
+    public static final MaxUpgradesPerStorageConfig maxUpgradesPerStorageConfig = new MaxUpgradesPerStorageConfig();
 
     public GeneralConfig() {
         super(OKBackpack._instance, true, "general", null);

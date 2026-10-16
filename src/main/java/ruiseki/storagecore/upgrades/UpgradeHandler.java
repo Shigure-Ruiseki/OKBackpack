@@ -37,7 +37,6 @@ public class UpgradeHandler extends ItemStackHandler {
     private boolean typeWrappersInitialized = false;
     @Nullable
     private IUpgradeWrapperAccessor wrapperAccessor = null;
-    private boolean persistent = true;
     private final Map<Class<? extends IUpgradeWrapper>, Consumer<? extends IUpgradeWrapper>> upgradeDefaultsHandlers = new HashMap<>();
 
     public UpgradeHandler(int numberOfUpgradeSlots, IStorageWrapper storageWrapper, NBTTagCompound contentsNbt,
@@ -63,10 +62,8 @@ public class UpgradeHandler extends ItemStackHandler {
     @Override
     protected void onContentsChanged(int slot) {
         super.onContentsChanged(slot);
-        if (persistent) {
-            saveInventory();
-            contentsSaveHandler.run();
-        }
+        saveInventory();
+        contentsSaveHandler.run();
         if (!justSavingNbtChange) {
             refreshUpgradeWrappers();
         }
@@ -79,10 +76,6 @@ public class UpgradeHandler extends ItemStackHandler {
 
     public void saveInventory() {
         contentsNbt.setTag(UPGRADE_INVENTORY_TAG, serializeNBT());
-    }
-
-    public void setPersistent(boolean persistent) {
-        this.persistent = persistent;
     }
 
     public void setRefreshCallBack(Runnable refreshCallBack) {
@@ -166,7 +159,7 @@ public class UpgradeHandler extends ItemStackHandler {
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (!simulate && MinecraftHelpers.isServerSide()) {
             ItemStack slotStack = getStackInSlot(slot);
-            if (persistent && !ItemHelpers.isEmpty(slotStack) && amount == 1) {
+            if (!ItemHelpers.isEmpty(slotStack) && amount == 1) {
                 Map<Integer, IUpgradeWrapper> wrappers = getSlotWrappers();
                 if (wrappers.containsKey(slot)) {
                     wrappers.get(slot)
@@ -247,6 +240,10 @@ public class UpgradeHandler extends ItemStackHandler {
     public Map<Integer, IUpgradeWrapper> getSlotWrappers() {
         initializeWrappers();
         return slotWrappers;
+    }
+
+    public IUpgradeWrapper getSlotWrapper(int index) {
+        return getSlotWrappers().get(index);
     }
 
     public void copyTo(UpgradeHandler otherHandler) {

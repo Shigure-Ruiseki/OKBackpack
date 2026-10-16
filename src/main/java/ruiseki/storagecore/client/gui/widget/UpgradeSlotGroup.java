@@ -18,7 +18,6 @@ import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widget.Widget;
 
-import lombok.Setter;
 import ruiseki.okbackpack.Reference;
 import ruiseki.storagecore.api.IStorageWrapper;
 import ruiseki.storagecore.client.gui.sync.UpgradeSlotSH;
@@ -65,6 +64,14 @@ public class UpgradeSlotGroup extends ParentWidget<UpgradeSlotGroup> {
             this.toggleWidgets.add(toggleWidget);
             this.child(toggleWidget);
         }
+    }
+
+    public List<UpgradeToggleWidget> getToggleWidgets() {
+        return this.toggleWidgets;
+    }
+
+    public UpgradeToggleWidget getToggleWidget(int index) {
+        return this.toggleWidgets.get(index);
     }
 
     @Override
@@ -161,9 +168,7 @@ public class UpgradeSlotGroup extends ParentWidget<UpgradeSlotGroup> {
                 boolean enabled = !upgradeWrapper.isEnabled();
                 upgradeWrapper.setEnabled(enabled);
                 this.getSyncHandler()
-                    .syncToServer(UpgradeSlotSHRegistries.ENABLE, buffer -> {
-                        buffer.writeBoolean(enabled);
-                    });
+                    .syncToServer(UpgradeSlotSHRegistries.ENABLE, buffer -> { buffer.writeBoolean(enabled); });
             }
             Interactable.playButtonClickSound();
             return Result.SUCCESS;

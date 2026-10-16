@@ -3,19 +3,27 @@ package ruiseki.storagecore.client.gui.widget;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.Interactable;
+import com.cleanroommc.modularui.drawable.AdaptableUITexture;
+import com.cleanroommc.modularui.drawable.ItemDrawable;
+import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.network.NetworkUtils;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
+import com.cleanroommc.modularui.theme.WidgetTheme;
 import com.cleanroommc.modularui.value.StringValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widget.ParentWidget;
@@ -25,6 +33,7 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
+import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.ShiftButtonWidget;
@@ -46,11 +55,26 @@ import ruiseki.storagecore.client.gui.sync.StorageSH;
 import ruiseki.storagecore.client.gui.sync.StorageSHRegisters;
 import ruiseki.storagecore.client.gui.sync.StorageSlotSH;
 import ruiseki.storagecore.client.gui.sync.UpgradeSlotSH;
+import ruiseki.storagecore.client.gui.widget.update.UpgradeSlotUpdate;
+import ruiseki.storagecore.helper.RenderHelpers;
 import ruiseki.storagecore.helper.StorageInventoryHelpers;
 import ruiseki.storagecore.inventory.InventoryHandler;
+import ruiseki.storagecore.upgrades.IUpgradeItem;
+import ruiseki.storagecore.upgrades.IUpgradeWrapper;
 import ruiseki.storagecore.upgrades.UpgradeHandler;
+import ruiseki.storagecore.upgrades.UpgradeSlotChangeResult;
 
 public class StoragePanel extends ModularPanel {
+
+    public static final AdaptableUITexture LAYERED_TAB_TEXTURE = (AdaptableUITexture) UITexture.builder()
+        .location(Reference.MOD_ID, "gui/gui_controls")
+        .imageSize(256, 256)
+        .xy(132, 0, 124, 256)
+        .adaptable(4)
+        .tiled()
+        .build();
+
+    public static final int ERROR_DISPLAY_TICKS = 60;
 
     protected static final List<CyclicVariantButtonWidget.Variant> SORT_TYPE_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
@@ -81,7 +105,13 @@ public class StoragePanel extends ModularPanel {
     protected StorageList storageList;
     protected StorageSlotGrid<ItemSlot> storageSlotGrid;
     protected UpgradeSlotGroup upgradeSlotGroup;
-    protected List<ItemSlot> upgradeSlots = new ArrayList<>();
+    protected UpgradeSlotUpdate[] upgradeSlotUpdates;
+    protected List<UpgradeSlot> upgradeSlots = new ArrayList<>();
+    protected List<TabWidget> tabWidgets;
+
+    private long errorResultExpirationTime = 0;
+    @Nullable
+    private UpgradeSlotChangeResult errorUpgradeSlotChangeResult;
 
     public StoragePanel(EntityPlayer player, TileEntity tile, PanelSyncManager syncManager, UISettings settings,
         IStorageWrapper wrapper, int width) {
@@ -123,7 +153,7 @@ public class StoragePanel extends ModularPanel {
 
     protected void constructSettings() {
         this.getSettings()
-            .customContainer(() -> new StorageContainer(this.getWrapper()));
+            .customContainer(() -> new StorageContainer(this.getWrapper(), this.getPanel()));
         this.getSettings()
             .customGui(() -> (container, screen) -> new StorageGuiContainer(container, screen, this.getWrapper()));
     }
@@ -387,6 +417,7 @@ public class StoragePanel extends ModularPanel {
                     .getUpgradeHandler()
                     .getSlots() * ItemSlot.SIZE)
             .left(-21);
+        this.upgradeSlots = new ArrayList<>();
         for (int i = 0; i < this.getWrapper()
             .getUpgradeHandler()
             .getSlots(); i++) {
@@ -394,8 +425,8 @@ public class StoragePanel extends ModularPanel {
             slot.syncHandler(this.getUpgradeSlotSH(i))
                 .pos(5, 5 + i * ItemSlot.SIZE)
                 .name("slot_" + i);
-            this.upgradeSlots.add(slot);
             this.upgradeSlotGroup.child(slot);
+            this.upgradeSlots.add(slot);
         }
         this.child(this.upgradeSlotGroup);
     }
@@ -403,15 +434,170 @@ public class StoragePanel extends ModularPanel {
     protected void constructUpgradeSH() {
         UpgradeHandler handler = this.getWrapper()
             .getUpgradeHandler();
-        this.upgradeSlotSHs = new UpgradeSlotSH[handler.getSlots()];
+        int slotCount = handler.getSlots();
+        this.upgradeSlotSHs = new UpgradeSlotSH[slotCount];
+        this.upgradeSlotUpdates = new UpgradeSlotUpdate[slotCount];
         for (int i = 0; i < handler.getSlots(); i++) {
-            ModularUpgradeSlot slot = new ModularUpgradeSlot(handler, i, this.getWrapper(), this.getPanel());
+            final int slotIndex = i;
+            ModularUpgradeSlot slot = new ModularUpgradeSlot(handler, slotIndex, this.getWrapper(), this.getPanel());
             slot.slotGroup("upgrade_inventory");
+            slot.changeListener((newItem, onlyAmountChanged, client, init) -> {
+                if (!client) return;
+                updateUpgradeWidgets();
+            });
             UpgradeSlotSH syncHandler = new UpgradeSlotSH(slot, this.wrapper, this);
-            this.syncManager.syncValue("upgrades", i, syncHandler);
-            this.upgradeSlotSHs[i] = syncHandler;
+            this.syncManager.syncValue("upgrades", slotIndex, syncHandler);
+            this.upgradeSlotSHs[slotIndex] = syncHandler;
+            this.upgradeSlotUpdates[i] = new UpgradeSlotUpdate(this.getWrapper(), this.getPanel(), i);
         }
         this.syncManager.registerSlotGroup(new SlotGroup("upgrade_inventory", 1, 99, true));
+    }
+
+    public void addUpgradeTabs() {
+        this.tabWidgets = new ArrayList<>();
+
+        int slotCount = this.wrapper.getUpgradeHandler()
+            .getSlots();
+
+        for (int i = 0; i < slotCount; i++) {
+            TabWidget tab = new TabWidget(i + 1).name("upgrade_tab_" + i);
+
+            tab.setEnabled(false);
+
+            this.tabWidgets.add(tab);
+        }
+
+        for (int i = this.tabWidgets.size() - 1; i >= 0; i--) {
+            this.child(this.tabWidgets.get(i));
+        }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void updateUpgradeWidgets() {
+        int tabCount = 0;
+        resetTabState();
+        UpgradeHandler handler = this.getWrapper()
+            .getUpgradeHandler();
+        int openedId = this.getWrapper()
+            .getOpenTabId()
+            .orElse(-1);
+
+        for (int slotIndex = 0; slotIndex < handler.getSlots(); slotIndex++) {
+            ItemStack stack = handler.getStackInSlot(slotIndex);
+            IUpgradeWrapper upgradeWrapper = handler.getSlotWrappers()
+                .get(slotIndex);
+            if (ItemHelpers.isEmpty(stack)) continue;
+
+            Item item = stack.getItem();
+            if (!(item instanceof IUpgradeItem upgrade)) continue;
+            if (upgradeWrapper == null) continue;
+            if (upgradeWrapper.hideSettingsTab()) continue;
+
+            TabWidget tab = tabWidgets.get(tabCount);
+            UpgradeSlotUpdate group = upgradeSlotUpdates[slotIndex];
+
+            boolean enabled = openedId == slotIndex;
+            tab.setShowExpanded(enabled);
+            tab.setEnabled(true);
+            tab.setTabIcon(
+                new ItemDrawable(stack).asIcon()
+                    .size(18));
+            tab.tooltip(
+                t -> t.clearText()
+                    .addLine(IKey.str(item.getItemStackDisplayName(stack)))
+                    .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+
+            upgrade.getType()
+                .updateWidgetDelegates(upgradeWrapper, group);
+            ExpandedTabWidget expanded = upgrade.getType()
+                .getExpandedTabWidget(
+                    slotIndex,
+                    upgradeWrapper,
+                    stack,
+                    this.getWrapper(),
+                    this.getPanel(),
+                    upgradeWrapper.getSettingLangKey());
+
+            if (expanded != null) {
+                tab.setExpandedWidget(expanded);
+                getContext().getUISettings()
+                    .getRecipeViewerSettings()
+                    .addExclusionArea(expanded);
+            }
+
+            tabCount++;
+        }
+
+        this.syncToggles();
+        this.disableUnusedTabWidgets(tabCount);
+        this.scheduleResize();
+    }
+
+    private void resetTabState() {
+        for (TabWidget tabWidget : tabWidgets) {
+            if (tabWidget.getExpandedWidget() != null) {
+                getContext().getUISettings()
+                    .getRecipeViewerSettings()
+                    .removeExclusionArea(tabWidget.getExpandedWidget());
+                tabWidget.setExpandedWidget(null);
+                tabWidget.child(null);
+            }
+        }
+    }
+
+    private void syncToggles() {
+        for (int i = 0; i < wrapper.getUpgradeHandler()
+            .getSlots(); i++) {
+            UpgradeSlotGroup.UpgradeToggleWidget toggleWidget = this.upgradeSlotGroup.getToggleWidget(i);
+            IUpgradeWrapper wrapper = toggleWidget.getUpgradeWrapper();
+            if (wrapper != null) {
+                toggleWidget.setEnabled(true);
+                toggleWidget.setToggleEnabled(wrapper.isEnabled());
+            } else {
+                toggleWidget.setEnabled(false);
+            }
+        }
+    }
+
+    private void disableUnusedTabWidgets(int startTabIndex) {
+        for (int i = startTabIndex; i < wrapper.getUpgradeHandler()
+            .getSlots(); i++) {
+            TabWidget tabWidget = tabWidgets.get(i);
+            if (tabWidget != null) {
+                tabWidget.setEnabled(false);
+            }
+        }
+        this.scheduleResize();
+    }
+
+    @Override
+    public void postDraw(ModularGuiContext context, boolean transformed) {
+        super.postDraw(context, transformed);
+        LAYERED_TAB_TEXTURE.draw(
+            context,
+            resizer().getArea().width - 6,
+            0,
+            6,
+            resizer().getArea().height,
+            WidgetTheme.getDefault()
+                .getTheme());
+        RenderHelpers.renderErrorOverlay(this.getPanel());
+    }
+
+    public void updateSlotChangeError(UpgradeSlotChangeResult result) {
+        if (this.getPlayer().worldObj.isRemote && !result.isSuccessful()) {
+            errorUpgradeSlotChangeResult = result;
+            errorResultExpirationTime = this.getPlayer().worldObj.getWorldTime() + ERROR_DISPLAY_TICKS;
+        }
+    }
+
+    public Optional<UpgradeSlotChangeResult> getErrorUpgradeSlotChangeResult() {
+        if (errorUpgradeSlotChangeResult != null
+            && this.getPlayer().worldObj.getWorldTime() >= errorResultExpirationTime) {
+            errorResultExpirationTime = 0;
+            errorUpgradeSlotChangeResult = null;
+        }
+        return Optional.ofNullable(errorUpgradeSlotChangeResult);
     }
 
     public PanelSyncManager getSyncManager() {

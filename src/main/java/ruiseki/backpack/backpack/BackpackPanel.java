@@ -20,8 +20,8 @@ import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.client.gui.container.BackpackContainer;
 import ruiseki.backpack.client.gui.container.BackpackGuiContainer;
-import ruiseki.backpack.client.gui.slot.BackpackSlot;
 import ruiseki.backpack.client.gui.slot.LockedPlayerSlot;
+import ruiseki.backpack.client.gui.slot.StorageSlot;
 import ruiseki.backpack.client.gui.sync.BackpackSH;
 import ruiseki.backpack.client.gui.sync.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
@@ -44,7 +44,7 @@ public class BackpackPanel extends StoragePanel {
     @Override
     public void constructSettings() {
         this.getSettings()
-            .customContainer(() -> new BackpackContainer(this.getWrapper()));
+            .customContainer(() -> new BackpackContainer(this.getWrapper(), this.getPanel()));
         this.getSettings()
             .customGui(() -> (container, screen) -> new BackpackGuiContainer(container, screen, this.getWrapper()));
     }
@@ -67,7 +67,7 @@ public class BackpackPanel extends StoragePanel {
             .maxSlots(inventorySlots)
             .key(
                 'I',
-                i -> new BackpackSlot().syncHandler(this.getStorageSlotSH(i))
+                i -> new StorageSlot(this.getWrapper(), this.getPanel()).syncHandler(this.getStorageSlotSH(i))
                     .setEnabledIf(slot -> {
                         if (this.searchValue.getStringValue()
                             .isEmpty()) return true;

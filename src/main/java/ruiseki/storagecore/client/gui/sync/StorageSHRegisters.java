@@ -20,6 +20,7 @@ public class StorageSHRegisters {
     public static final ResourceLocation TRANSFER_TO_PLAYER = new ResourceLocation(
         Reference.MOD_ID,
         "storage_transfer_to_player");
+    public static final ResourceLocation OPENED_ID = new ResourceLocation(Reference.MOD_ID, "storage_opended_id");
 
     public static void load() {
 
@@ -43,6 +44,11 @@ public class StorageSHRegisters {
             boolean transferMatched = buf.readBoolean();
             StorageInventoryHelpers
                 .transferStorageToPlayer(handler.getWrapper(), handler.getPlayerInventory(), transferMatched);
+        });
+        REGISTRY.registerServer(OPENED_ID, (handler, buf) -> {
+            int openedId = buf.readInt();
+            handler.getWrapper()
+                .setOpenTabId(openedId);
         });
     }
 

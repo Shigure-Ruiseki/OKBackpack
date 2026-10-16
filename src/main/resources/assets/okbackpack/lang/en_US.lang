@@ -505,3 +505,18 @@ gui.okbackpack.status.nothing_to_restock=Nothing to restock
 #Messages
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.
 messages.cant.sleep.here=Ancient forces do not welcome sleep here.
+
+#REFACTOR
+gui.storage.stack_size_extra=Count: %s / %s
+gui.storage.error.add.upgrade_not_allowed=%s can't be used in %s
+gui.storage.error.add.only_single_upgrade_allowed=Only single %s can be used in %s
+gui.storage.error.add.only_x_upgrades_allowed=Only %dx %s can be used in %s
+gui.storage.error.add.any_upgrade_exists=All upgrade slots need to be empty
+gui.storage.error.add.no_upgrade_can_be_added=No upgrade can be added
+gui.storage.error.add.upgrade_high=Backpack can't support %1$s. Upgrade backpack or add stack multiplier to at least %2$s
+gui.storage.error.add.battery_exists=There's already Battery Upgrade in another upgrade slot
+gui.storage.error.add.needs_occupied_inventory_slots=There's an item in at least one of the last %s slots needed for %s
+gui.storage.error.remove.infinity_upgrade_only_admin=Only admins can remove Infinity Upgrade
+gui.storage.error.remove.banned_item=This item must be removed before the upgrade can be
+gui.storage.error.remove.stack_low_multiplier=There's at least one slot or upgrade that requires multiplier higher than %s
+gui.storage.error.remove.inception_sub_backpack=There's one or more backpacks in the backpack

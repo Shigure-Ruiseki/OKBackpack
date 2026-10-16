@@ -1,20 +1,28 @@
 package ruiseki.storagecore.upgrades.stack;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.storagecore.api.IStorageWrapper;
+import ruiseki.storagecore.helper.TranslateHelpers;
+import ruiseki.storagecore.upgrades.IStackableContentsUpgrade;
 import ruiseki.storagecore.upgrades.IUpgradeCountLimitConfig;
-import ruiseki.storagecore.upgrades.UpgradeGroup;
 import ruiseki.storagecore.upgrades.ItemUpgradeBase;
+import ruiseki.storagecore.upgrades.UpgradeGroup;
+import ruiseki.storagecore.upgrades.UpgradeSlotChangeResult;
 import ruiseki.storagecore.upgrades.UpgradeType;
 import ruiseki.storagecore.upgrades.UpgradeWrapperBase;
 
 public class ItemStackUpgrade extends ItemUpgradeBase<ItemStackUpgrade.Wrapper> {
 
     public static final UpgradeType<Wrapper> TYPE = new UpgradeType<>(Wrapper::new);
+
     public static final UpgradeGroup UPGRADE_GROUP = new UpgradeGroup(
         "stack_upgrades",
         LangHelpers.localize("stack_upgrades"));
@@ -45,7 +53,68 @@ public class ItemStackUpgrade extends ItemUpgradeBase<ItemStackUpgrade.Wrapper> 
     }
 
     public double getStackSizeMultiplier() {
-        return stackSizeMultiplier;
+        return this.stackSizeMultiplier;
+    }
+
+    @Override
+    public UpgradeSlotChangeResult canRemoveUpgradeFrom(IStorageWrapper storageWrapper) {
+        double currentInventoryMultiplier = getInventorySlotLimit(storageWrapper) / 64D;
+        double multiplierWhenRemoved = currentInventoryMultiplier / stackSizeMultiplier;
+        return isMultiplierHighEnough(storageWrapper, multiplierWhenRemoved);
+    }
+
+    @Override
+    public UpgradeSlotChangeResult canSwapUpgradeFor(ItemStack upgradeStackToPut, IStorageWrapper storageWrapper) {
+        if (!(upgradeStackToPut.getItem() instanceof ItemStackUpgrade otherStackUpgradeItem)) {
+            return canRemoveUpgradeFrom(storageWrapper);
+        }
+
+        if (otherStackUpgradeItem.stackSizeMultiplier >= stackSizeMultiplier) {
+            return new UpgradeSlotChangeResult.Success();
+        }
+
+        int currentInventoryMultiplier = getInventorySlotLimit(storageWrapper) / 64;
+        double multiplierWhenRemoved = currentInventoryMultiplier / stackSizeMultiplier;
+
+        return isMultiplierHighEnough(
+            storageWrapper,
+            multiplierWhenRemoved * otherStackUpgradeItem.stackSizeMultiplier);
+    }
+
+    private UpgradeSlotChangeResult isMultiplierHighEnough(IStorageWrapper storageWrapper, double multiplier) {
+        Set<Integer> slotsOverMultiplier = new HashSet<>();
+
+        for (int slot = 0; slot < storageWrapper.getInventoryHandler()
+            .getSlots(); slot++) {
+            ItemStack stack = storageWrapper.getInventoryHandler()
+                .getSlotStack(slot);
+            if (ItemHelpers.isEmpty(stack)) continue;
+            double stackMultiplierNeeded = (double) ItemHelpers.getCount(stack) / stack.getMaxStackSize();
+            if (stackMultiplierNeeded > multiplier) {
+                slotsOverMultiplier.add(slot);
+            }
+        }
+
+        Set<Integer> errorInventoryParts = new HashSet<>();
+
+        storageWrapper.getUpgradeHandler()
+            .getSlotWrappers()
+            .forEach((slot, wrapper) -> {
+                if (wrapper instanceof IStackableContentsUpgrade stackableContentsUpgrade
+                    && stackableContentsUpgrade.getMinimumMultiplierRequired() > multiplier) {
+                    errorInventoryParts.add(slot);
+                }
+            });
+
+        if (!slotsOverMultiplier.isEmpty() || !errorInventoryParts.isEmpty()) {
+            return new UpgradeSlotChangeResult.Fail(
+                TranslateHelpers.error("remove.stack_low_multiplier", multiplier),
+                Collections.emptySet(),
+                slotsOverMultiplier,
+                errorInventoryParts);
+        }
+
+        return new UpgradeSlotChangeResult.Success();
     }
 
     @Override
@@ -60,12 +129,12 @@ public class ItemStackUpgrade extends ItemUpgradeBase<ItemStackUpgrade.Wrapper> 
         }
 
         public double getStackSizeMultiplier() {
-            return upgradeItem.getStackSizeMultiplier();
+            return this.upgradeItem.getStackSizeMultiplier();
         }
 
         @Override
         public boolean hideSettingsTab() {
-            return true;
+            return false;
         }
 
         @Override

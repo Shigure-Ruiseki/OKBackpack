@@ -61,4 +61,9 @@ public abstract class UpgradeWrapperBase<W extends IUpgradeWrapper, T extends It
         storageWrapper.getUpgradeHandler()
             .refreshWrappersThatImplementAndTypeWrappers();
     }
+
+    @Override
+    public String getSettingLangKey() {
+        return "";
+    }
 }

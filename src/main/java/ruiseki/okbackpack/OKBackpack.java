@@ -48,6 +48,7 @@ import ruiseki.okcore.init.ModBaseVersionable;
 import ruiseki.okcore.proxy.ICommonProxy;
 import ruiseki.storagecore.client.gui.sync.StorageSHRegisters;
 import ruiseki.storagecore.client.gui.sync.UpgradeSlotSHRegistries;
+import ruiseki.storagecore.client.gui.widget.update.UpgradeSlotUpdateRegistries;
 
 @Mod(
     modid = Reference.MOD_ID,
@@ -93,6 +94,7 @@ public class OKBackpack extends ModBaseVersionable {
 
         StorageSHRegisters.load();
         UpgradeSlotSHRegistries.load();
+        UpgradeSlotUpdateRegistries.load();
 
         if (MinecraftHelpers.isClientSide()) {
             ModelRegistry.registerModid(Reference.MOD_ID);

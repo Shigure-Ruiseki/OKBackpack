@@ -2,6 +2,8 @@ package ruiseki.storagecore.api;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,6 +13,9 @@ import org.jetbrains.annotations.Nullable;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.SortBy;
 import ruiseki.storagecore.inventory.InventoryHandler;
+import ruiseki.storagecore.settings.ISettingsCategory;
+import ruiseki.storagecore.settings.SettingsHandler;
+import ruiseki.storagecore.settings.main.MainSettingsCategory;
 import ruiseki.storagecore.upgrades.UpgradeHandler;
 
 public interface IStorageWrapper {
@@ -26,6 +31,8 @@ public interface IStorageWrapper {
     default void setUpgradeCachesInvalidatedHandler(Runnable handler) {
         // noop
     }
+
+    SettingsHandler getSettingsHandler();
 
     UpgradeHandler getUpgradeHandler();
 
@@ -52,8 +59,6 @@ public interface IStorageWrapper {
     void sort();
 
     void onContentsNbtUpdated();
-
-    void setPersistent(boolean persistent);
 
     void refreshInventoryForUpgradeProcessing();
 
@@ -87,6 +92,8 @@ public interface IStorageWrapper {
         getInventoryHandler().onInit();
     }
 
+    String getStorageType();
+
     String getDisplayName();
 
     public static class NoopStorageWrapper implements IStorageWrapper {
@@ -95,6 +102,9 @@ public interface IStorageWrapper {
 
         @Nullable
         private InventoryHandler inventoryHandler;
+
+        @Nullable
+        private SettingsHandler settingsHandler;
 
         @Nullable
         private UpgradeHandler upgradeHandler;
@@ -111,15 +121,57 @@ public interface IStorageWrapper {
         @Override
         public InventoryHandler getInventoryHandler() {
             if (inventoryHandler == null) {
-                inventoryHandler = new InventoryHandler(0, this, new NBTTagCompound(), () -> {}) {
+                inventoryHandler = new InventoryHandler(0, this, new NBTTagCompound(), () -> {}, 64) {
 
                     @Override
                     public boolean isItemValid(int slot, ItemStack stack) {
                         return true;
                     }
+
+                    @Override
+                    protected boolean isAllowed(ItemStack stack) {
+                        return false;
+                    }
                 };
             }
             return inventoryHandler;
+        }
+
+        @Override
+        public SettingsHandler getSettingsHandler() {
+            if (settingsHandler == null) {
+                settingsHandler = new SettingsHandler(new NBTTagCompound(), () -> {}, this::getInventoryHandler) {
+
+                    @Override
+                    protected NBTTagCompound getSettingsNbtFromContentsNbt(NBTTagCompound contentsNbt) {
+                        return contentsNbt;
+                    }
+
+                    @Override
+                    protected void addItemDisplayCategory(Supplier<InventoryHandler> inventoryHandlerSupplier,
+                        NBTTagCompound settingsNbt) {
+                        // noop
+                    }
+
+                    @Override
+                    public String getGlobalSettingsCategoryName() {
+                        return "";
+                    }
+
+                    @Override
+                    public ISettingsCategory<?> instantiateGlobalSettingsCategory(NBTTagCompound categoryNbt,
+                        Consumer<NBTTagCompound> saveNbt) {
+                        return new MainSettingsCategory<>(categoryNbt, saveNbt, "");
+                    }
+
+                    @Override
+                    protected void saveCategoryNbt(NBTTagCompound settingsNbt, String categoryName,
+                        NBTTagCompound tag) {
+                        // noop
+                    }
+                };
+            }
+            return settingsHandler;
         }
 
         @Override
@@ -191,11 +243,6 @@ public interface IStorageWrapper {
         }
 
         @Override
-        public void setPersistent(boolean persistent) {
-
-        }
-
-        @Override
         public void refreshInventoryForUpgradeProcessing() {
 
         }
@@ -213,6 +260,11 @@ public interface IStorageWrapper {
         @Override
         public int getColumnsTaken() {
             return 0;
+        }
+
+        @Override
+        public String getStorageType() {
+            return "";
         }
 
         @Override

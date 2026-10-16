@@ -1,5 +1,7 @@
 package ruiseki.storagecore.upgrades;
 
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -7,8 +9,6 @@ import net.minecraft.util.ResourceLocation;
 
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemBase;
-
-import java.util.List;
 
 public abstract class ItemUpgradeBase<T extends IUpgradeWrapper> extends ItemBase implements IUpgradeItem<T> {
 
@@ -42,7 +42,9 @@ public abstract class ItemUpgradeBase<T extends IUpgradeWrapper> extends ItemBas
     public void addInformation(ItemStack itemStack, EntityPlayer entityPlayer, List<String> list, boolean flag) {
         super.addInformation(itemStack, entityPlayer, list, flag);
         if (itemStack.hasTagCompound()) {
-            list.add(itemStack.getTagCompound().toString());
+            list.add(
+                itemStack.getTagCompound()
+                    .toString());
         }
     }
 }

@@ -25,7 +25,11 @@ import ruiseki.okcore.inventory.InventorySorter;
 import ruiseki.okcore.inventory.ItemStackKey;
 import ruiseki.okcore.inventory.SortBy;
 import ruiseki.storagecore.inventory.InventoryHandler;
+import ruiseki.storagecore.settings.SettingsHandler;
+import ruiseki.storagecore.settings.memory.MemorySettingsCategory;
+import ruiseki.storagecore.settings.nosort.NoSortSettingsCategory;
 import ruiseki.storagecore.upgrades.UpgradeHandler;
+import ruiseki.storagecore.upgrades.stack.ItemStackUpgrade;
 
 public class BackpackWrapper implements IBackpackWrapper {
 
@@ -50,6 +54,8 @@ public class BackpackWrapper implements IBackpackWrapper {
     private InventoryHandler handler;
     @Nullable
     private UpgradeHandler upgradeHandler = null;
+    @Nullable
+    private SettingsHandler settingsHandler = null;
 
     private IntConsumer onSlotsChange = diff -> {};
 
@@ -83,14 +89,15 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public InventoryHandler getInventoryHandler() {
         if (handler == null) {
-            handler = new InventoryHandler(
+            handler = new BackpackInventoryHandler(
                 getNumberOfInventorySlots() - (getNumberOfSlotRows() * getColumnsTaken()),
                 this,
                 getBackpackContentsNbt(),
                 () -> {
                     this.markBackpackContentsDirty();
                     this.inventorySlotChangeHandler.run();
-                });
+                },
+                ItemStackUpgrade.getInventorySlotLimit(this));
             // handler.addListener(getSettingsHandler().getTypeCategory(ItemDisplaySettingsCategory.class)::itemChanged);
         }
         return handler;
@@ -146,6 +153,21 @@ public class BackpackWrapper implements IBackpackWrapper {
     // }
 
     @Override
+    public SettingsHandler getSettingsHandler() {
+        if (settingsHandler == null) {
+            if (getContentsUuid().isPresent()) {
+                settingsHandler = new BackpackSettingsHandler(
+                    this,
+                    getBackpackContentsNbt(),
+                    this::markBackpackContentsDirty);
+            } else {
+                settingsHandler = Noop.INSTANCE.getSettingsHandler();
+            }
+        }
+        return settingsHandler;
+    }
+
+    @Override
     public UpgradeHandler getUpgradeHandler() {
         if (upgradeHandler == null) {
             if (getContentsUuid().isPresent()) {
@@ -157,7 +179,7 @@ public class BackpackWrapper implements IBackpackWrapper {
                     () -> {
                         if (handler != null) {
                             handler.clearListeners();
-                            // handler.setBaseSlotLimit(StackUpgradeItem.getInventorySlotLimit(this));
+                            handler.setBaseSlotLimit(ItemStackUpgrade.getInventorySlotLimit(this));
                         }
                         getInventoryHandler().clearListeners();
                         // handler.addListener(getSettingsHandler().getTypeCategory(ItemDisplaySettingsCategory.class)::itemChanged);
@@ -167,7 +189,7 @@ public class BackpackWrapper implements IBackpackWrapper {
                         // fluidHandler = null;
                         // energyStorageInitialized = false;
                         // energyStorage = null;
-                        // upgradeCachesInvalidatedHandler.run();
+                        upgradeCachesInvalidatedHandler.run();
                     }) {
 
                     @Override
@@ -227,9 +249,9 @@ public class BackpackWrapper implements IBackpackWrapper {
         if (upgradeHandler == Noop.INSTANCE.getUpgradeHandler()) {
             upgradeHandler = null;
         }
-        // if (settingsHandler == Noop.INSTANCE.getSettingsHandler()) {
-        // settingsHandler = null;
-        // }
+        if (settingsHandler == Noop.INSTANCE.getSettingsHandler()) {
+            settingsHandler = null;
+        }
     }
 
     private void migrateBackpackContents(UUID newUuid) {
@@ -299,6 +321,12 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public void sort() {
         Set<Integer> slotIndexesExcludedFromSort = new HashSet<>();
+        slotIndexesExcludedFromSort.addAll(
+            getSettingsHandler().getTypeCategory(NoSortSettingsCategory.class)
+                .getNoSortSlots());
+        slotIndexesExcludedFromSort.addAll(
+            getSettingsHandler().getTypeCategory(MemorySettingsCategory.class)
+                .getSlotIndexes());
         InventorySorter.sortHandler(getInventoryHandler(), getComparator(), slotIndexesExcludedFromSort);
     }
 
@@ -326,12 +354,6 @@ public class BackpackWrapper implements IBackpackWrapper {
     public void refreshInventoryForInputOutput() {
         // inventoryIOHandler = null;
         upgradeCachesInvalidatedHandler.run();
-    }
-
-    @Override
-    public void setPersistent(boolean persistent) {
-        getInventoryHandler().setPersistent(persistent);
-        getUpgradeHandler().setPersistent(persistent);
     }
 
     @Override
@@ -418,6 +440,11 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public ItemStack getWrappedStorageStack() {
         return this.getBackpack();
+    }
+
+    @Override
+    public String getStorageType() {
+        return "backpack";
     }
 
     @Override
