@@ -34,6 +34,7 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
+import ruiseki.backpack.client.gui.slot.StorageSlot;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
@@ -111,7 +112,8 @@ public class StoragePanel extends ModularPanel {
     protected List<Tab> tabs = new ArrayList<>();
     protected int tabCount = 0;
 
-    protected IPanelHandler settingPanel;
+    protected IPanelHandler settingPanelHandler;
+    protected StorageSettingPanel settingPanel;
 
     private long errorResultExpirationTime = 0;
     @Nullable
@@ -228,7 +230,9 @@ public class StoragePanel extends ModularPanel {
     protected ParentWidget<?> addToolBar() {
         this.searchValue = new StringValue("");
         return Flow.row()
-            // .setEnabledIf(w -> !settingPanel.isPanelOpen())
+            .setEnabledIf(
+                w -> !this.getSettingPanelHandler()
+                    .isPanelOpen())
             .widthRel(0.98f)
             .coverChildrenHeight()
             .leftRel(0f)
@@ -327,7 +331,7 @@ public class StoragePanel extends ModularPanel {
             .maxSlots(inventorySlots)
             .key(
                 'I',
-                i -> new ItemSlot().syncHandler(this.getStorageSlotSH(i))
+                i -> new StorageSlot(this.getWrapper(), this.getPanel(), i).syncHandler(this.getStorageSlotSH(i))
                     .setEnabledIf(slot -> {
                         if (this.searchValue.getStringValue()
                             .isEmpty()) return true;
@@ -349,7 +353,7 @@ public class StoragePanel extends ModularPanel {
         for (int i = 0; i < handler.getSlots(); i++) {
             ModularStorageSlot slot = new ModularStorageSlot(handler, i, this.getWrapper(), this.getPanel());
             slot.slotGroup("storage_inventory");
-            StorageSlotSH syncHandler = new StorageSlotSH(slot, this.getWrapper(), this);
+            StorageSlotSH syncHandler = new StorageSlotSH(slot, this.getWrapper(), this.getPanel());
             this.getSyncManager()
                 .syncValue("storages", i, syncHandler);
             this.storageSlotSHs[i] = syncHandler;
@@ -361,7 +365,9 @@ public class StoragePanel extends ModularPanel {
     // Transfer Bar
     protected ParentWidget<?> addTransferBar() {
         Flow transferRow = Flow.row()
-            // .setEnabledIf(w -> !settingPanel.isPanelOpen())
+            .setEnabledIf(
+                w -> !this.getSettingPanelHandler()
+                    .isPanelOpen())
             .coverChildren()
             .reverseLayout()
             .childPadding(2)
@@ -471,7 +477,7 @@ public class StoragePanel extends ModularPanel {
                 if (!client) return;
                 updateUpgradeWidgets();
             });
-            UpgradeSlotSH syncHandler = new UpgradeSlotSH(slot, this.getWrapper(), this);
+            UpgradeSlotSH syncHandler = new UpgradeSlotSH(slot, this.getWrapper(), this.getPanel());
             this.syncManager.syncValue("upgrades", slotIndex, syncHandler);
             this.upgradeSlotSHs[slotIndex] = syncHandler;
             this.upgradeSlotUpdates[i] = new UpgradeSlotUpdate(this.getWrapper(), this.getPanel(), i);
@@ -498,7 +504,7 @@ public class StoragePanel extends ModularPanel {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private void updateUpgradeWidgets() {
+    public void updateUpgradeWidgets() {
         int tabCount = 0;
         resetTabState();
         UpgradeHandler handler = this.getWrapper()
@@ -656,17 +662,27 @@ public class StoragePanel extends ModularPanel {
         this.scheduleResize();
     }
 
+    public void disableAllTabWidgets() {
+        for (int i = 0; i < this.getWrapper()
+            .getUpgradeHandler()
+            .getSlots(); i++) {
+            Tab tabWidget = this.tabs.get(i);
+            if (tabWidget != null) {
+                tabWidget.setEnabled(false);
+                tabWidget.setShowExpanded(false);
+            }
+        }
+        this.scheduleResize();
+    }
+
     public void addSettingPanel() {
-        this.settingPanel = this.getSyncManager()
+        this.settingPanelHandler = this.getSyncManager()
             .syncedPanel(
                 "setting_panel",
                 true,
-                (syncManager1, syncHandler) -> new StorageSettingPanel(
-                    this.getWrapper(),
-                    this.getPanel(),
-                    syncManager1,
-                    syncHandler));
-        this.child(new SettingTab());
+                (syncManager1,
+                    syncHandler) -> this.settingPanel = new StorageSettingPanel(this.getWrapper(), this.getPanel()));
+        this.child(new SettingTab(this.getWrapper(), this.getPanel()));
     }
 
     @Override
@@ -748,7 +764,11 @@ public class StoragePanel extends ModularPanel {
         return this.getUpgradeSlotSHs()[i];
     }
 
-    public IPanelHandler getSettingPanel() {
-        return settingPanel;
+    public Optional<StorageSettingPanel> getSettingPanel() {
+        return Optional.ofNullable(this.settingPanel);
+    }
+
+    public IPanelHandler getSettingPanelHandler() {
+        return settingPanelHandler;
     }
 }

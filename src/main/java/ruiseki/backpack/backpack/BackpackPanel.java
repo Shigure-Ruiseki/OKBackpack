@@ -67,7 +67,7 @@ public class BackpackPanel extends StoragePanel {
             .maxSlots(inventorySlots)
             .key(
                 'I',
-                i -> new StorageSlot(this.getWrapper(), this.getPanel()).syncHandler(this.getStorageSlotSH(i))
+                i -> new StorageSlot(this.getWrapper(), this.getPanel(), i).syncHandler(this.getStorageSlotSH(i))
                     .setEnabledIf(slot -> {
                         if (this.searchValue.getStringValue()
                             .isEmpty()) return true;

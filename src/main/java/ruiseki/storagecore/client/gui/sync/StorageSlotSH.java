@@ -82,4 +82,14 @@ public class StorageSlotSH extends ItemSlotSH {
     public StoragePanel getPanel() {
         return panel;
     }
+
+    @Override
+    public ModularSlot getSlot() {
+        return super.getSlot();
+    }
+
+    public int getSlotIndex() {
+        return this.getSlot()
+            .getSlotIndex();
+    }
 }

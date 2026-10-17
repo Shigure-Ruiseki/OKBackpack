@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -18,6 +17,8 @@ import net.minecraftforge.common.util.Constants;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
+
+import com.gtnewhorizon.gtnhlib.util.data.ItemMeta;
 
 import ruiseki.storagecore.settings.memory.MemorySettingsCategory;
 
@@ -78,7 +79,7 @@ public class InventoryPartitioner {
         return noSortSlots;
     }
 
-    public boolean isFilterItem(Item item) {
+    public boolean isFilterItem(ItemMeta item) {
         for (IInventoryPartHandler inventoryPartHandler : inventoryPartHandlers) {
             if (inventoryPartHandler.isFilterItem(item)) {
                 return true;
@@ -88,10 +89,10 @@ public class InventoryPartitioner {
         return false;
     }
 
-    public Map<Item, Set<Integer>> getFilterItems() {
-        Map<Item, Set<Integer>> filterItems = new HashMap<>();
+    public Map<ItemMeta, Set<Integer>> getFilterItems() {
+        Map<ItemMeta, Set<Integer>> filterItems = new HashMap<>();
         for (IInventoryPartHandler inventoryPartHandler : inventoryPartHandlers) {
-            for (Map.Entry<Item, Set<Integer>> entry : inventoryPartHandler.getFilterItems()
+            for (Map.Entry<ItemMeta, Set<Integer>> entry : inventoryPartHandler.getFilterItems()
                 .entrySet()) {
                 filterItems.computeIfAbsent(entry.getKey(), k -> new HashSet<>())
                     .addAll(entry.getValue());

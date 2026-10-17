@@ -56,7 +56,7 @@ public abstract class MixinNetHandlerPlayServerBackpackInteraction {
     private void okbackpack$updateBackpackReference(C08PacketPlayerBlockPlacement packet, CallbackInfo ci) {
         if (playerEntity.openContainer instanceof BackpackContainer container) {
             ItemStack currentStack = playerEntity.inventory.getCurrentItem();
-            container.getWrapper()
+            container.getStorageWrapper()
                 .setBackpack(currentStack);
         }
     }

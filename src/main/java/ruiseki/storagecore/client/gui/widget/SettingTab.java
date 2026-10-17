@@ -12,19 +12,25 @@ import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widget.Widget;
 
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
+import ruiseki.storagecore.api.IStorageWrapper;
 
 public class SettingTab extends Widget<SettingTab> implements Interactable {
 
     public static final TabTexture TAB_TEXTURE = GuiTextures.TAB_RIGHT;
 
-    public SettingTab() {
+    private final IStorageWrapper storageWrapper;
+    private final StoragePanel storagePanel;
+
+    public SettingTab(IStorageWrapper storageWrapper, StoragePanel storagePanel) {
+        this.storageWrapper = storageWrapper;
+        this.storagePanel = storagePanel;
         size(TAB_TEXTURE.getWidth(), TAB_TEXTURE.getHeight()).right(-TAB_TEXTURE.getWidth() + 4)
             .top(0)
             .background(TAB_TEXTURE.get(-1, false))
             .tooltipAutoUpdate(true)
             .tooltipDynamic(tooltip -> {
-                if (this.getPanel()
-                    .getSettingPanel()
+                if (this.getStoragePanel()
+                    .getSettingPanelHandler()
                     .isPanelOpen()) {
                     tooltip.addLine(IKey.lang("gui.storage"))
                         .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
@@ -46,17 +52,18 @@ public class SettingTab extends Widget<SettingTab> implements Interactable {
     @Override
     public @NotNull Result onMousePressed(int mouseButton) {
         if (mouseButton == 0) {
-            StoragePanel panel = getPanel();
+            StoragePanel panel = this.getStoragePanel();
 
             Interactable.playButtonClickSound();
-            if (panel.getSettingPanel()
+            if (panel.getSettingPanelHandler()
                 .isPanelOpen()) {
-                panel.settingPanel.closePanel();
-                // panel.updateUpgradeWidgets();
+                panel.getSettingPanelHandler()
+                    .closePanel();
+                panel.updateUpgradeWidgets();
             } else {
-                panel.getSettingPanel()
+                panel.getSettingPanelHandler()
                     .openPanel();
-                // panel.disableAllTabWidgets();
+                panel.disableAllTabWidgets();
             }
             return Result.SUCCESS;
         }
@@ -66,8 +73,8 @@ public class SettingTab extends Widget<SettingTab> implements Interactable {
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         super.draw(context, widgetTheme);
-        if (this.getPanel()
-            .getSettingPanel()
+        if (this.getStoragePanel()
+            .getSettingPanelHandler()
             .isPanelOpen()) {
             OKBGuiTextures.BACK_ICON.draw(context, 8, 6, 16, 16, widgetTheme.getTheme());
         } else {
@@ -75,8 +82,11 @@ public class SettingTab extends Widget<SettingTab> implements Interactable {
         }
     }
 
-    @Override
-    public @NotNull StoragePanel getPanel() {
-        return (StoragePanel) super.getPanel();
+    public StoragePanel getStoragePanel() {
+        return this.storagePanel;
+    }
+
+    public IStorageWrapper getStorageWrapper() {
+        return this.storageWrapper;
     }
 }

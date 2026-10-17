@@ -2,29 +2,24 @@ package ruiseki.storagecore.client.gui.widget;
 
 import static ruiseki.okbackpack.common.block.BackpackPanel.LAYERED_TAB_TEXTURE;
 
-import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetTheme;
-import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import ruiseki.storagecore.api.IStorageWrapper;
 
 public class StorageSettingPanel extends ModularPanel {
 
-    protected final IStorageWrapper wrapper;
+    protected final IStorageWrapper storageWrapper;
     protected final StoragePanel storagePanel;
 
-    protected final PanelSyncManager syncManager;
-    protected final IPanelHandler panelHandler;
+    protected boolean isMemorySettingTabOpened = true;
+    protected boolean isSortingSettingTabOpened = false;
 
-    public StorageSettingPanel(IStorageWrapper wrapper, StoragePanel storagePanel, PanelSyncManager syncManager,
-        IPanelHandler panelHandler) {
+    public StorageSettingPanel(IStorageWrapper storageWrapper, StoragePanel storagePanel) {
         super("settings");
-        this.wrapper = wrapper;
+        this.storageWrapper = storageWrapper;
         this.storagePanel = storagePanel;
-        this.syncManager = syncManager;
-        this.panelHandler = panelHandler;
 
         this.size(
             6,
@@ -49,11 +44,19 @@ public class StorageSettingPanel extends ModularPanel {
                 .getTheme());
     }
 
-    public IStorageWrapper getWrapper() {
-        return wrapper;
+    public IStorageWrapper getStorageWrapper() {
+        return this.storageWrapper;
     }
 
     public StoragePanel getStoragePanel() {
-        return storagePanel;
+        return this.storagePanel;
+    }
+
+    public boolean isMemorySettingTabOpened() {
+        return this.isMemorySettingTabOpened;
+    }
+
+    public boolean isSortingSettingTabOpened() {
+        return isSortingSettingTabOpened;
     }
 }

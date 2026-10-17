@@ -6,12 +6,13 @@ import java.util.function.BiConsumer;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
+
+import com.gtnewhorizon.gtnhlib.util.data.ItemMeta;
 
 import ruiseki.okcore.datastructure.TriFunction;
 import ruiseki.okcore.helper.ItemHelpers;
@@ -69,7 +70,7 @@ public interface IInventoryPartHandler {
         return null;
     }
 
-    default Item getFilterItem(int slot) {
+    default ItemMeta getFilterItem(int slot) {
         return null;
     }
 
@@ -85,11 +86,11 @@ public interface IInventoryPartHandler {
         // noop
     }
 
-    default boolean isFilterItem(Item item) {
+    default boolean isFilterItem(ItemMeta item) {
         return false;
     }
 
-    default Map<Item, Set<Integer>> getFilterItems() {
+    default Map<ItemMeta, Set<Integer>> getFilterItems() {
         return Map.of();
     }
 

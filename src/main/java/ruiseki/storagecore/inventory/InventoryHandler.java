@@ -12,7 +12,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -21,6 +20,8 @@ import net.minecraftforge.common.util.Constants;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
+
+import com.gtnewhorizon.gtnhlib.util.data.ItemMeta;
 
 import ruiseki.okcore.datastructure.NonNullList;
 import ruiseki.okcore.helper.InventoryHelpers;
@@ -54,8 +55,8 @@ public abstract class InventoryHandler extends ItemStackHandler implements ITrac
     private boolean isInitializing;
     // private final StackUpgradeConfig stackUpgradeConfig;
     private final InventoryPartitioner inventoryPartitioner;
-    private Consumer<Set<Item>> filterItemsChangeListener = s -> {};
-    private final Map<Item, Set<Integer>> filterItemSlots = new HashMap<>();
+    private Consumer<Set<ItemMeta>> filterItemsChangeListener = s -> {};
+    private final Map<ItemMeta, Set<Integer>> filterItemSlots = new HashMap<>();
     private BooleanSupplier shouldInsertIntoEmpty = () -> true;
     private boolean slotLimitInitialized = false;
 
@@ -201,12 +202,12 @@ public abstract class InventoryHandler extends ItemStackHandler implements ITrac
             .getStackLimit(slot, stack);
     }
 
-    public Item getFilterItem(int slot) {
+    public ItemMeta getFilterItem(int slot) {
         return inventoryPartitioner.getPartBySlot(slot)
             .getFilterItem(slot);
     }
 
-    public boolean isFilterItem(Item item) {
+    public boolean isFilterItem(ItemMeta item) {
         return inventoryPartitioner.isFilterItem(item);
     }
 
@@ -508,7 +509,7 @@ public abstract class InventoryHandler extends ItemStackHandler implements ITrac
             .onSlotFilterChanged(slot);
     }
 
-    public void registerFilterItemsChangeListener(Consumer<Set<Item>> listener) {
+    public void registerFilterItemsChangeListener(Consumer<Set<ItemMeta>> listener) {
         filterItemsChangeListener = listener;
     }
 
@@ -530,7 +531,7 @@ public abstract class InventoryHandler extends ItemStackHandler implements ITrac
         filterItemsChangeListener.accept(filterItemSlots.keySet());
     }
 
-    public Set<Item> getFilterItems() {
+    public Set<ItemMeta> getFilterItems() {
         return filterItemSlots.keySet();
     }
 

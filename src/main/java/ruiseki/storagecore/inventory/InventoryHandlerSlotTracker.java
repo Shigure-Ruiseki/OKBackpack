@@ -16,6 +16,8 @@ import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.Nullable;
 
+import com.gtnewhorizon.gtnhlib.util.data.ItemMeta;
+
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
@@ -30,7 +32,7 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
     private final Map<Item, Set<ItemStackKey>> itemStackKeys = new HashMap<>();
     private final Set<Integer> emptySlots = new TreeSet<>();
     private final MemorySettingsCategory memorySettings;
-    private Map<Item, Set<Integer>> filterItemSlots;
+    private Map<ItemMeta, Set<Integer>> filterItemSlots;
     private Consumer<ItemStackKey> onAddStackKey = sk -> {};
     private Consumer<ItemStackKey> onRemoveStackKey = sk -> {};
 
@@ -39,7 +41,8 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
 
     private BooleanSupplier shouldInsertIntoEmpty = () -> true;
 
-    public InventoryHandlerSlotTracker(MemorySettingsCategory memorySettings, Map<Item, Set<Integer>> filterItemSlots) {
+    public InventoryHandlerSlotTracker(MemorySettingsCategory memorySettings,
+        Map<ItemMeta, Set<Integer>> filterItemSlots) {
         this.memorySettings = memorySettings;
         this.filterItemSlots = filterItemSlots;
     }
@@ -51,44 +54,44 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
 
     public void addPartiallyFilled(int slot, ItemStack stack) {
         ItemStackKey stackKey = ItemStackKey.of(stack);
-        partiallyFilledStackSlots.computeIfAbsent(stackKey, k -> {
-            if (!fullStackSlots.containsKey(k)) {
-                onAddStackKey.accept(k);
+        this.partiallyFilledStackSlots.computeIfAbsent(stackKey, k -> {
+            if (!this.fullStackSlots.containsKey(k)) {
+                this.onAddStackKey.accept(k);
             }
             return new TreeSet<>();
         })
             .add(slot);
-        partiallyFilledSlotStacks.put(slot, stackKey);
-        itemStackKeys.computeIfAbsent(stack.getItem(), i -> new HashSet<>())
+        this.partiallyFilledSlotStacks.put(slot, stackKey);
+        this.itemStackKeys.computeIfAbsent(stack.getItem(), i -> new HashSet<>())
             .add(stackKey);
     }
 
     @Override
     public Set<ItemStackKey> getFullStacks() {
-        return fullStackSlots.keySet();
+        return this.fullStackSlots.keySet();
     }
 
     @Override
     public Set<ItemStackKey> getPartialStacks() {
-        return partiallyFilledStackSlots.keySet();
+        return this.partiallyFilledStackSlots.keySet();
     }
 
     @Override
     public Set<Item> getItems() {
-        return itemStackKeys.keySet();
+        return this.itemStackKeys.keySet();
     }
 
     public void addFull(int slot, ItemStack stack) {
         ItemStackKey stackKey = ItemStackKey.of(stack);
-        fullStackSlots.computeIfAbsent(stackKey, k -> {
-            if (!partiallyFilledStackSlots.containsKey(k)) {
-                onAddStackKey.accept(k);
+        this.fullStackSlots.computeIfAbsent(stackKey, k -> {
+            if (!this.partiallyFilledStackSlots.containsKey(k)) {
+                this.onAddStackKey.accept(k);
             }
             return new HashSet<>();
         })
             .add(slot);
-        fullSlotStacks.put(slot, stackKey);
-        itemStackKeys.computeIfAbsent(stack.getItem(), i -> new HashSet<>())
+        this.fullSlotStacks.put(slot, stackKey);
+        this.itemStackKeys.computeIfAbsent(stack.getItem(), i -> new HashSet<>())
             .add(stackKey);
     }
 
@@ -116,10 +119,10 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
     }
 
     private void removeFull(int slot) {
-        if (fullSlotStacks.containsKey(slot)) {
-            ItemStackKey stackKey = fullSlotStacks.remove(slot);
+        if (this.fullSlotStacks.containsKey(slot)) {
+            ItemStackKey stackKey = this.fullSlotStacks.remove(slot);
             @Nullable
-            Set<Integer> fullSlots = fullStackSlots.get(stackKey);
+            Set<Integer> fullSlots = this.fullStackSlots.get(stackKey);
             if (fullSlots == null) {
                 OKBackpack.okLog(
                     Level.ERROR,
@@ -130,135 +133,135 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
                 fullSlots.remove(slot);
             }
             if (fullSlots == null || fullSlots.isEmpty()) {
-                fullStackSlots.remove(stackKey);
-                if (!partiallyFilledStackSlots.containsKey(stackKey)) {
-                    onStackKeyRemoved(stackKey);
+                this.fullStackSlots.remove(stackKey);
+                if (!this.partiallyFilledStackSlots.containsKey(stackKey)) {
+                    this.onStackKeyRemoved(stackKey);
                 }
             }
         }
     }
 
     private void onStackKeyRemoved(ItemStackKey stackKey) {
-        itemStackKeys.computeIfPresent(
+        this.itemStackKeys.computeIfPresent(
             stackKey.getStack()
                 .getItem(),
             (i, stackKeys) -> {
                 stackKeys.remove(stackKey);
                 return stackKeys;
             });
-        if (itemStackKeys.containsKey(
+        if (this.itemStackKeys.containsKey(
             stackKey.getStack()
                 .getItem())
-            && itemStackKeys.get(
+            && this.itemStackKeys.get(
                 stackKey.getStack()
                     .getItem())
                 .isEmpty()) {
-            itemStackKeys.remove(
+            this.itemStackKeys.remove(
                 stackKey.getStack()
                     .getItem());
         }
 
-        onRemoveStackKey.accept(stackKey);
+        this.onRemoveStackKey.accept(stackKey);
     }
 
     @Override
     public void removeAndSetSlotIndexes(InventoryHandler inventoryHandler, int slot, ItemStack stack) {
         if (ItemHelpers.isEmpty(stack)) {
-            removePartiallyFilled(slot);
-            removeFull(slot);
-            addEmptySlot(slot);
+            this.removePartiallyFilled(slot);
+            this.removeFull(slot);
+            this.addEmptySlot(slot);
             return;
         }
 
-        if (emptySlots.contains(slot)) {
-            removeEmpty(slot);
+        if (this.emptySlots.contains(slot)) {
+            this.removeEmpty(slot);
         }
 
-        if (isPartiallyFilled(inventoryHandler, slot, stack)) {
-            setPartiallyFilled(slot, stack);
+        if (this.isPartiallyFilled(inventoryHandler, slot, stack)) {
+            this.setPartiallyFilled(slot, stack);
         } else {
-            setFull(slot, stack);
+            this.setFull(slot, stack);
         }
     }
 
     private void setFull(int slot, ItemStack stack) {
-        boolean containsSlot = fullSlotStacks.containsKey(slot);
-        if (!containsSlot || fullSlotStacks.get(slot)
+        boolean containsSlot = this.fullSlotStacks.containsKey(slot);
+        if (!containsSlot || this.fullSlotStacks.get(slot)
             .hashCodeNotEquals(stack)) {
             if (containsSlot) {
-                removeFull(slot);
+                this.removeFull(slot);
             }
-            addFull(slot, stack);
+            this.addFull(slot, stack);
         }
-        if (partiallyFilledSlotStacks.containsKey(slot)) {
-            removePartiallyFilled(slot);
+        if (this.partiallyFilledSlotStacks.containsKey(slot)) {
+            this.removePartiallyFilled(slot);
         }
     }
 
     private void setPartiallyFilled(int slot, ItemStack stack) {
-        boolean containsSlot = partiallyFilledSlotStacks.containsKey(slot);
-        if (!containsSlot || partiallyFilledSlotStacks.get(slot)
+        boolean containsSlot = this.partiallyFilledSlotStacks.containsKey(slot);
+        if (!containsSlot || this.partiallyFilledSlotStacks.get(slot)
             .hashCodeNotEquals(stack)) {
             if (containsSlot) {
-                removePartiallyFilled(slot);
+                this.removePartiallyFilled(slot);
             }
-            addPartiallyFilled(slot, stack);
+            this.addPartiallyFilled(slot, stack);
         }
-        if (fullSlotStacks.containsKey(slot)) {
-            removeFull(slot);
+        if (this.fullSlotStacks.containsKey(slot)) {
+            this.removeFull(slot);
         }
     }
 
     private void removeEmpty(int slot) {
-        emptySlots.remove(slot);
-        if (emptySlots.isEmpty()) {
-            onRemoveLastEmptySlot.run();
+        this.emptySlots.remove(slot);
+        if (this.emptySlots.isEmpty()) {
+            this.onRemoveLastEmptySlot.run();
         }
     }
 
     private void set(InventoryHandler inventoryHandler, int slot, ItemStack stack) {
         if (ItemHelpers.isEmpty(stack)) {
-            addEmptySlot(slot);
+            this.addEmptySlot(slot);
         } else {
-            if (isPartiallyFilled(inventoryHandler, slot, stack)) {
-                addPartiallyFilled(slot, stack);
+            if (this.isPartiallyFilled(inventoryHandler, slot, stack)) {
+                this.addPartiallyFilled(slot, stack);
             } else {
-                addFull(slot, stack);
+                this.addFull(slot, stack);
             }
         }
     }
 
     private void addEmptySlot(int slot) {
-        emptySlots.add(slot);
-        if (emptySlots.size() == 1) {
-            onAddFirstEmptySlot.run();
+        this.emptySlots.add(slot);
+        if (this.emptySlots.size() == 1) {
+            this.onAddFirstEmptySlot.run();
         }
     }
 
     @Override
     public void clear() {
-        partiallyFilledStackSlots.clear();
-        partiallyFilledSlotStacks.clear();
+        this.partiallyFilledStackSlots.clear();
+        this.partiallyFilledSlotStacks.clear();
     }
 
     @Override
     public void refreshSlotIndexesFrom(InventoryHandler itemHandler) {
-        fullStackSlots.keySet()
-            .forEach(sk -> onRemoveStackKey.accept(sk));
-        fullStackSlots.clear();
-        fullSlotStacks.clear();
-        partiallyFilledStackSlots.keySet()
-            .forEach(sk -> onRemoveStackKey.accept(sk));
-        partiallyFilledStackSlots.clear();
-        partiallyFilledSlotStacks.clear();
-        itemStackKeys.clear();
+        this.fullStackSlots.keySet()
+            .forEach(sk -> this.onRemoveStackKey.accept(sk));
+        this.fullStackSlots.clear();
+        this.fullSlotStacks.clear();
+        this.partiallyFilledStackSlots.keySet()
+            .forEach(sk -> this.onRemoveStackKey.accept(sk));
+        this.partiallyFilledStackSlots.clear();
+        this.partiallyFilledSlotStacks.clear();
+        this.itemStackKeys.clear();
 
-        emptySlots.clear();
-        onRemoveLastEmptySlot.run();
+        this.emptySlots.clear();
+        this.onRemoveLastEmptySlot.run();
 
         for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
             ItemStack stack = itemHandler.getStackInSlot(slot);
-            set(itemHandler, slot, stack);
+            this.set(itemHandler, slot, stack);
         }
     }
 
@@ -269,21 +272,21 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
     @Override
     public ItemStack insertItemIntoHandler(InventoryHandler itemHandler, IItemHandlerInserter inserter,
         UnaryOperator<ItemStack> overflowHandler, ItemStack stack, boolean simulate) {
-        if (emptySlots.isEmpty() && !itemStackKeys.containsKey(stack.getItem())) {
+        if (this.emptySlots.isEmpty() && !this.itemStackKeys.containsKey(stack.getItem())) {
             return stack;
         }
 
         ItemStackKey stackKey = ItemStackKey.of(stack);
-        ItemStack remainingStack = handleOverflow(overflowHandler, stackKey, stack);
+        ItemStack remainingStack = this.handleOverflow(overflowHandler, stackKey, stack);
         if (ItemHelpers.isEmpty(remainingStack)) {
             return remainingStack;
         }
-        remainingStack = insertIntoSlotsThatMatchStack(inserter, remainingStack, simulate, stackKey);
+        remainingStack = this.insertIntoSlotsThatMatchStack(inserter, remainingStack, simulate, stackKey);
         if (!ItemHelpers.isEmpty(remainingStack)) {
-            remainingStack = insertIntoEmptySlots(inserter, remainingStack, simulate);
+            remainingStack = this.insertIntoEmptySlots(inserter, remainingStack, simulate);
         }
         if (!ItemHelpers.isEmpty(remainingStack)) {
-            remainingStack = handleOverflow(overflowHandler, stackKey, remainingStack);
+            remainingStack = this.handleOverflow(overflowHandler, stackKey, remainingStack);
         }
         return remainingStack;
     }
@@ -291,7 +294,7 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
     @Override
     public ItemStack insertItemIntoHandler(InventoryHandler itemHandler, IItemHandlerInserter inserter,
         UnaryOperator<ItemStack> overflowHandler, int slot, ItemStack stack, boolean simulate) {
-        return insertItemIntoHandler(itemHandler, inserter, overflowHandler, stack, simulate);
+        return this.insertItemIntoHandler(itemHandler, inserter, overflowHandler, stack, simulate);
     }
 
     @Override
@@ -305,18 +308,18 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
 
     @Override
     public void unregisterStackKeyListeners() {
-        onAddStackKey = sk -> {};
-        onRemoveStackKey = sk -> {};
+        this.onAddStackKey = sk -> {};
+        this.onRemoveStackKey = sk -> {};
     }
 
     @Override
     public boolean hasEmptySlots() {
-        return shouldInsertIntoEmpty.getAsBoolean() && !emptySlots.isEmpty();
+        return this.shouldInsertIntoEmpty.getAsBoolean() && !this.emptySlots.isEmpty();
     }
 
     private ItemStack handleOverflow(UnaryOperator<ItemStack> overflowHandler, ItemStackKey stackKey,
         ItemStack remainingStack) {
-        if (fullStackSlots.containsKey(stackKey) && !fullStackSlots.get(stackKey)
+        if (this.fullStackSlots.containsKey(stackKey) && !this.fullStackSlots.get(stackKey)
             .isEmpty()) {
             remainingStack = overflowHandler.apply(remainingStack);
         }
@@ -327,7 +330,7 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
         ItemStackKey stackKey) {
         ItemStack remainingStack = stack;
 
-        Set<Integer> slots = partiallyFilledStackSlots.get(stackKey);
+        Set<Integer> slots = this.partiallyFilledStackSlots.get(stackKey);
         if (slots == null || slots.isEmpty()) {
             return remainingStack;
         }
@@ -339,9 +342,9 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
         // and going into this logic as well and because of that causing collection to be updated outside of first level
         // iterator. The increment is here just
         // in case updating cache fails to prevent infinite loop
-        while (partiallyFilledStackSlots.get(stackKey) != null && !partiallyFilledStackSlots.get(stackKey)
+        while (this.partiallyFilledStackSlots.get(stackKey) != null && !this.partiallyFilledStackSlots.get(stackKey)
             .isEmpty() && i++ < sizeBefore) {
-            int matchingSlot = partiallyFilledStackSlots.get(stackKey)
+            int matchingSlot = this.partiallyFilledStackSlots.get(stackKey)
                 .iterator()
                 .next();
             remainingStack = inserter.insertItem(matchingSlot, remainingStack, simulate);
@@ -353,21 +356,26 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
     }
 
     private ItemStack insertIntoEmptySlots(IItemHandlerInserter inserter, ItemStack stack, boolean simulate) {
-        ItemStack remainingStack = stack;
-        remainingStack = insertIntoEmptyMemorySlots(inserter, simulate, remainingStack);
-        remainingStack = insertIntoEmptyFilterSlots(inserter, simulate, remainingStack);
-        if (shouldInsertIntoEmpty.getAsBoolean() && !ItemHelpers.isEmpty(remainingStack)) {
-            int sizeBefore = emptySlots.size();
+        if (ItemHelpers.isEmpty(stack)) return ItemHelpers.EMPTY;
+
+        ItemStack remainingStack = this.insertIntoEmptyMemorySlots(inserter, simulate, stack);
+        if (ItemHelpers.isEmpty(remainingStack)) return ItemHelpers.EMPTY;
+
+        remainingStack = this.insertIntoEmptyFilterSlots(inserter, simulate, remainingStack);
+        if (ItemHelpers.isEmpty(remainingStack)) return ItemHelpers.EMPTY;
+
+        if (this.shouldInsertIntoEmpty.getAsBoolean()) {
+            int sizeBefore = this.emptySlots.size();
             int i = 0;
             // Always taking first element here and iterating while not empty as iterating using iterator would produce
             // CME due to void/compacting reacting to inserts
             // and going into this logic as well and because of that causing collection to be updated outside of first
             // level iterator. The increment is here just
             // in case updating cache fails to prevent infinite loop
-            while (!emptySlots.isEmpty() && i++ < sizeBefore) {
-                Iterator<Integer> it = emptySlots.iterator();
+            while (!this.emptySlots.isEmpty() && i++ < sizeBefore) {
+                Iterator<Integer> it = this.emptySlots.iterator();
                 int slot = it.next();
-                while (memorySettings.isSlotSelected(slot)) {
+                while (this.memorySettings.isSlotSelected(slot)) {
                     if (!it.hasNext()) {
                         return remainingStack;
                     }
@@ -376,7 +384,7 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
 
                 remainingStack = inserter.insertItem(slot, remainingStack, simulate);
                 if (ItemHelpers.isEmpty(remainingStack)) {
-                    break;
+                    return ItemHelpers.EMPTY;
                 }
             }
         }
@@ -386,10 +394,11 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
 
     private ItemStack insertIntoEmptyFilterSlots(IItemHandlerInserter inserter, boolean simulate,
         ItemStack remainingStack) {
-        Item item = remainingStack.getItem();
-        if (filterItemSlots.containsKey(item)) {
-            for (int filterSlot : filterItemSlots.get(item)) {
-                if (emptySlots.contains(filterSlot)) {
+        if (ItemHelpers.isEmpty(remainingStack)) return ItemHelpers.EMPTY;
+        ItemMeta item = new ItemMeta(remainingStack);
+        if (this.filterItemSlots.containsKey(item)) {
+            for (int filterSlot : this.filterItemSlots.get(item)) {
+                if (this.emptySlots.contains(filterSlot)) {
                     remainingStack = inserter.insertItem(filterSlot, remainingStack, simulate);
                     if (ItemHelpers.isEmpty(remainingStack)) {
                         break;
@@ -401,12 +410,13 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
     }
 
     private ItemStack insertIntoEmptyMemorySlots(IItemHandlerInserter inserter, boolean simulate, ItemStack stack) {
+        if (ItemHelpers.isEmpty(stack)) return ItemHelpers.EMPTY;
         ItemStack remainingStack = stack;
-        Map<Item, Set<Integer>> memoryFilterItemSlots = memorySettings.getFilterItemSlots();
-        Item item = remainingStack.getItem();
+        Map<ItemMeta, Set<Integer>> memoryFilterItemSlots = this.memorySettings.getFilterItemSlots();
+        ItemMeta item = new ItemMeta(remainingStack);
         if (memoryFilterItemSlots.containsKey(item)) {
             for (int memorySlot : memoryFilterItemSlots.get(item)) {
-                if (emptySlots.contains(memorySlot)) {
+                if (this.emptySlots.contains(memorySlot)) {
                     remainingStack = inserter.insertItem(memorySlot, remainingStack, simulate);
                     if (ItemHelpers.isEmpty(remainingStack)) {
                         break;
@@ -415,12 +425,12 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
             }
         }
 
-        Map<Integer, Set<Integer>> memoryFilterStackSlots = memorySettings.getFilterStackSlots();
+        Map<Integer, Set<Integer>> memoryFilterStackSlots = this.memorySettings.getFilterStackSlots();
         if (!memoryFilterStackSlots.isEmpty()) {
             int stackHash = ItemStackKey.getHashCode(remainingStack);
             if (memoryFilterStackSlots.containsKey(stackHash)) {
                 for (int memorySlot : memoryFilterStackSlots.get(stackHash)) {
-                    if (emptySlots.contains(memorySlot)) {
+                    if (this.emptySlots.contains(memorySlot)) {
                         remainingStack = inserter.insertItem(memorySlot, remainingStack, simulate);
                         if (ItemHelpers.isEmpty(remainingStack)) {
                             break;

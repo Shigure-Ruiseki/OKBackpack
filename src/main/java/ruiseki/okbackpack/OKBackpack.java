@@ -47,6 +47,7 @@ import ruiseki.okcore.init.ItemCreativeTab;
 import ruiseki.okcore.init.ModBaseVersionable;
 import ruiseki.okcore.proxy.ICommonProxy;
 import ruiseki.storagecore.client.gui.sync.StorageSHRegisters;
+import ruiseki.storagecore.client.gui.sync.StorageSlotSHRegistries;
 import ruiseki.storagecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.storagecore.client.gui.widget.update.UpgradeSlotUpdateRegistries;
 
@@ -93,6 +94,7 @@ public class OKBackpack extends ModBaseVersionable {
         Capabilities.register();
 
         StorageSHRegisters.load();
+        StorageSlotSHRegistries.load();
         UpgradeSlotSHRegistries.load();
         UpgradeSlotUpdateRegistries.load();
 

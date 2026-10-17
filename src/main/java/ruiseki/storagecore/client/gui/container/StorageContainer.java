@@ -1,5 +1,8 @@
 package ruiseki.storagecore.client.gui.container;
 
+import java.util.List;
+import java.util.function.Predicate;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
@@ -9,10 +12,16 @@ import com.cleanroommc.modularui.api.inventory.ClickType;
 import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.screen.NEAAnimationHandler;
 import com.cleanroommc.modularui.utils.Platform;
+import com.cleanroommc.modularui.widgets.slot.ModularSlot;
+import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
+import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.storagecore.api.IStorageWrapper;
+import ruiseki.storagecore.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.storagecore.client.gui.widget.StoragePanel;
+import ruiseki.storagecore.settings.memory.MemorySettingsCategory;
+import ruiseki.storagecore.upgrades.IUpgradeItem;
 
 public class StorageContainer extends ModularContainer {
 
@@ -21,20 +30,22 @@ public class StorageContainer extends ModularContainer {
     private static final int RIGHT_MOUSE = 1;
     private static final int THROW = 4;
 
-    protected final IStorageWrapper wrapper;
-    protected final StoragePanel panel;
+    private static final String PLAYER_INV = "player_inventory";
 
-    public StorageContainer(IStorageWrapper wrapper, StoragePanel panel) {
-        this.wrapper = wrapper;
-        this.panel = panel;
+    protected final IStorageWrapper storageWrapper;
+    protected final StoragePanel storagePanel;
+
+    public StorageContainer(IStorageWrapper storageWrapper, StoragePanel storagePanel) {
+        this.storageWrapper = storageWrapper;
+        this.storagePanel = storagePanel;
     }
 
-    public IStorageWrapper getWrapper() {
-        return wrapper;
+    public IStorageWrapper getStorageWrapper() {
+        return storageWrapper;
     }
 
-    public StoragePanel getPanel() {
-        return panel;
+    public StoragePanel getStoragePanel() {
+        return storagePanel;
     }
 
     @Override
@@ -146,8 +157,7 @@ public class StorageContainer extends ModularContainer {
                                     updateSlotStack(clickedSlot, merged);
                                 }
                             } else if (heldStack.stackSize <= stackLimit(clickedSlot, heldStack)) {
-                                clickedSlot.putStack(heldStack);
-                                clickedSlot.onSlotChanged();
+                                updateSlotStack(clickedSlot, heldStack);
                                 playerInventory.setItemStack(slotStack);
                             }
                         } else if (slotStack.getItem() == heldStack.getItem() && heldStack.getMaxStackSize() > 1
@@ -183,4 +193,138 @@ public class StorageContainer extends ModularContainer {
         slot.putStack(stack);
         slot.onSlotChanged();
     }
+
+    private MemorySettingsCategory getMemorySettings() {
+        return this.getStorageWrapper()
+            .getSettingsHandler()
+            .getTypeCategory(MemorySettingsCategory.class);
+    }
+
+    @Override
+    protected ItemStack transferItem(ModularSlot fromSlot, ItemStack fromStack) {
+        if (ItemHelpers.isEmpty(fromStack)) {
+            return ItemHelpers.EMPTY;
+        }
+
+        int originalSize = fromStack.stackSize;
+
+        if (PLAYER_INV.equals(fromSlot.getSlotGroupName())) {
+            // 1. Player inventory -> upgrade slots.
+            this.transferItemFilter(
+                fromSlot,
+                fromStack,
+                stack -> stack.getItem() instanceof IUpgradeItem,
+                slot -> slot instanceof ModularUpgradeSlot && !PLAYER_INV.equals(slot.getSlotGroupName()));
+
+            // 2. Player inventory -> selected memory slots.
+            this.transferFiltered(
+                fromSlot,
+                fromStack,
+                slot -> !(slot instanceof ModularUpgradeSlot) && !PLAYER_INV.equals(slot.getSlotGroupName())
+                    && this.getMemorySettings()
+                        .isSlotSelected(slot.getSlotIndex()));
+
+            // 3. Player inventory -> non-memory storage slots.
+            this.transferFiltered(
+                fromSlot,
+                fromStack,
+                slot -> !(slot instanceof ModularUpgradeSlot) && !PLAYER_INV.equals(slot.getSlotGroupName())
+                    && !this.getMemorySettings()
+                        .isSlotSelected(slot.getSlotIndex()));
+        } else {
+            // Storage/upgrade slots -> player inventory.
+            this.transferFiltered(fromSlot, fromStack, slot -> PLAYER_INV.equals(slot.getSlotGroupName()));
+        }
+
+        if (ItemHelpers.isEmpty(fromStack)) {
+            return ItemHelpers.EMPTY;
+        }
+
+        if (fromStack.stackSize != originalSize) {
+            return fromStack;
+        }
+
+        return super.transferItem(fromSlot, fromStack);
+    }
+
+    @SafeVarargs
+    protected final void transferFiltered(ModularSlot fromSlot, ItemStack fromStack,
+        Predicate<ModularSlot>... slotFilters) {
+        transferItemFilter(fromSlot, fromStack, stack -> true, slotFilters);
+    }
+
+    @SafeVarargs
+    protected final void transferItemFilter(ModularSlot fromSlot, ItemStack fromStack,
+        Predicate<ItemStack> fromStackFilter, Predicate<ModularSlot>... slotFilters) {
+        if (ItemHelpers.isEmpty(fromStack) || !fromStackFilter.test(fromStack)) {
+            return;
+        }
+
+        SlotGroup fromSlotGroup = fromSlot.getSlotGroup();
+
+        // Each predicate represents one priority group.
+        for (Predicate<ModularSlot> slotFilter : slotFilters) {
+            if (ItemHelpers.isEmpty(fromStack)) {
+                return;
+            }
+
+            List<ModularSlot> targets = this.inventorySlots.stream()
+                .map(slot -> (ModularSlot) slot)
+                .filter(slot -> slot.getSlotGroup() != fromSlotGroup)
+                .filter(slotFilter)
+                .toList();
+
+            for (ModularSlot toSlot : targets) {
+                if (ItemHelpers.isEmpty(fromStack)) {
+                    return;
+                }
+
+                this.transferToSlot(fromSlot, toSlot, fromStack);
+            }
+        }
+    }
+
+    protected void transferToSlot(ModularSlot fromSlot, ModularSlot toSlot, ItemStack fromStack) {
+        if (ItemHelpers.isEmpty(fromStack) || !toSlot.isItemValid(fromStack)) {
+            return;
+        }
+
+        ItemStack toStack = toSlot.getStack();
+        int limit = stackLimit(toSlot, fromStack);
+
+        // Merge into an existing stack.
+        if (!fromSlot.isPhantom() && ItemHandlerHelpers.canItemStacksStack(fromStack, toStack)) {
+
+            int space = limit - toStack.stackSize;
+            if (space <= 0) {
+                return;
+            }
+
+            int move = Math.min(space, fromStack.stackSize);
+
+            ItemStack merged = toStack.copy();
+            merged.stackSize += move;
+            fromStack.stackSize -= move;
+
+            updateSlotStack(toSlot, merged);
+        } else if (ItemHelpers.isEmpty(toStack)) {
+            // Insert into an empty slot.
+            int move = Math.min(fromStack.stackSize, limit);
+            if (move <= 0) {
+                return;
+            }
+
+            ItemStack inserted = fromStack.splitStack(move);
+
+            toSlot.putStack(inserted);
+            toSlot.onSlotChanged();
+        }
+
+        // Normalize the source stack after transfer.
+        if (fromStack.stackSize <= 0) {
+            fromStack.stackSize = 0;
+            updateSlotStack(fromSlot, ItemHelpers.EMPTY);
+        }
+    }
+
 }

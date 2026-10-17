@@ -24,12 +24,24 @@ public class UpgradeSlotChangeResult {
         this.errorInventoryParts = errorInventoryParts;
     }
 
+    public boolean isSuccessful() {
+        return successful;
+    }
+
+    public Optional<String> getErrorMessage() {
+        return Optional.ofNullable(errorMessage);
+    }
+
     public Set<Integer> getErrorInventorySlots() {
         return errorInventorySlots;
     }
 
     public Set<Integer> getErrorInventoryParts() {
         return errorInventoryParts;
+    }
+
+    public Set<Integer> getErrorUpgradeSlots() {
+        return errorUpgradeSlots;
     }
 
     public static class Fail extends UpgradeSlotChangeResult {
@@ -45,17 +57,5 @@ public class UpgradeSlotChangeResult {
         public Success() {
             super(true, null, Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
         }
-    }
-
-    public boolean isSuccessful() {
-        return successful;
-    }
-
-    public Optional<String> getErrorMessage() {
-        return Optional.ofNullable(errorMessage);
-    }
-
-    public Set<Integer> getErrorUpgradeSlots() {
-        return errorUpgradeSlots;
     }
 }

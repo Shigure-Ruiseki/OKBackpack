@@ -11,12 +11,12 @@ public class BackpackContainer extends StorageContainer {
     }
 
     @Override
-    public IBackpackWrapper getWrapper() {
-        return (IBackpackWrapper) super.getWrapper();
+    public IBackpackWrapper getStorageWrapper() {
+        return (IBackpackWrapper) super.getStorageWrapper();
     }
 
     @Override
-    public BackpackPanel getPanel() {
-        return (BackpackPanel) super.getPanel();
+    public BackpackPanel getStoragePanel() {
+        return (BackpackPanel) super.getStoragePanel();
     }
 }
