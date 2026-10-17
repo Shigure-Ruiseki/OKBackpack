@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.AdaptableUITexture;
@@ -107,7 +108,9 @@ public class StoragePanel extends ModularPanel {
     protected UpgradeSlotGroup upgradeSlotGroup;
     protected UpgradeSlotUpdate[] upgradeSlotUpdates;
     protected List<UpgradeSlot> upgradeSlots = new ArrayList<>();
-    protected List<TabWidget> tabWidgets;
+    protected List<TabWidget> tabWidgets = new ArrayList<>();
+
+    protected IPanelHandler settingPanel;
 
     private long errorResultExpirationTime = 0;
     @Nullable
@@ -417,7 +420,6 @@ public class StoragePanel extends ModularPanel {
                     .getUpgradeHandler()
                     .getSlots() * ItemSlot.SIZE)
             .left(-21);
-        this.upgradeSlots = new ArrayList<>();
         for (int i = 0; i < this.getWrapper()
             .getUpgradeHandler()
             .getSlots(); i++) {
@@ -445,7 +447,7 @@ public class StoragePanel extends ModularPanel {
                 if (!client) return;
                 updateUpgradeWidgets();
             });
-            UpgradeSlotSH syncHandler = new UpgradeSlotSH(slot, this.wrapper, this);
+            UpgradeSlotSH syncHandler = new UpgradeSlotSH(slot, this.getWrapper(), this);
             this.syncManager.syncValue("upgrades", slotIndex, syncHandler);
             this.upgradeSlotSHs[slotIndex] = syncHandler;
             this.upgradeSlotUpdates[i] = new UpgradeSlotUpdate(this.getWrapper(), this.getPanel(), i);
@@ -454,9 +456,8 @@ public class StoragePanel extends ModularPanel {
     }
 
     public void addUpgradeTabs() {
-        this.tabWidgets = new ArrayList<>();
-
-        int slotCount = this.wrapper.getUpgradeHandler()
+        int slotCount = this.getWrapper()
+            .getUpgradeHandler()
             .getSlots();
 
         for (int i = 0; i < slotCount; i++) {
@@ -484,8 +485,7 @@ public class StoragePanel extends ModularPanel {
 
         for (int slotIndex = 0; slotIndex < handler.getSlots(); slotIndex++) {
             ItemStack stack = handler.getStackInSlot(slotIndex);
-            IUpgradeWrapper upgradeWrapper = handler.getSlotWrappers()
-                .get(slotIndex);
+            IUpgradeWrapper upgradeWrapper = handler.getSlotWrapper(slotIndex);
             if (ItemHelpers.isEmpty(stack)) continue;
 
             Item item = stack.getItem();
@@ -546,28 +546,43 @@ public class StoragePanel extends ModularPanel {
     }
 
     private void syncToggles() {
-        for (int i = 0; i < wrapper.getUpgradeHandler()
+        for (int i = 0; i < this.getWrapper()
+            .getUpgradeHandler()
             .getSlots(); i++) {
-            UpgradeSlotGroup.UpgradeToggleWidget toggleWidget = this.upgradeSlotGroup.getToggleWidget(i);
-            IUpgradeWrapper wrapper = toggleWidget.getUpgradeWrapper();
+            UpgradeSlotGroup.UpgradeToggleWidget widget = this.upgradeSlotGroup.getToggleWidget(i);
+            IUpgradeWrapper wrapper = widget.getUpgradeWrapper();
             if (wrapper != null) {
-                toggleWidget.setEnabled(true);
-                toggleWidget.setToggleEnabled(wrapper.isEnabled());
+                widget.setEnabled(wrapper.canBeDisabled());
+                widget.setToggleEnabled(wrapper.isEnabled());
             } else {
-                toggleWidget.setEnabled(false);
+                widget.setEnabled(false);
             }
         }
     }
 
     private void disableUnusedTabWidgets(int startTabIndex) {
-        for (int i = startTabIndex; i < wrapper.getUpgradeHandler()
+        for (int i = startTabIndex; i < this.getWrapper()
+            .getUpgradeHandler()
             .getSlots(); i++) {
-            TabWidget tabWidget = tabWidgets.get(i);
+            TabWidget tabWidget = this.tabWidgets.get(i);
             if (tabWidget != null) {
                 tabWidget.setEnabled(false);
             }
         }
         this.scheduleResize();
+    }
+
+    public void addSettingPanel() {
+        this.settingPanel = this.getSyncManager()
+            .syncedPanel(
+                "setting_panel",
+                true,
+                (syncManager1, syncHandler) -> new StorageSettingPanel(
+                    this.getWrapper(),
+                    this.getPanel(),
+                    syncManager1,
+                    syncHandler));
+        this.child(new SettingTabWidget());
     }
 
     @Override
@@ -586,18 +601,18 @@ public class StoragePanel extends ModularPanel {
 
     public void updateSlotChangeError(UpgradeSlotChangeResult result) {
         if (this.getPlayer().worldObj.isRemote && !result.isSuccessful()) {
-            errorUpgradeSlotChangeResult = result;
-            errorResultExpirationTime = this.getPlayer().worldObj.getWorldTime() + ERROR_DISPLAY_TICKS;
+            this.errorUpgradeSlotChangeResult = result;
+            this.errorResultExpirationTime = this.getPlayer().worldObj.getWorldTime() + ERROR_DISPLAY_TICKS;
         }
     }
 
     public Optional<UpgradeSlotChangeResult> getErrorUpgradeSlotChangeResult() {
-        if (errorUpgradeSlotChangeResult != null
-            && this.getPlayer().worldObj.getWorldTime() >= errorResultExpirationTime) {
-            errorResultExpirationTime = 0;
-            errorUpgradeSlotChangeResult = null;
+        if (this.errorUpgradeSlotChangeResult != null
+            && this.getPlayer().worldObj.getWorldTime() >= this.errorResultExpirationTime) {
+            this.errorResultExpirationTime = 0;
+            this.errorUpgradeSlotChangeResult = null;
         }
-        return Optional.ofNullable(errorUpgradeSlotChangeResult);
+        return Optional.ofNullable(this.errorUpgradeSlotChangeResult);
     }
 
     public PanelSyncManager getSyncManager() {
@@ -647,5 +662,9 @@ public class StoragePanel extends ModularPanel {
 
     public UpgradeSlotSH getUpgradeSlotSH(int i) {
         return this.getUpgradeSlotSHs()[i];
+    }
+
+    public IPanelHandler getSettingPanel() {
+        return settingPanel;
     }
 }

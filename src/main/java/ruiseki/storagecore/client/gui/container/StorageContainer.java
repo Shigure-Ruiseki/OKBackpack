@@ -94,7 +94,7 @@ public class StorageContainer extends ModularContainer {
 
                             // If the player runs out of items in hand, set heldStack to null
                             if (heldStack.stackSize <= 0) {
-                                playerInventory.setItemStack(null);
+                                playerInventory.setItemStack(ItemHelpers.EMPTY);
                             }
                         }
                     } else if (clickedSlot.canTakeStack(player)) { // Slot has items and can be taken
@@ -111,7 +111,7 @@ public class StorageContainer extends ModularContainer {
                             }
 
                             if (ItemHelpers.isEmpty(clickedSlot.getStack())) {
-                                clickedSlot.putStack(null);
+                                clickedSlot.putStack(ItemHelpers.EMPTY);
                             }
 
                             clickedSlot.onSlotChanged();
@@ -137,7 +137,7 @@ public class StorageContainer extends ModularContainer {
                                     heldStack.stackSize -= stackCount;
 
                                     if (heldStack.stackSize <= 0) {
-                                        playerInventory.setItemStack(null);
+                                        playerInventory.setItemStack(ItemHelpers.EMPTY);
                                     }
 
                                     ItemStack merged = slotStack.copy();
@@ -162,7 +162,7 @@ public class StorageContainer extends ModularContainer {
                                     slotStack = clickedSlot.decrStackSize(stackCount);
 
                                     if (slotStack.stackSize == 0) {
-                                        clickedSlot.putStack(null);
+                                        clickedSlot.putStack(ItemHelpers.EMPTY);
                                     }
 
                                     clickedSlot.onPickupFromSlot(player, playerInventory.getItemStack());

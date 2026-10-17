@@ -15,8 +15,7 @@ public class UpgradeSlotSH extends StorageSlotSH {
     public IUpgradeWrapper getUpgradeWrapper() {
         return this.getWrapper()
             .getUpgradeHandler()
-            .getSlotWrappers()
-            .get(
+            .getSlotWrapper(
                 this.getSlot()
                     .getSlotIndex());
     }

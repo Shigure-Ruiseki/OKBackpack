@@ -44,23 +44,24 @@ public class UpgradeSlotGroup extends ParentWidget<UpgradeSlotGroup> {
         .xy(0, 199, 25, 5)
         .build();
 
-    private final IStorageWrapper wrapper;
-    private final StoragePanel panel;
+    private final IStorageWrapper storageWrapper;
+    private final StoragePanel storagePanel;
 
     private final List<UpgradeToggleWidget> toggleWidgets;
 
-    public UpgradeSlotGroup(IStorageWrapper wrapper, StoragePanel panel) {
-        this.wrapper = wrapper;
-        this.panel = panel;
+    public UpgradeSlotGroup(IStorageWrapper storageWrapper, StoragePanel storagePanel) {
+        this.storageWrapper = storageWrapper;
+        this.storagePanel = storagePanel;
 
         this.toggleWidgets = new ArrayList<>();
         for (int i = 0; i < getSize(); i++) {
-            UpgradeToggleWidget toggleWidget = new UpgradeToggleWidget(this.getWrapper(), this.getPanel(), i)
-                .syncHandler(
-                    this.getPanel()
+            UpgradeToggleWidget toggleWidget = new UpgradeToggleWidget(
+                this.getStorageWrapper(),
+                this.getStoragePanel(),
+                i).syncHandler(
+                    this.getStoragePanel()
                         .getUpgradeSlotSH(i))
-                .name("upgrade_toggle_" + i);
-            toggleWidget.initializeUpgradeState();
+                    .name("upgrade_toggle_" + i);
             this.toggleWidgets.add(toggleWidget);
             this.child(toggleWidget);
         }
@@ -99,18 +100,17 @@ public class UpgradeSlotGroup extends ParentWidget<UpgradeSlotGroup> {
     }
 
     public int getSize() {
-        return this.getWrapper()
+        return this.getStorageWrapper()
             .getUpgradeHandler()
             .getSlots();
     }
 
-    public IStorageWrapper getWrapper() {
-        return this.wrapper;
+    public IStorageWrapper getStorageWrapper() {
+        return this.storageWrapper;
     }
 
-    @Override
-    public @NotNull StoragePanel getPanel() {
-        return this.panel;
+    public StoragePanel getStoragePanel() {
+        return this.storagePanel;
     }
 
     public static class UpgradeToggleWidget extends Widget<UpgradeToggleWidget> implements Interactable {
@@ -126,28 +126,24 @@ public class UpgradeSlotGroup extends ParentWidget<UpgradeSlotGroup> {
 
         private boolean isToggleEnabled = false;
         private UpgradeSlotSH syncHandler;
-        private final IStorageWrapper wrapper;
-        private final StoragePanel panel;
+        private final IStorageWrapper storageWrapper;
+        private final StoragePanel storagePanel;
+        private final int slotIndex;
 
-        public UpgradeToggleWidget(IStorageWrapper wrapper, StoragePanel panel, int slotIndex) {
-            this.wrapper = wrapper;
-            this.panel = panel;
+        public UpgradeToggleWidget(IStorageWrapper storageWrapper, StoragePanel storagePanel, int slotIndex) {
+            this.storageWrapper = storageWrapper;
+            this.storagePanel = storagePanel;
+            this.slotIndex = slotIndex;
 
             this.size(WIDTH, HEIGHT);
             this.left(-4);
             this.top(slotIndex * 18 + 4);
-
             this.setEnabled(false);
-        }
 
-        public void initializeUpgradeState() {
-            IUpgradeWrapper upgradeWrapper = getUpgradeWrapper();
+            IUpgradeWrapper upgradeWrapper = this.getUpgradeWrapper();
             if (upgradeWrapper != null) {
-                this.isToggleEnabled = upgradeWrapper.canBeDisabled();
-                this.setEnabled(this.isToggleEnabled);
-            } else {
-                this.isToggleEnabled = false;
-                this.setEnabled(false);
+                this.isToggleEnabled = upgradeWrapper.isEnabled();
+                this.setEnabled(upgradeWrapper.canBeDisabled());
             }
         }
 
@@ -156,20 +152,32 @@ public class UpgradeSlotGroup extends ParentWidget<UpgradeSlotGroup> {
         }
 
         public IUpgradeWrapper getUpgradeWrapper() {
-            return this.getSyncHandler()
-                .getUpgradeWrapper();
+            return this.getStorageWrapper()
+                .getUpgradeHandler()
+                .getSlotWrapper(this.getSlotIndex());
+        }
+
+        public StoragePanel getStoragePanel() {
+            return storagePanel;
+        }
+
+        public IStorageWrapper getStorageWrapper() {
+            return storageWrapper;
+        }
+
+        public int getSlotIndex() {
+            return slotIndex;
         }
 
         @Override
         public @NotNull Result onMousePressed(int mouseButton) {
-            this.isToggleEnabled = !this.isToggleEnabled;
             IUpgradeWrapper upgradeWrapper = this.getUpgradeWrapper();
-            if (upgradeWrapper != null) {
-                boolean enabled = !upgradeWrapper.isEnabled();
-                upgradeWrapper.setEnabled(enabled);
-                this.getSyncHandler()
-                    .syncToServer(UpgradeSlotSHRegistries.ENABLE, buffer -> { buffer.writeBoolean(enabled); });
-            }
+            if (upgradeWrapper == null || !upgradeWrapper.canBeDisabled()) return Result.IGNORE;
+            boolean enabled = !upgradeWrapper.isEnabled();
+            upgradeWrapper.setEnabled(enabled);
+            this.isToggleEnabled = enabled;
+            this.getSyncHandler()
+                .syncToServer(UpgradeSlotSHRegistries.ENABLE, buffer -> { buffer.writeBoolean(enabled); });
             Interactable.playButtonClickSound();
             return Result.SUCCESS;
         }

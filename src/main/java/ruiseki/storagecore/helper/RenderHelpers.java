@@ -4,9 +4,7 @@ import java.util.Optional;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -65,18 +63,6 @@ public class RenderHelpers {
         GL11.glTranslatef(0F, 0.1F, 0F);
     }
 
-    public static TextureManager engine() {
-        return Minecraft.getMinecraft().renderEngine;
-    }
-
-    public static void bindTexture(String texture) {
-        engine().bindTexture(new ResourceLocation(texture));
-    }
-
-    public static void bindTexture(ResourceLocation texture) {
-        engine().bindTexture(texture);
-    }
-
     public static void renderErrorOverlay(StoragePanel panel) {
         Optional<UpgradeSlotChangeResult> optional = panel.getErrorUpgradeSlotChangeResult();
         if (optional.isEmpty()) return;
@@ -90,36 +76,25 @@ public class RenderHelpers {
 
         Minecraft mc = Minecraft.getMinecraft();
         FontRenderer font = mc.fontRenderer;
-
-        int padding = 4;
-        int boxWidth = font.getStringWidth(errorText) + padding * 2;
-        int boxHeight = font.FONT_HEIGHT + padding * 2;
+        int textWidth = font.getStringWidth(errorText);
 
         int panelWidth = panel.resizer()
             .getArea().width;
         int panelHeight = panel.resizer()
             .getArea().height;
 
+        int padding = 4;
+        int boxWidth = textWidth + padding * 2;
+        int boxHeight = font.FONT_HEIGHT + padding * 2;
         int boxX = (panelWidth - boxWidth) / 2;
         int boxY = panelHeight - 90;
 
         GlStateManager.disableDepth();
-
-        GuiDraw.drawRect(boxX, boxY, boxX + boxWidth, boxY + boxHeight, ERROR_BORDER_COLOR);
-
-        GuiDraw.drawRect(boxX + 1, boxY + 1, boxX + boxWidth - 1, boxY + boxHeight - 1, ERROR_BACKGROUND_COLOR);
-
+        GuiDraw.drawRect(boxX, boxY, boxWidth, boxHeight, ERROR_BORDER_COLOR);
+        GuiDraw.drawRect(boxX + 1, boxY + 1, boxWidth - 2, boxHeight - 2, ERROR_BACKGROUND_COLOR);
         GlStateManager.enableTexture2D();
-        GlStateManager.color(1F, 1F, 1F, 1F);
-
+        GlStateManager.color(1f, 1f, 1f, 1f);
         font.drawStringWithShadow(errorText, boxX + padding, boxY + padding, ERROR_TEXT_COLOR);
-
         GlStateManager.enableDepth();
-    }
-
-    public static float getCurrentTick(float partialTicks) {
-        Minecraft minecraft = Minecraft.getMinecraft();
-
-        return minecraft.theWorld != null ? minecraft.theWorld.getTotalWorldTime() + partialTicks : 0F;
     }
 }

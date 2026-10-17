@@ -134,12 +134,12 @@ public class ItemStackUpgrade extends ItemUpgradeBase<ItemStackUpgrade.Wrapper> 
 
         @Override
         public boolean hideSettingsTab() {
-            return false;
+            return true;
         }
 
         @Override
         public boolean canBeDisabled() {
-            return true;
+            return false;
         }
     }
 }

@@ -42,6 +42,7 @@ public class StorageGuiHolder<T extends StoragePanel> {
         panel.addMainLayout();
         panel.addUpgradeSlots();
         panel.addUpgradeTabs();
+        panel.addSettingPanel();
     }
 
     public IStorageWrapper getWrapper() {
