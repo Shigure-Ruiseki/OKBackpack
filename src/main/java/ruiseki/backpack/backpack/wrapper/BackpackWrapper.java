@@ -38,6 +38,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     private static final String CLOTH_COLOR_TAG = "clothColor";
     private static final String BORDER_COLOR_TAG = "borderColor";
     private static final String OPEN_TAB_ID_TAG = "openTabId";
+    private static final String TAB_INDEX_TAG = "tabIndex";
     private static final String SORT_BY_TAG = "sortBy";
     private static final String CONTENTS_UUID_TAG = "contentsUuid";
     private static final String INVENTORY_SLOTS_TAG = "inventorySlots";
@@ -303,6 +304,23 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public void removeOpenTabId() {
         NBTHelpers.removeTag(backpack, OPEN_TAB_ID_TAG);
+        backpackSaveHandler.run();
+    }
+
+    @Override
+    public Optional<Integer> getTabIndex() {
+        return NBTHelpers.getInteger(backpack, TAB_INDEX_TAG);
+    }
+
+    @Override
+    public void setTabIndex(int tabIndex) {
+        NBTHelpers.setInteger(backpack, TAB_INDEX_TAG, tabIndex);
+        backpackSaveHandler.run();
+    }
+
+    @Override
+    public void removeTabIndex() {
+        NBTHelpers.removeTag(backpack, TAB_INDEX_TAG);
         backpackSaveHandler.run();
     }
 

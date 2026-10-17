@@ -1,7 +1,11 @@
 package ruiseki.storagecore.client.gui.widget;
 
+import static ruiseki.okbackpack.common.block.BackpackPanel.LAYERED_TAB_TEXTURE;
+
 import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
+import com.cleanroommc.modularui.theme.WidgetTheme;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import ruiseki.storagecore.api.IStorageWrapper;
@@ -30,6 +34,19 @@ public class StorageSettingPanel extends ModularPanel {
             .top(0)
             .right(0);
 
+    }
+
+    @Override
+    public void postDraw(ModularGuiContext context, boolean transformed) {
+        super.postDraw(context, transformed);
+        LAYERED_TAB_TEXTURE.draw(
+            context,
+            0,
+            0,
+            6,
+            getArea().height,
+            WidgetTheme.getDefault()
+                .getTheme());
     }
 
     public IStorageWrapper getWrapper() {

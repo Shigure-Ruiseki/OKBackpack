@@ -21,6 +21,7 @@ public class StorageSHRegisters {
         Reference.MOD_ID,
         "storage_transfer_to_player");
     public static final ResourceLocation OPENED_ID = new ResourceLocation(Reference.MOD_ID, "storage_opended_id");
+    public static final ResourceLocation TAB_INDEX = new ResourceLocation(Reference.MOD_ID, "storage_tab_index");
 
     public static void load() {
 
@@ -49,6 +50,11 @@ public class StorageSHRegisters {
             int openedId = buf.readInt();
             handler.getWrapper()
                 .setOpenTabId(openedId);
+        });
+        REGISTRY.registerServer(TAB_INDEX, (handler, buf) -> {
+            int tabIndex = buf.readInt();
+            handler.getWrapper()
+                .setTabIndex(tabIndex);
         });
     }
 

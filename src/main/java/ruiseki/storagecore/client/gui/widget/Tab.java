@@ -13,7 +13,7 @@ import com.cleanroommc.modularui.widget.SingleChildWidget;
 import lombok.Getter;
 import lombok.Setter;
 
-public class TabWidget extends SingleChildWidget<TabWidget> implements Interactable {
+public class Tab extends SingleChildWidget<Tab> implements Interactable {
 
     public enum ExpandDirection {
         LEFT,
@@ -30,24 +30,24 @@ public class TabWidget extends SingleChildWidget<TabWidget> implements Interacta
     @Getter
     private boolean showExpanded = false;
     @Getter
-    private ExpandedTabWidget expandedWidget = null;
+    private ExpandedTab expandedWidget = null;
     @Setter
     @Getter
     private IDrawable tabIcon = null;
 
-    public TabWidget(int tabIndex) {
+    public Tab(int tabIndex) {
         this(tabIndex, tabIndex * 30, ExpandDirection.RIGHT);
     }
 
-    public TabWidget(int tabIndex, ExpandDirection expandDirection) {
+    public Tab(int tabIndex, ExpandDirection expandDirection) {
         this(tabIndex, tabIndex * 30, expandDirection);
     }
 
-    public TabWidget(int tabIndex, int top) {
+    public Tab(int tabIndex, int top) {
         this(tabIndex, top, ExpandDirection.RIGHT);
     }
 
-    public TabWidget(int tabIndex, int top, ExpandDirection expandDirection) {
+    public Tab(int tabIndex, int top, ExpandDirection expandDirection) {
         this.tabIndex = tabIndex;
         this.expandDirection = expandDirection;
 
@@ -64,7 +64,7 @@ public class TabWidget extends SingleChildWidget<TabWidget> implements Interacta
         }
     }
 
-    public void setExpandedWidget(ExpandedTabWidget value) {
+    public void setExpandedWidget(ExpandedTab value) {
         this.expandedWidget = value;
 
         if (value != null) {

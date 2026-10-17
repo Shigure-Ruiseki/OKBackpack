@@ -52,6 +52,12 @@ public interface IStorageWrapper {
 
     void removeOpenTabId();
 
+    Optional<Integer> getTabIndex();
+
+    void setTabIndex(int tabIndex);
+
+    void removeTabIndex();
+
     void setSortBy(SortBy sortBy);
 
     SortBy getSortBy();
@@ -219,6 +225,21 @@ public interface IStorageWrapper {
 
         @Override
         public void removeOpenTabId() {
+
+        }
+
+        @Override
+        public Optional<Integer> getTabIndex() {
+            return Optional.empty();
+        }
+
+        @Override
+        public void setTabIndex(int tabIndex) {
+
+        }
+
+        @Override
+        public void removeTabIndex() {
 
         }
 

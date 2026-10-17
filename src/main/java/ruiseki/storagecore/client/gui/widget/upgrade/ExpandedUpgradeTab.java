@@ -11,10 +11,10 @@ import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
 import ruiseki.storagecore.api.IStorageWrapper;
 import ruiseki.storagecore.client.gui.sync.StorageSHRegisters;
 import ruiseki.storagecore.client.gui.sync.UpgradeSlotSH;
-import ruiseki.storagecore.client.gui.widget.ExpandedTabWidget;
+import ruiseki.storagecore.client.gui.widget.ExpandedTab;
 import ruiseki.storagecore.client.gui.widget.StoragePanel;
 
-public abstract class ExpandedUpgradeTabWidget<U extends UpgradeWrapperBase> extends ExpandedTabWidget {
+public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase> extends ExpandedTab {
 
     protected abstract U getWrapper();
 
@@ -24,7 +24,7 @@ public abstract class ExpandedUpgradeTabWidget<U extends UpgradeWrapperBase> ext
     protected StoragePanel storagePanel;
     protected int slotIndex;
 
-    public ExpandedUpgradeTabWidget(int slotIndex, int coveredTabSize, ItemStack delegatedIconStack,
+    public ExpandedUpgradeTab(int slotIndex, int coveredTabSize, ItemStack delegatedIconStack,
         IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey, int width) {
         super(coveredTabSize, new ItemDrawable(delegatedIconStack), titleKey, width);
         this.storageWrapper = storageWrapper;
@@ -33,7 +33,7 @@ public abstract class ExpandedUpgradeTabWidget<U extends UpgradeWrapperBase> ext
         this.syncHandler("upgrades", this.slotIndex);
     }
 
-    public ExpandedUpgradeTabWidget(int slotIndex, int coveredTabSize, ItemStack delegatedIconStack,
+    public ExpandedUpgradeTab(int slotIndex, int coveredTabSize, ItemStack delegatedIconStack,
         IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey) {
         this(slotIndex, coveredTabSize, delegatedIconStack, storageWrapper, storagePanel, titleKey, 80);
     }

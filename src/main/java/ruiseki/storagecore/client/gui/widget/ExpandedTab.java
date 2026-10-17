@@ -17,7 +17,7 @@ import lombok.Getter;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.client.gui.widget.TabWidget;
 
-public abstract class ExpandedTabWidget extends ParentWidget<ExpandedTabWidget> {
+public abstract class ExpandedTab extends ParentWidget<ExpandedTab> {
 
     public static final UITexture TAB_TEXTURE = UITexture.builder()
         .location(Reference.MOD_ID, "gui/gui_controls")
@@ -30,24 +30,24 @@ public abstract class ExpandedTabWidget extends ParentWidget<ExpandedTabWidget> 
     protected final int coveredTabSize;
     protected final TabWidget.ExpandDirection expandDirection;
 
-    protected final ExpandedTabWidget.PhantomTabWidget phantomTabWidget;
+    protected final ExpandedTab.PhantomTabWidget phantomTabWidget;
     protected final TextWidget<?> titleKeyWidget;
     protected final Flow upperTabRow;
 
-    public ExpandedTabWidget(int coveredTabSize, IDrawable delegatedIcon, String titleKey) {
+    public ExpandedTab(int coveredTabSize, IDrawable delegatedIcon, String titleKey) {
         this(coveredTabSize, delegatedIcon, titleKey, 75, TabWidget.ExpandDirection.RIGHT);
     }
 
-    public ExpandedTabWidget(int coveredTabSize, IDrawable delegatedIcon, String titleKey, int width) {
+    public ExpandedTab(int coveredTabSize, IDrawable delegatedIcon, String titleKey, int width) {
         this(coveredTabSize, delegatedIcon, titleKey, width, TabWidget.ExpandDirection.RIGHT);
     }
 
-    public ExpandedTabWidget(int coveredTabSize, IDrawable delegatedIcon, String titleKey, int width,
+    public ExpandedTab(int coveredTabSize, IDrawable delegatedIcon, String titleKey, int width,
         TabWidget.ExpandDirection expandDirection) {
         this.coveredTabSize = coveredTabSize;
         this.expandDirection = expandDirection;
 
-        this.phantomTabWidget = new ExpandedTabWidget.PhantomTabWidget(delegatedIcon.asWidget()).top(0);
+        this.phantomTabWidget = new ExpandedTab.PhantomTabWidget(delegatedIcon.asWidget()).top(0);
 
         this.titleKeyWidget = new TextWidget<>(IKey.lang(titleKey)).textAlign(Alignment.CENTER)
             .paddingRight(2)
@@ -88,8 +88,7 @@ public abstract class ExpandedTabWidget extends ParentWidget<ExpandedTabWidget> 
 
     public abstract void updateTabState();
 
-    protected class PhantomTabWidget extends SingleChildWidget<ExpandedTabWidget.PhantomTabWidget>
-        implements Interactable {
+    protected class PhantomTabWidget extends SingleChildWidget<ExpandedTab.PhantomTabWidget> implements Interactable {
 
         @Getter
         private final Widget<?> tabIcon;

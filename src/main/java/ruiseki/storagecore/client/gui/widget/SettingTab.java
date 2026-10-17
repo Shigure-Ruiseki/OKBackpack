@@ -13,11 +13,11 @@ import com.cleanroommc.modularui.widget.Widget;
 
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 
-public class SettingTabWidget extends Widget<SettingTabWidget> implements Interactable {
+public class SettingTab extends Widget<SettingTab> implements Interactable {
 
     public static final TabTexture TAB_TEXTURE = GuiTextures.TAB_RIGHT;
 
-    public SettingTabWidget() {
+    public SettingTab() {
         size(TAB_TEXTURE.getWidth(), TAB_TEXTURE.getHeight()).right(-TAB_TEXTURE.getWidth() + 4)
             .top(0)
             .background(TAB_TEXTURE.get(-1, false))

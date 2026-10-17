@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.storagecore.api.IStorageWrapper;
-import ruiseki.storagecore.client.gui.widget.ExpandedTabWidget;
+import ruiseki.storagecore.client.gui.widget.ExpandedTab;
 import ruiseki.storagecore.client.gui.widget.StoragePanel;
 import ruiseki.storagecore.client.gui.widget.update.UpgradeSlotUpdate;
 
@@ -25,8 +25,8 @@ public class UpgradeType<T extends IUpgradeWrapper> {
         factory.updateWidgetDelegates(wrapper, group);
     }
 
-    public ExpandedTabWidget getExpandedTabWidget(int slotIndex, T wrapper, ItemStack stack,
-        IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey) {
+    public ExpandedTab getExpandedTabWidget(int slotIndex, T wrapper, ItemStack stack, IStorageWrapper storageWrapper,
+        StoragePanel storagePanel, String titleKey) {
         return factory.getExpandedTabWidget(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
     }
 
@@ -38,7 +38,7 @@ public class UpgradeType<T extends IUpgradeWrapper> {
 
         }
 
-        default ExpandedTabWidget getExpandedTabWidget(int slotIndex, T wrapper, ItemStack stack,
+        default ExpandedTab getExpandedTabWidget(int slotIndex, T wrapper, ItemStack stack,
             IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey) {
             return null;
         }
