@@ -6,7 +6,10 @@ import com.cleanroommc.modularui.network.NetworkUtils;
 
 import ruiseki.okbackpack.Reference;
 import ruiseki.okcore.inventory.SortBy;
+import ruiseki.storagecore.api.IStorageWrapper;
 import ruiseki.storagecore.helper.StorageInventoryHelpers;
+import ruiseki.storagecore.settings.memory.MemorySettingsCategory;
+import ruiseki.storagecore.settings.nosort.NoSortSettingsCategory;
 
 public class StorageSHRegisters {
 
@@ -22,6 +25,34 @@ public class StorageSHRegisters {
         "storage_transfer_to_player");
     public static final ResourceLocation OPENED_ID = new ResourceLocation(Reference.MOD_ID, "storage_opended_id");
     public static final ResourceLocation TAB_INDEX = new ResourceLocation(Reference.MOD_ID, "storage_tab_index");
+
+    public static final ResourceLocation SET_MEMORY_SLOT = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_set_memory_slot");
+    public static final ResourceLocation UNSET_MEMORY_SLOT = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_unset_memory_slot");
+    public static final ResourceLocation SET_NO_SORT_SLOT = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_set_no_sort_slot");
+    public static final ResourceLocation UNSET_NO_SORT_SLOT = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_unset_no_sort_slot");
+    public static final ResourceLocation SET_MEMORY_ALL_SLOT = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_set_memory_all_slot");
+    public static final ResourceLocation UNSET_MEMORY_ALL_SLOT = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_unset_memory_all_slot");
+    public static final ResourceLocation SET_IGNORE_NBT = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_set_ignore_nbt");
+    public static final ResourceLocation SET_NO_SORT_ALL_SLOT = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_set_no_sort_all_slot");
+    public static final ResourceLocation UNSET_NO_SORT_ALL_SLOT = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_unset_no_sort_all_slot");
 
     public static void load() {
 
@@ -56,6 +87,50 @@ public class StorageSHRegisters {
             handler.getWrapper()
                 .setTabIndex(tabIndex);
         });
+
+        REGISTRY.registerServer(SET_MEMORY_SLOT, (handler, buf) -> {
+            MemorySettingsCategory memory = getMemorySettings(handler.getWrapper());
+            memory.selectSlot(buf.readInt());
+        });
+        REGISTRY.registerServer(UNSET_MEMORY_SLOT, (handler, buf) -> {
+            MemorySettingsCategory memory = getMemorySettings(handler.getWrapper());
+            memory.unselectSlot(buf.readInt());
+        });
+        REGISTRY.registerServer(SET_MEMORY_ALL_SLOT, (handler, buf) -> {
+            MemorySettingsCategory settings = getMemorySettings(handler.getWrapper());
+            settings.selectSlots(
+                0,
+                handler.getWrapper()
+                    .getInventoryHandler()
+                    .getSlots());
+        });
+        REGISTRY.registerServer(UNSET_MEMORY_ALL_SLOT, (handler, buf) -> {
+            MemorySettingsCategory settings = getMemorySettings(handler.getWrapper());
+            settings.unselectAllSlots();
+        });
+        REGISTRY.registerServer(SET_IGNORE_NBT, (handler, buf) -> {
+            MemorySettingsCategory settings = getMemorySettings(handler.getWrapper());
+            settings.setIgnoreNbt(buf.readBoolean());
+        });
+
+        REGISTRY.registerServer(SET_NO_SORT_SLOT, (handler, buf) -> {
+            NoSortSettingsCategory settings = getNoSortingSettings(handler.getWrapper());
+            settings.selectSlot(buf.readInt());
+        });
+        REGISTRY.registerServer(UNSET_NO_SORT_SLOT, (handler, buf) -> {
+            NoSortSettingsCategory settings = getNoSortingSettings(handler.getWrapper());
+            settings.unselectSlot(buf.readInt());
+        });
+
     }
 
+    public static MemorySettingsCategory getMemorySettings(IStorageWrapper wrapper) {
+        return wrapper.getSettingsHandler()
+            .getTypeCategory(MemorySettingsCategory.class);
+    }
+
+    public static NoSortSettingsCategory getNoSortingSettings(IStorageWrapper wrapper) {
+        return wrapper.getSettingsHandler()
+            .getTypeCategory(NoSortSettingsCategory.class);
+    }
 }

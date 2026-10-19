@@ -131,7 +131,6 @@ public class MemorySettingsCategory implements ISettingsCategory<MemorySettingsC
      * @param minSlot inclusive
      * @param maxSlot exclusive
      */
-
     public void selectSlots(int minSlot, int maxSlot) {
         for (int slot = minSlot; slot < maxSlot; slot++) {
             InventoryHandler inventoryHandler = getInventoryHandler();

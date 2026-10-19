@@ -42,8 +42,8 @@ import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
 import ruiseki.okbackpack.mixins.early.modularui2.ItemSlotInvoker;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.storagecore.api.IStorageWrapper;
+import ruiseki.storagecore.client.gui.sync.StorageSHRegisters;
 import ruiseki.storagecore.client.gui.sync.StorageSlotSH;
-import ruiseki.storagecore.client.gui.sync.StorageSlotSHRegistries;
 import ruiseki.storagecore.settings.memory.MemorySettingsCategory;
 import ruiseki.storagecore.settings.nosort.NoSortSettingsCategory;
 
@@ -189,15 +189,17 @@ public class StorageSlot extends ItemSlot {
             if (isMemorySet && mouseButton == 1) {
                 MemorySettingsCategory settings = this.getMemorySetting();
                 settings.unselectSlot(getSlotIndex());
-                this.getSyncHandler()
-                    .syncToServer(StorageSlotSHRegistries.UNSET_MEMORY_SLOT);
+                this.getStoragePanel()
+                    .getStorageSH()
+                    .syncToServer(StorageSHRegisters.UNSET_MEMORY_SLOT, buffer -> buffer.writeInt(this.getSlotIndex()));
                 // refreshBogoSortingContext();
                 return Result.SUCCESS;
             } else if (!isMemorySet && mouseButton == 0) {
                 MemorySettingsCategory settings = this.getMemorySetting();
                 settings.selectSlot(getSlotIndex());
-                this.getSyncHandler()
-                    .syncToServer(StorageSlotSHRegistries.SET_MEMORY_SLOT);
+                this.getStoragePanel()
+                    .getStorageSH()
+                    .syncToServer(StorageSHRegisters.SET_MEMORY_SLOT, buffer -> buffer.writeInt(this.getSlotIndex()));
                 // refreshBogoSortingContext();
                 return Result.SUCCESS;
             }
@@ -209,15 +211,19 @@ public class StorageSlot extends ItemSlot {
             if (noSorting && mouseButton == 1) {
                 NoSortSettingsCategory settings = this.getNoSortingSettings();
                 settings.unselectSlot(this.getSlotIndex());
-                this.getSyncHandler()
-                    .syncToServer(StorageSlotSHRegistries.UNSET_NO_SORT_SLOT);
+                this.getStoragePanel()
+                    .getStorageSH()
+                    .syncToServer(
+                        StorageSHRegisters.UNSET_NO_SORT_SLOT,
+                        buffer -> buffer.writeInt(this.getSlotIndex()));
                 // refreshBogoSortingContext();
                 return Result.SUCCESS;
             } else if (!noSorting && mouseButton == 0) {
                 NoSortSettingsCategory settings = this.getNoSortingSettings();
                 settings.selectSlot(this.getSlotIndex());
-                this.getSyncHandler()
-                    .syncToServer(StorageSlotSHRegistries.SET_NO_SORT_SLOT);
+                this.getStoragePanel()
+                    .getStorageSH()
+                    .syncToServer(StorageSHRegisters.SET_NO_SORT_SLOT, buffer -> buffer.writeInt(this.getSlotIndex()));
                 // refreshBogoSortingContext();
                 return Result.SUCCESS;
             }
