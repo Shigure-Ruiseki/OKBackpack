@@ -192,7 +192,7 @@ public class StorageSlot extends ItemSlot {
                 this.getStoragePanel()
                     .getStorageSH()
                     .syncToServer(StorageSHRegisters.UNSET_MEMORY_SLOT, buffer -> buffer.writeInt(this.getSlotIndex()));
-                // refreshBogoSortingContext();
+                refreshBogoSortingContext();
                 return Result.SUCCESS;
             } else if (!isMemorySet && mouseButton == 0) {
                 MemorySettingsCategory settings = this.getMemorySetting();
@@ -200,7 +200,7 @@ public class StorageSlot extends ItemSlot {
                 this.getStoragePanel()
                     .getStorageSH()
                     .syncToServer(StorageSHRegisters.SET_MEMORY_SLOT, buffer -> buffer.writeInt(this.getSlotIndex()));
-                // refreshBogoSortingContext();
+                refreshBogoSortingContext();
                 return Result.SUCCESS;
             }
             return Result.STOP;
@@ -216,7 +216,7 @@ public class StorageSlot extends ItemSlot {
                     .syncToServer(
                         StorageSHRegisters.UNSET_NO_SORT_SLOT,
                         buffer -> buffer.writeInt(this.getSlotIndex()));
-                // refreshBogoSortingContext();
+                refreshBogoSortingContext();
                 return Result.SUCCESS;
             } else if (!noSorting && mouseButton == 0) {
                 NoSortSettingsCategory settings = this.getNoSortingSettings();
@@ -224,7 +224,7 @@ public class StorageSlot extends ItemSlot {
                 this.getStoragePanel()
                     .getStorageSH()
                     .syncToServer(StorageSHRegisters.SET_NO_SORT_SLOT, buffer -> buffer.writeInt(this.getSlotIndex()));
-                // refreshBogoSortingContext();
+                refreshBogoSortingContext();
                 return Result.SUCCESS;
             }
             return Result.STOP;
@@ -308,17 +308,13 @@ public class StorageSlot extends ItemSlot {
 
     protected void drawLockedSlot(ModularGuiContext context, WidgetTheme widgetTheme) {
         GlStateManager.disableDepth();
-        int color = this.getNoSortingSettings()
-            .getColor()
-            .getColor();
-        int r = (color >> 16) & 0xFF;
-        int g = (color >> 8) & 0xFF;
-        int b = color & 0xFF;
-        r = (r + 255) / 2;
-        g = (g + 255) / 2;
-        b = (b + 255) / 2;
-        int lightColor = 0xFF000000 | (r << 16) | (g << 8) | b;
-        GuiDraw.drawRect(1, 1, 17, 17, lightColor);
+        GuiDraw.drawRect(
+            1,
+            1,
+            17,
+            17,
+            this.getNoSortingSettings()
+                .getColor());
         GlStateManager.enableDepth();
     }
 

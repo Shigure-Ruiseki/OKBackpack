@@ -14,7 +14,7 @@ import com.cleanroommc.modularui.theme.WidgetTheme;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.storagecore.api.IStorageWrapper;
 import ruiseki.storagecore.client.gui.widget.setting.MemorySettingTab;
-import ruiseki.storagecore.client.gui.widget.setting.SortingSettingTab;
+import ruiseki.storagecore.client.gui.widget.setting.NoSortingSettingTab;
 
 public class StorageSettingPanel extends ModularPanel {
 
@@ -55,11 +55,11 @@ public class StorageSettingPanel extends ModularPanel {
         this.sortingTab = new Tab(2).tooltipDynamic(tooltip -> {
             tooltip.clearText();
             if (this.sortingTab.isShowExpanded()) {
-                tooltip.addLine(IKey.lang("gui.storage.sorting_settings.tooltip_open_detail"));
+                tooltip.addLine(IKey.lang("gui.storage.no_sorting_settings.tooltip_open_detail"));
             } else {
-                tooltip.addLine(IKey.lang("gui.storage.sorting_settings"))
+                tooltip.addLine(IKey.lang("gui.storage.no_sorting_settings"))
                     .addLine(
-                        IKey.lang("gui.storage.sorting_settings.tooltip_detail")
+                        IKey.lang("gui.storage.no_sorting_settings.tooltip_detail")
                             .style(IKey.GRAY));
             }
             tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
@@ -67,7 +67,7 @@ public class StorageSettingPanel extends ModularPanel {
             .tooltipAutoUpdate(true);
         this.sortingTab.setTabIcon(OKBGuiTextures.NO_SORT_ICON);
         this.sortingTab.setExpandedWidget(
-            new SortingSettingTab(this.getStorageWrapper(), this.getStoragePanel(), this, this.getSortingTab()));
+            new NoSortingSettingTab(this.getStorageWrapper(), this.getStoragePanel(), this, this.getSortingTab()));
         this.tabs.add(this.getSortingTab());
         this.child(this.getSortingTab());
     }

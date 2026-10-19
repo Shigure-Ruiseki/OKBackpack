@@ -8,8 +8,10 @@ import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
+import cpw.mods.fml.common.Optional;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
+import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
 import ruiseki.storagecore.api.IStorageWrapper;
 import ruiseki.storagecore.client.gui.sync.StorageSHRegisters;
 import ruiseki.storagecore.client.gui.widget.StoragePanel;
@@ -49,6 +51,7 @@ public class MemorySettingTab extends SettingTab {
                     this.getStoragePanel()
                         .getStorageSH()
                         .syncToServer(StorageSHRegisters.SET_MEMORY_ALL_SLOT);
+                    refreshBogoSortingContext();
                     return true;
                 }
                 return false;
@@ -66,7 +69,7 @@ public class MemorySettingTab extends SettingTab {
                     this.getStoragePanel()
                         .getStorageSH()
                         .syncToServer(StorageSHRegisters.UNSET_MEMORY_ALL_SLOT);
-
+                    refreshBogoSortingContext();
                     return true;
                 }
                 return false;
@@ -81,6 +84,7 @@ public class MemorySettingTab extends SettingTab {
             this.getStoragePanel()
                 .getStorageSH()
                 .syncToServer(StorageSHRegisters.SET_IGNORE_NBT, buffer -> buffer.writeBoolean(index != 0));
+            refreshBogoSortingContext();
         });
 
         this.child(
@@ -108,5 +112,10 @@ public class MemorySettingTab extends SettingTab {
         return this.getStorageWrapper()
             .getSettingsHandler()
             .getTypeCategory(MemorySettingsCategory.class);
+    }
+
+    @Optional.Method(modid = "bogosorter")
+    private static void refreshBogoSortingContext() {
+        BackpackBogoSorterClientCompat.invalidateSortingContext();
     }
 }

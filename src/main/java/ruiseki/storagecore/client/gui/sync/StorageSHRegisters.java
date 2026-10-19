@@ -53,6 +53,9 @@ public class StorageSHRegisters {
     public static final ResourceLocation UNSET_NO_SORT_ALL_SLOT = new ResourceLocation(
         Reference.MOD_ID,
         "storage_unset_no_sort_all_slot");
+    public static final ResourceLocation SET_NO_SORT_SLOT_COLOR = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_unset_no_sort_slot_color");
 
     public static void load() {
 
@@ -120,6 +123,22 @@ public class StorageSHRegisters {
         REGISTRY.registerServer(UNSET_NO_SORT_SLOT, (handler, buf) -> {
             NoSortSettingsCategory settings = getNoSortingSettings(handler.getWrapper());
             settings.unselectSlot(buf.readInt());
+        });
+        REGISTRY.registerServer(SET_NO_SORT_ALL_SLOT, (handler, buf) -> {
+            NoSortSettingsCategory settings = getNoSortingSettings(handler.getWrapper());
+            settings.selectSlots(
+                0,
+                handler.getWrapper()
+                    .getInventoryHandler()
+                    .getSlots());
+        });
+        REGISTRY.registerServer(UNSET_NO_SORT_ALL_SLOT, (handler, buf) -> {
+            NoSortSettingsCategory settings = getNoSortingSettings(handler.getWrapper());
+            settings.unselectAllSlots();
+        });
+        REGISTRY.registerServer(SET_NO_SORT_SLOT_COLOR, (handler, buf) -> {
+            NoSortSettingsCategory settings = getNoSortingSettings(handler.getWrapper());
+            settings.setColor(buf.readInt());
         });
 
     }
