@@ -205,16 +205,15 @@ public class StorageSlot extends ItemSlot {
         }
 
         if (this.isInSortingMode()) {
-            boolean locked = this.isNoSortingSlot();
-
-            if (locked && mouseButton == 1) {
+            boolean noSorting = this.isNoSortingSlot();
+            if (noSorting && mouseButton == 1) {
                 NoSortSettingsCategory settings = this.getNoSortingSettings();
                 settings.unselectSlot(this.getSlotIndex());
                 this.getSyncHandler()
                     .syncToServer(StorageSlotSHRegistries.UNSET_NO_SORT_SLOT);
                 // refreshBogoSortingContext();
                 return Result.SUCCESS;
-            } else if (!locked && mouseButton == 0) {
+            } else if (!noSorting && mouseButton == 0) {
                 NoSortSettingsCategory settings = this.getNoSortingSettings();
                 settings.selectSlot(this.getSlotIndex());
                 this.getSyncHandler()
@@ -305,8 +304,15 @@ public class StorageSlot extends ItemSlot {
         GlStateManager.disableDepth();
         int color = this.getNoSortingSettings()
             .getColor()
-            .getColor() | 0xFF000000;
-        GuiDraw.drawRect(1, 1, 17, 17, color);
+            .getColor();
+        int r = (color >> 16) & 0xFF;
+        int g = (color >> 8) & 0xFF;
+        int b = color & 0xFF;
+        r = (r + 255) / 2;
+        g = (g + 255) / 2;
+        b = (b + 255) / 2;
+        int lightColor = 0xFF000000 | (r << 16) | (g << 8) | b;
+        GuiDraw.drawRect(1, 1, 17, 17, lightColor);
         GlStateManager.enableDepth();
     }
 
