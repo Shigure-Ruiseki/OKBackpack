@@ -21,10 +21,10 @@ public class BackpackSettingsHandler extends SettingsHandler {
     }
 
     public void copyTo(SettingsHandler settingsHandler) {
-        if (contentsNbt.hasKey(SETTINGS_TAG)) {
+        if (this.contentsNbt.hasKey(SETTINGS_TAG)) {
             // noinspection ConstantConditions - checking for whether tag exists just one line up
             settingsHandler.getNbt()
-                .setTag(SETTINGS_TAG, contentsNbt.getTag(SETTINGS_TAG));
+                .setTag(SETTINGS_TAG, this.contentsNbt.getTag(SETTINGS_TAG));
         }
     }
 
@@ -45,7 +45,7 @@ public class BackpackSettingsHandler extends SettingsHandler {
     @Override
     protected void saveCategoryNbt(NBTTagCompound settingsNbt, String categoryName, NBTTagCompound tag) {
         settingsNbt.setTag(categoryName, tag);
-        contentsNbt.setTag(SETTINGS_TAG, settingsNbt);
+        this.contentsNbt.setTag(SETTINGS_TAG, settingsNbt);
     }
 
     @Override

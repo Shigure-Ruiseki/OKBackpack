@@ -21,7 +21,6 @@ import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.client.gui.container.BackpackContainer;
 import ruiseki.backpack.client.gui.container.BackpackGuiContainer;
 import ruiseki.backpack.client.gui.slot.LockedPlayerSlot;
-import ruiseki.backpack.client.gui.slot.StorageSlot;
 import ruiseki.backpack.client.gui.sync.BackpackSH;
 import ruiseki.backpack.client.gui.sync.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
@@ -31,6 +30,7 @@ import ruiseki.storagecore.client.gui.slot.ModularStorageSlot;
 import ruiseki.storagecore.client.gui.sync.StorageSlotSH;
 import ruiseki.storagecore.client.gui.widget.StorageList;
 import ruiseki.storagecore.client.gui.widget.StoragePanel;
+import ruiseki.storagecore.client.gui.widget.StorageSlot;
 import ruiseki.storagecore.client.gui.widget.StorageSlotGrid;
 import ruiseki.storagecore.inventory.InventoryHandler;
 

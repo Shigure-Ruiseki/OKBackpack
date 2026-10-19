@@ -34,7 +34,6 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
-import ruiseki.backpack.client.gui.slot.StorageSlot;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
@@ -310,7 +309,7 @@ public class StoragePanel extends ModularPanel {
                                     this.getStorageSH()
                                         .syncToServer(StorageSHRegisters.TAB_INDEX, buf -> buf.writeInt(index));
 
-                                    updateUpgradeWidgets();
+                                    updateUpgradeTabs();
                                     return true;
                                 }
                                 return false;
@@ -475,7 +474,7 @@ public class StoragePanel extends ModularPanel {
             slot.slotGroup("upgrade_inventory");
             slot.changeListener((newItem, onlyAmountChanged, client, init) -> {
                 if (!client) return;
-                updateUpgradeWidgets();
+                updateUpgradeTabs();
             });
             UpgradeSlotSH syncHandler = new UpgradeSlotSH(slot, this.getWrapper(), this.getPanel());
             this.syncManager.syncValue("upgrades", slotIndex, syncHandler);
@@ -504,9 +503,9 @@ public class StoragePanel extends ModularPanel {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void updateUpgradeWidgets() {
+    public void updateUpgradeTabs() {
         int tabCount = 0;
-        resetTabState();
+        this.resetTabState();
         UpgradeHandler handler = this.getWrapper()
             .getUpgradeHandler();
         int openedId = this.getWrapper()
@@ -523,8 +522,8 @@ public class StoragePanel extends ModularPanel {
             if (upgradeWrapper == null) continue;
             if (upgradeWrapper.hideSettingsTab()) continue;
 
-            Tab tab = tabs.get(tabCount);
-            UpgradeSlotUpdate group = upgradeSlotUpdates[slotIndex];
+            Tab tab = this.tabs.get(tabCount);
+            UpgradeSlotUpdate group = this.upgradeSlotUpdates[slotIndex];
 
             boolean enabled = openedId == slotIndex;
             tab.setShowExpanded(enabled);
@@ -572,7 +571,7 @@ public class StoragePanel extends ModularPanel {
         int coveredSize = 0;
 
         for (int i = 0; i < tabCount; i++) {
-            Tab tab = tabs.get(i);
+            Tab tab = this.tabs.get(i);
             if (!tab.isShowExpanded()) continue;
 
             openedRelIndex = Math.floorMod(i - startIndex, tabCount);
@@ -584,10 +583,10 @@ public class StoragePanel extends ModularPanel {
             break;
         }
 
-        int maxVisible = getMaxVisibleTabs();
+        int maxVisible = this.getMaxVisibleTabs();
 
-        for (int i = 0; i < tabs.size(); i++) {
-            Tab tab = tabs.get(i);
+        for (int i = 0; i < this.tabs.size(); i++) {
+            Tab tab = this.tabs.get(i);
 
             if (i >= tabCount) {
                 tab.setEnabled(false);
@@ -624,7 +623,7 @@ public class StoragePanel extends ModularPanel {
     }
 
     private void resetTabState() {
-        for (Tab tab : tabs) {
+        for (Tab tab : this.tabs) {
             if (tab.getExpandedWidget() != null) {
                 getContext().getUISettings()
                     .getRecipeViewerSettings()

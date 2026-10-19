@@ -15,7 +15,6 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import lombok.Getter;
 import ruiseki.okbackpack.Reference;
-import ruiseki.okbackpack.client.gui.widget.TabWidget;
 
 public abstract class ExpandedTab extends ParentWidget<ExpandedTab> {
 
@@ -28,26 +27,26 @@ public abstract class ExpandedTab extends ParentWidget<ExpandedTab> {
         .build();
 
     protected final int coveredTabSize;
-    protected final TabWidget.ExpandDirection expandDirection;
+    protected final Tab.ExpandDirection expandDirection;
 
-    protected final ExpandedTab.PhantomTabWidget phantomTabWidget;
+    protected final PhantomTab phantomTab;
     protected final TextWidget<?> titleKeyWidget;
     protected final Flow upperTabRow;
 
     public ExpandedTab(int coveredTabSize, IDrawable delegatedIcon, String titleKey) {
-        this(coveredTabSize, delegatedIcon, titleKey, 75, TabWidget.ExpandDirection.RIGHT);
+        this(coveredTabSize, delegatedIcon, titleKey, 75, Tab.ExpandDirection.RIGHT);
     }
 
     public ExpandedTab(int coveredTabSize, IDrawable delegatedIcon, String titleKey, int width) {
-        this(coveredTabSize, delegatedIcon, titleKey, width, TabWidget.ExpandDirection.RIGHT);
+        this(coveredTabSize, delegatedIcon, titleKey, width, Tab.ExpandDirection.RIGHT);
     }
 
     public ExpandedTab(int coveredTabSize, IDrawable delegatedIcon, String titleKey, int width,
-        TabWidget.ExpandDirection expandDirection) {
+        Tab.ExpandDirection expandDirection) {
         this.coveredTabSize = coveredTabSize;
         this.expandDirection = expandDirection;
 
-        this.phantomTabWidget = new ExpandedTab.PhantomTabWidget(delegatedIcon.asWidget()).top(0);
+        this.phantomTab = new PhantomTab(delegatedIcon.asWidget()).top(0);
 
         this.titleKeyWidget = new TextWidget<>(IKey.lang(titleKey)).textAlign(Alignment.CENTER)
             .paddingRight(2)
@@ -64,14 +63,14 @@ public abstract class ExpandedTab extends ParentWidget<ExpandedTab> {
                     new Widget<>().width(4)
                         .name("placeholder"))
                     .child(titleKeyWidget)
-                    .child(phantomTabWidget);
+                    .child(phantomTab);
                 break;
 
             case RIGHT:
                 this.left(0);
 
                 this.upperTabRow.width(width - 3)
-                    .child(phantomTabWidget)
+                    .child(phantomTab)
                     .child(titleKeyWidget.expanded());
                 break;
         }
@@ -88,12 +87,12 @@ public abstract class ExpandedTab extends ParentWidget<ExpandedTab> {
 
     public abstract void updateTabState();
 
-    protected class PhantomTabWidget extends SingleChildWidget<ExpandedTab.PhantomTabWidget> implements Interactable {
+    protected class PhantomTab extends SingleChildWidget<PhantomTab> implements Interactable {
 
         @Getter
         private final Widget<?> tabIcon;
 
-        public PhantomTabWidget(Widget<?> tabIcon) {
+        public PhantomTab(Widget<?> tabIcon) {
             this.tabIcon = tabIcon;
             this.size(28, 24);
             this.tabIcon.size(18)

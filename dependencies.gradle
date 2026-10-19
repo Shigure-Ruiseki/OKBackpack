@@ -36,7 +36,7 @@
 dependencies {
     implementation("com.github.GTNewHorizons:GTNHLib:0.11.54:dev")
     implementation("com.github.GTNewHorizons:ModularUI2:2.3.92-1.7.10:dev")
-    implementation("com.github.Shigure-Ruiseki:OKCore:0d5125d5de:dev") { transitive = false }
+    implementation("com.github.Shigure-Ruiseki:OKCore:58e579d823:dev") { transitive = false }
 
     devOnlyNonPublishable("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
     devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.8.160-GTNH:dev")
@@ -52,12 +52,12 @@ dependencies {
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:BetterCrashes:1.4.7-GTNH:dev")
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:ServerUtilities:2.4.21:dev")
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:EnderIO:2.10.49:dev") // Test Battery Upgrade
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:InventoryBogoSorter:1.3.54-GTNH:dev")
 
     compileOnly("com.github.Shigure-Ruiseki:JFMUY:26.07.31.1:dev") { transitive = false }
 
     compileOnlyApi('com.github.GTNewHorizons:Angelica:2.2.33:dev') { transitive = false }
     compileOnlyApi("com.github.GTNewHorizons:InventoryBogoSorter:1.3.54-GTNH:dev") { transitive = false }
-    // runtimeOnlyNonPublishable("com.github.GTNewHorizons:InventoryBogoSorter:1.3.54-GTNH:dev")
     compileOnlyApi("com.github.GTNewHorizons:CodeChickenCore:1.4.22:dev") { transitive = false }
     compileOnlyApi("com.github.GTNewHorizons:StructureLib:1.4.45:dev") { transitive = false }
     compileOnly("com.github.GTNewHorizons:ModularUI:1.3.4:dev") { transitive = false }

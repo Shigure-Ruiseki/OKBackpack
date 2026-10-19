@@ -10,9 +10,6 @@ import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widget.SingleChildWidget;
 
-import lombok.Getter;
-import lombok.Setter;
-
 public class Tab extends SingleChildWidget<Tab> implements Interactable {
 
     public enum ExpandDirection {
@@ -22,17 +19,11 @@ public class Tab extends SingleChildWidget<Tab> implements Interactable {
 
     public static final TabTexture TAB_TEXTURE = GuiTextures.TAB_RIGHT;
 
-    @Getter
     private final int tabIndex;
     private final ExpandDirection expandDirection;
 
-    @Setter
-    @Getter
     private boolean showExpanded = false;
-    @Getter
     private ExpandedTab expandedWidget = null;
-    @Setter
-    @Getter
     private IDrawable tabIcon = null;
 
     public Tab(int tabIndex) {
@@ -64,15 +55,46 @@ public class Tab extends SingleChildWidget<Tab> implements Interactable {
         }
     }
 
-    public void setExpandedWidget(ExpandedTab value) {
+    public int getTabIndex() {
+        return this.tabIndex;
+    }
+
+    public ExpandDirection getExpandDirection() {
+        return this.expandDirection;
+    }
+
+    public Tab setShowExpanded(boolean showExpanded) {
+        this.showExpanded = showExpanded;
+        return this;
+    }
+
+    public boolean isShowExpanded() {
+        return this.showExpanded;
+    }
+
+    public ExpandedTab getExpandedWidget() {
+        return this.expandedWidget;
+    }
+
+    public Tab setExpandedWidget(ExpandedTab value) {
         this.expandedWidget = value;
 
         if (value != null) {
-            if (expandDirection == ExpandDirection.LEFT) {
+            if (this.expandDirection == ExpandDirection.LEFT) {
                 value.right(0);
             }
-            child(value.setEnabledIf(expandedTabWidget -> showExpanded));
+            child(value.setEnabledIf(expandedTabWidget -> this.showExpanded));
         }
+        return this;
+    }
+
+    public Tab setTabIcon(IDrawable tabIcon) {
+        this.tabIcon = tabIcon;
+        return this;
+    }
+
+    public IDrawable getTabIcon() {
+        return this.tabIcon;
     }
 
     @Override
@@ -84,12 +106,12 @@ public class Tab extends SingleChildWidget<Tab> implements Interactable {
 
     @Override
     public @NotNull Result onMousePressed(int mouseButton) {
-        if (!isEnabled() || expandedWidget == null) {
+        if (!isEnabled() || this.expandedWidget == null) {
             return Result.STOP;
         }
 
         if (mouseButton == 0) {
-            expandedWidget.updateTabState();
+            this.expandedWidget.updateTabState();
             Interactable.playButtonClickSound();
             return Result.SUCCESS;
         }
@@ -101,25 +123,25 @@ public class Tab extends SingleChildWidget<Tab> implements Interactable {
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         super.draw(context, widgetTheme);
 
-        if (showExpanded) {
+        if (this.showExpanded) {
             return;
         }
 
-        if (tabIcon != null) {
-            tabIcon.draw(context, 8, 6, 16, 16, widgetTheme.getTheme());
+        if (this.tabIcon != null) {
+            this.tabIcon.draw(context, 8, 6, 16, 16, widgetTheme.getTheme());
         }
     }
 
     @Override
     public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         super.drawBackground(context, widgetTheme);
-        if (showExpanded) {
+        if (this.showExpanded) {
             return;
         }
 
-        int index = (tabIndex == 0) ? -1 : 0;
+        int index = (this.tabIndex == 0) ? -1 : 0;
 
-        switch (expandDirection) {
+        switch (this.expandDirection) {
             case LEFT:
                 GuiTextures.TAB_LEFT.get(index, false)
                     .drawAtZero(context, TAB_TEXTURE.getWidth(), TAB_TEXTURE.getHeight(), widgetTheme.getTheme());

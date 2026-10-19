@@ -520,3 +520,24 @@ gui.storage.error.remove.infinity_upgrade_only_admin=Only admins can remove Infi
 gui.storage.error.remove.banned_item=This item must be removed before the upgrade can be
 gui.storage.error.remove.stack_low_multiplier=There's at least one slot or upgrade that requires multiplier higher than %s
 gui.storage.error.remove.inception_sub_backpack=There's one or more backpacks in the backpack
+
+gui.storage.backpack_settings=Storage Settings
+gui.storage.sorting_settings=No Sort Slot Settings
+gui.storage.sorting_settings.tooltip_detail=Exclude selected slots from sorting\nOpen the tab to change this setting
+gui.storage.sorting_settings.tooltip_open_detail=Left click or drag to select slots\nRight click or drag to unselect slots\nSelect all slots\nUnselect all slots\nCycle highlight color
+gui.storage.memory_settings=Slot Memory Settings
+gui.storage.memory_settings.tooltip_detail=Make selected slots remember the current item\nOpen the tab to change this setting
+gui.storage.memory_settings.tooltip_open_detail=Left click or drag to select slots\nRight click or drag to unselect slots\nSelect all slots\nUnselect all slots\nToggle matching NBT
+
+gui.storage.memorized_slot=Memorized Slot
+gui.storage.memorize_all=Select All Slots
+gui.storage.unmemorize_all=Unselect All Slots
+gui.storage.select_all_slots=Select All Slots
+gui.storage.unselect_all_slots=Unselect All Slots
+
+gui.storage.no_sorting_slot=No Sorting Slot
+gui.storage.lock_all_sort=Select All Slots
+gui.storage.unlock_all_sort=Unselect All Slots
+
+gui.storage.match_nbt=Match NBT
+gui.storage.ignore_nbt=Ignore NBT

@@ -30,7 +30,7 @@ public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase> extends E
         this.storageWrapper = storageWrapper;
         this.storagePanel = storagePanel;
         this.slotIndex = slotIndex;
-        this.syncHandler("upgrades", this.slotIndex);
+        this.syncHandler("upgrades", this.getSlotIndex());
     }
 
     public ExpandedUpgradeTab(int slotIndex, int coveredTabSize, ItemStack delegatedIconStack,
@@ -41,10 +41,10 @@ public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase> extends E
     @Override
     public void updateTabState() {
         this.getStorageWrapper()
-            .setOpenTabId(this.slotIndex);
+            .setOpenTabId(this.getSlotIndex());
         this.getStoragePanel()
             .getStorageSH()
-            .syncToServer(StorageSHRegisters.OPENED_ID, buffer -> buffer.writeInt(this.slotIndex));
+            .syncToServer(StorageSHRegisters.OPENED_ID, buffer -> buffer.writeInt(this.getSlotIndex()));
     }
 
     @Override
@@ -65,5 +65,9 @@ public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase> extends E
 
     public IStorageWrapper getStorageWrapper() {
         return this.storageWrapper;
+    }
+
+    public int getSlotIndex() {
+        return this.slotIndex;
     }
 }

@@ -59,7 +59,7 @@ public class SettingTab extends Widget<SettingTab> implements Interactable {
                 .isPanelOpen()) {
                 panel.getSettingPanelHandler()
                     .closePanel();
-                panel.updateUpgradeWidgets();
+                panel.updateUpgradeTabs();
             } else {
                 panel.getSettingPanelHandler()
                     .openPanel();
