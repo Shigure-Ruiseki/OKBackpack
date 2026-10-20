@@ -16,6 +16,11 @@ public class SettingsManager {
 
     private static final Map<String, MainSetting<?>> settings = new HashMap<>();
 
+    public static final MainSetting<Boolean> PLAYER_SETTINGS = new MainSetting<>(
+        "playerSettings",
+        NBTHelpers::getBoolean,
+        NBTTagCompound::setBoolean,
+        true);
     public static final MainSetting<Boolean> SHIFT_CLICK_INTO_OPEN_TAB_FIRST = new MainSetting<>(
         "shiftClickOpenTab",
         NBTHelpers::getBoolean,
@@ -26,10 +31,16 @@ public class SettingsManager {
         NBTHelpers::getBoolean,
         NBTTagCompound::setBoolean,
         true);
+    public static final MainSetting<Boolean> KEEP_SEARCH = new MainSetting<>(
+        "keepSearch",
+        NBTHelpers::getBoolean,
+        NBTTagCompound::setBoolean,
+        true);
 
     static {
         settings.put(SHIFT_CLICK_INTO_OPEN_TAB_FIRST.getName(), SHIFT_CLICK_INTO_OPEN_TAB_FIRST);
         settings.put(KEEP_TAB_OPEN.getName(), KEEP_TAB_OPEN);
+        settings.put(KEEP_SEARCH.getName(), KEEP_SEARCH);
     }
 
     public static void addSetting(MainSetting<?> setting) {
@@ -75,11 +86,8 @@ public class SettingsManager {
         }
     }
 
-    public static <T> void setSetting(EntityPlayer player, String playerSettingsTagName,
-        MainSettingsCategory<?> category, MainSetting<T> setting, T value) {
-        T playerSettingValue = getPlayerSetting(player, playerSettingsTagName, setting)
-            .orElse(setting.getDefaultValue());
-        if (playerSettingValue != value) {
+    public static <T> void setSetting(MainSettingsCategory<?> category, MainSetting<T> setting, T value) {
+        if (value != setting.getDefaultValue()) {
             category.setSettingValue(setting, value);
         } else {
             category.removeSetting(setting);
@@ -89,7 +97,24 @@ public class SettingsManager {
     public static <T> T getSettingValue(EntityPlayer player, String playerSettingsTagName,
         MainSettingsCategory<?> category, MainSetting<T> setting) {
         return category.getSettingValue(setting)
-            .orElse(getPlayerSetting(player, playerSettingsTagName, setting).orElse(setting.getDefaultValue()));
+            .orElse(setting.getDefaultValue());
     }
 
+    public static <T> T getSettingByMode(EntityPlayer player, String playerSettingsTagName,
+        MainSettingsCategory<?> category, MainSetting<T> setting, boolean isPlayerMode) {
+        if (isPlayerMode) {
+            return getPlayerSettingOrDefault(player, playerSettingsTagName, setting);
+        } else {
+            return getSettingValue(player, playerSettingsTagName, category, setting);
+        }
+    }
+
+    public static <T> void setSettingByMode(EntityPlayer player, String playerSettingsTagName,
+        MainSettingsCategory<?> category, MainSetting<T> setting, T value, boolean isPlayerMode) {
+        if (isPlayerMode) {
+            setPlayerSetting(player, playerSettingsTagName, setting, value);
+        } else {
+            setSetting(category, setting, value);
+        }
+    }
 }

@@ -15,6 +15,7 @@ import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.storagecore.api.IStorageWrapper;
 import ruiseki.storagecore.client.gui.widget.setting.MemorySettingTab;
 import ruiseki.storagecore.client.gui.widget.setting.NoSortingSettingTab;
+import ruiseki.storagecore.client.gui.widget.setting.StorageMainSettingTab;
 
 public class StorageSettingPanel extends ModularPanel {
 
@@ -22,7 +23,7 @@ public class StorageSettingPanel extends ModularPanel {
     protected final StoragePanel storagePanel;
 
     protected List<Tab> tabs = new ArrayList<>();
-    protected Tab storageTab;
+    protected Tab globalTab;
     protected Tab sortingTab;
     protected Tab memoryTab;
 
@@ -44,11 +45,15 @@ public class StorageSettingPanel extends ModularPanel {
     }
 
     protected void addStorageTab() {
-        this.storageTab = new Tab(1).tooltipStatic(
+        this.globalTab = new Tab(1).tooltipStatic(
             tooltip -> tooltip.addLine(IKey.lang("gui.storage.storage_settings"))
                 .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
-        this.tabs.add(this.getStorageTab());
-        this.child(this.getStorageTab());
+        // Change to other icon
+        this.globalTab.setTabIcon(OKBGuiTextures.BACKPACK_ICON);
+        this.globalTab.setExpandedWidget(
+            new StorageMainSettingTab(this.getStorageWrapper(), this.getStoragePanel(), this, this.getGlobalTab()));
+        this.tabs.add(this.getGlobalTab());
+        this.child(this.getGlobalTab());
     }
 
     protected void addSortingTab() {
@@ -154,8 +159,8 @@ public class StorageSettingPanel extends ModularPanel {
         return this.storagePanel;
     }
 
-    public Tab getStorageTab() {
-        return storageTab;
+    public Tab getGlobalTab() {
+        return globalTab;
     }
 
     public Tab getSortingTab() {

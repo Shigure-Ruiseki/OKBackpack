@@ -529,6 +529,11 @@ gui.storage.memory_settings=Slot Memory Settings
 gui.storage.memory_settings.tooltip_detail=Make selected slots remember the current item\nOpen the tab to change this setting
 gui.storage.memory_settings.tooltip_open_detail=Left click or drag to select slots\nRight click or drag to unselect slots\nSelect all slots\nUnselect all slots\nToggle matching NBT
 
+gui.storage.settings_context_storage=Storage
+gui.storage.settings_context_storage.tooltip=This Storage's settings\nInherited from player or overriden for this storage
+gui.storage.settings_context_player=Player
+gui.storage.settings_context_player.tooltip=Player level settings\nApply to all storages unless overriden
+
 gui.storage.memorized_slot=Memorized Slot
 gui.storage.memorize_all=Select All Slots
 gui.storage.unmemorize_all=Unselect All Slots

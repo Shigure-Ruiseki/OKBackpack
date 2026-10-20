@@ -16,7 +16,7 @@ import ruiseki.storagecore.settings.main.MainSettingsCategory;
 @EventBusSubscriber
 public class BackpackMainSettingsCategory extends MainSettingsCategory<BackpackMainSettingsCategory> {
 
-    public static final String SOPHISTICATED_BACKPACK_SETTINGS_PLAYER_TAG = "sophisticatedBackpackSettings";
+    public static final String OK_BACKPACK_SETTINGS_PLAYER_TAG = "backpackSettings";
     public static final MainSetting<Boolean> ANOTHER_PLAYER_CAN_OPEN = new MainSetting<>(
         "anotherPlayerCanOpen",
         NBTHelpers::getBoolean,
@@ -30,19 +30,16 @@ public class BackpackMainSettingsCategory extends MainSettingsCategory<BackpackM
     }
 
     public BackpackMainSettingsCategory(NBTTagCompound categoryNbt, Consumer<NBTTagCompound> saveNbt) {
-        super(categoryNbt, saveNbt, SOPHISTICATED_BACKPACK_SETTINGS_PLAYER_TAG);
+        super(categoryNbt, saveNbt, OK_BACKPACK_SETTINGS_PLAYER_TAG);
     }
 
     @SubscribeEvent
     public static void onPlayerClone(PlayerEvent.Clone event) {
         NBTTagCompound oldData = event.original.getEntityData();
         NBTTagCompound newData = event.entity.getEntityData();
-
-        if (oldData.hasKey(SOPHISTICATED_BACKPACK_SETTINGS_PLAYER_TAG)) {
+        if (oldData.hasKey(OK_BACKPACK_SETTINGS_PLAYER_TAG)) {
             // noinspection ConstantConditions
-            newData.setTag(
-                SOPHISTICATED_BACKPACK_SETTINGS_PLAYER_TAG,
-                oldData.getTag(SOPHISTICATED_BACKPACK_SETTINGS_PLAYER_TAG));
+            newData.setTag(OK_BACKPACK_SETTINGS_PLAYER_TAG, oldData.getTag(OK_BACKPACK_SETTINGS_PLAYER_TAG));
         }
     }
 }

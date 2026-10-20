@@ -1,5 +1,7 @@
 package ruiseki.storagecore.client.gui.sync;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 import ruiseki.okcore.item.capability.wrapper.PlayerMainInvWrapper;
 import ruiseki.storagecore.api.IStorageWrapper;
 import ruiseki.storagecore.client.gui.widget.StoragePanel;
@@ -26,5 +28,10 @@ public class StorageSH extends SyncHandlerBase<StorageSH> {
 
     public PlayerMainInvWrapper getPlayerInventory() {
         return playerInventory;
+    }
+
+    public EntityPlayer getPlayer() {
+        return this.getPanel()
+            .getPlayer();
     }
 }

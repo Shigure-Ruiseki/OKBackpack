@@ -8,6 +8,9 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okcore.inventory.SortBy;
 import ruiseki.storagecore.api.IStorageWrapper;
 import ruiseki.storagecore.helper.StorageInventoryHelpers;
+import ruiseki.storagecore.settings.SettingsManager;
+import ruiseki.storagecore.settings.main.MainSettingsCategory;
+import ruiseki.storagecore.settings.main.StorageMainSettingCategory;
 import ruiseki.storagecore.settings.memory.MemorySettingsCategory;
 import ruiseki.storagecore.settings.nosort.NoSortSettingsCategory;
 
@@ -56,6 +59,22 @@ public class StorageSHRegisters {
     public static final ResourceLocation SET_NO_SORT_SLOT_COLOR = new ResourceLocation(
         Reference.MOD_ID,
         "storage_unset_no_sort_slot_color");
+
+    public static final ResourceLocation SET_PLAYER_SETTINGS_MODE = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_set_player_settings_mode");
+    public static final ResourceLocation SET_SHIFT_CLICK_SETTING = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_set_shift_click_setting");
+    public static final ResourceLocation SET_KEEP_TAB_SETTING = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_set_keep_tab_setting");
+    public static final ResourceLocation SET_KEEP_SEARCH_SETTING = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_set_keep_search_setting");
+    public static final ResourceLocation SET_SET_STORAGE_COLOR = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_unset_storge_color");
 
     public static void load() {
 
@@ -141,6 +160,48 @@ public class StorageSHRegisters {
             settings.setColor(buf.readInt());
         });
 
+        REGISTRY.registerServer(SET_PLAYER_SETTINGS_MODE, (handler, buf) -> {
+            SettingsManager.setSetting(
+                getGlobalSettings(handler.getWrapper()),
+                SettingsManager.PLAYER_SETTINGS,
+                buf.readBoolean());
+        });
+        REGISTRY.registerServer(SET_SHIFT_CLICK_SETTING, (handler, buf) -> {
+            MainSettingsCategory<?> settings = getGlobalSettings(handler.getWrapper());
+            SettingsManager.setSettingByMode(
+                handler.getPlayer(),
+                StorageMainSettingCategory.OK_STORAGE_SETTINGS_PLAYER_TAG,
+                settings,
+                SettingsManager.SHIFT_CLICK_INTO_OPEN_TAB_FIRST,
+                buf.readBoolean(),
+                buf.readBoolean());
+        });
+        REGISTRY.registerServer(SET_KEEP_TAB_SETTING, (handler, buf) -> {
+            MainSettingsCategory<?> settings = getGlobalSettings(handler.getWrapper());
+            SettingsManager.setSettingByMode(
+                handler.getPlayer(),
+                StorageMainSettingCategory.OK_STORAGE_SETTINGS_PLAYER_TAG,
+                settings,
+                SettingsManager.KEEP_TAB_OPEN,
+                buf.readBoolean(),
+                buf.readBoolean());
+        });
+        REGISTRY.registerServer(SET_KEEP_SEARCH_SETTING, (handler, buf) -> {
+            MainSettingsCategory<?> settings = getGlobalSettings(handler.getWrapper());
+            SettingsManager.setSettingByMode(
+                handler.getPlayer(),
+                StorageMainSettingCategory.OK_STORAGE_SETTINGS_PLAYER_TAG,
+                settings,
+                SettingsManager.KEEP_SEARCH,
+                buf.readBoolean(),
+                buf.readBoolean());
+        });
+        REGISTRY.registerServer(
+            SET_SET_STORAGE_COLOR,
+            (handler, buf) -> {
+                handler.getWrapper()
+                    .setColors(buf.readInt(), buf.readInt());
+            });
     }
 
     public static MemorySettingsCategory getMemorySettings(IStorageWrapper wrapper) {
@@ -151,5 +212,10 @@ public class StorageSHRegisters {
     public static NoSortSettingsCategory getNoSortingSettings(IStorageWrapper wrapper) {
         return wrapper.getSettingsHandler()
             .getTypeCategory(NoSortSettingsCategory.class);
+    }
+
+    public static MainSettingsCategory<?> getGlobalSettings(IStorageWrapper wrapper) {
+        return wrapper.getSettingsHandler()
+            .getGlobalSettingsCategory();
     }
 }

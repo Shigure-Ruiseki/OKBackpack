@@ -311,8 +311,8 @@ public class StorageSlot extends ItemSlot {
         GuiDraw.drawRect(
             1,
             1,
-            17,
-            17,
+            16,
+            16,
             this.getNoSortingSettings()
                 .getColor());
         GlStateManager.enableDepth();

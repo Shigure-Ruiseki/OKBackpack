@@ -85,7 +85,9 @@ public class MemorySettingTab extends SettingTab {
                 .getStorageSH()
                 .syncToServer(StorageSHRegisters.SET_IGNORE_NBT, buffer -> buffer.writeBoolean(index != 0));
             refreshBogoSortingContext();
-        });
+        }).setIndex(
+            this.getMemorySettings()
+                .ignoresNbt() ? 1 : 0);
 
         this.child(
             Flow.row()

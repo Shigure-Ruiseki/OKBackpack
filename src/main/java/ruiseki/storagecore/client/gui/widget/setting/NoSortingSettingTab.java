@@ -121,6 +121,8 @@ public class NoSortingSettingTab extends SettingTab {
                         IKey.lang("gui.backpack.toggle_color_detail")
                             .style(IKey.GRAY))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+        this.currentColor = this.getNoSortSettingsCategory()
+            .getColor();
 
         this.child(
             Flow.row()
@@ -145,13 +147,6 @@ public class NoSortingSettingTab extends SettingTab {
 
     public int getCurrentColor() {
         return this.currentColor;
-    }
-
-    @Override
-    public void onInit() {
-        super.onInit();
-        this.currentColor = this.getNoSortSettingsCategory()
-            .getColor();
     }
 
     private void updateColor(int color) {
