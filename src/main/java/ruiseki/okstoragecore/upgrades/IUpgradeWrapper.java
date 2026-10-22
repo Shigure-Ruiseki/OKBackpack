@@ -1,0 +1,30 @@
+package ruiseki.okstoragecore.upgrades;
+
+import net.minecraft.item.ItemStack;
+
+public interface IUpgradeWrapper {
+
+    boolean isEnabled();
+
+    void setEnabled(boolean enabled);
+
+    default boolean canBeDisabled() {
+        return true;
+    }
+
+    ItemStack getUpgradeStack();
+
+    default boolean hideSettingsTab() {
+        return false;
+    }
+
+    default void onBeforeRemoved() {
+        // noop
+    }
+
+    default void onAdded() {
+        // noop
+    }
+
+    String getSettingLangKey();
+}

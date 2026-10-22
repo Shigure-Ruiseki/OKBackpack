@@ -3,7 +3,7 @@ package ruiseki.backpack.init.item.stack;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
-import ruiseki.storagecore.upgrades.stack.ItemStackUpgrade;
+import ruiseki.okstoragecore.upgrades.stack.ItemStackUpgrade;
 
 public class ItemStackUpgradeTest extends ItemConfig {
 

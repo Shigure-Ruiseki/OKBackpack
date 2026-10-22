@@ -21,9 +21,9 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
-import ruiseki.backpack.Capabilities;
 import ruiseki.backpack.backpack.wrapper.BackpackWrapper;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
+import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
@@ -33,6 +33,7 @@ import ruiseki.okcore.capabilities.ICapabilityProvider;
 import ruiseki.okcore.datastructure.LazyOptional;
 import ruiseki.okcore.helper.CapabilityHelpers;
 import ruiseki.okcore.item.ItemBlockMetadata;
+import ruiseki.okstoragecore.capabilities.CapabilityStorageWrapperConfig;
 
 public class ItemBackpack extends ItemBlockMetadata implements IGuiHolder<PlayerInventoryGuiData> {
 
@@ -95,7 +96,12 @@ public class ItemBackpack extends ItemBlockMetadata implements IGuiHolder<Player
                 @Nullable ForgeDirection forgeDirection) {
                 initCap();
 
-                if (capability == Capabilities.BACKPACK_WRAPPER) {
+                if (capability == CapabilityBackpackWrapperConfig.CAPABILITY) {
+                    return LazyOptional.of(() -> wrapper)
+                        .cast();
+                }
+
+                if (capability == CapabilityStorageWrapperConfig.CAPABILITY) {
                     return LazyOptional.of(() -> wrapper)
                         .cast();
                 }
@@ -122,7 +128,7 @@ public class ItemBackpack extends ItemBlockMetadata implements IGuiHolder<Player
     @Override
     public ModularPanel buildUI(PlayerInventoryGuiData data, PanelSyncManager syncManager, UISettings settings) {
         IBackpackWrapper wrapper = CapabilityHelpers
-            .getCapability(data.getUsedItemStack(), Capabilities.BACKPACK_WRAPPER)
+            .getCapability(data.getUsedItemStack(), CapabilityBackpackWrapperConfig.CAPABILITY)
             .orElse(IBackpackWrapper.Noop.INSTANCE);
         return new BackpackGuiHolder.ItemStackGuiHolder(wrapper).buildUI(data, syncManager, settings);
     }

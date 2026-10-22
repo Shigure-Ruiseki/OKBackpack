@@ -3,12 +3,12 @@ package ruiseki.backpack.backpack.wrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import ruiseki.backpack.Capabilities;
 import ruiseki.backpack.backpack.ItemBackpack;
+import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.okcore.helper.CapabilityHelpers;
-import ruiseki.storagecore.api.IStorageWrapper;
-import ruiseki.storagecore.inventory.InventoryHandler;
-import ruiseki.storagecore.upgrades.inception.ItemInceptionUpgrade;
+import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.inventory.InventoryHandler;
+import ruiseki.okstoragecore.upgrades.inception.ItemInceptionUpgrade;
 
 public class BackpackInventoryHandler extends InventoryHandler {
 
@@ -30,7 +30,7 @@ public class BackpackInventoryHandler extends InventoryHandler {
 
     private boolean isBackpackWithoutInceptionUpgrade(ItemStack stack) {
         return (stack.getItem() instanceof ItemBackpack)
-            && !CapabilityHelpers.getCapability(stack, Capabilities.STORAGE_WRAPPER)
+            && !CapabilityHelpers.getCapability(stack, CapabilityBackpackWrapperConfig.CAPABILITY)
                 .map(
                     w -> w.getUpgradeHandler()
                         .hasUpgrade(ItemInceptionUpgrade.TYPE))

@@ -13,8 +13,8 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
-import ruiseki.storagecore.client.gui.StorageGuiHolder;
-import ruiseki.storagecore.client.gui.container.StorageScreen;
+import ruiseki.okstoragecore.client.gui.StorageGuiHolder;
+import ruiseki.okstoragecore.client.gui.container.StorageScreen;
 
 public class BackpackGuiHolder extends StorageGuiHolder<BackpackPanel> {
 

@@ -24,12 +24,12 @@ import ruiseki.okcore.helper.NBTHelpers;
 import ruiseki.okcore.inventory.InventorySorter;
 import ruiseki.okcore.inventory.ItemStackKey;
 import ruiseki.okcore.inventory.SortBy;
-import ruiseki.storagecore.inventory.InventoryHandler;
-import ruiseki.storagecore.settings.SettingsHandler;
-import ruiseki.storagecore.settings.memory.MemorySettingsCategory;
-import ruiseki.storagecore.settings.nosort.NoSortSettingsCategory;
-import ruiseki.storagecore.upgrades.UpgradeHandler;
-import ruiseki.storagecore.upgrades.stack.ItemStackUpgrade;
+import ruiseki.okstoragecore.inventory.InventoryHandler;
+import ruiseki.okstoragecore.settings.SettingsHandler;
+import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
+import ruiseki.okstoragecore.settings.nosort.NoSortSettingsCategory;
+import ruiseki.okstoragecore.upgrades.UpgradeHandler;
+import ruiseki.okstoragecore.upgrades.stack.ItemStackUpgrade;
 
 public class BackpackWrapper implements IBackpackWrapper {
 

@@ -4,7 +4,7 @@ import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.screen.ModularScreen;
 
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
-import ruiseki.storagecore.client.gui.container.StorageGuiContainer;
+import ruiseki.okstoragecore.client.gui.container.StorageGuiContainer;
 
 public class BackpackGuiContainer extends StorageGuiContainer {
 

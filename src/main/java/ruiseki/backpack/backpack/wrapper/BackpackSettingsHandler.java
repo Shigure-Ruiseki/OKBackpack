@@ -6,10 +6,10 @@ import java.util.function.Supplier;
 import net.minecraft.nbt.NBTTagCompound;
 
 import ruiseki.backpack.settings.BackpackMainSettingsCategory;
-import ruiseki.storagecore.api.IStorageWrapper;
-import ruiseki.storagecore.inventory.InventoryHandler;
-import ruiseki.storagecore.settings.ISettingsCategory;
-import ruiseki.storagecore.settings.SettingsHandler;
+import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.inventory.InventoryHandler;
+import ruiseki.okstoragecore.settings.ISettingsCategory;
+import ruiseki.okstoragecore.settings.SettingsHandler;
 
 public class BackpackSettingsHandler extends SettingsHandler {
 

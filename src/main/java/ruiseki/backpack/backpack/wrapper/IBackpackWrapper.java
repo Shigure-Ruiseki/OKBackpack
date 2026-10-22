@@ -6,7 +6,7 @@ import java.util.function.IntConsumer;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.backpack.backpack.BlockBackpackTestConfig;
-import ruiseki.storagecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.api.IStorageWrapper;
 
 public interface IBackpackWrapper extends IStorageWrapper {
 

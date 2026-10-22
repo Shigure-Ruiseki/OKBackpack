@@ -20,8 +20,8 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import ruiseki.backpack.Capabilities;
 import ruiseki.backpack.backpack.BackpackStorage;
+import ruiseki.backpack.client.gui.sync.BackpackSHRegistries;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
@@ -46,10 +46,6 @@ import ruiseki.okcore.helper.MinecraftHelpers;
 import ruiseki.okcore.init.ItemCreativeTab;
 import ruiseki.okcore.init.ModBaseVersionable;
 import ruiseki.okcore.proxy.ICommonProxy;
-import ruiseki.storagecore.client.gui.sync.StorageSHRegisters;
-import ruiseki.storagecore.client.gui.sync.StorageSlotSHRegistries;
-import ruiseki.storagecore.client.gui.sync.UpgradeSlotSHRegistries;
-import ruiseki.storagecore.client.gui.widget.update.UpgradeSlotUpdateRegistries;
 
 @Mod(
     modid = Reference.MOD_ID,
@@ -91,12 +87,8 @@ public class OKBackpack extends ModBaseVersionable {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
-        Capabilities.register();
 
-        StorageSHRegisters.load();
-        StorageSlotSHRegistries.load();
-        UpgradeSlotSHRegistries.load();
-        UpgradeSlotUpdateRegistries.load();
+        BackpackSHRegistries.load();
 
         if (MinecraftHelpers.isClientSide()) {
             ModelRegistry.registerModid(Reference.MOD_ID);

@@ -9,9 +9,9 @@ import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import ruiseki.okcore.helper.NBTHelpers;
-import ruiseki.storagecore.settings.MainSetting;
-import ruiseki.storagecore.settings.SettingsManager;
-import ruiseki.storagecore.settings.main.MainSettingsCategory;
+import ruiseki.okstoragecore.settings.MainSetting;
+import ruiseki.okstoragecore.settings.SettingsManager;
+import ruiseki.okstoragecore.settings.main.MainSettingsCategory;
 
 @EventBusSubscriber
 public class BackpackMainSettingsCategory extends MainSettingsCategory<BackpackMainSettingsCategory> {

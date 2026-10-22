@@ -7,7 +7,7 @@ import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.DummyConfig;
 import ruiseki.okcore.tracking.Versions;
-import ruiseki.storagecore.config.MaxUpgradesPerStorageConfig;
+import ruiseki.okstoragecore.config.MaxUpgradesPerStorageConfig;
 
 public class GeneralConfig extends DummyConfig {
 

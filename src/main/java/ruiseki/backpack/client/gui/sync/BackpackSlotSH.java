@@ -4,7 +4,7 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
 import ruiseki.backpack.backpack.BackpackPanel;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
-import ruiseki.storagecore.client.gui.sync.StorageSlotSH;
+import ruiseki.okstoragecore.client.gui.sync.StorageSlotSH;
 
 public class BackpackSlotSH extends StorageSlotSH {
 

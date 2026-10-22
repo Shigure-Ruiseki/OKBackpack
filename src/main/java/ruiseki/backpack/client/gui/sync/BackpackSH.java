@@ -3,7 +3,7 @@ package ruiseki.backpack.client.gui.sync;
 import ruiseki.backpack.backpack.BackpackPanel;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.okcore.item.capability.wrapper.PlayerMainInvWrapper;
-import ruiseki.storagecore.client.gui.sync.StorageSH;
+import ruiseki.okstoragecore.client.gui.sync.StorageSH;
 
 public class BackpackSH extends StorageSH {
 

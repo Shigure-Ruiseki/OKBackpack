@@ -13,8 +13,8 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
-import ruiseki.backpack.Capabilities;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
+import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.okcore.helper.CapabilityHelpers;
 import ruiseki.okcore.tileentity.TileEntityOK;
 
@@ -27,7 +27,7 @@ public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData>
     }
 
     public void setBackpack(ItemStack stack) {
-        backpackWrapper = CapabilityHelpers.getCapability(stack, Capabilities.BACKPACK_WRAPPER)
+        backpackWrapper = CapabilityHelpers.getCapability(stack, CapabilityBackpackWrapperConfig.CAPABILITY)
             .orElse(IBackpackWrapper.Noop.INSTANCE);
         backpackWrapper.setSaveHandler(() -> {
             markDirty();

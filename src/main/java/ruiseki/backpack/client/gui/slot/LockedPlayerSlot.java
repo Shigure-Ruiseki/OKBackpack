@@ -5,7 +5,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
-import ruiseki.storagecore.inventory.PlayerInvWrapperExtended;
+import ruiseki.okstoragecore.inventory.PlayerInvWrapperExtended;
 
 public class LockedPlayerSlot extends ModularSlot {
 

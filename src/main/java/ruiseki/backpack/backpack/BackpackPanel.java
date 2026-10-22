@@ -23,16 +23,15 @@ import ruiseki.backpack.client.gui.container.BackpackGuiContainer;
 import ruiseki.backpack.client.gui.slot.LockedPlayerSlot;
 import ruiseki.backpack.client.gui.sync.BackpackSH;
 import ruiseki.backpack.client.gui.sync.BackpackSlotSH;
+import ruiseki.backpack.client.gui.widget.BackpackSettingPanel;
+import ruiseki.backpack.client.gui.widget.BackpackSlot;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
-import ruiseki.storagecore.client.gui.slot.ModularStorageSlot;
-import ruiseki.storagecore.client.gui.sync.StorageSlotSH;
-import ruiseki.storagecore.client.gui.widget.StorageList;
-import ruiseki.storagecore.client.gui.widget.StoragePanel;
-import ruiseki.storagecore.client.gui.widget.StorageSlot;
-import ruiseki.storagecore.client.gui.widget.StorageSlotGrid;
-import ruiseki.storagecore.inventory.InventoryHandler;
+import ruiseki.okstoragecore.client.gui.slot.ModularStorageSlot;
+import ruiseki.okstoragecore.client.gui.sync.StorageSlotSH;
+import ruiseki.okstoragecore.client.gui.widget.*;
+import ruiseki.okstoragecore.inventory.InventoryHandler;
 
 public class BackpackPanel extends StoragePanel {
 
@@ -67,7 +66,7 @@ public class BackpackPanel extends StoragePanel {
             .maxSlots(inventorySlots)
             .key(
                 'I',
-                i -> new StorageSlot(this.getWrapper(), this.getPanel(), i).syncHandler(this.getStorageSlotSH(i))
+                i -> new BackpackSlot(this.getWrapper(), this.getPanel(), i).syncHandler(this.getStorageSlotSH(i))
                     .setEnabledIf(slot -> {
                         if (this.searchValue.getStringValue()
                             .isEmpty()) return true;
@@ -115,6 +114,17 @@ public class BackpackPanel extends StoragePanel {
                     tooltip.addLine(IKey.lang("gui.backpack.sleeping_bag"));
                     tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
                 }));
+    }
+
+    @Override
+    public void addSettingPanel() {
+        this.settingPanelHandler = this.getSyncManager()
+            .syncedPanel(
+                "setting_panel",
+                true,
+                (syncManager1,
+                    syncHandler) -> this.settingPanel = new BackpackSettingPanel(this.getWrapper(), this.getPanel()));
+        this.child(new SettingTab(this.getWrapper(), this.getPanel()));
     }
 
     public void modifyPlayerSlot(PanelSyncManager syncManager, InventoryType inventoryType, int slotIndex,
