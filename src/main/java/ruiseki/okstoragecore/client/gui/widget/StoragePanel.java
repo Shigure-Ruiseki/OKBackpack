@@ -55,7 +55,6 @@ import ruiseki.okstoragecore.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okstoragecore.client.gui.sync.*;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 import ruiseki.okstoragecore.helper.RenderHelpers;
-import ruiseki.okstoragecore.helper.StorageInventoryHelpers;
 import ruiseki.okstoragecore.inventory.InventoryHandler;
 import ruiseki.okstoragecore.upgrades.IUpgradeItem;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
@@ -291,7 +290,8 @@ public class StoragePanel extends ModularPanel {
                             }).size(12))
                     // Upgrade Index
                     .child(
-                        new ShiftButtonWidget(OKBGuiTextures.DOT_UP_ARROW_ICON, OKBGuiTextures.DOT_DOWN_ARROW_ICON)
+                        new ShiftButtonWidget().setNotShift(OKBGuiTextures.DOT_UP_ARROW_ICON)
+                            .setShift(OKBGuiTextures.DOT_DOWN_ARROW_ICON)
                             .onMousePressed(button -> {
                                 if (button == 0) {
                                     int tabCount = this.tabCount;
@@ -378,14 +378,13 @@ public class StoragePanel extends ModularPanel {
 
         // Player -> Storage
         transferRow.child(
-            new ShiftButtonWidget(OKBGuiTextures.DOT_UP_ARROW_ICON, OKBGuiTextures.SOLID_UP_ARROW_ICON).size(12)
+            new ShiftButtonWidget().setNotShift(OKBGuiTextures.DOT_UP_ARROW_ICON)
+                .setShift(OKBGuiTextures.SOLID_UP_ARROW_ICON)
+                .size(12)
                 .onMousePressed(mouseButton -> {
                     if (mouseButton == 0) {
                         boolean transferMatched = !Interactable.hasShiftDown();
-
                         Interactable.playButtonClickSound();
-                        StorageInventoryHelpers
-                            .transferPlayerToStorage(this.getWrapper(), this.getPlayerInventory(), transferMatched);
                         this.getStorageSH()
                             .syncToServer(
                                 StorageSHRegisters.TRANSFER_TO_STORAGE,
@@ -410,14 +409,13 @@ public class StoragePanel extends ModularPanel {
 
         // Storage -> Player
         transferRow.child(
-            new ShiftButtonWidget(OKBGuiTextures.DOT_DOWN_ARROW_ICON, OKBGuiTextures.SOLID_DOWN_ARROW_ICON).size(12)
+            new ShiftButtonWidget().setNotShift(OKBGuiTextures.DOT_DOWN_ARROW_ICON)
+                .setShift(OKBGuiTextures.SOLID_DOWN_ARROW_ICON)
+                .size(12)
                 .onMousePressed(mouseButton -> {
                     if (mouseButton == 0) {
                         boolean transferMatched = !Interactable.hasShiftDown();
-
                         Interactable.playButtonClickSound();
-                        StorageInventoryHelpers
-                            .transferStorageToPlayer(this.getWrapper(), this.getPlayerInventory(), transferMatched);
                         this.getStorageSH()
                             .syncToServer(
                                 StorageSHRegisters.TRANSFER_TO_PLAYER,

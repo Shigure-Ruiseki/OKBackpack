@@ -31,8 +31,8 @@ public class SettingsManager {
         NBTHelpers::getBoolean,
         NBTTagCompound::setBoolean,
         true);
-    public static final MainSetting<Boolean> KEEP_SEARCH = new MainSetting<>(
-        "keepSearch",
+    public static final MainSetting<Boolean> KEEP_SEARCH_PHRASE = new MainSetting<>(
+        "keepSearchPhrase",
         NBTHelpers::getBoolean,
         NBTTagCompound::setBoolean,
         true);
@@ -40,7 +40,7 @@ public class SettingsManager {
     static {
         settings.put(SHIFT_CLICK_INTO_OPEN_TAB_FIRST.getName(), SHIFT_CLICK_INTO_OPEN_TAB_FIRST);
         settings.put(KEEP_TAB_OPEN.getName(), KEEP_TAB_OPEN);
-        settings.put(KEEP_SEARCH.getName(), KEEP_SEARCH);
+        settings.put(KEEP_SEARCH_PHRASE.getName(), KEEP_SEARCH_PHRASE);
     }
 
     public static void addSetting(MainSetting<?> setting) {

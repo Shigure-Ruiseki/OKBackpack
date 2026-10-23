@@ -36,6 +36,7 @@ import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.item.arcane.ArcaneCraftingUpgradeWrapper;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
+import ruiseki.okstoragecore.client.gui.OSCTextures;
 
 public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<ArcaneCraftingUpgradeWrapper> {
 
@@ -85,7 +86,8 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
             .child(craftingDesButton)
             .child(usedBackpackButton);
 
-        ShiftButtonWidget rotated = new ShiftButtonWidget(OKBGuiTextures.ROTATED_RIGHT, OKBGuiTextures.ROTATED_LEFT)
+        ShiftButtonWidget rotated = new ShiftButtonWidget().setNotShift(OSCTextures.ROTATED_RIGHT)
+            .setShift(OSCTextures.ROTATED_LEFT)
             .size(16)
             .onMousePressed(button -> {
                 if (button == 0) {
@@ -100,7 +102,9 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
                 return false;
             });
 
-        ShiftButtonWidget grid = new ShiftButtonWidget(OKBGuiTextures.BALANCE, OKBGuiTextures.SPREAD).size(16)
+        ShiftButtonWidget grid = new ShiftButtonWidget().setNotShift(OSCTextures.BALANCE)
+            .setShift(OSCTextures.SPREAD)
+            .size(16)
             .onMousePressed(button -> {
                 if (button == 0) {
                     Interactable.playButtonClickSound();
@@ -118,7 +122,7 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
                 return false;
             });
 
-        ButtonWidget<?> clear = new ButtonWidget<>().overlay(OKBGuiTextures.CLEAR)
+        ButtonWidget<?> clear = new ButtonWidget<>().overlay(OSCTextures.CLEAR)
             .size(16)
             .onMousePressed(button -> {
                 if (button == 0) {

@@ -506,9 +506,12 @@ gui.okbackpack.status.nothing_to_restock=Nothing to restock
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.
 messages.cant.sleep.here=Ancient forces do not welcome sleep here.
 
+#Settings
 gui.okbackpack.settings.backpack=Backpack
 gui.okbackpack.settings.backpack.tooltip=Backpack Settings
-
+gui.okbackpack.settings.buttons.context_backpack=Backpack
+gui.okbackpack.settings.buttons.context_backpack.tooltip=This Backpack's settings
+gui.okbackpack.settings.buttons.context_backpack.tooltip_detail=Inherited from player or overriden for this backpack
 gui.okbackpack.settings.buttons.another_player_can_open.on=Another player can open
 gui.okbackpack.settings.buttons.another_player_can_open.on.tooltip=When this backpack is worn and visible another player can open it when right clicking on this player's back
 gui.okbackpack.settings.buttons.another_player_can_open.off=Another player can NOT open

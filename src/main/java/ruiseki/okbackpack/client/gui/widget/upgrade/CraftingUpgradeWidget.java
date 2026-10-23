@@ -23,6 +23,7 @@ import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.ShiftButtonWidget;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
+import ruiseki.okstoragecore.client.gui.OSCTextures;
 
 public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgradeWrapper> {
 
@@ -69,7 +70,8 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
             .child(craftingDesButton)
             .child(usedBackpackButton);
 
-        ShiftButtonWidget rotated = new ShiftButtonWidget(OKBGuiTextures.ROTATED_RIGHT, OKBGuiTextures.ROTATED_LEFT)
+        ShiftButtonWidget rotated = new ShiftButtonWidget().setNotShift(OSCTextures.ROTATED_RIGHT)
+            .setShift(OSCTextures.ROTATED_LEFT)
             .size(16)
             .onMousePressed(button -> {
                 if (button == 0) {
@@ -85,7 +87,9 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
                 return false;
             });
 
-        ShiftButtonWidget grid = new ShiftButtonWidget(OKBGuiTextures.BALANCE, OKBGuiTextures.SPREAD).size(16)
+        ShiftButtonWidget grid = new ShiftButtonWidget().setNotShift(OSCTextures.BALANCE)
+            .setShift(OSCTextures.SPREAD)
+            .size(16)
             .onMousePressed(button -> {
                 if (button == 0) {
                     Interactable.playButtonClickSound();
@@ -104,7 +108,7 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
                 return false;
             });
 
-        ButtonWidget<?> clear = new ButtonWidget<>().overlay(OKBGuiTextures.CLEAR)
+        ButtonWidget<?> clear = new ButtonWidget<>().overlay(OSCTextures.CLEAR)
             .size(16)
             .onMousePressed(button -> {
                 if (button == 0) {

@@ -44,8 +44,29 @@ gui.okstoragecore.crafting_settings=Crafting
 
 
 
+#Settings
+gui.okstoragecore.settings.storage=Storage
+gui.okstoragecore.settings.storage.tooltip=Storage Settings
+gui.okstoragecore.settings.buttons.context_player=Player
+gui.okstoragecore.settings.buttons.context_player.tooltip=Player level settings
+gui.okstoragecore.settings.buttons.context_player.tooltip_detail=Apply to all backpacks/storages unless overriden
+gui.okstoragecore.settings.buttons.context_storage=Storage
+gui.okstoragecore.settings.buttons.context_storage.tooltip=This Storage's settings
+gui.okstoragecore.settings.buttons.context_storage.tooltip_detail=Inherited from player or overriden for this storage
+gui.okstoragecore.settings.buttons.shift_click_open_tab.on=Shift Click Into Open Tab First
+gui.okstoragecore.settings.buttons.shift_click_open_tab.off=Shift Click Into Inventory First
+gui.okstoragecore.settings.buttons.shift_click_open_tab.on.tooltip=Shift click from storage/inventory will first try to put the stack in an open tab and only then into inventory/storage.
+gui.okstoragecore.settings.buttons.shift_click_open_tab.off.tooltip=Shift click from storage/inventory will first try to put the stack in inventory/storage and only then into an open tab.
+gui.okstoragecore.settings.buttons.keep_tab_open.on=Keep Tab Open: ON
+gui.okstoragecore.settings.buttons.keep_tab_open.off=Keep Tab Open: OFF
+gui.okstoragecore.settings.buttons.keep_tab_open.on.tooltip=On close of its gui the backpack/storage records which upgrade tab was last open and opens it when the gui is open next time
+gui.okstoragecore.settings.buttons.keep_tab_open.off.tooltip=Open upgrade tab gets closed when the backpack/storage gui is closed and when the gui is next open all of the tabs are closed
+gui.okstoragecore.settings.buttons.keep_search_phrase.on=Keep Search Phrase: ON
+gui.okstoragecore.settings.buttons.keep_search_phrase.off=Keep Search Phrase: OFF
+gui.okstoragecore.settings.buttons.keep_search_phrase.on.tooltip=Backpack / Storage gui keeps the search phrase and prefills it / filters by it when open again
+gui.okstoragecore.settings.buttons.keep_search_phrase.off.tooltip=Backpack / Storage gui clears the search phrase when closed and shows all unfiltered item when open again
 
-
-
+#Upgrade
+gui.okstoragecore.upgrades.crafting=Craft
 gui.okstoragecore.upgrades.buttons.refill_crafting_grid=Refill Crafting Grid
 gui.okstoragecore.upgrades.buttons.do_not_refill_crafting_grid=Do Not Refill Crafting Grid

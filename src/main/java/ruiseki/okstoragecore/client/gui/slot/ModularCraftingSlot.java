@@ -9,7 +9,6 @@ import net.minecraft.stats.AchievementList;
 import org.jetbrains.annotations.Nullable;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.item.handler.ItemStackHandler;
@@ -18,12 +17,9 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.inventory.InventoryCraftingWrapper;
 import ruiseki.okstoragecore.upgrades.crafting.CraftingUpgradeWrapper;
 
-public class ModularCraftingSlot extends ModularItemSlot {
+public class ModularCraftingSlot extends IndexedModularSlot {
 
-    private final IStorageWrapper storageWrapper;
-    private final StoragePanel storagePanel;
     private InventoryCraftingWrapper craftMatrix;
-    private final int upgradeIndex;
     private int amountCrafted;
 
     public ModularCraftingSlot(IStorageWrapper storageWrapper, StoragePanel storagePanel, int upgradeIndex) {
@@ -32,18 +28,7 @@ public class ModularCraftingSlot extends ModularItemSlot {
 
     private ModularCraftingSlot(ItemStackHandler resultHandler, IStorageWrapper storageWrapper,
         StoragePanel storagePanel, int upgradeIndex) {
-        super(resultHandler, 0);
-        this.storageWrapper = storageWrapper;
-        this.storagePanel = storagePanel;
-        this.upgradeIndex = upgradeIndex;
-    }
-
-    public StoragePanel getStoragePanel() {
-        return storagePanel;
-    }
-
-    public IStorageWrapper getStorageWrapper() {
-        return storageWrapper;
+        super(resultHandler, 0, storageWrapper, storagePanel, upgradeIndex);
     }
 
     @Override
@@ -208,13 +193,7 @@ public class ModularCraftingSlot extends ModularItemSlot {
         return craftMatrix;
     }
 
-    public int getUpgradeIndex() {
-        return upgradeIndex;
-    }
-
     public CraftingUpgradeWrapper getUpgradeWrapper() {
-        return (CraftingUpgradeWrapper) this.getStorageWrapper()
-            .getUpgradeHandler()
-            .getSlotWrapper(this.getUpgradeIndex());
+        return (CraftingUpgradeWrapper) super.getUpgradeWrapper();
     }
 }

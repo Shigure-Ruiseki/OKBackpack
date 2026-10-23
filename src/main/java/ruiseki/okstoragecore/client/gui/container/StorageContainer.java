@@ -19,10 +19,13 @@ import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
 import ruiseki.okstoragecore.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
+import ruiseki.okstoragecore.upgrades.ISlotClickUpgrade;
 import ruiseki.okstoragecore.upgrades.IUpgradeItem;
+import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 
 public class StorageContainer extends ModularContainer {
 
@@ -226,7 +229,7 @@ public class StorageContainer extends ModularContainer {
         return super.slotClick(slotId, mouseButton, mode, player);
     }
 
-    private void updateSlotStack(Slot slot, ItemStack stack) {
+    public static void updateSlotStack(Slot slot, ItemStack stack) {
         slot.putStack(stack);
         slot.onSlotChanged();
     }
@@ -245,15 +248,24 @@ public class StorageContainer extends ModularContainer {
 
         int originalSize = fromStack.stackSize;
 
+        // 1. Upgrade-owned slots -> custom upgrade handling.
+        if (fromSlot instanceof IndexedModularSlot indexedSlot) {
+            IUpgradeWrapper wrapper = indexedSlot.getUpgradeWrapper();
+            if (wrapper instanceof ISlotClickUpgrade slotClickUpgrade
+                && slotClickUpgrade.transferItem(this.getPlayer(), fromSlot, fromStack)) {
+                return ItemHelpers.isEmpty(fromStack) ? ItemHelpers.EMPTY : fromStack;
+            }
+        }
+
         if (PLAYER_INV.equals(fromSlot.getSlotGroupName())) {
-            // 1. Player inventory -> upgrade slots.
+            // 2. Player inventory -> upgrade slots.
             this.transferItemFilter(
                 fromSlot,
                 fromStack,
                 stack -> stack.getItem() instanceof IUpgradeItem,
                 slot -> slot instanceof ModularUpgradeSlot && !PLAYER_INV.equals(slot.getSlotGroupName()));
 
-            // 2. Player inventory -> selected memory slots.
+            // 3. Player inventory -> selected memory slots.
             this.transferFiltered(
                 fromSlot,
                 fromStack,
@@ -261,7 +273,7 @@ public class StorageContainer extends ModularContainer {
                     && this.getMemorySettings()
                         .isSlotSelected(slot.getSlotIndex()));
 
-            // 3. Player inventory -> non-memory storage slots.
+            // 4. Player inventory -> non-memory storage slots.
             this.transferFiltered(
                 fromSlot,
                 fromStack,
@@ -269,7 +281,7 @@ public class StorageContainer extends ModularContainer {
                     && !this.getMemorySettings()
                         .isSlotSelected(slot.getSlotIndex()));
         } else {
-            // Storage/upgrade slots -> player inventory.
+            // 5. Storage/upgrade slots -> player inventory.
             this.transferFiltered(fromSlot, fromStack, slot -> PLAYER_INV.equals(slot.getSlotGroupName()));
         }
 

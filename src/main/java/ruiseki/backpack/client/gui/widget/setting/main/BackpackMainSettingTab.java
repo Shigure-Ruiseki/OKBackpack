@@ -24,11 +24,11 @@ public class BackpackMainSettingTab extends StorageMainSettingTab {
 
     protected static final List<CyclicVariantButtonWidget.Variant> LOCK_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.okbackpack.settings.buttons.another_player_can_open.off"),
-            OKBGuiTextures.UNLOCK_BACKPACK_ICON),
-        new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okbackpack.settings.buttons.another_player_can_open.on"),
-            OKBGuiTextures.LOCK_BACKPACK_ICON));
+            OKBGuiTextures.LOCK_BACKPACK_ICON),
+        new CyclicVariantButtonWidget.Variant(
+            IKey.lang("gui.okbackpack.settings.buttons.another_player_can_open.off"),
+            OKBGuiTextures.UNLOCK_BACKPACK_ICON));
 
     protected boolean anotherPlayerCanOpen;
     protected CyclicVariantButtonWidget anotherPlayerCanOpenButton;
@@ -51,23 +51,21 @@ public class BackpackMainSettingTab extends StorageMainSettingTab {
 
     @Override
     protected ToggleButton addModeButton() {
-        return super.addModeButton().overlay(false, IKey.lang("gui.okbackpack.settings_context_backpack"))
-            .overlay(true, IKey.lang("gui.okbackpack.settings_context_player"))
+        return super.addModeButton().overlay(false, IKey.lang("gui.okbackpack.settings.buttons.context_backpack="))
+            .overlay(true, IKey.lang("gui.okstoragecore.settings.buttons.context_player"))
             .tooltipDynamic(tooltip -> {
                 tooltip.clearText();
-
                 if (this.isUsingPlayerSettings()) {
-                    tooltip.addLine(IKey.lang("gui.okbackpack.settings_context_player"))
+                    tooltip.addLine(IKey.lang("gui.okstoragecore.settings.buttons.context_player.tooltip"))
                         .addLine(
-                            IKey.lang("gui.okbackpack.settings_context_player.tooltip")
+                            IKey.lang("gui.okstoragecore.settings.buttons.context_player.tooltip_detail")
                                 .style(IKey.GRAY));
                 } else {
-                    tooltip.addLine(IKey.lang("gui.okbackpack.settings_context_backpack"))
+                    tooltip.addLine(IKey.lang("gui.okbackpack.settings.buttons.context_backpack.tooltip"))
                         .addLine(
-                            IKey.lang("gui.okbackpack.settings_context_backpack.tooltip")
+                            IKey.lang("gui.okbackpack.settings.buttons.context_backpack.tooltip_detail")
                                 .style(IKey.GRAY));
                 }
-
                 tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
             });
     }
@@ -101,7 +99,16 @@ public class BackpackMainSettingTab extends StorageMainSettingTab {
                         buffer.writeBoolean(newValue);
                         buffer.writeBoolean(this.isUsingPlayerSettings());
                     });
-            }).setIndex(this.isAnotherPlayerCanOpen() ? 1 : 0);
+            }).setIndex(this.isAnotherPlayerCanOpen() ? 1 : 0)
+                .tooltipDynamic(tooltip -> {
+                    if (this.isShiftClickIntoOpenTab()) {
+                        tooltip
+                            .addLine(IKey.lang("gui.okbackpack.settings.buttons.another_player_can_open.on.tooltip"));
+                    } else {
+                        tooltip
+                            .addLine(IKey.lang("gui.okbackpack.settings.buttons.another_player_can_open.off.tooltip"));
+                    }
+                });
 
         return this.anotherPlayerCanOpenButton;
     }

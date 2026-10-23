@@ -10,7 +10,6 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
-import ruiseki.okstoragecore.client.gui.sync.SyncHandlerBase;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
 import ruiseki.okstoragecore.client.gui.widget.ExpandedTab;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
@@ -18,17 +17,17 @@ import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 
 public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase<U, ?>> extends ExpandedTab {
 
-    protected abstract U getWrapper();
-
     protected UpgradeSlotSH slotSyncHandler = null;
 
     protected IStorageWrapper storageWrapper;
     protected StoragePanel storagePanel;
     protected int slotIndex;
+    protected U wrapper;
 
-    public ExpandedUpgradeTab(int slotIndex, int coveredTabSize, ItemStack delegatedIconStack,
+    public ExpandedUpgradeTab(int slotIndex, int coveredTabSize, U wrapper, ItemStack delegatedIconStack,
         IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey, int width) {
         super(coveredTabSize, new ItemDrawable(delegatedIconStack), titleKey, width);
+        this.wrapper = wrapper;
         this.storageWrapper = storageWrapper;
         this.storagePanel = storagePanel;
         this.slotIndex = slotIndex;
@@ -37,9 +36,13 @@ public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase<U, ?>> ext
         this.child(this.addUpgradeColumn());
     }
 
-    public ExpandedUpgradeTab(int slotIndex, int coveredTabSize, ItemStack delegatedIconStack,
+    public ExpandedUpgradeTab(int slotIndex, int coveredTabSize, U wrapper, ItemStack delegatedIconStack,
         IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey) {
-        this(slotIndex, coveredTabSize, delegatedIconStack, storageWrapper, storagePanel, titleKey, 80);
+        this(slotIndex, coveredTabSize, wrapper, delegatedIconStack, storageWrapper, storagePanel, titleKey, 80);
+    }
+
+    protected U getWrapper() {
+        return this.wrapper;
     }
 
     @Override
@@ -90,7 +93,7 @@ public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase<U, ?>> ext
     }
 
     @Override
-    public @NotNull SyncHandlerBase<?> getSyncHandler() {
-        return (SyncHandlerBase<?>) super.getSyncHandler();
+    public @NotNull UpgradeSlotSH getSyncHandler() {
+        return (UpgradeSlotSH) super.getSyncHandler();
     }
 }

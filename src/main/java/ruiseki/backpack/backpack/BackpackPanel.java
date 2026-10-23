@@ -124,7 +124,17 @@ public class BackpackPanel extends StoragePanel {
                 true,
                 (syncManager1,
                     syncHandler) -> this.settingPanel = new BackpackSettingPanel(this.getWrapper(), this.getPanel()));
-        this.child(new SettingTab(this.getWrapper(), this.getPanel()));
+        this.child(new SettingTab(this.getWrapper(), this.getPanel()).tooltipDynamic(tooltip -> {
+            tooltip.clearText();
+            if (this.settingPanelHandler.isPanelOpen()) {
+                tooltip.addLine(IKey.lang("gui.okbackpack.settings.backpack"))
+                    .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+            } else {
+                tooltip.addLine(IKey.lang("gui.okbackpack.settings.backpack.tooltip"))
+                    .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+            }
+            tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+        }));
     }
 
     public void modifyPlayerSlot(PanelSyncManager syncManager, InventoryType inventoryType, int slotIndex,

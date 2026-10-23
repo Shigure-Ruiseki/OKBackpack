@@ -282,27 +282,27 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
 
     public void addSortingButtons() {
 
-        ShiftButtonWidget sortButton = new ShiftButtonWidget(
-            OKBGuiTextures.SOLID_DOWN_ARROW_ICON,
-            OKBGuiTextures.SOLID_UP_ARROW_ICON).top(4)
-                .right(35)
-                .size(12)
-                .setEnabledIf(w -> !settingPanel.isPanelOpen())
-                .onMousePressed((button) -> {
-                    if (button == 0) {
-                        Interactable.playButtonClickSound();
-                        boolean reverse = !Interactable.hasShiftDown();
+        ShiftButtonWidget sortButton = new ShiftButtonWidget().setNotShift(OKBGuiTextures.SOLID_DOWN_ARROW_ICON)
+            .setShift(OKBGuiTextures.SOLID_UP_ARROW_ICON)
+            .top(4)
+            .right(35)
+            .size(12)
+            .setEnabledIf(w -> !settingPanel.isPanelOpen())
+            .onMousePressed(button -> {
+                if (button == 0) {
+                    Interactable.playButtonClickSound();
+                    boolean reverse = !Interactable.hasShiftDown();
 
-                        backpackSyncHandler.syncToServer(
-                            BackpackSH.getId(BackpackSHRegisters.UPDATE_SORT_INV),
-                            buf -> buf.writeBoolean(reverse));
-                        return true;
-                    }
-                    return false;
-                })
-                .tooltipStatic(
-                    (tooltip) -> tooltip.addLine(IKey.lang("gui.backpack.sort_inventory"))
-                        .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+                    backpackSyncHandler.syncToServer(
+                        BackpackSH.getId(BackpackSHRegisters.UPDATE_SORT_INV),
+                        buf -> buf.writeBoolean(reverse));
+                    return true;
+                }
+                return false;
+            })
+            .tooltipStatic(
+                tooltip -> tooltip.addLine(IKey.lang("gui.backpack.sort_inventory"))
+                    .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
 
         CyclicVariantButtonWidget sortTypeButton = new CyclicVariantButtonWidget(
             SORT_TYPE_VARIANTS,
@@ -310,132 +310,135 @@ public class BackpackPanel extends ModularPanel implements IStoragePanel<Backpac
                 .ordinal(),
             0,
             12,
-            (index) -> {
-
+            index -> {
                 SortBy nextSortBy = SortBy.values()[index];
-
                 wrapper.setSortType(nextSortBy);
 
                 backpackSyncHandler.syncToServer(
                     BackpackSH.getId(BackpackSHRegisters.UPDATE_SET_SORT_TYPE),
                     buf -> NetworkUtils.writeEnumValue(buf, nextSortBy));
-
-            }).setEnabledIf(cyclicVariantButtonWidget -> !settingPanel.isPanelOpen())
+            }).setEnabledIf(w -> !settingPanel.isPanelOpen())
                 .top(4)
                 .right(21)
                 .size(12);
 
-        ShiftButtonWidget upgradeIndex = new ShiftButtonWidget(
-            OKBGuiTextures.DOT_UP_ARROW_ICON,
-            OKBGuiTextures.DOT_DOWN_ARROW_ICON).size(12)
-                .top(4)
-                .right(7)
-                .onMousePressed(btn -> {
-                    if (btn != 0) return false;
+        ShiftButtonWidget upgradeIndex = new ShiftButtonWidget().setNotShift(OKBGuiTextures.DOT_UP_ARROW_ICON)
+            .setShift(OKBGuiTextures.DOT_DOWN_ARROW_ICON)
+            .size(12)
+            .top(4)
+            .right(7)
+            .onMousePressed(btn -> {
+                if (btn != 0) return false;
 
-                    int index = wrapper.getTabStartIndex();
+                int index = wrapper.getTabStartIndex();
 
-                    if (Interactable.hasShiftDown()) {
-                        index--;
-                    } else {
-                        index++;
-                    }
+                if (Interactable.hasShiftDown()) {
+                    index--;
+                } else {
+                    index++;
+                }
 
-                    int tabCount = activeTabCount;
-                    if (tabCount > 0) {
-                        index = (index % tabCount + tabCount) % tabCount;
-                    }
+                int tabCount = activeTabCount;
+                if (tabCount > 0) {
+                    index = (index % tabCount + tabCount) % tabCount;
+                }
 
-                    wrapper.setTabStartIndex(index);
-                    backpackSyncHandler.syncToServer(
-                        BackpackSH.getId(BackpackSHRegisters.UPDATE_TAB_INDEX),
-                        buf -> buf.writeInt(wrapper.getTabStartIndex()));
+                wrapper.setTabStartIndex(index);
+                backpackSyncHandler.syncToServer(
+                    BackpackSH.getId(BackpackSHRegisters.UPDATE_TAB_INDEX),
+                    buf -> buf.writeInt(wrapper.getTabStartIndex()));
 
-                    updateUpgradeWidgets();
-                    return true;
-                })
-                .tooltipDynamic(tooltip -> {
-                    tooltip.addLine(IKey.str("Scroll Tabs"));
-                    tooltip.addLine(IKey.str("Shift: Scroll Down"));
-                    tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
-                });
+                updateUpgradeWidgets();
+                return true;
+            })
+            .tooltipDynamic(tooltip -> {
+                tooltip.addLine(IKey.str("Scroll Tabs"));
+                tooltip.addLine(IKey.str("Shift: Scroll Down"));
+                tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+            });
 
-        child(sortButton).child(sortTypeButton)
+        this.child(sortButton)
+            .child(sortTypeButton)
             .child(upgradeIndex);
     }
 
     public void addTransferButtons() {
-        ShiftButtonWidget transferToPlayerButton = new ShiftButtonWidget(
-            OKBGuiTextures.DOT_DOWN_ARROW_ICON,
-            OKBGuiTextures.SOLID_DOWN_ARROW_ICON).bottom(85)
-                .right(21)
-                .size(12)
-                .setEnabledIf(shiftButtonWidget -> !settingPanel.isPanelOpen())
-                .onMousePressed(mouseButton -> {
-                    if (mouseButton == 0) {
-                        boolean transferMatched = !Interactable.hasShiftDown();
 
-                        Interactable.playButtonClickSound();
-                        BackpackInventoryHelpers.transferBackpackToPlayerInventory(wrapper, playerInv, transferMatched);
-                        backpackSyncHandler.syncToServer(
-                            BackpackSH.getId(BackpackSHRegisters.UPDATE_TRANSFER_TO_PLAYER_INV),
-                            buf -> buf.writeBoolean(transferMatched));
-                        return true;
-                    }
-                    return false;
-                })
-                .tooltipAutoUpdate(true)
-                .tooltipDynamic(tooltip -> {
-                    if (Interactable.hasShiftDown()) {
-                        tooltip.addLine(IKey.lang("gui.backpack.transfer_to_player_inv"));
-                    } else {
-                        tooltip.addLine(IKey.lang("gui.backpack.transfer_to_player_inv_matched_1"))
-                            .addLine(
-                                IKey.lang("gui.backpack.transfer_to_player_inv_matched_2")
-                                    .style(IKey.GRAY));
-                    }
+        ShiftButtonWidget transferToPlayerButton = new ShiftButtonWidget()
+            .setNotShift(OKBGuiTextures.DOT_DOWN_ARROW_ICON)
+            .setShift(OKBGuiTextures.SOLID_DOWN_ARROW_ICON)
+            .bottom(85)
+            .right(21)
+            .size(12)
+            .setEnabledIf(w -> !settingPanel.isPanelOpen())
+            .onMousePressed(mouseButton -> {
+                if (mouseButton == 0) {
+                    boolean transferMatched = !Interactable.hasShiftDown();
 
-                    tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
-                });
+                    Interactable.playButtonClickSound();
+                    BackpackInventoryHelpers.transferBackpackToPlayerInventory(wrapper, playerInv, transferMatched);
 
-        ShiftButtonWidget transferToBackpackButton = new ShiftButtonWidget(
-            OKBGuiTextures.DOT_UP_ARROW_ICON,
-            OKBGuiTextures.SOLID_UP_ARROW_ICON).bottom(85)
-                .right(7)
-                .size(12)
-                .setEnabledIf(shiftButtonWidget -> !settingPanel.isPanelOpen())
-                .onMousePressed(mouseButton -> {
-                    if (mouseButton == 0) {
-                        boolean transferMatched = !Interactable.hasShiftDown();
+                    backpackSyncHandler.syncToServer(
+                        BackpackSH.getId(BackpackSHRegisters.UPDATE_TRANSFER_TO_PLAYER_INV),
+                        buf -> buf.writeBoolean(transferMatched));
+                    return true;
+                }
+                return false;
+            })
+            .tooltipAutoUpdate(true)
+            .tooltipDynamic(tooltip -> {
+                if (Interactable.hasShiftDown()) {
+                    tooltip.addLine(IKey.lang("gui.backpack.transfer_to_player_inv"));
+                } else {
+                    tooltip.addLine(IKey.lang("gui.backpack.transfer_to_player_inv_matched_1"))
+                        .addLine(
+                            IKey.lang("gui.backpack.transfer_to_player_inv_matched_2")
+                                .style(IKey.GRAY));
+                }
 
-                        Interactable.playButtonClickSound();
-                        BackpackInventoryHelpers.transferPlayerInventoryToBackpack(wrapper, playerInv, transferMatched);
-                        backpackSyncHandler.syncToServer(
-                            BackpackSH.getId(BackpackSHRegisters.UPDATE_TRANSFER_TO_BACKPACK_INV),
-                            buf -> buf.writeBoolean(transferMatched));
-                        return true;
-                    }
-                    return false;
-                })
-                .tooltipAutoUpdate(true)
-                .tooltipDynamic(tooltip -> {
-                    if (Interactable.hasShiftDown()) {
-                        tooltip.addLine(IKey.lang("gui.backpack.transfer_to_backpack_inv"));
-                    } else {
-                        tooltip.addLine(IKey.lang("gui.backpack.transfer_to_backpack_inv_matched_1"))
-                            .addLine(
-                                IKey.lang("gui.backpack.transfer_to_backpack_inv_matched_2")
-                                    .style(IKey.GRAY));
-                    }
+                tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+            });
 
-                    tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
-                });
+        ShiftButtonWidget transferToBackpackButton = new ShiftButtonWidget()
+            .setNotShift(OKBGuiTextures.DOT_UP_ARROW_ICON)
+            .setShift(OKBGuiTextures.SOLID_UP_ARROW_ICON)
+            .bottom(85)
+            .right(7)
+            .size(12)
+            .setEnabledIf(w -> !settingPanel.isPanelOpen())
+            .onMousePressed(mouseButton -> {
+                if (mouseButton == 0) {
+                    boolean transferMatched = !Interactable.hasShiftDown();
+
+                    Interactable.playButtonClickSound();
+                    BackpackInventoryHelpers.transferPlayerInventoryToBackpack(wrapper, playerInv, transferMatched);
+
+                    backpackSyncHandler.syncToServer(
+                        BackpackSH.getId(BackpackSHRegisters.UPDATE_TRANSFER_TO_BACKPACK_INV),
+                        buf -> buf.writeBoolean(transferMatched));
+                    return true;
+                }
+                return false;
+            })
+            .tooltipAutoUpdate(true)
+            .tooltipDynamic(tooltip -> {
+                if (Interactable.hasShiftDown()) {
+                    tooltip.addLine(IKey.lang("gui.backpack.transfer_to_backpack_inv"));
+                } else {
+                    tooltip.addLine(IKey.lang("gui.backpack.transfer_to_backpack_inv_matched_1"))
+                        .addLine(
+                            IKey.lang("gui.backpack.transfer_to_backpack_inv_matched_2")
+                                .style(IKey.GRAY));
+                }
+
+                tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+            });
 
         ButtonWidget<?> sleepButton = new ButtonWidget<>().bottom(84)
             .right(35)
             .size(14)
             .overlay(OKBGuiTextures.SLEEPING_BAG)
-            .setEnabledIf(shiftButtonWidget -> !settingPanel.isPanelOpen())
+            .setEnabledIf(w -> !settingPanel.isPanelOpen())
             .onMousePressed(mouseButton -> {
                 if (mouseButton == 0) {
                     backpackSyncHandler.syncToServer(BackpackSH.getId(BackpackSHRegisters.DEPLOY_SLEEPING_BAG));

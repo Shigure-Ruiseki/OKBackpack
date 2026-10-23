@@ -205,12 +205,6 @@ public class OKBGuiTextures {
     public static final UITexture XP_PUMP_STORE_LEVELS_ICON = icon("xp_pump_store_levels", 176, 16);
     public static final UITexture XP_PUMP_STORE_ALL_ICON = icon("xp_pump_store_all", 192, 16);
 
-    public static final UITexture ROTATED_RIGHT = icon("rotated_right", 0, 170);
-    public static final UITexture ROTATED_LEFT = icon("rotated_left", 48, 170);
-    public static final UITexture BALANCE = icon("balance", 32, 170);
-    public static final UITexture SPREAD = icon("spread", 80, 170);
-    public static final UITexture CLEAR = icon("clear", 16, 170);
-
     public static final UITexture SOLID_UP_ARROW_ICON = icon("solid_up_arrow", 0, 144, 12, 12);
     public static final UITexture SOLID_DOWN_ARROW_ICON = icon("solid_down_arrow", 12, 156, 12, 12);
     public static final UITexture DOT_DOWN_ARROW_ICON = icon("dot_down_arrow", 24, 156, 12, 12);

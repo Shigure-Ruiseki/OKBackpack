@@ -2,10 +2,9 @@
 package ruiseki.okstoragecore.upgrades.crafting;
 
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
-import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
-import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
+import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
 import ruiseki.okstoragecore.client.gui.slot.ModularCraftingSlot;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSH;
 import ruiseki.okstoragecore.client.gui.widget.update.IUpgradeSlotUpdateFactory;
@@ -37,16 +36,17 @@ public class CraftingSlotUpdate implements IUpgradeSlotUpdateFactory {
         group.getSyncManager()
             .registerSlotGroup(new SlotGroup(resultGroupName, 1, false));
 
-        ModularSlot[] slots = new ModularSlot[9];
-
+        IndexedModularSlot[] slots = new IndexedModularSlot[9];
         for (int i = 0; i < slots.length; i++) {
-            ModularSlot slot = new ModularItemSlot(craftingHandler.getItemHandler(), i);
-
+            IndexedModularSlot slot = new IndexedModularSlot(
+                craftingHandler.getItemHandler(),
+                i,
+                group.getWrapper(),
+                group.getPanel(),
+                group.getSlotIndex());
             slot.slotGroup(matrixGroupName);
-
             group.getSyncManager()
                 .syncValue("crafting_slot_" + slotIndex, i, new ItemSlotSH(slot));
-
             slots[i] = slot;
         }
 

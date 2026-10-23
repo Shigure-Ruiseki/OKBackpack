@@ -62,13 +62,13 @@ public class StorageSHRegisters {
     public static final ResourceLocation SET_PLAYER_SETTINGS_MODE = new ResourceLocation(
         Reference.MOD_ID,
         "storage_set_player_settings_mode");
-    public static final ResourceLocation SET_SHIFT_CLICK_SETTING = new ResourceLocation(
+    public static final ResourceLocation SET_SHIFT_CLICK_INTO_TAB_FIRST_SETTING = new ResourceLocation(
         Reference.MOD_ID,
         "storage_set_shift_click_setting");
-    public static final ResourceLocation SET_KEEP_TAB_SETTING = new ResourceLocation(
+    public static final ResourceLocation SET_KEEP_TAB_OPEN_SETTING = new ResourceLocation(
         Reference.MOD_ID,
         "storage_set_keep_tab_setting");
-    public static final ResourceLocation SET_KEEP_SEARCH_SETTING = new ResourceLocation(
+    public static final ResourceLocation SET_KEEP_SEARCH_PHRASE_SETTING = new ResourceLocation(
         Reference.MOD_ID,
         "storage_set_keep_search_setting");
     public static final ResourceLocation SET_SET_STORAGE_COLOR = new ResourceLocation(
@@ -165,7 +165,7 @@ public class StorageSHRegisters {
                 SettingsManager.PLAYER_SETTINGS,
                 buf.readBoolean());
         });
-        REGISTRY.registerServer(SET_SHIFT_CLICK_SETTING, (handler, buf) -> {
+        REGISTRY.registerServer(SET_SHIFT_CLICK_INTO_TAB_FIRST_SETTING, (handler, buf) -> {
             MainSettingsCategory<?> settings = getGlobalSettings(handler.getWrapper());
             SettingsManager.setSettingByMode(
                 handler.getPlayer(),
@@ -175,7 +175,7 @@ public class StorageSHRegisters {
                 buf.readBoolean(),
                 buf.readBoolean());
         });
-        REGISTRY.registerServer(SET_KEEP_TAB_SETTING, (handler, buf) -> {
+        REGISTRY.registerServer(SET_KEEP_TAB_OPEN_SETTING, (handler, buf) -> {
             MainSettingsCategory<?> settings = getGlobalSettings(handler.getWrapper());
             SettingsManager.setSettingByMode(
                 handler.getPlayer(),
@@ -185,13 +185,13 @@ public class StorageSHRegisters {
                 buf.readBoolean(),
                 buf.readBoolean());
         });
-        REGISTRY.registerServer(SET_KEEP_SEARCH_SETTING, (handler, buf) -> {
+        REGISTRY.registerServer(SET_KEEP_SEARCH_PHRASE_SETTING, (handler, buf) -> {
             MainSettingsCategory<?> settings = getGlobalSettings(handler.getWrapper());
             SettingsManager.setSettingByMode(
                 handler.getPlayer(),
                 settings.getPlayerSettingsTagName(),
                 settings,
-                SettingsManager.KEEP_SEARCH,
+                SettingsManager.KEEP_SEARCH_PHRASE,
                 buf.readBoolean(),
                 buf.readBoolean());
         });

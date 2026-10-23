@@ -23,6 +23,7 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.StorageSettingPanel;
@@ -34,25 +35,27 @@ public class StorageMainSettingTab extends SettingTab {
 
     protected static final List<CyclicVariantButtonWidget.Variant> SHIFT_CLICK_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.okstoragecore.shift_click_inventory"),
-            OKBGuiTextures.SHIFT_CLICK_INVENTORY_ICON),
+            IKey.lang("gui.okstoragecore.settings.buttons.shift_click_open_tab.on"),
+            OSCTextures.SHIFT_CLICK_OPEN_TAB),
         new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.okstoragecore.shift_click_open_tab"),
-            OKBGuiTextures.SHIFT_CLICK_OPEN_TAB_ICON));
+            IKey.lang("gui.okstoragecore.settings.buttons.shift_click_open_tab.off"),
+            OSCTextures.SHIFT_CLICK_INVENTORY));
 
     protected static final List<CyclicVariantButtonWidget.Variant> KEEP_TAB_VARIANTS = Arrays.asList(
-        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.okstoragecore.keep_tab"), OKBGuiTextures.KEEP_TAB_ICON),
         new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.okstoragecore.not_keep_tab"),
+            IKey.lang("gui.okstoragecore.settings.buttons.keep_tab_open.on"),
+            OKBGuiTextures.KEEP_TAB_ICON),
+        new CyclicVariantButtonWidget.Variant(
+            IKey.lang("gui.okstoragecore.settings.buttons.keep_tab_open.off"),
             OKBGuiTextures.NOT_KEEP_TAB_ICON));
 
     protected static final List<CyclicVariantButtonWidget.Variant> KEEP_SEARCH_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.okstoragecore.unlock_search"),
-            OKBGuiTextures.UNLOCK_SEARCH_ICON),
+            IKey.lang("gui.okstoragecore.settings.buttons.keep_search_phrase.on"),
+            OKBGuiTextures.LOCK_SEARCH_ICON),
         new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.okstoragecore.lock_search"),
-            OKBGuiTextures.LOCK_SEARCH_ICON));
+            IKey.lang("gui.okstoragecore.settings.buttons.keep_search_phrase.off"),
+            OKBGuiTextures.UNLOCK_SEARCH_ICON));
 
     protected boolean usingPlayerSettings;
 
@@ -97,7 +100,7 @@ public class StorageMainSettingTab extends SettingTab {
             parentTab);
 
         this.usingPlayerSettings = this.getPlayerSettingsMode();
-        this.shiftClickIntoOpenTab = this.getShiftClickValue();
+        this.shiftClickIntoOpenTab = this.getShiftClickIntoOpenTabValue();
         this.keepTabOpen = this.getKeepTabValue();
         this.keepSearch = this.getKeepSearchValue();
         this.mainColor = this.getStorageWrapper()
@@ -114,25 +117,23 @@ public class StorageMainSettingTab extends SettingTab {
         return new ToggleButton().pos(6, 26)
             .size(60, 16)
             .value(new BoolValue.Dynamic(this::isUsingPlayerSettings, this::setUsingPlayerMode))
-            .overlay(false, IKey.lang("gui.okstoragecore.settings_context_storage"))
-            .overlay(true, IKey.lang("gui.okstoragecore.settings_context_player"))
+            .overlay(false, IKey.lang("gui.okstoragecore.settings.buttons.settings_context_storage"))
+            .overlay(true, IKey.lang("gui.okstoragecore.settings.buttons.context_player"))
             .background(GuiTextures.MC_BUTTON)
             .tooltipAutoUpdate(true)
             .tooltipDynamic(tooltip -> {
                 tooltip.clearText();
-
                 if (this.isUsingPlayerSettings()) {
-                    tooltip.addLine(IKey.lang("gui.okstoragecore.settings_context_player"))
+                    tooltip.addLine(IKey.lang("gui.okstoragecore.settings.buttons.context_player.tooltip"))
                         .addLine(
-                            IKey.lang("gui.okstoragecore.settings_context_player.tooltip")
+                            IKey.lang("gui.okstoragecore.settings.buttons.context_player.tooltip_detail")
                                 .style(IKey.GRAY));
                 } else {
-                    tooltip.addLine(IKey.lang("gui.okstoragecore.settings_context_storage"))
+                    tooltip.addLine(IKey.lang("gui.okstoragecore.settings.buttons.context_storage.tooltip"))
                         .addLine(
-                            IKey.lang("gui.okstoragecore.settings_context_storage.tooltip")
+                            IKey.lang("gui.okstoragecore.settings.buttons.context_storage.tooltip_detail")
                                 .style(IKey.GRAY));
                 }
-
                 tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
             });
     }
@@ -152,7 +153,7 @@ public class StorageMainSettingTab extends SettingTab {
     }
 
     protected void reloadValues() {
-        this.shiftClickIntoOpenTab = this.getShiftClickValue();
+        this.shiftClickIntoOpenTab = this.getShiftClickIntoOpenTabValue();
         if (this.shiftClickButton != null) {
             this.shiftClickButton.setIndex(this.shiftClickIntoOpenTab ? 1 : 0);
         }
@@ -184,7 +185,7 @@ public class StorageMainSettingTab extends SettingTab {
     protected ButtonWidget<?> addShiftClickButton() {
         this.shiftClickButton = new CyclicVariantButtonWidget(
             SHIFT_CLICK_VARIANTS,
-            this.isShiftClickIntoOpenTabValue() ? 1 : 0,
+            this.isShiftClickIntoOpenTab() ? 1 : 0,
             index -> {
                 boolean newValue = (index == 1);
                 this.shiftClickIntoOpenTab = newValue;
@@ -201,12 +202,20 @@ public class StorageMainSettingTab extends SettingTab {
 
                 this.getStoragePanel()
                     .getStorageSH()
-                    .syncToServer(StorageSHRegisters.SET_SHIFT_CLICK_SETTING, buffer -> {
+                    .syncToServer(StorageSHRegisters.SET_SHIFT_CLICK_INTO_TAB_FIRST_SETTING, buffer -> {
                         buffer.writeBoolean(newValue);
                         buffer.writeBoolean(this.isUsingPlayerSettings());
                     });
-            }).setIndex(this.isShiftClickIntoOpenTabValue() ? 1 : 0);
-
+            }).setIndex(this.isShiftClickIntoOpenTab() ? 1 : 0)
+                .tooltipDynamic(tooltip -> {
+                    if (this.isShiftClickIntoOpenTab()) {
+                        tooltip
+                            .addLine(IKey.lang("gui.okstoragecore.settings.buttons.shift_click_open_tab.on.tooltip"));
+                    } else {
+                        tooltip
+                            .addLine(IKey.lang("gui.okstoragecore.settings.buttons.shift_click_open_tab.off.tooltip"));
+                    }
+                });
         return this.shiftClickButton;
     }
 
@@ -227,11 +236,18 @@ public class StorageMainSettingTab extends SettingTab {
 
             this.getStoragePanel()
                 .getStorageSH()
-                .syncToServer(StorageSHRegisters.SET_KEEP_TAB_SETTING, buffer -> {
+                .syncToServer(StorageSHRegisters.SET_KEEP_TAB_OPEN_SETTING, buffer -> {
                     buffer.writeBoolean(newValue);
                     buffer.writeBoolean(this.isUsingPlayerSettings());
                 });
-        }).setIndex(this.isKeepTabOpen() ? 1 : 0);
+        }).setIndex(this.isKeepTabOpen() ? 1 : 0)
+            .tooltipDynamic(tooltip -> {
+                if (this.isKeepTabOpen()) {
+                    tooltip.addLine(IKey.lang("gui.okstoragecore.settings.buttons.keep_tab_open.on.tooltip"));
+                } else {
+                    tooltip.addLine(IKey.lang("gui.okstoragecore.settings.buttons.keep_tab_open.off.tooltip"));
+                }
+            });
 
         return this.keepTabButton;
     }
@@ -239,7 +255,7 @@ public class StorageMainSettingTab extends SettingTab {
     protected ButtonWidget<?> addKeepSearchButton() {
         this.keepSearchButton = new CyclicVariantButtonWidget(
             KEEP_SEARCH_VARIANTS,
-            this.isKeepSearch() ? 1 : 0,
+            this.isKeepSearchPhrase() ? 1 : 0,
             index -> {
                 boolean newValue = (index == 1);
                 this.keepSearch = newValue;
@@ -250,17 +266,24 @@ public class StorageMainSettingTab extends SettingTab {
                     this.getGlobalSetting()
                         .getPlayerSettingsTagName(),
                     this.getGlobalSetting(),
-                    SettingsManager.KEEP_SEARCH,
+                    SettingsManager.KEEP_SEARCH_PHRASE,
                     newValue,
                     this.isUsingPlayerSettings());
 
                 this.getStoragePanel()
                     .getStorageSH()
-                    .syncToServer(StorageSHRegisters.SET_KEEP_SEARCH_SETTING, buffer -> {
+                    .syncToServer(StorageSHRegisters.SET_KEEP_SEARCH_PHRASE_SETTING, buffer -> {
                         buffer.writeBoolean(newValue);
                         buffer.writeBoolean(this.isUsingPlayerSettings());
                     });
-            }).setIndex(this.isKeepSearch() ? 1 : 0);
+            }).setIndex(this.isKeepSearchPhrase() ? 1 : 0)
+                .tooltipDynamic(tooltip -> {
+                    if (this.isKeepSearchPhrase()) {
+                        tooltip.addLine(IKey.lang("gui.okstoragecore.settings.buttons.keep_search_phrase.on.tooltip"));
+                    } else {
+                        tooltip.addLine(IKey.lang("gui.okstoragecore.settings.buttons.keep_search_phrase.off.tooltip"));
+                    }
+                });
 
         return this.keepSearchButton;
     }
@@ -390,7 +413,7 @@ public class StorageMainSettingTab extends SettingTab {
             });
     }
 
-    protected boolean isShiftClickIntoOpenTabValue() {
+    protected boolean isShiftClickIntoOpenTab() {
         return this.shiftClickIntoOpenTab;
     }
 
@@ -398,7 +421,7 @@ public class StorageMainSettingTab extends SettingTab {
         return keepTabOpen;
     }
 
-    protected boolean isKeepSearch() {
+    protected boolean isKeepSearchPhrase() {
         return keepSearch;
     }
 
@@ -408,7 +431,7 @@ public class StorageMainSettingTab extends SettingTab {
             .orElse(false);
     }
 
-    protected boolean getShiftClickValue() {
+    protected boolean getShiftClickIntoOpenTabValue() {
         return SettingsManager.getSettingByMode(
             this.getStoragePanel()
                 .getPlayer(),
@@ -437,7 +460,7 @@ public class StorageMainSettingTab extends SettingTab {
             this.getGlobalSetting()
                 .getPlayerSettingsTagName(),
             this.getGlobalSetting(),
-            SettingsManager.KEEP_SEARCH,
+            SettingsManager.KEEP_SEARCH_PHRASE,
             this.isUsingPlayerSettings());
     }
 

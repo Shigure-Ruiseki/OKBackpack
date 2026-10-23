@@ -33,10 +33,10 @@ public class SettingTab extends Widget<SettingTab> implements Interactable {
                 if (this.getStoragePanel()
                     .getSettingPanelHandler()
                     .isPanelOpen()) {
-                    tooltip.addLine(IKey.lang("gui.okstorage"))
+                    tooltip.addLine(IKey.lang("gui.okstoragecore.settings.storage"))
                         .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
                 } else {
-                    tooltip.addLine(IKey.lang("gui.okstorage.settings"))
+                    tooltip.addLine(IKey.lang("gui.okstoragecore.settings.storage.tooltip"))
                         .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
                 }
                 tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);

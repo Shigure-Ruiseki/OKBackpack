@@ -3,6 +3,7 @@ package ruiseki.okstoragecore.client.gui.sync;
 import net.minecraft.util.ResourceLocation;
 
 import ruiseki.okbackpack.Reference;
+import ruiseki.okstoragecore.helper.StorageInventoryHelpers;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.crafting.CraftingUpgradeWrapper;
 
@@ -14,6 +15,18 @@ public class UpgradeSlotSHRegistries {
     public static final ResourceLocation CRAFTING_UPGRADE = new ResourceLocation(
         Reference.MOD_ID,
         "storage_crafting_upgrade");
+    public static final ResourceLocation CRAFTING_ROTATED = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_crafting_rotated");
+    public static final ResourceLocation CRAFTING_BALANCE = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_crafting_balance");
+    public static final ResourceLocation CRAFTING_SPREAD = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_crafting_spread");
+    public static final ResourceLocation CRAFTING_CLEAR = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_crafting_clear");
 
     public static void load() {
 
@@ -28,6 +41,28 @@ public class UpgradeSlotSHRegistries {
             if (!(wrapper instanceof CraftingUpgradeWrapper upgradeWrapper)) return;
             upgradeWrapper.setRefillCraftingGrid(buf.readBoolean());
             upgradeWrapper.setShiftClickIntoStorage(buf.readBoolean());
+        });
+        REGISTRY.registerServer(CRAFTING_ROTATED, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof CraftingUpgradeWrapper upgradeWrapper)) return;
+            StorageInventoryHelpers.rotated(upgradeWrapper.getStorage(), buf.readBoolean());
+        });
+        REGISTRY.registerServer(CRAFTING_BALANCE, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof CraftingUpgradeWrapper upgradeWrapper)) return;
+            StorageInventoryHelpers.balance(upgradeWrapper.getStorage());
+        });
+        REGISTRY.registerServer(CRAFTING_SPREAD, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof CraftingUpgradeWrapper upgradeWrapper)) return;
+            StorageInventoryHelpers.spread(upgradeWrapper.getStorage());
+        });
+        REGISTRY.registerServer(CRAFTING_CLEAR, (slot, buf) -> {
+            boolean intoInventory = buf.readBoolean();
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof CraftingUpgradeWrapper upgradeWrapper)) return;
+            StorageInventoryHelpers
+                .clear(slot.getPanel(), slot.getWrapper(), upgradeWrapper.getStorage(), intoInventory);
         });
     }
 }
