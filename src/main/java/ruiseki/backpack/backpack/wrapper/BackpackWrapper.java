@@ -24,7 +24,9 @@ import ruiseki.okcore.helper.NBTHelpers;
 import ruiseki.okcore.inventory.InventorySorter;
 import ruiseki.okcore.inventory.ItemStackKey;
 import ruiseki.okcore.inventory.SortBy;
+import ruiseki.okstoragecore.inventory.ITrackedContentsItemHandler;
 import ruiseki.okstoragecore.inventory.InventoryHandler;
+import ruiseki.okstoragecore.inventory.InventoryIOHandler;
 import ruiseki.okstoragecore.settings.SettingsHandler;
 import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
 import ruiseki.okstoragecore.settings.nosort.NoSortSettingsCategory;
@@ -56,6 +58,10 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Nullable
     private UpgradeHandler upgradeHandler = null;
     @Nullable
+    private InventoryIOHandler inventoryIOHandler = null;
+    @Nullable
+    private InventoryModificationHandler inventoryModificationHandler = null;
+    @Nullable
     private SettingsHandler settingsHandler = null;
 
     private IntConsumer onSlotsChange = diff -> {};
@@ -79,13 +85,13 @@ public class BackpackWrapper implements IBackpackWrapper {
         inventorySlotChangeHandler = slotChangeHandler;
     }
 
-    // @Override
-    // public ITrackedContentsItemHandler getInventoryForUpgradeProcessing() {
-    // if (inventoryModificationHandler == null) {
-    // inventoryModificationHandler = new InventoryModificationHandler(this);
-    // }
-    // return inventoryModificationHandler.getModifiedInventoryHandler();
-    // }
+    @Override
+    public ITrackedContentsItemHandler getInventoryForUpgradeProcessing() {
+        if (inventoryModificationHandler == null) {
+            inventoryModificationHandler = new InventoryModificationHandler(this);
+        }
+        return inventoryModificationHandler.getModifiedInventoryHandler();
+    }
 
     @Override
     public InventoryHandler getInventoryHandler() {
@@ -145,13 +151,13 @@ public class BackpackWrapper implements IBackpackWrapper {
             .markDirty();
     }
 
-    // @Override
-    // public ITrackedContentsItemHandler getInventoryForInputOutput() {
-    // if (inventoryIOHandler == null) {
-    // inventoryIOHandler = new InventoryIOHandler(this);
-    // }
-    // return inventoryIOHandler.getFilteredItemHandler();
-    // }
+    @Override
+    public ITrackedContentsItemHandler getInventoryForInputOutput() {
+        if (inventoryIOHandler == null) {
+            inventoryIOHandler = new InventoryIOHandler(this);
+        }
+        return inventoryIOHandler.getFilteredItemHandler();
+    }
 
     @Override
     public SettingsHandler getSettingsHandler() {
@@ -184,8 +190,8 @@ public class BackpackWrapper implements IBackpackWrapper {
                         }
                         getInventoryHandler().clearListeners();
                         // handler.addListener(getSettingsHandler().getTypeCategory(ItemDisplaySettingsCategory.class)::itemChanged);
-                        // inventoryIOHandler = null;
-                        // inventoryModificationHandler = null;
+                        inventoryIOHandler = null;
+                        inventoryModificationHandler = null;
                         // fluidHandlerInitialized = false;
                         // fluidHandler = null;
                         // energyStorageInitialized = false;
@@ -370,7 +376,7 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public void refreshInventoryForInputOutput() {
-        // inventoryIOHandler = null;
+        inventoryIOHandler = null;
         upgradeCachesInvalidatedHandler.run();
     }
 
@@ -432,7 +438,7 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public void refreshInventoryForUpgradeProcessing() {
-        // inventoryModificationHandler = null;
+        inventoryModificationHandler = null;
         // fluidHandler = null;
         // fluidHandlerInitialized = false;
         // energyStorage = null;

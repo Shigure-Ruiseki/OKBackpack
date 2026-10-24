@@ -26,7 +26,7 @@ public class ItemCraftingUpgrade extends ItemUpgradeBase<CraftingUpgradeWrapper>
             }
 
             @Override
-            public void updateWidgetDelegates(CraftingUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
+            public void updateTabDelegates(CraftingUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
                 DelegatedItemHandlerSH handler = group.get("crafting_handler");
                 if (handler == null) return;
                 handler.setItemHandler(wrapper::getStorage);
@@ -34,7 +34,7 @@ public class ItemCraftingUpgrade extends ItemUpgradeBase<CraftingUpgradeWrapper>
             }
 
             @Override
-            public ExpandedTab getExpandedTabWidget(int slotIndex, CraftingUpgradeWrapper wrapper, ItemStack stack,
+            public ExpandedTab createExpandedTab(int slotIndex, CraftingUpgradeWrapper wrapper, ItemStack stack,
                 IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey) {
                 return new CraftingUpgradeTab(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
             }

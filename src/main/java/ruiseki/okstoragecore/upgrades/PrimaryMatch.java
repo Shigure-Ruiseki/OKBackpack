@@ -40,6 +40,13 @@ public enum PrimaryMatch implements StringRepresentable {
         VALUES = values();
     }
 
+    public static PrimaryMatch fromOrdinal(int ordinal) {
+        if (ordinal < 0 || ordinal >= VALUES.length) {
+            return ITEM;
+        }
+        return VALUES[ordinal];
+    }
+
     public static PrimaryMatch fromName(String name) {
         return NAME_VALUES.getOrDefault(name, ITEM);
     }

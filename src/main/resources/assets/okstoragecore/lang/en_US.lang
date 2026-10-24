@@ -70,3 +70,14 @@ gui.okstoragecore.settings.buttons.keep_search_phrase.off.tooltip=Backpack / Sto
 gui.okstoragecore.upgrades.crafting=Craft
 gui.okstoragecore.upgrades.buttons.refill_crafting_grid=Refill Crafting Grid
 gui.okstoragecore.upgrades.buttons.do_not_refill_crafting_grid=Do Not Refill Crafting Grid
+
+gui.okstoragecore.upgrades.buttons.allow=Allow
+gui.okstoragecore.upgrades.buttons.block=Block
+gui.okstoragecore.upgrades.buttons.match_mod=Match Mod
+gui.okstoragecore.upgrades.buttons.match_item=Match Item
+gui.okstoragecore.upgrades.buttons.match_ore_dict=Match OreDict
+gui.okstoragecore.upgrades.buttons.match_tag=Match Tag
+gui.okstoragecore.upgrades.buttons.match_durability=Match Durability
+gui.okstoragecore.upgrades.buttons.ignore_durability=Ignore Durability
+gui.okstoragecore.upgrades.buttons.match_nbt=Match NBT
+gui.okstoragecore.upgrades.buttons.ignore_nbt=Ignore NBT

@@ -27,6 +27,7 @@ public class UpgradeSlotSHRegistries {
     public static final ResourceLocation CRAFTING_CLEAR = new ResourceLocation(
         Reference.MOD_ID,
         "storage_crafting_clear");
+    public static final ResourceLocation FILTER_LOGIC = new ResourceLocation(Reference.MOD_ID, "storage_filter_logic");
 
     public static void load() {
 
@@ -63,6 +64,9 @@ public class UpgradeSlotSHRegistries {
             if (!(wrapper instanceof CraftingUpgradeWrapper upgradeWrapper)) return;
             StorageInventoryHelpers
                 .clear(slot.getPanel(), slot.getWrapper(), upgradeWrapper.getStorage(), intoInventory);
+        });
+        REGISTRY.registerServer(FILTER_LOGIC, (slot, buf) -> {
+
         });
     }
 }

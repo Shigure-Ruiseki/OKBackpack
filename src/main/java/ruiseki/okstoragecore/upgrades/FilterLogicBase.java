@@ -1,10 +1,6 @@
 package ruiseki.okstoragecore.upgrades;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.Consumer;
 
 import net.minecraft.item.Item;
@@ -32,6 +28,8 @@ public class FilterLogicBase {
 
     @Nullable
     protected Set<TagKey<Item>> tagKeys = null;
+    @Nullable
+    protected List<String> oreDictEntries = null;
 
     public FilterLogicBase(ItemStack upgrade, Consumer<ItemStack> saveHandler, String parentTagKey) {
         this.upgrade = upgrade;
@@ -133,6 +131,71 @@ public class FilterLogicBase {
                     TagKey.create(Registries.ITEM, new ResourceLocation(((NBTTagString) elementNbt).func_150285_a_()))),
                 () -> new TreeSet<>(comparator))
             .orElseGet(() -> new TreeSet<>(comparator));
+    }
+
+    public List<String> getOreDictEntries() {
+        if (oreDictEntries == null) {
+            initOreDictEntries();
+        }
+        return Collections.unmodifiableList(oreDictEntries);
+    }
+
+    public boolean addOreDictEntry(String name) {
+        if (name == null || name.isEmpty()) {
+            return false;
+        }
+
+        if (oreDictEntries == null) {
+            initOreDictEntries();
+        }
+
+        if (oreDictEntries.contains(name)) {
+            return false;
+        }
+
+        oreDictEntries.add(name);
+        serializeOreDictEntries();
+        save();
+        return true;
+    }
+
+    public boolean removeOreDictEntry(int index) {
+        if (oreDictEntries == null) {
+            initOreDictEntries();
+        }
+
+        if (index < 0 || index >= oreDictEntries.size()) {
+            return false;
+        }
+
+        oreDictEntries.remove(index);
+        serializeOreDictEntries();
+        save();
+        return true;
+    }
+
+    public int indexOfOreDictEntry(String name) {
+        return getOreDictEntries().indexOf(name);
+    }
+
+    protected void initOreDictEntries() {
+        oreDictEntries = NBTHelpers
+            .getCollection(
+                upgrade,
+                parentTagKey,
+                "oreDictEntries",
+                Constants.NBT.TAG_STRING,
+                nbt -> Optional.of(((NBTTagString) nbt).func_150285_a_()),
+                ArrayList::new)
+            .orElseGet(ArrayList::new);
+    }
+
+    private void serializeOreDictEntries() {
+        if (oreDictEntries == null) {
+            return;
+        }
+
+        NBTHelpers.setList(upgrade, parentTagKey, "oreDictEntries", oreDictEntries, NBTTagString::new);
     }
 
     public void setAllowList(boolean isAllowList) {

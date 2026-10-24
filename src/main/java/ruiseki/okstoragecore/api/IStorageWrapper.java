@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.SortBy;
+import ruiseki.okstoragecore.inventory.ITrackedContentsItemHandler;
 import ruiseki.okstoragecore.inventory.InventoryHandler;
 import ruiseki.okstoragecore.settings.ISettingsCategory;
 import ruiseki.okstoragecore.settings.SettingsHandler;
@@ -26,7 +27,11 @@ public interface IStorageWrapper {
         // noop
     }
 
+    ITrackedContentsItemHandler getInventoryForUpgradeProcessing();
+
     InventoryHandler getInventoryHandler();
+
+    ITrackedContentsItemHandler getInventoryForInputOutput();
 
     default void setUpgradeCachesInvalidatedHandler(Runnable handler) {
         // noop
@@ -125,6 +130,11 @@ public interface IStorageWrapper {
         }
 
         @Override
+        public ITrackedContentsItemHandler getInventoryForUpgradeProcessing() {
+            return getInventoryHandler();
+        }
+
+        @Override
         public InventoryHandler getInventoryHandler() {
             if (inventoryHandler == null) {
                 inventoryHandler = new InventoryHandler(0, this, new NBTTagCompound(), () -> {}, 64) {
@@ -141,6 +151,11 @@ public interface IStorageWrapper {
                 };
             }
             return inventoryHandler;
+        }
+
+        @Override
+        public ITrackedContentsItemHandler getInventoryForInputOutput() {
+            return getInventoryHandler();
         }
 
         @Override

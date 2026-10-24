@@ -1,8 +1,10 @@
 package ruiseki.okstoragecore.client.gui;
 
+import net.minecraft.init.Items;
 import net.minecraft.util.ResourceLocation;
 
 import com.cleanroommc.modularui.api.drawable.IDrawable;
+import com.cleanroommc.modularui.drawable.ItemDrawable;
 import com.cleanroommc.modularui.drawable.UITexture;
 
 import ruiseki.okstoragecore.Reference;
@@ -17,6 +19,9 @@ public class OSCTextures {
     public static final IDrawable SHIFT_CLICK_INVENTORY = icon("shift_click_inv", 64, 96);
     public static final IDrawable SHIFT_CLICK_OPEN_TAB = icon("shift_click_tab", 80, 32);
 
+    public static final UITexture CHECK_ICON = icon("check", 0, 0);
+    public static final UITexture CROSS_ICON = icon("cross", 16, 0);
+
     public static final IDrawable SETTING = icon("setting", 16, 96);
     public static final IDrawable BACK = icon("back", 64, 80);
 
@@ -30,6 +35,19 @@ public class OSCTextures {
     public static final UITexture BALANCE = icon("balance", 32, 0, CRAFTING_TWEAKS);
     public static final UITexture ROTATED_LEFT = icon("rotated_left", 48, 0, CRAFTING_TWEAKS);
     public static final UITexture SPREAD = icon("spread", 80, 0, CRAFTING_TWEAKS);
+
+    public static final UITexture MATCH_MOD = icon("match_mod", 32, 16);
+    public static final IDrawable MATCH_ITEM = new ItemDrawable(Items.apple);
+    public static final UITexture MATCH_TAG = icon("match_tag", 80, 0);
+
+    public static final UITexture MATCH_DURABILITY = icon("match_duration", 0, 16);
+    public static final UITexture IGNORE_DURABILITY = icon("ignore_duration", 16, 16);
+
+    public static final IDrawable ADD = icon("add", 96, 32);
+    public static final IDrawable REMOVE = icon("remove", 112, 32);
+
+    public static final UITexture MATCH_NBT = icon("match_nbt", 32, 0);
+    public static final UITexture IGNORE_NBT = icon("ignore_nbt", 48, 0);
 
     public static UITexture icon(String name, int x, int y) {
         return icon(name, x, y, 16, 16, ICON_LOCATION);

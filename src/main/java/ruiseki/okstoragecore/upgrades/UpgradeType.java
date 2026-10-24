@@ -22,24 +22,24 @@ public class UpgradeType<T extends IUpgradeWrapper> {
     }
 
     public void updateWidgetDelegates(T wrapper, UpgradeSlotUpdate group) {
-        factory.updateWidgetDelegates(wrapper, group);
+        factory.updateTabDelegates(wrapper, group);
     }
 
     public ExpandedTab getExpandedTabWidget(int slotIndex, T wrapper, ItemStack stack, IStorageWrapper storageWrapper,
         StoragePanel storagePanel, String titleKey) {
-        return factory.getExpandedTabWidget(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
+        return factory.createExpandedTab(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
     }
 
     public interface IFactory<T extends IUpgradeWrapper> {
 
         T create(IStorageWrapper storageWrapper, ItemStack upgrade, Consumer<ItemStack> upgradeSaveHandler);
 
-        default void updateWidgetDelegates(T wrapper, UpgradeSlotUpdate group) {
+        default void updateTabDelegates(T wrapper, UpgradeSlotUpdate group) {
 
         }
 
-        default ExpandedTab getExpandedTabWidget(int slotIndex, T wrapper, ItemStack stack,
-            IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey) {
+        default ExpandedTab createExpandedTab(int slotIndex, T wrapper, ItemStack stack, IStorageWrapper storageWrapper,
+            StoragePanel storagePanel, String titleKey) {
             return null;
         }
     }

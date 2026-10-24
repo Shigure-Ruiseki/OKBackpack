@@ -5,10 +5,10 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import ruiseki.backpack.backpack.ItemBackpack;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
+import ruiseki.backpack.upgrades.inception.ItemInceptionUpgrade;
 import ruiseki.okcore.helper.CapabilityHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.inventory.InventoryHandler;
-import ruiseki.okstoragecore.upgrades.inception.ItemInceptionUpgrade;
 
 public class BackpackInventoryHandler extends InventoryHandler {
 
