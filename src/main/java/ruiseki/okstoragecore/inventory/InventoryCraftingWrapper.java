@@ -23,13 +23,12 @@ public class InventoryCraftingWrapper extends InventoryCrafting {
     public final Supplier<StorageContainer> supplier;
     public final int size;
     public final int startIndex;
-    private ItemStack cachedRecipeOutput = ItemHelpers.EMPTY;
 
     public InventoryCraftingWrapper(Supplier<StorageContainer> supplier, int width, int height,
         IItemHandlerModifiable delegate, int startIndex) {
         super(supplier.get(), width, height);
         this.supplier = supplier;
-        this.size = width * height + 1;
+        this.size = width * height;
         if (startIndex + this.size > delegate.getSlots()) {
             throw new IllegalArgumentException(
                 "Inventory does not have enough slots for given size. Requires " + (startIndex + this.size)
@@ -39,7 +38,7 @@ public class InventoryCraftingWrapper extends InventoryCrafting {
         }
         this.delegate = delegate;
         this.startIndex = startIndex;
-        for (int i = 0; i < this.size - 1; i++) {
+        for (int i = 0; i < this.size; i++) {
             ItemStack stack = this.delegate.getStackInSlot(i + this.startIndex);
             updateSnapshot(i, stack);
         }
@@ -61,7 +60,7 @@ public class InventoryCraftingWrapper extends InventoryCrafting {
     public void detectChanges() {
         // detect changes from snapshot and notify container
         boolean notify = false;
-        for (int i = 0; i < this.size - 1; i++) {
+        for (int i = 0; i < this.size; i++) {
             ItemStack stack = getBackingList()[i];
             ItemStack current = this.delegate.getStackInSlot(i + this.startIndex);
             if (ItemHelpers.isEmpty(current) && current != ItemHelpers.EMPTY) {
@@ -91,7 +90,7 @@ public class InventoryCraftingWrapper extends InventoryCrafting {
     }
 
     public boolean isEmpty() {
-        for (int i = 0; i < this.size - 1; i++) {
+        for (int i = 0; i < this.size; i++) {
             if (!ItemHelpers.isEmpty(getStackInSlot(i))) {
                 return false;
             }
@@ -101,11 +100,6 @@ public class InventoryCraftingWrapper extends InventoryCrafting {
 
     @Override
     public ItemStack getStackInSlot(int index) {
-        // hide result slot from CraftingManager
-        if (index >= this.size - 1) {
-            return ItemHelpers.EMPTY;
-        }
-
         int real = this.startIndex + index;
         return real >= 0 && real < this.delegate.getSlots() ? this.delegate.getStackInSlot(real) : ItemHelpers.EMPTY;
     }
@@ -126,7 +120,7 @@ public class InventoryCraftingWrapper extends InventoryCrafting {
     }
 
     public ItemStack decrStackSize(int index, int count, boolean notifyContainer) {
-        if (index < 0 || index >= this.size - 1 || count <= 0) return ItemHelpers.EMPTY;
+        if (index < 0 || index >= this.size || count <= 0) return ItemHelpers.EMPTY;
 
         int real = this.startIndex + index;
         ItemStack stack = this.delegate.getStackInSlot(real);
@@ -149,7 +143,7 @@ public class InventoryCraftingWrapper extends InventoryCrafting {
     }
 
     public ItemStack removeStackFromSlot(int index, boolean notifyContainer) {
-        if (index < 0 || index >= this.size - 1) return ItemHelpers.EMPTY;
+        if (index < 0 || index >= this.size) return ItemHelpers.EMPTY;
 
         int real = this.startIndex + index;
         ItemStack stack = this.delegate.getStackInSlot(real);
@@ -165,14 +159,6 @@ public class InventoryCraftingWrapper extends InventoryCrafting {
         for (int i = 0; i < this.size; i++) {
             this.setSlot(i, ItemHelpers.EMPTY, false);
         }
-    }
-
-    public ItemStack getCachedRecipeOutput() {
-        return ItemHelpers.isEmpty(cachedRecipeOutput) ? ItemHelpers.EMPTY : cachedRecipeOutput.copy();
-    }
-
-    public void setCachedRecipeOutput(ItemStack stack) {
-        this.cachedRecipeOutput = ItemHelpers.isEmpty(stack) ? ItemHelpers.EMPTY : stack.copy();
     }
 
     public void notifyContainer() {

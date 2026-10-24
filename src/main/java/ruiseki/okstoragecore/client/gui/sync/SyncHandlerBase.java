@@ -8,7 +8,26 @@ import net.minecraft.util.ResourceLocation;
 import com.cleanroommc.modularui.api.IPacketWriter;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 
+import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
+
 public class SyncHandlerBase<T extends SyncHandlerBase<T>> extends SyncHandler<T> {
+
+    private final StoragePanel panel;
+    private final IStorageWrapper wrapper;
+
+    public SyncHandlerBase(IStorageWrapper wrapper, StoragePanel panel) {
+        this.panel = panel;
+        this.wrapper = wrapper;
+    }
+
+    public IStorageWrapper getWrapper() {
+        return wrapper;
+    }
+
+    public StoragePanel getPanel() {
+        return panel;
+    }
 
     @Override
     public void readOnClient(int id, PacketBuffer buf) throws IOException {

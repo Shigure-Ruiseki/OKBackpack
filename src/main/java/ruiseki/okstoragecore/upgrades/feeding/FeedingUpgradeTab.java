@@ -19,14 +19,14 @@ public class FeedingUpgradeTab extends ExpandedUpgradeTab<FeedingUpgradeWrapper>
     public static class Basic extends FeedingUpgradeTab {
 
         public Basic(int slotIndex, FeedingUpgradeWrapper wrapper, ItemStack stack, IStorageWrapper storageWrapper,
-            StoragePanel storagePanel, String titleKey, int width) {
+            StoragePanel storagePanel, String titleKey) {
             super(slotIndex, 4, wrapper, stack, storageWrapper, storagePanel, titleKey, 75);
         }
 
         @Override
         protected Flow addUpgradeColumn() {
             return super.addUpgradeColumn()
-                .child(new FilterLogicControl.Basic(this.getSlotIndex(), this.getWrapper(), "filter"));
+                .child(new FilterLogicControl.Basic(this.getSlotIndex(), this.getWrapper(), "basic_filter_"));
         }
     }
 

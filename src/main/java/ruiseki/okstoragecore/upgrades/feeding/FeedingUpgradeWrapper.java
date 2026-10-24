@@ -30,16 +30,22 @@ public class FeedingUpgradeWrapper extends UpgradeWrapperBase<FeedingUpgradeWrap
     private static final int FEEDING_RANGE = 3;
 
     private final FilterLogic filterLogic;
+    private final int slotCount;
 
     protected FeedingUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
         Consumer<ItemStack> upgradeSaveHandler) {
         super(storageWrapper, upgrade, upgradeSaveHandler);
+        this.slotCount = upgradeItem.getFilterSlotCount();
 
         filterLogic = new FilterLogic(
             upgrade,
             upgradeSaveHandler,
             upgradeItem.getFilterSlotCount(),
             FeedingUpgradeWrapper::isEdible);
+    }
+
+    public int getSlotCount() {
+        return slotCount;
     }
 
     @Override

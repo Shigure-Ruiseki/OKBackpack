@@ -12,45 +12,34 @@ import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 
 public class DelegatedItemHandlerSH extends SyncHandlerBase<DelegatedItemHandlerSH> {
 
-    private final IStorageWrapper storageWrapper;
-    private final StoragePanel storagePanel;
     private final Supplier<StorageContainer> containerSupplier;
     private final int slotIndex;
     private final int wrappedSlotAmount;
 
-    private final DelegatedItemHandler supplier;
+    private final DelegatedItemHandler itemHandler;
 
     public DelegatedItemHandlerSH(IStorageWrapper storageWrapper, StoragePanel storagePanel,
         Supplier<StorageContainer> containerSupplier, int slotIndex, int wrappedSlotAmount) {
-        this.storageWrapper = storageWrapper;
-        this.storagePanel = storagePanel;
+        super(storageWrapper, storagePanel);
         this.slotIndex = slotIndex;
         this.wrappedSlotAmount = wrappedSlotAmount;
         this.containerSupplier = containerSupplier;
 
-        this.supplier = new DelegatedItemHandler(() -> EmptyHandler.INSTANCE, this.wrappedSlotAmount);
+        this.itemHandler = new DelegatedItemHandler(() -> EmptyHandler.INSTANCE, this.wrappedSlotAmount);
     }
 
     public void setItemHandler(Supplier<IItemHandlerModifiable> supplier) {
-        this.supplier.setDelegated(supplier);
+        this.itemHandler.setDelegated(supplier);
     }
 
     public IItemHandlerModifiable getItemHandler() {
-        return this.supplier;
+        return this.itemHandler;
     }
 
     public IUpgradeWrapper getUpgradeWrapper() {
-        return this.getStorageWrapper()
+        return this.getWrapper()
             .getUpgradeHandler()
             .getSlotWrapper(this.getSlotIndex());
-    }
-
-    public IStorageWrapper getStorageWrapper() {
-        return storageWrapper;
-    }
-
-    public StoragePanel getStoragePanel() {
-        return storagePanel;
     }
 
     public Supplier<StorageContainer> getContainerSupplier() {
@@ -59,5 +48,9 @@ public class DelegatedItemHandlerSH extends SyncHandlerBase<DelegatedItemHandler
 
     public int getSlotIndex() {
         return slotIndex;
+    }
+
+    public int getWrappedSlotAmount() {
+        return wrappedSlotAmount;
     }
 }

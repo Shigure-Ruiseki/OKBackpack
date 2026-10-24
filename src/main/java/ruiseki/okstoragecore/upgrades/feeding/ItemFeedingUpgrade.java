@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedFilterLogicSH;
+import ruiseki.okstoragecore.client.gui.sync.DelegatedFilterLogicSHRegisters;
 import ruiseki.okstoragecore.client.gui.widget.ExpandedTab;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
@@ -26,21 +27,25 @@ public class ItemFeedingUpgrade extends ItemUpgradeBase<FeedingUpgradeWrapper> {
 
         @Override
         public void updateTabDelegates(FeedingUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
-            DelegatedFilterLogicSH filterLogicSH = group.get("filter_logic");
-            if (filterLogicSH == null) return;
-            filterLogicSH.setFilterLogic(wrapper::getFilterLogic);
+            DelegatedFilterLogicSH filterLogic = wrapper.getSlotCount() == 9 ? group.get("basic_filter_logic")
+                : group.get("adv_filter_logic");
+            if (filterLogic == null) return;
+            filterLogic.setFilterLogic(wrapper::getFilterLogic);
+            filterLogic.syncToServer(DelegatedFilterLogicSHRegisters.FILTER_LOGIC);
         }
 
         @Override
         public ExpandedTab createExpandedTab(int slotIndex, FeedingUpgradeWrapper wrapper, ItemStack stack,
             IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey) {
-            return new FeedingUpgradeTab.Advanced(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
+            return wrapper.getSlotCount() == 9
+                ? new FeedingUpgradeTab.Basic(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey)
+                : new FeedingUpgradeTab.Advanced(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
         }
     });
 
     private final IntSupplier filterSlotCount;
 
-    protected ItemFeedingUpgrade(IntSupplier filterSlotCount, IUpgradeCountLimitConfig upgradeTypeLimitConfig) {
+    public ItemFeedingUpgrade(IntSupplier filterSlotCount, IUpgradeCountLimitConfig upgradeTypeLimitConfig) {
         super(upgradeTypeLimitConfig);
         this.filterSlotCount = filterSlotCount;
     }

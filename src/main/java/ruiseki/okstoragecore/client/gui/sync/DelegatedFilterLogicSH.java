@@ -3,42 +3,28 @@ package ruiseki.okstoragecore.client.gui.sync;
 import java.util.function.Supplier;
 
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.container.StorageContainer;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.upgrades.FilterLogic;
 
-public class DelegatedFilterLogicSH extends SyncHandlerBase<DelegatedFilterLogicSH> {
+public class DelegatedFilterLogicSH extends DelegatedItemHandlerSH {
 
-    private final IStorageWrapper storageWrapper;
-    private final StoragePanel storagePanel;
-    private final int slotIndex;
+    private Supplier<FilterLogic> filterLogic;
 
-    private Supplier<FilterLogic> supplier;
-
-    public DelegatedFilterLogicSH(IStorageWrapper storageWrapper, StoragePanel storagePanel, int slotIndex) {
-        this.storageWrapper = storageWrapper;
-        this.storagePanel = storagePanel;
-        this.slotIndex = slotIndex;
-
-        this.supplier = () -> null;
+    public DelegatedFilterLogicSH(IStorageWrapper storageWrapper, StoragePanel storagePanel,
+        Supplier<StorageContainer> containerSupplier, int slotIndex, int wrappedSlotAmount) {
+        super(storageWrapper, storagePanel, containerSupplier, slotIndex, wrappedSlotAmount);
+        this.filterLogic = () -> new FilterLogic(null, stack -> {}, this.getWrappedSlotAmount());
     }
 
     public FilterLogic getFilterLogic() {
-        return this.supplier.get();
+        return this.filterLogic.get();
     }
 
-    public void setFilterLogic(Supplier<FilterLogic> supplier) {
-        this.supplier = supplier;
-    }
-
-    public IStorageWrapper getStorageWrapper() {
-        return this.storageWrapper;
-    }
-
-    public StoragePanel getStoragePanel() {
-        return this.storagePanel;
-    }
-
-    public int getSlotIndex() {
-        return this.slotIndex;
+    public void setFilterLogic(Supplier<FilterLogic> filterLogic) {
+        this.filterLogic = filterLogic;
+        this.setItemHandler(
+            () -> this.getFilterLogic()
+                .getFilterHandler());
     }
 }

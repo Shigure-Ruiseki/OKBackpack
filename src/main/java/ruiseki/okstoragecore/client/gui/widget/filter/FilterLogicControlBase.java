@@ -7,9 +7,9 @@ import java.util.function.BooleanSupplier;
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.api.value.ISyncOrValue;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
-import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
@@ -18,6 +18,7 @@ import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
+import ruiseki.okstoragecore.client.gui.widget.StorageSlotGrid;
 import ruiseki.okstoragecore.upgrades.FilterLogic;
 import ruiseki.okstoragecore.upgrades.IFilteredUpgrade;
 import ruiseki.okstoragecore.upgrades.PrimaryMatch;
@@ -78,18 +79,24 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
         this.slotCount = slotCount;
         this.filteredWrapper = filteredWrapper;
 
-        // init sync handler
-        this.syncHandler("upgrades", slotIndex);
+        this.syncHandler("upgrades", this.getSlotIndex());
 
-        this.child(this.addButtonRow())
-            .child(this.addItemConfigGroup());
+        this.child(this.addContentColumn());
+    }
+
+    protected Flow addContentColumn() {
+        return Flow.column()
+            .coverChildren()
+            .childPadding(4)
+            .child(
+                this.addButtonRow())
+            .child(
+                this.addItemConfigGroup());
     }
 
     protected Flow addButtonRow() {
         Flow buttonRow = Flow.row()
-            .leftRel(0.5f)
-            .height(20)
-            .coverChildrenWidth()
+            .coverChildren()
             .childPadding(2);
         if (this.shouldShow(MatchButton.ALLOW_LIST)) {
             buttonRow.child(this.addAllowListButton());
@@ -103,8 +110,8 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
 
     protected Flow addItemConfigRow() {
         Flow configRow = Flow.row()
+            .coverChildren()
             .childPadding(2)
-            .height(20)
             .setEnabledIf(
                 row -> this.filteredWrapper.getFilterLogic()
                     .getPrimaryMatch() == PrimaryMatch.ITEM);
@@ -171,30 +178,27 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
     }
 
     protected Flow addItemConfigGroup() {
+        final int columns = 4;
+        final int rows = (this.slotCount + columns - 1) / columns;
 
-        // Slots
-        SlotGroupWidget slotGroup = new SlotGroupWidget().coverChildren()
-            .leftRel(0.5f);
-
-        for (int i = 0; i < this.slotCount; i++) {
-            ItemSlot slot = new DisableablePhantomItemSlot(() -> this.slotsDisabled.getAsBoolean());
-            slot.name(this.syncKey + "_" + this.slotIndex)
-                .syncHandler(this.syncKey + "_" + this.slotIndex, i)
-                .pos(i % 4 * 18, i / 4 * 18);
-            slotGroup.child(slot);
-        }
-
-        int filterSlotRows = (this.slotCount + 3) / 4;
-        int itemGroupHeight = filterSlotRows * 18 + 13;
+        StorageSlotGrid<ItemSlot> slotGrid = StorageSlotGrid.builder()
+            .matrix(columns, rows, 'F')
+            .maxSlots(this.slotCount)
+            .key(
+                'F',
+                i -> new DisableablePhantomItemSlot(
+                    () -> this.getSlotsDisabled()
+                        .getAsBoolean()).name(this.getSyncKey() + "_" + this.getSlotIndex() + "_" + i)
+                            .syncHandler(this.getSyncKey() + "_" + this.getSlotIndex(), i))
+            .build();
 
         return Flow.column()
-            .size(88, itemGroupHeight)
-            .leftRel(0.5f)
-            .top(24)
-            .child(slotGroup)
+            .coverChildren()
+            .child(slotGrid)
             .setEnabledIf(
                 flow -> this.filteredWrapper.getFilterLogic()
-                    .getPrimaryMatch() != PrimaryMatch.ORE_DICT);
+                    .getPrimaryMatch() != PrimaryMatch.ORE_DICT
+            );
     }
 
     protected boolean shouldShow(MatchButton matchButton) {
@@ -213,6 +217,11 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
     protected void updateWrapper() {
         this.getSyncHandler()
             .syncToServer(UpgradeSlotSHRegistries.FILTER_LOGIC, buf -> {});
+    }
+
+    @Override
+    public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        return syncOrValue instanceof UpgradeSlotSH;
     }
 
     @Override
