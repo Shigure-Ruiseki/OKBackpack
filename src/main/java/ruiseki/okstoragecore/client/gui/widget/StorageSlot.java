@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
@@ -18,7 +17,6 @@ import com.cleanroommc.modularui.ModularUI;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.value.ISyncOrValue;
 import com.cleanroommc.modularui.core.mixins.early.minecraft.GuiAccessor;
-import com.cleanroommc.modularui.core.mixins.early.minecraft.GuiContainerAccessor;
 import com.cleanroommc.modularui.core.mixins.early.minecraft.GuiScreenAccessor;
 import com.cleanroommc.modularui.drawable.GuiDraw;
 import com.cleanroommc.modularui.screen.NEAAnimationHandler;
@@ -30,16 +28,12 @@ import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.utils.GlStateManager;
 import com.cleanroommc.modularui.utils.NumberFormat;
 import com.cleanroommc.modularui.utils.Platform;
-import com.cleanroommc.modularui.widgets.slot.ItemSlot;
-import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.neverenoughanimations.NEAConfig;
 
 import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import ruiseki.okbackpack.client.gui.slot.ResizableItemSlot;
 import ruiseki.okbackpack.client.gui.slot.UpgradeSlot;
 import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
-import ruiseki.okbackpack.mixins.early.modularui2.ItemSlotInvoker;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
@@ -47,7 +41,7 @@ import ruiseki.okstoragecore.client.gui.sync.StorageSlotSH;
 import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
 import ruiseki.okstoragecore.settings.nosort.NoSortSettingsCategory;
 
-public class StorageSlot extends ItemSlot {
+public class StorageSlot extends ResizableItemSlot {
 
     private final IStorageWrapper storageWrapper;
     private final StoragePanel storagePanel;
@@ -440,126 +434,16 @@ public class StorageSlot extends ItemSlot {
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    protected void drawSlot(ModularSlot slotIn) {
-        GuiScreen guiScreen = getScreen().getScreenWrapper()
-            .getGuiScreen();
-        if (!(guiScreen instanceof GuiContainer guiContainer))
-            throw new IllegalStateException("The gui must be an instance of GuiContainer if it contains slots!");
-        GuiContainerAccessor acc = (GuiContainerAccessor) guiScreen;
-        RenderItem renderItem = GuiScreenAccessor.getItemRender();
-        ItemStack itemstack = slotIn.getStack();
-        boolean isDragPreview = false;
-        boolean flag1 = slotIn == acc.getClickedSlot() && acc.getDraggedStack() != null && !acc.getIsRightMouseClick();
-        ItemStack itemstack1 = guiScreen.mc.thePlayer.inventory.getItemStack();
-        int amount = -1;
-        String format = null;
-
-        if (!this.getSyncHandler()
-            .isPhantom()) {
-            if (slotIn == acc.getClickedSlot() && acc.getDraggedStack() != null
-                && acc.getIsRightMouseClick()
-                && itemstack != null) {
-                itemstack = itemstack.copy();
-                itemstack.stackSize /= 2;
-            } else if (acc.getDragSplitting() && acc.getDragSplittingSlots()
-                .contains(slotIn) && itemstack1 != null) {
-                    if (acc.getDragSplittingSlots()
-                        .size() == 1) {
-                        return;
-                    }
-
-                    // canAddItemToSlot
-                    if (Container.func_94527_a(slotIn, itemstack1, true) && getScreen().getContainer()
-                        .canDragIntoSlot(slotIn)) {
-                        itemstack = itemstack1.copy();
-                        isDragPreview = true;
-                        // computeStackSize
-                        Container.func_94525_a(
-                            acc.getDragSplittingSlots(),
-                            acc.getDragSplittingLimit(),
-                            itemstack,
-                            slotIn.getStack() == null ? 0 : slotIn.getStack().stackSize);
-                        int k = Math.min(itemstack.getMaxStackSize(), slotIn.getSlotStackLimit());
-
-                        if (itemstack.stackSize > k) {
-                            amount = k;
-                            format = EnumChatFormatting.YELLOW.toString();
-                            itemstack.stackSize = k;
-                        }
-                    } else {
-                        acc.getDragSplittingSlots()
-                            .remove(slotIn);
-                        acc.invokeUpdateDragSplitting();
-                    }
-                }
+    @Override
+    protected void drawSlotAmountText(int amount, String format) {
+        if (amount >= Integer.MAX_VALUE) {
+            FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+            String infinityText = "\u221E";
+            int x = this.getArea().width - font.getStringWidth(infinityText) - 1;
+            int y = this.getArea().height - font.FONT_HEIGHT;
+            font.drawStringWithShadow(infinityText, x, y, 0xFFFFFF);
+        } else {
+            GuiDraw.drawStandardSlotAmountText(amount, format, getArea());
         }
-
-        // makes sure items of different layers don't interfere with each other visually
-        float z = this.getContext()
-            .getCurrentDrawingZ() + 100;
-        ((GuiAccessor) guiScreen).setZLevel(z);
-        renderItem.zLevel = z;
-
-        if (!flag1) {
-            if (isDragPreview) {
-                GuiDraw.drawRect(1, 1, 16, 16, -2130706433);
-            }
-
-            ((ItemSlotInvoker) this).invokeRenderSlotUnderlayNEI(guiContainer, slotIn);
-
-            itemstack = NEAAnimationHandler.injectVirtualStack(itemstack, guiContainer, slotIn);
-
-            if (itemstack != null) {
-                Platform.setupDrawItem();
-                float itemScale = NEAAnimationHandler.injectHoverScale(guiContainer, slotIn);
-                // render the item itself
-                renderItem.renderItemAndEffectIntoGUI(
-                    Minecraft.getMinecraft().fontRenderer,
-                    Minecraft.getMinecraft()
-                        .getTextureManager(),
-                    itemstack,
-                    1,
-                    1);
-                GuiDraw.afterRenderItemAndEffectIntoGUI(itemstack);
-                GlStateManager.disableRescaleNormal();
-                Platform.endDrawItem();
-
-                if (amount < 0) {
-                    amount = itemstack.stackSize;
-                }
-                if (amount >= Integer.MAX_VALUE) {
-                    FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-                    String infinityText = "\u221E";
-                    int x = this.getArea().width - font.getStringWidth(infinityText) - 1;
-                    int y = this.getArea().height - font.FONT_HEIGHT;
-                    font.drawStringWithShadow(infinityText, x, y, 0xFFFFFF);
-                } else {
-                    GuiDraw.drawStandardSlotAmountText(amount, format, getArea());
-                }
-
-                int cachedCount = itemstack.stackSize;
-                itemstack.stackSize = 1; // required to not render the amount overlay
-                // render other overlays like durability bar
-                renderItem.renderItemOverlayIntoGUI(
-                    ((GuiScreenAccessor) guiScreen).getFontRenderer(),
-                    Minecraft.getMinecraft()
-                        .getTextureManager(),
-                    itemstack,
-                    1,
-                    1,
-                    null);
-                NEAAnimationHandler.endHoverScale();
-                itemstack.stackSize = cachedCount;
-                GlStateManager.disableDepth();
-                GlStateManager.disableLighting();
-            }
-
-            ((ItemSlotInvoker) this).invokeRenderSlotOverlayNEI(guiContainer, slotIn);
-        }
-
-        ((GuiAccessor) guiScreen).setZLevel(0f);
-        renderItem.zLevel = 0f;
     }
-
 }

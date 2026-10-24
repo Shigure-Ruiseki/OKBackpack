@@ -36,10 +36,8 @@ public class BackpackMainSettingTab extends StorageMainSettingTab {
     public BackpackMainSettingTab(IBackpackWrapper storageWrapper, BackpackPanel storagePanel,
         StorageSettingPanel settingPanel, Tab parentTab) {
         super(
-            3,
             OKBGuiTextures.BACKPACK_ICON,
             "gui.okbackpack.settings.backpack",
-            120,
             Tab.ExpandDirection.RIGHT,
             storageWrapper,
             storagePanel,
@@ -51,7 +49,7 @@ public class BackpackMainSettingTab extends StorageMainSettingTab {
 
     @Override
     protected ToggleButton addModeButton() {
-        return super.addModeButton().overlay(false, IKey.lang("gui.okbackpack.settings.buttons.context_backpack="))
+        return super.addModeButton().overlay(false, IKey.lang("gui.okbackpack.settings.buttons.context_backpack"))
             .overlay(true, IKey.lang("gui.okstoragecore.settings.buttons.context_player"))
             .tooltipDynamic(tooltip -> {
                 tooltip.clearText();

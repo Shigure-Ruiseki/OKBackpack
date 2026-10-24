@@ -39,9 +39,9 @@ public class StorageSettingPanel extends ModularPanel {
             .relative(this.getStoragePanel())
             .top(0)
             .right(0);
-        this.addGlobalTab();
-        this.addSortingTab();
         this.addMemoryTab();
+        this.addSortingTab();
+        this.addGlobalTab();
     }
 
     protected void addGlobalTab() {

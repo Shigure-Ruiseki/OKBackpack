@@ -72,12 +72,10 @@ public class StorageMainSettingTab extends SettingTab {
     public StorageMainSettingTab(IStorageWrapper storageWrapper, StoragePanel storagePanel,
         StorageSettingPanel settingPanel, Tab parentTab) {
         this(
-            3,
             new ItemDrawable(
                 storagePanel.getTile()
                     .getBlockType()),
             "gui.okstoragecore.storage_settings",
-            120,
             Tab.ExpandDirection.RIGHT,
             storageWrapper,
             storagePanel,
@@ -85,19 +83,9 @@ public class StorageMainSettingTab extends SettingTab {
             parentTab);
     }
 
-    public StorageMainSettingTab(int coveredTabSize, IDrawable delegatedIcon, String titleKey, int width,
-        Tab.ExpandDirection expandDirection, IStorageWrapper storageWrapper, StoragePanel storagePanel,
-        StorageSettingPanel settingPanel, Tab parentTab) {
-        super(
-            coveredTabSize,
-            delegatedIcon,
-            titleKey,
-            width,
-            expandDirection,
-            storageWrapper,
-            storagePanel,
-            settingPanel,
-            parentTab);
+    public StorageMainSettingTab(IDrawable delegatedIcon, String titleKey, Tab.ExpandDirection expandDirection,
+        IStorageWrapper storageWrapper, StoragePanel storagePanel, StorageSettingPanel settingPanel, Tab parentTab) {
+        super(delegatedIcon, titleKey, expandDirection, storageWrapper, storagePanel, settingPanel, parentTab);
 
         this.usingPlayerSettings = this.getPlayerSettingsMode();
         this.shiftClickIntoOpenTab = this.getShiftClickIntoOpenTabValue();
@@ -107,15 +95,17 @@ public class StorageMainSettingTab extends SettingTab {
             .getMainColor();
         this.accentColor = this.getStorageWrapper()
             .getAccentColor();
+    }
 
-        this.child(this.addModeButton());
-        this.child(this.addButtonRow());
-        this.child(this.addColorRow());
+    @Override
+    protected Flow addSettingsColumn() {
+        return super.addSettingsColumn().child(this.addModeButton())
+            .child(this.addButtonRow())
+            .child(this.addColorRow());
     }
 
     protected ToggleButton addModeButton() {
-        return new ToggleButton().pos(6, 26)
-            .size(60, 16)
+        return new ToggleButton().size(60, 16)
             .value(new BoolValue.Dynamic(this::isUsingPlayerSettings, this::setUsingPlayerMode))
             .overlay(false, IKey.lang("gui.okstoragecore.settings.buttons.settings_context_storage"))
             .overlay(true, IKey.lang("gui.okstoragecore.settings.buttons.context_player"))
@@ -173,10 +163,7 @@ public class StorageMainSettingTab extends SettingTab {
 
     protected Flow addButtonRow() {
         return Flow.row()
-            .pos(6, 44)
-            .height(20)
-            .coverChildrenWidth()
-            .childPadding(0)
+            .coverChildren()
             .child(this.addShiftClickButton())
             .child(this.addKeepTabButton())
             .child(this.addKeepSearchButton());
@@ -189,7 +176,6 @@ public class StorageMainSettingTab extends SettingTab {
             index -> {
                 boolean newValue = (index == 1);
                 this.shiftClickIntoOpenTab = newValue;
-
                 SettingsManager.setSettingByMode(
                     this.getStoragePanel()
                         .getPlayer(),
@@ -199,7 +185,6 @@ public class StorageMainSettingTab extends SettingTab {
                     SettingsManager.SHIFT_CLICK_INTO_OPEN_TAB_FIRST,
                     newValue,
                     this.isUsingPlayerSettings());
-
                 this.getStoragePanel()
                     .getStorageSH()
                     .syncToServer(StorageSHRegisters.SET_SHIFT_CLICK_INTO_TAB_FIRST_SETTING, buffer -> {
@@ -223,7 +208,6 @@ public class StorageMainSettingTab extends SettingTab {
         this.keepTabButton = new CyclicVariantButtonWidget(KEEP_TAB_VARIANTS, this.isKeepTabOpen() ? 1 : 0, index -> {
             boolean newValue = (index == 1);
             this.keepTabOpen = newValue;
-
             SettingsManager.setSettingByMode(
                 this.getStoragePanel()
                     .getPlayer(),
@@ -233,7 +217,6 @@ public class StorageMainSettingTab extends SettingTab {
                 SettingsManager.KEEP_TAB_OPEN,
                 newValue,
                 this.isUsingPlayerSettings());
-
             this.getStoragePanel()
                 .getStorageSH()
                 .syncToServer(StorageSHRegisters.SET_KEEP_TAB_OPEN_SETTING, buffer -> {
@@ -248,7 +231,6 @@ public class StorageMainSettingTab extends SettingTab {
                     tooltip.addLine(IKey.lang("gui.okstoragecore.settings.buttons.keep_tab_open.off.tooltip"));
                 }
             });
-
         return this.keepTabButton;
     }
 
@@ -259,7 +241,6 @@ public class StorageMainSettingTab extends SettingTab {
             index -> {
                 boolean newValue = (index == 1);
                 this.keepSearch = newValue;
-
                 SettingsManager.setSettingByMode(
                     this.getStoragePanel()
                         .getPlayer(),
@@ -269,7 +250,6 @@ public class StorageMainSettingTab extends SettingTab {
                     SettingsManager.KEEP_SEARCH_PHRASE,
                     newValue,
                     this.isUsingPlayerSettings());
-
                 this.getStoragePanel()
                     .getStorageSH()
                     .syncToServer(StorageSHRegisters.SET_KEEP_SEARCH_PHRASE_SETTING, buffer -> {
@@ -284,16 +264,12 @@ public class StorageMainSettingTab extends SettingTab {
                         tooltip.addLine(IKey.lang("gui.okstoragecore.settings.buttons.keep_search_phrase.off.tooltip"));
                     }
                 });
-
         return this.keepSearchButton;
     }
 
     protected Flow addColorRow() {
         return Flow.row()
-            .pos(6, 66)
-            .height(20)
-            .coverChildrenWidth()
-            .childPadding(0)
+            .coverChildren()
             .child(this.addMainToggleButton())
             .child(this.addAccentToggleButton());
     }
@@ -304,20 +280,15 @@ public class StorageMainSettingTab extends SettingTab {
             @Override
             public void draw(ModularGuiContext context, WidgetThemeEntry widgetTheme) {
                 super.draw(context, widgetTheme);
-
                 GlStateManager.disableDepth();
-
                 GuiDraw.drawRect(5, 5, 10, 10, Color.withAlpha(mainColor, 255));
-
                 GuiDraw.drawRect(4, 4, 12, 1, 0xFF202020);
                 GuiDraw.drawRect(4, 15, 12, 1, 0xFF202020);
                 GuiDraw.drawRect(4, 4, 1, 12, 0xFF202020);
                 GuiDraw.drawRect(15, 4, 1, 12, 0xFF202020);
-
                 GlStateManager.enableDepth();
             }
         };
-
         IPanelHandler colorPicker = IPanelHandler.simple(
             this.getSettingPanel(),
             (mainPanel,
@@ -330,7 +301,6 @@ public class StorageMainSettingTab extends SettingTab {
                         .top(0)
                         .rightRel(1f),
             true);
-
         colorToggleButton.size(20)
             .onMousePressed(button -> {
                 if (button == 0) {
@@ -345,7 +315,6 @@ public class StorageMainSettingTab extends SettingTab {
                         IKey.lang("gui.okstoragecore.main_color_detail")
                             .style(IKey.GRAY))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
-
         return colorToggleButton;
     }
 
@@ -355,20 +324,15 @@ public class StorageMainSettingTab extends SettingTab {
             @Override
             public void draw(ModularGuiContext context, WidgetThemeEntry widgetTheme) {
                 super.draw(context, widgetTheme);
-
                 GlStateManager.disableDepth();
-
                 GuiDraw.drawRect(5, 5, 10, 10, Color.withAlpha(accentColor, 255));
-
                 GuiDraw.drawRect(4, 4, 12, 1, 0xFF202020);
                 GuiDraw.drawRect(4, 15, 12, 1, 0xFF202020);
                 GuiDraw.drawRect(4, 4, 1, 12, 0xFF202020);
                 GuiDraw.drawRect(15, 4, 1, 12, 0xFF202020);
-
                 GlStateManager.enableDepth();
             }
         };
-
         IPanelHandler colorPicker = IPanelHandler.simple(
             this.getSettingPanel(),
             (mainPanel,
@@ -381,7 +345,6 @@ public class StorageMainSettingTab extends SettingTab {
                         .top(0)
                         .rightRel(1f),
             true);
-
         accentToggleButton.size(20)
             .onMousePressed(button -> {
                 if (button == 0) {
@@ -396,7 +359,6 @@ public class StorageMainSettingTab extends SettingTab {
                         IKey.lang("gui.okstoragecore.accent_color_detail")
                             .style(IKey.GRAY))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
-
         return accentToggleButton;
     }
 

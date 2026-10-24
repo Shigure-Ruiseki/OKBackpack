@@ -16,7 +16,7 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
-import ruiseki.okbackpack.client.gui.slot.BigItemSlot;
+import ruiseki.okbackpack.client.gui.slot.ResizableItemSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
@@ -144,7 +144,7 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
             craftingMatrix[i] = itemSlot;
         }
 
-        craftingResult = new BigItemSlot().syncHandler("crafting_result_" + slotIndex, 0)
+        craftingResult = new ResizableItemSlot(26).syncHandler("crafting_result_" + slotIndex, 0)
             .pos(18, 18 * 3 + 9)
             .name("crafting_result_" + slotIndex);
         craftingGroupsWidget.child(craftingResult);

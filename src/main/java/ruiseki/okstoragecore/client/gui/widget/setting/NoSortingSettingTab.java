@@ -28,17 +28,36 @@ public class NoSortingSettingTab extends SettingTab {
     public NoSortingSettingTab(IStorageWrapper storageWrapper, StoragePanel storagePanel,
         StorageSettingPanel settingPanel, Tab parentTab) {
         super(
-            2,
             OKBGuiTextures.NO_SORT_ICON,
             "gui.okstoragecore.no_sorting_settings",
-            100,
             Tab.ExpandDirection.RIGHT,
             storageWrapper,
             storagePanel,
             settingPanel,
             parentTab);
 
-        ButtonWidget<?> selectAllButton = new ButtonWidget<>().size(20)
+        this.getPhantomTab()
+            .getTabIcon()
+            .tooltipDynamic(tooltip -> {
+                tooltip.clearText();
+                tooltip.addLine(IKey.lang("gui.okstoragecore.no_sorting_settings.tooltip_open_detail"));
+                tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+            })
+            .tooltipAutoUpdate(true);
+    }
+
+    @Override
+    protected Flow addSettingsColumn() {
+        return super.addSettingsColumn().child(
+            Flow.row()
+                .coverChildren()
+                .child(this.addSelectAllButton())
+                .child(this.addUnselectAllButton())
+                .child(this.addColorToggleButton()));
+    }
+
+    protected ButtonWidget<?> addSelectAllButton() {
+        return new ButtonWidget<>().size(20)
             .overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
@@ -59,8 +78,10 @@ public class NoSortingSettingTab extends SettingTab {
             .tooltipStatic(
                 t -> t.addLine(IKey.lang("gui.okstoragecore.select_all_slots"))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+    }
 
-        ButtonWidget<?> unselectAllButton = new ButtonWidget<>().size(20)
+    protected ButtonWidget<?> addUnselectAllButton() {
+        return new ButtonWidget<>().size(20)
             .overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
@@ -77,7 +98,9 @@ public class NoSortingSettingTab extends SettingTab {
             .tooltipStatic(
                 t -> t.addLine(IKey.lang("gui.okstoragecore.unselect_all_slots"))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+    }
 
+    protected ButtonWidget<?> addColorToggleButton() {
         ButtonWidget<?> colorToggleButton = new ButtonWidget() {
 
             @Override
@@ -123,26 +146,7 @@ public class NoSortingSettingTab extends SettingTab {
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
         this.currentColor = this.getNoSortSettingsCategory()
             .getColor();
-
-        this.child(
-            Flow.row()
-                .leftRel(0.5f)
-                .height(20)
-                .top(28)
-                .coverChildrenWidth()
-                .childPadding(0)
-                .child(selectAllButton)
-                .child(unselectAllButton)
-                .child(colorToggleButton));
-
-        this.getPhantomTab()
-            .getTabIcon()
-            .tooltipDynamic(tooltip -> {
-                tooltip.clearText();
-                tooltip.addLine(IKey.lang("gui.okstoragecore.no_sorting_settings.tooltip_open_detail"));
-                tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
-            })
-            .tooltipAutoUpdate(true);
+        return colorToggleButton;
     }
 
     public int getCurrentColor() {

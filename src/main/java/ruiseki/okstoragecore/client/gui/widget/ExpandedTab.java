@@ -1,3 +1,4 @@
+
 package ruiseki.okstoragecore.client.gui.widget;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,67 +26,107 @@ public abstract class ExpandedTab extends ParentWidget<ExpandedTab> {
         .tiled()
         .build();
 
-    protected final int coveredTabSize;
+    protected final String titleKey;
     protected final Tab.ExpandDirection expandDirection;
 
     protected final PhantomTab phantomTab;
-    protected final TextWidget<?> titleKeyWidget;
-    protected final Flow upperTabRow;
+    protected final TextWidget<?> titleField;
+    protected final Flow headerRow;
 
-    public ExpandedTab(int coveredTabSize, IDrawable delegatedIcon, String titleKey) {
-        this(coveredTabSize, delegatedIcon, titleKey, 75, Tab.ExpandDirection.RIGHT);
+    protected final Flow contentsColumn;
+
+    public ExpandedTab(IDrawable icon, String titleKey) {
+        this(icon, titleKey, Tab.ExpandDirection.RIGHT);
     }
 
-    public ExpandedTab(int coveredTabSize, IDrawable delegatedIcon, String titleKey, int width) {
-        this(coveredTabSize, delegatedIcon, titleKey, width, Tab.ExpandDirection.RIGHT);
-    }
-
-    public ExpandedTab(int coveredTabSize, IDrawable delegatedIcon, String titleKey, int width,
-        Tab.ExpandDirection expandDirection) {
-        this.coveredTabSize = coveredTabSize;
+    public ExpandedTab(IDrawable icon, String titleKey, Tab.ExpandDirection expandDirection) {
+        this.titleKey = titleKey;
         this.expandDirection = expandDirection;
-
-        this.phantomTab = new PhantomTab(delegatedIcon.asWidget()).top(0);
-
-        this.titleKeyWidget = new TextWidget<>(IKey.lang(titleKey)).textAlign(Alignment.CENTER)
-            .paddingRight(2)
-            .topRel(0.5f);
-
-        this.upperTabRow = Flow.row()
-            .coverChildrenHeight();
 
         switch (expandDirection) {
             case LEFT:
                 this.right(0);
-
-                this.upperTabRow.child(
-                    new Widget<>().width(4)
-                        .name("placeholder"))
-                    .child(titleKeyWidget)
-                    .child(phantomTab);
                 break;
-
             case RIGHT:
                 this.left(0);
-
-                this.upperTabRow.width(width - 3)
-                    .child(phantomTab)
-                    .child(titleKeyWidget.expanded());
                 break;
         }
 
-        this.width(width);
-        this.height(coveredTabSize * 30);
         this.background(TAB_TEXTURE);
-        this.child(upperTabRow);
+        this.coverChildren();
+
+        this.phantomTab = this.addPhantomTab(icon);
+        this.titleField = this.addTitleField();
+        this.headerRow = this.addHeaderRow();
+
+        this.contentsColumn = this.addContentsColumn();
+        this.child(this.contentsColumn);
+    }
+
+    protected Flow addContentsColumn() {
+        Flow column = Flow.column()
+            .coverChildren()
+            .padding(7)
+            .paddingTop(5)
+            .childPadding(2)
+            .crossAxisAlignment(Alignment.CrossAxis.START);
+        column.addChild(this.getHeaderRow(), 0);
+        return column;
+    }
+
+    protected PhantomTab addPhantomTab(IDrawable icon) {
+        return new PhantomTab(icon.asWidget()).top(0);
+    }
+
+    protected TextWidget<?> addTitleField() {
+        return new TextWidget<>(IKey.lang(this.getTitleKey())).textAlign(Alignment.TopCenter)
+            .paddingLeft(2)
+            .maxWidth(75);
+    }
+
+    protected Flow addHeaderRow() {
+        Flow row = Flow.row();
+        switch (this.getExpandDirection()) {
+            case LEFT:
+                row.coverChildren()
+                    .child(this.getTitleField())
+                    .child(this.getPhantomTab());
+                break;
+            case RIGHT:
+                row.coverChildren()
+                    .child(this.getPhantomTab())
+                    .child(this.getTitleField());
+                break;
+        }
+        return row;
     }
 
     public int getCoveredTabSize() {
-        return coveredTabSize;
+        return Math.max(1, this.getArea().height / 30);
     }
 
-    public PhantomTab getPhantomTab() {
+    public String getTitleKey() {
+        return titleKey;
+    }
+
+    public Tab.ExpandDirection getExpandDirection() {
+        return expandDirection;
+    }
+
+    protected PhantomTab getPhantomTab() {
         return phantomTab;
+    }
+
+    protected TextWidget<?> getTitleField() {
+        return titleField;
+    }
+
+    protected Flow getHeaderRow() {
+        return headerRow;
+    }
+
+    protected Flow getContentsColumn() {
+        return contentsColumn;
     }
 
     public abstract void updateTabState();
@@ -96,18 +137,15 @@ public abstract class ExpandedTab extends ParentWidget<ExpandedTab> {
 
         public PhantomTab(Widget<?> tabIcon) {
             this.tabIcon = tabIcon;
-            this.size(28, 24);
-            this.tabIcon.size(18)
-                .top(5);
+            this.tabIcon.size(18);
+            this.size(18);
 
             switch (expandDirection) {
                 case LEFT:
                     this.right(0);
-                    tabIcon.right(7);
                     break;
 
                 case RIGHT:
-                    tabIcon.left(7);
                     break;
             }
 
@@ -120,9 +158,7 @@ public abstract class ExpandedTab extends ParentWidget<ExpandedTab> {
 
         @Override
         public @NotNull Result onMousePressed(int mouseButton) {
-            if (!isEnabled()) {
-                return Result.STOP;
-            }
+            if (!isEnabled()) return Result.STOP;
 
             if (mouseButton == 0) {
                 updateTabState();

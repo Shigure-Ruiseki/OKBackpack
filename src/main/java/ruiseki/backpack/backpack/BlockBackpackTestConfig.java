@@ -16,7 +16,7 @@ public class BlockBackpackTestConfig extends BlockContainerConfig {
             true,
             "test_backpack",
             null,
-            blockConfig -> new BlockBackpack(TierRegistries.LEATHER));
+            blockConfig -> new BlockBackpack(TierRegistries.OBSIDIAN));
     }
 
     @Override

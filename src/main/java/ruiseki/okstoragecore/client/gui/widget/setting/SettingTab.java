@@ -1,6 +1,8 @@
 package ruiseki.okstoragecore.client.gui.widget.setting;
 
 import com.cleanroommc.modularui.api.drawable.IDrawable;
+import com.cleanroommc.modularui.utils.Alignment;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.widget.ExpandedTab;
@@ -15,14 +17,16 @@ public class SettingTab extends ExpandedTab {
     private final StorageSettingPanel settingPanel;
     private final Tab parentTab;
 
-    public SettingTab(int coveredTabSize, IDrawable delegatedIcon, String titleKey, int width,
-        Tab.ExpandDirection expandDirection, IStorageWrapper storageWrapper, StoragePanel storagePanel,
-        StorageSettingPanel settingPanel, Tab parentTab) {
-        super(coveredTabSize, delegatedIcon, titleKey, width, expandDirection);
+    public SettingTab(IDrawable delegatedIcon, String titleKey, Tab.ExpandDirection expandDirection,
+        IStorageWrapper storageWrapper, StoragePanel storagePanel, StorageSettingPanel settingPanel, Tab parentTab) {
+        super(delegatedIcon, titleKey, expandDirection);
         this.storageWrapper = storageWrapper;
         this.storagePanel = storagePanel;
         this.settingPanel = settingPanel;
         this.parentTab = parentTab;
+
+        this.getContentsColumn()
+            .child(this.addSettingsColumn());
     }
 
     @Override
@@ -42,6 +46,13 @@ public class SettingTab extends ExpandedTab {
         }
         this.getSettingPanel()
             .updateTabStates();
+    }
+
+    protected Flow addSettingsColumn() {
+        return Flow.column()
+            .crossAxisAlignment(Alignment.CrossAxis.START)
+            .childPadding(2)
+            .coverChildren();
     }
 
     protected IStorageWrapper getStorageWrapper() {

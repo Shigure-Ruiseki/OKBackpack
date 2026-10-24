@@ -500,9 +500,7 @@ public class StoragePanel extends ModularPanel {
 
         for (int i = 0; i < slotCount; i++) {
             Tab tab = new Tab(i + 1).name("upgrade_tab_" + i);
-
             tab.setEnabled(false);
-
             this.tabs.add(tab);
         }
 

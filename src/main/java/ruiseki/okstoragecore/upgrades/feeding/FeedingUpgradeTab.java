@@ -11,16 +11,16 @@ import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
 
 public class FeedingUpgradeTab extends ExpandedUpgradeTab<FeedingUpgradeWrapper> {
 
-    public FeedingUpgradeTab(int slotIndex, int coveredTabSize, FeedingUpgradeWrapper wrapper, ItemStack stack,
-        IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey, int width) {
-        super(slotIndex, coveredTabSize, wrapper, stack, storageWrapper, storagePanel, titleKey, width);
+    public FeedingUpgradeTab(int slotIndex, FeedingUpgradeWrapper wrapper, ItemStack stack,
+        IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey) {
+        super(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
     }
 
     public static class Basic extends FeedingUpgradeTab {
 
         public Basic(int slotIndex, FeedingUpgradeWrapper wrapper, ItemStack stack, IStorageWrapper storageWrapper,
             StoragePanel storagePanel, String titleKey) {
-            super(slotIndex, 4, wrapper, stack, storageWrapper, storagePanel, titleKey, 75);
+            super(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
         }
 
         @Override
@@ -34,7 +34,7 @@ public class FeedingUpgradeTab extends ExpandedUpgradeTab<FeedingUpgradeWrapper>
 
         public Advanced(int slotIndex, FeedingUpgradeWrapper wrapper, ItemStack stack, IStorageWrapper storageWrapper,
             StoragePanel storagePanel, String titleKey) {
-            super(slotIndex, 6, wrapper, stack, storageWrapper, storagePanel, titleKey, 100);
+            super(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
         }
 
         @Override

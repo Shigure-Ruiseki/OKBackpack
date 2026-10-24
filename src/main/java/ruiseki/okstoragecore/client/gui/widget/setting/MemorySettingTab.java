@@ -30,17 +30,36 @@ public class MemorySettingTab extends SettingTab {
     public MemorySettingTab(IStorageWrapper storageWrapper, StoragePanel storagePanel, StorageSettingPanel settingPanel,
         Tab parentTab) {
         super(
-            2,
             OKBGuiTextures.BRAIN_ICON,
             "gui.okstoragecore.memory_settings",
-            100,
             Tab.ExpandDirection.RIGHT,
             storageWrapper,
             storagePanel,
             settingPanel,
             parentTab);
 
-        ButtonWidget<?> selectAllButton = new ButtonWidget<>().size(20)
+        this.getPhantomTab()
+            .getTabIcon()
+            .tooltipDynamic(tooltip -> {
+                tooltip.clearText();
+                tooltip.addLine(IKey.lang("gui.okstoragecore.memory_settings.tooltip_open_detail"));
+                tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+            })
+            .tooltipAutoUpdate(true);
+    }
+
+    @Override
+    protected Flow addSettingsColumn() {
+        return super.addSettingsColumn().child(
+            Flow.row()
+                .coverChildren()
+                .child(this.addSelectAllButton())
+                .child(this.addUnselectAllButton())
+                .child(this.addRespectNBTButton()));
+    }
+
+    protected ButtonWidget<?> addSelectAllButton() {
+        return new ButtonWidget<>().size(20)
             .overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
@@ -61,8 +80,10 @@ public class MemorySettingTab extends SettingTab {
             .tooltipStatic(
                 t -> t.addLine(IKey.lang("gui.okstoragecore.select_all_slots"))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+    }
 
-        ButtonWidget<?> unselectAllButton = new ButtonWidget<>().size(20)
+    protected ButtonWidget<?> addUnselectAllButton() {
+        return new ButtonWidget<>().size(20)
             .overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
@@ -79,8 +100,10 @@ public class MemorySettingTab extends SettingTab {
             .tooltipStatic(
                 t -> t.addLine(IKey.lang("gui.okstoragecore.unselect_all_slots"))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+    }
 
-        CyclicVariantButtonWidget respectNBTButton = new CyclicVariantButtonWidget(RESPECT_NBT_VARIANTS, index -> {
+    protected ButtonWidget<?> addRespectNBTButton() {
+        return new CyclicVariantButtonWidget(RESPECT_NBT_VARIANTS, index -> {
             this.getMemorySettings()
                 .setIgnoreNbt(index != 0);
             this.getStoragePanel()
@@ -90,26 +113,6 @@ public class MemorySettingTab extends SettingTab {
         }).setIndex(
             this.getMemorySettings()
                 .ignoresNbt() ? 1 : 0);
-
-        this.child(
-            Flow.row()
-                .leftRel(0.5f)
-                .height(20)
-                .top(28)
-                .coverChildrenWidth()
-                .childPadding(0)
-                .child(selectAllButton)
-                .child(unselectAllButton)
-                .child(respectNBTButton));
-
-        this.getPhantomTab()
-            .getTabIcon()
-            .tooltipDynamic(tooltip -> {
-                tooltip.clearText();
-                tooltip.addLine(IKey.lang("gui.okstoragecore.memory_settings.tooltip_open_detail"));
-                tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
-            })
-            .tooltipAutoUpdate(true);
     }
 
     public MemorySettingsCategory getMemorySettings() {

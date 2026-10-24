@@ -80,7 +80,7 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
         this.filteredWrapper = filteredWrapper;
 
         this.syncHandler("upgrades", this.getSlotIndex());
-
+        this.coverChildren();
         this.child(this.addContentColumn());
     }
 
@@ -88,10 +88,8 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
         return Flow.column()
             .coverChildren()
             .childPadding(4)
-            .child(
-                this.addButtonRow())
-            .child(
-                this.addItemConfigGroup());
+            .child(this.addButtonRow())
+            .child(this.addItemConfigGroup());
     }
 
     protected Flow addButtonRow() {
@@ -197,8 +195,7 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
             .child(slotGrid)
             .setEnabledIf(
                 flow -> this.filteredWrapper.getFilterLogic()
-                    .getPrimaryMatch() != PrimaryMatch.ORE_DICT
-            );
+                    .getPrimaryMatch() != PrimaryMatch.ORE_DICT);
     }
 
     protected boolean shouldShow(MatchButton matchButton) {

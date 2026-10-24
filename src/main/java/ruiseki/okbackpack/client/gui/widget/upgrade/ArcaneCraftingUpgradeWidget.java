@@ -27,7 +27,7 @@ import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
-import ruiseki.okbackpack.client.gui.slot.BigItemSlot;
+import ruiseki.okbackpack.client.gui.slot.ResizableItemSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
@@ -154,7 +154,7 @@ public class ArcaneCraftingUpgradeWidget extends ExpandedUpgradeTabWidget<Arcane
             craftingMatrix[i] = itemSlot;
         }
 
-        craftingResult = new BigItemSlot() {
+        craftingResult = new ResizableItemSlot(26) {
 
             @Override
             public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {

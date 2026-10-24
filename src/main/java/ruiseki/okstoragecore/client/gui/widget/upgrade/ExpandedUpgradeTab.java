@@ -24,21 +24,17 @@ public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase<U, ?>> ext
     protected int slotIndex;
     protected U wrapper;
 
-    public ExpandedUpgradeTab(int slotIndex, int coveredTabSize, U wrapper, ItemStack delegatedIconStack,
-        IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey, int width) {
-        super(coveredTabSize, new ItemDrawable(delegatedIconStack), titleKey, width);
+    public ExpandedUpgradeTab(int slotIndex, U wrapper, ItemStack stack, IStorageWrapper storageWrapper,
+        StoragePanel storagePanel, String titleKey) {
+        super(new ItemDrawable(stack), titleKey);
         this.wrapper = wrapper;
         this.storageWrapper = storageWrapper;
         this.storagePanel = storagePanel;
         this.slotIndex = slotIndex;
         this.syncHandler("upgrades", this.getSlotIndex());
 
-        this.child(this.addUpgradeColumn());
-    }
-
-    public ExpandedUpgradeTab(int slotIndex, int coveredTabSize, U wrapper, ItemStack delegatedIconStack,
-        IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey) {
-        this(slotIndex, coveredTabSize, wrapper, delegatedIconStack, storageWrapper, storagePanel, titleKey, 80);
+        this.getContentsColumn()
+            .addChild(this.addUpgradeColumn(), 1);
     }
 
     protected U getWrapper() {
@@ -63,7 +59,6 @@ public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase<U, ?>> ext
 
     protected Flow addUpgradeColumn() {
         return Flow.column()
-            .pos(8, 28)
             .coverChildren()
             .childPadding(2);
     }

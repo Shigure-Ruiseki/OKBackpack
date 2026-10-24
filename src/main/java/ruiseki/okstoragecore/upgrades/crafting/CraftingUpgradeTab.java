@@ -8,17 +8,17 @@ import net.minecraft.item.ItemStack;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
-import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
-import ruiseki.okbackpack.client.gui.slot.BigItemSlot;
+import ruiseki.okbackpack.client.gui.slot.ResizableItemSlot;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.ShiftButtonWidget;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
+import ruiseki.okstoragecore.client.gui.widget.StorageSlotGrid;
 import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
 
 public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrapper> {
@@ -40,13 +40,8 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
             OSCTextures.DO_NOT_FILL_CRAFTING));
 
     public CraftingUpgradeTab(int slotIndex, CraftingUpgradeWrapper wrapper, ItemStack stack,
-        IStorageWrapper storageWrapper, StoragePanel panel, String titleKey) {
-        this(slotIndex, 5, wrapper, stack, storageWrapper, panel, titleKey, 90);
-    }
-
-    public CraftingUpgradeTab(int slotIndex, int coveredTabSize, CraftingUpgradeWrapper wrapper, ItemStack stack,
-        IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey, int width) {
-        super(slotIndex, coveredTabSize, wrapper, stack, storageWrapper, storagePanel, titleKey, width);
+        IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey) {
+        super(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
     }
 
     @Override
@@ -59,8 +54,8 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
         return Flow.row()
             .coverChildrenHeight()
             .childPadding(2)
-            .child(this.addFillCraftingButton())
-            .child(this.addShiftClickIntoButton());
+            .child(this.addShiftClickIntoButton())
+            .child(this.addFillCraftingButton());
     }
 
     protected CyclicVariantButtonWidget addFillCraftingButton() {
@@ -101,25 +96,26 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
 
     protected Flow addCraftingRow() {
         return Flow.row()
-            .coverChildrenHeight()
+            .coverChildren()
             .childPadding(2)
             .child(this.addCraftingGrid())
             .child(this.addCraftingTweakColumn());
     }
 
-    protected SlotGroupWidget addCraftingGrid() {
-        SlotGroupWidget craftingGrid = new SlotGroupWidget().name("crafting_matrix")
+    protected StorageSlotGrid<ItemSlot> addCraftingGrid() {
+        int slotIndex = this.getSlotIndex();
+        StorageSlotGrid<ItemSlot> craftingGrid = new StorageSlotGrid<>().name("crafting_matrix")
             .coverChildren();
         for (int i = 0; i < 9; i++) {
-            ItemSlot itemSlot = new ItemSlot().syncHandler("crafting_slot_" + this.getSlotIndex(), i)
-                .pos(i % 3 * 18, i / 3 * 18)
-                .name("crafting_slot_" + i);
-            craftingGrid.child(itemSlot);
+            craftingGrid.child(
+                new ItemSlot().syncHandler("crafting_slot_" + slotIndex, i)
+                    .pos(i % 3 * 18, i / 3 * 18)
+                    .name("crafting_slot_" + i));
         }
-        ItemSlot craftingResult = new BigItemSlot().syncHandler("crafting_result_" + this.getSlotIndex(), 0)
-            .pos(18, 18 * 3 + 9)
-            .name("crafting_result_" + this.getSlotIndex());
-        craftingGrid.child(craftingResult);
+        craftingGrid.child(
+            new ResizableItemSlot(26).syncHandler("crafting_result_" + slotIndex, 0)
+                .pos(14, 63)
+                .name("crafting_result_" + slotIndex));
         return craftingGrid;
     }
 
@@ -127,7 +123,7 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
         return Flow.column()
             .coverChildren()
             .childPadding(2)
-            .top(1)
+            .topRel(0)
             .child(this.addRotatedButton())
             .child(this.addGridButton())
             .child(this.addClearButton());
