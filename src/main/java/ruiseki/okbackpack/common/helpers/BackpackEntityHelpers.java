@@ -24,13 +24,13 @@ public final class BackpackEntityHelpers {
 
     private static final int MAX_CACHE_SIZE = 256;
 
-    private static final ThreadsafeCache<BackpackKey, BackpackWrapper> WRAPPER_CACHE = new ThreadsafeCache<>(
+    private static final ThreadsafeCache<BackpackKey, CachedBackpack> WRAPPER_CACHE = new ThreadsafeCache<>(
         MAX_CACHE_SIZE,
         key -> {
             BackpackKey backpackKey = (BackpackKey) key;
             ItemStack stack = backpackKey.getStack();
             if (!isBackpackStack(stack)) return null;
-            return new BackpackWrapper(stack, (BlockBackpack.ItemBackpack) stack.getItem());
+            return new CachedBackpack();
         },
         false);
 
@@ -144,7 +144,8 @@ public final class BackpackEntityHelpers {
 
     public static BackpackWrapper getWrapper(ItemStack stack) {
         if (!isBackpackStack(stack)) return null;
-        return WRAPPER_CACHE.get(new BackpackKey(stack));
+        return WRAPPER_CACHE.get(new BackpackKey(stack))
+            .getWrapper(stack);
     }
 
     public static BackpackWrapper getInteractionWrapper(EntityPlayer player, ItemStack stack) {
@@ -312,6 +313,21 @@ public final class BackpackEntityHelpers {
             return container != null && wrapper == container.wrapper
                 && inventoryType == container.wrapper.getType()
                 && slotIndex == container.wrapper.getSlotIndex();
+        }
+    }
+
+    private static final class CachedBackpack {
+
+        private BackpackWrapper wrapper;
+
+        private synchronized BackpackWrapper getWrapper(ItemStack stack) {
+            // The key describes the item when it was cached, but the wrapper can be
+            // changed by upgrades. Returning to that old item state must not revive
+            // the wrapper's newer inventory (for example after emptying the GUI).
+            if (wrapper == null || !wrapper.matchesPersistedContents(stack)) {
+                wrapper = new BackpackWrapper(stack, (BlockBackpack.ItemBackpack) stack.getItem());
+            }
+            return wrapper;
         }
     }
 

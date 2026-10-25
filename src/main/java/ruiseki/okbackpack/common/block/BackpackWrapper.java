@@ -95,6 +95,8 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     public boolean isDirty;
 
+    private NBTTagCompound persistedContents;
+
     private Runnable onInventoryHandlerRefresh = () -> {};
 
     public String uuid;
@@ -785,15 +787,29 @@ public class BackpackWrapper implements IBackpackWrapper {
             backpack.setTagCompound(root);
         }
 
-        root.setTag(BACKPACK_NBT, serializeNBT());
+        NBTTagCompound contents = serializeNBT();
+        root.setTag(BACKPACK_NBT, contents);
         backpack.setTagCompound(root);
+        persistedContents = (NBTTagCompound) contents.copy();
     }
 
     @Override
     public void readFromItem() {
         if (backpack == null) return;
         NBTTagCompound tag = ItemNBTHelpers.getNBT(backpack);
-        if (tag.hasKey(BACKPACK_NBT)) deserializeNBT(tag.getCompoundTag(BACKPACK_NBT));
+        NBTTagCompound contents = tag.hasKey(BACKPACK_NBT, 10) ? tag.getCompoundTag(BACKPACK_NBT) : null;
+        if (contents != null) deserializeNBT(contents);
+        persistedContents = contents == null ? null : (NBTTagCompound) contents.copy();
+    }
+
+    public boolean matchesPersistedContents(ItemStack stack) {
+        if (backpack != stack) return false;
+        NBTTagCompound root = stack.getTagCompound();
+        NBTTagCompound contents = root != null && root.hasKey(BACKPACK_NBT, 10) ? root.getCompoundTag(BACKPACK_NBT)
+            : null;
+        // Compare the last loaded/saved state, not the live inventory: a lookup
+        // during a pending save must preserve changes that have not been written yet.
+        return persistedContents == null ? contents == null : persistedContents.equals(contents);
     }
 
     @Override
