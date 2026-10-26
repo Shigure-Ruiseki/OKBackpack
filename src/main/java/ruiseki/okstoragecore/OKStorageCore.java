@@ -17,7 +17,11 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigHandler;
 import ruiseki.okcore.init.ModBaseVersionable;
 import ruiseki.okcore.proxy.ICommonProxy;
-import ruiseki.okstoragecore.client.gui.sync.*;
+import ruiseki.okstoragecore.client.gui.sync.DelegatedFilterLogicSHRegisters;
+import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSHRegisters;
+import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
+import ruiseki.okstoragecore.client.gui.sync.StorageSlotSHRegistries;
+import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdateRegistries;
 
 @Mod(
