@@ -45,7 +45,7 @@ public class StorageContainer extends ModularContainer implements ISortableConta
     private static final int STORAGE_SLOT_GROUP_PRIORITY = 10;
     private static final int BOGO_BUTTON_SLEEPING_BAG_GAP = 2;
     private static final int SLEEPING_BAG_BUTTON_SIZE = 14;
-    private static final int SLEEPING_BAG_RIGHT_OFFSET = 35;
+    private static final int SLEEPING_BAG_RIGHT_OFFSET = 37;
 
     private static final String PLAYER_INV = "player_inventory";
 
