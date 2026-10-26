@@ -26,8 +26,8 @@ public class AdvancedCommonFilterSlotGroupFactory implements IUpgradeSlotGroupFa
         for (int i = 0; i < 16; i++) {
             ModularFilterSlot slot = new ModularFilterSlot(advancedCommonFilterStackHandler.delegatedStackHandler, i);
             slot.slotGroup("adv_common_filters_" + group.slotIndex);
-
             group.syncManager.syncValue("adv_common_filter_" + group.slotIndex, i, new FilterSlotSH(slot));
+            slots[i] = slot;
         }
         group.put("adv_common_filter_slots", slots);
 

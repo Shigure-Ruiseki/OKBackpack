@@ -98,7 +98,7 @@ public class BlockBackpack extends BlockTile {
             .ifPresent(
                 tile -> {
                     stack.setTagCompound(
-                        tile.getWrapper()
+                        tile.getBackpackWrapper()
                             .getBackpack()
                             .getTagCompound());
                 });

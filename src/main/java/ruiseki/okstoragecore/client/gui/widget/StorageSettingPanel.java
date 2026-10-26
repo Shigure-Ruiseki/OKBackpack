@@ -2,9 +2,6 @@ package ruiseki.okstoragecore.client.gui.widget;
 
 import static ruiseki.okbackpack.common.block.BackpackPanel.LAYERED_TAB_TEXTURE;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.RichTooltip;
@@ -22,7 +19,8 @@ public class StorageSettingPanel extends ModularPanel {
     protected final IStorageWrapper storageWrapper;
     protected final StoragePanel storagePanel;
 
-    protected List<Tab> tabs = new ArrayList<>();
+    protected IndexedChildWidget<Tab> tabContainer;
+
     protected Tab globalTab;
     protected Tab sortingTab;
     protected Tab memoryTab;
@@ -39,21 +37,26 @@ public class StorageSettingPanel extends ModularPanel {
             .relative(this.getStoragePanel())
             .top(0)
             .right(0);
-        this.addMemoryTab();
-        this.addSortingTab();
+
+        this.tabContainer = new IndexedChildWidget<Tab>().size(0)
+            .right(0)
+            .left(0);
+        this.child(this.getTabContainer());
+
         this.addGlobalTab();
+        this.addSortingTab();
+        this.addMemoryTab();
     }
 
     protected void addGlobalTab() {
         this.globalTab = new Tab(1).tooltipStatic(
             tooltip -> tooltip.addLine(IKey.lang("gui.okstoragecore.storage_settings"))
                 .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
-        // Change to other icon
+
         this.globalTab.setTabIcon(OKBGuiTextures.BACKPACK_ICON);
         this.globalTab.setExpandedWidget(
             new StorageMainSettingTab(this.getStorageWrapper(), this.getStoragePanel(), this, this.getGlobalTab()));
-        this.tabs.add(this.getGlobalTab());
-        this.child(this.getGlobalTab());
+        this.tabContainer.child(this.globalTab);
     }
 
     protected void addSortingTab() {
@@ -73,8 +76,8 @@ public class StorageSettingPanel extends ModularPanel {
         this.sortingTab.setTabIcon(OKBGuiTextures.NO_SORT_ICON);
         this.sortingTab.setExpandedWidget(
             new NoSortingSettingTab(this.getStorageWrapper(), this.getStoragePanel(), this, this.getSortingTab()));
-        this.tabs.add(this.getSortingTab());
-        this.child(this.getSortingTab());
+
+        this.tabContainer.child(this.sortingTab);
     }
 
     protected void addMemoryTab() {
@@ -94,8 +97,7 @@ public class StorageSettingPanel extends ModularPanel {
         this.memoryTab.setTabIcon(OKBGuiTextures.BRAIN_ICON);
         this.memoryTab.setExpandedWidget(
             new MemorySettingTab(this.getStorageWrapper(), this.getStoragePanel(), this, this.getMemoryTab()));
-        this.tabs.add(this.getMemoryTab());
-        this.child(this.getMemoryTab());
+        this.tabContainer.child(this.memoryTab);
     }
 
     @Override
@@ -112,43 +114,39 @@ public class StorageSettingPanel extends ModularPanel {
     }
 
     public void resetTabState() {
-        for (Tab tab : this.tabs) {
-            tab.setEnabled(true);
+        for (Tab tab : this.tabContainer.getTypeChildren()) {
             tab.setShowExpanded(false);
             this.getContext()
                 .getUISettings()
                 .getRecipeViewerSettings()
                 .removeExclusionArea(tab.getExpandedWidget());
         }
+        this.updateTabStates();
     }
 
     public void updateTabStates() {
-        Integer openedIndex = null;
-        int coveredSize = 0;
-        for (Tab tab : this.tabs) {
-            if (!tab.isShowExpanded()) {
-                continue;
+        Tab openedTab = null;
+        for (Tab tab : this.tabContainer.getTypeChildren()) {
+            if (tab.isShowExpanded()) {
+                openedTab = tab;
+                break;
             }
-
-            openedIndex = tab.getTabIndex();
-            if (tab.getExpandedWidget() != null) {
-                coveredSize = tab.getExpandedWidget()
-                    .getCoveredTabSize();
-            }
-            break;
         }
 
-        for (Tab tab : this.tabs) {
-            boolean enabled = true;
-            if (openedIndex != null) {
-                int dist = tab.getTabIndex() - openedIndex;
+        // Restore reversed render order based on logical tab index
+        this.tabContainer.getTypeChildren()
+            .stream()
+            .sorted((a, b) -> Integer.compare(b.getTabIndex(), a.getTabIndex()))
+            .forEach(this.tabContainer::moveFront);
 
-                if (dist > 0 && dist < coveredSize) {
-                    enabled = false;
-                }
-            }
-            tab.setEnabled(enabled);
+        // Expanded tab always renders last
+        if (openedTab != null) {
+            this.tabContainer.moveFront(openedTab);
         }
+    }
+
+    public IndexedChildWidget<Tab> getTabContainer() {
+        return this.tabContainer;
     }
 
     public IStorageWrapper getStorageWrapper() {
@@ -160,11 +158,11 @@ public class StorageSettingPanel extends ModularPanel {
     }
 
     public Tab getGlobalTab() {
-        return globalTab;
+        return this.globalTab;
     }
 
     public Tab getSortingTab() {
-        return sortingTab;
+        return this.sortingTab;
     }
 
     public Tab getMemoryTab() {

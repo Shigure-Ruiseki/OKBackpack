@@ -1,7 +1,10 @@
 package ruiseki.backpack.backpack;
 
+import java.util.Objects;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -15,7 +18,13 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
+import ruiseki.okcore.capabilities.resolver.BasicCapabilityResolver;
+import ruiseki.okcore.fluid.capability.CapabilityFluidHandler;
+import ruiseki.okcore.fluid.capability.EmptyFluidHandler;
+import ruiseki.okcore.fluid.handler.IFluidHandler;
 import ruiseki.okcore.helper.CapabilityHelpers;
+import ruiseki.okcore.item.IItemSharedTag;
+import ruiseki.okcore.item.capability.CapabilityItemHandler;
 import ruiseki.okcore.tileentity.TileEntityOK;
 
 public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData> {
@@ -23,16 +32,63 @@ public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData>
     private IBackpackWrapper backpackWrapper = IBackpackWrapper.Noop.INSTANCE;
 
     public TileBackpack() {
+        this.capabilityCache.addCapabilityResolver(
+            BasicCapabilityResolver.create(
+                CapabilityItemHandler.ITEM_HANDLER,
+                () -> this.getBackpackWrapper()
+                    .getInventoryForInputOutput()));
 
+        this.capabilityCache.addCapabilityResolver(
+            BasicCapabilityResolver.create(
+                CapabilityFluidHandler.FLUID_HANDLER,
+                () -> this.getBackpackWrapper()
+                    .getFluidHandler()
+                    .map(IFluidHandler.class::cast)
+                    .orElse(EmptyFluidHandler.INSTANCE)));
     }
 
     public void setBackpack(ItemStack stack) {
-        backpackWrapper = CapabilityHelpers.getCapability(stack, CapabilityBackpackWrapperConfig.CAPABILITY)
+        this.backpackWrapper = CapabilityHelpers.getCapability(stack, CapabilityBackpackWrapperConfig.CAPABILITY)
             .orElse(IBackpackWrapper.Noop.INSTANCE);
-        backpackWrapper.setSaveHandler(() -> {
+        this.backpackWrapper.setSaveHandler(() -> {
             markDirty();
             onSendUpdate();
         });
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
+        this.setBackpackFromNbt(tag);
+    }
+
+    private void setBackpackFromNbt(NBTTagCompound nbt) {
+        setBackpack(ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("backpackData")));
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
+        this.writeBackpack(tag);
+    }
+
+    private void writeBackpack(NBTTagCompound ret) {
+        ItemStack backpackCopy = this.backpackWrapper.getBackpack()
+            .copy();
+        backpackCopy.setTagCompound(
+            ((IItemSharedTag) Objects.requireNonNull(backpackCopy.getItem())).getNBTShareTag(backpackCopy));
+        ret.setTag("backpackData", backpackCopy.writeToNBT(new NBTTagCompound()));
+    }
+
+    @Override
+    public NBTTagCompound getNBTTagCompound() {
+        NBTTagCompound ret = super.getNBTTagCompound();
+        writeBackpack(ret);
+        return ret;
+    }
+
+    public IBackpackWrapper getBackpackWrapper() {
+        return backpackWrapper;
     }
 
     public boolean onBlockActivated(World world, EntityPlayer player, ForgeDirection side, float hitX, float hitY,
@@ -42,10 +98,6 @@ public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData>
                 .open(player, xCoord, yCoord, zCoord);
         }
         return true;
-    }
-
-    public IBackpackWrapper getWrapper() {
-        return backpackWrapper;
     }
 
     @Override

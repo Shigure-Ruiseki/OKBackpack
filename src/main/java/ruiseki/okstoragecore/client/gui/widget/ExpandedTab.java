@@ -34,6 +34,7 @@ public abstract class ExpandedTab extends ParentWidget<ExpandedTab> {
     protected final Flow headerRow;
 
     protected final Flow contentsColumn;
+    private int coveredTabSize = 0;
 
     public ExpandedTab(IDrawable icon, String titleKey) {
         this(icon, titleKey, Tab.ExpandDirection.RIGHT);
@@ -102,7 +103,14 @@ public abstract class ExpandedTab extends ParentWidget<ExpandedTab> {
     }
 
     public int getCoveredTabSize() {
-        return Math.max(1, this.getArea().height / 30);
+        if (this.coveredTabSize == 0 && this.resizer()
+            .isHeightCalculated()) {
+            int height = this.getArea().height;
+            if (height > 0) {
+                this.coveredTabSize = Math.max(1, height / 30);
+            }
+        }
+        return this.coveredTabSize;
     }
 
     public String getTitleKey() {

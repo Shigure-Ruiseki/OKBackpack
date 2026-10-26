@@ -1,9 +1,9 @@
 package ruiseki.okstoragecore.client.gui.widget.filter;
 
-import com.cleanroommc.modularui.value.sync.PhantomItemSlotSH;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import ruiseki.okbackpack.client.gui.slot.ModularFilterSlot;
+import ruiseki.okbackpack.client.gui.syncHandler.FilterSlotSH;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedFilterLogicSH;
 import ruiseki.okstoragecore.client.gui.widget.update.IUpgradeSlotUpdateFactory;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
@@ -28,7 +28,7 @@ public class BasicFilterLogicUpdate implements IUpgradeSlotUpdateFactory {
             ModularFilterSlot slot = new ModularFilterSlot(logicSH.getItemHandler(), i);
             slot.slotGroup("basic_filters_" + group.getSlotIndex());
             group.getSyncManager()
-                .syncValue("basic_filter_" + group.getSlotIndex(), i, new PhantomItemSlotSH(slot));
+                .syncValue("basic_filter_" + group.getSlotIndex(), i, new FilterSlotSH(slot));
             slots[i] = slot;
         }
 

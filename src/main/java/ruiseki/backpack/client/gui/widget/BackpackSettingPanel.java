@@ -27,8 +27,7 @@ public class BackpackSettingPanel extends StorageSettingPanel {
         this.globalTab.setTabIcon(OKBGuiTextures.BACKPACK_ICON);
         this.globalTab.setExpandedWidget(
             new BackpackMainSettingTab(this.getStorageWrapper(), this.getStoragePanel(), this, this.getGlobalTab()));
-        this.tabs.add(this.getGlobalTab());
-        this.child(this.getGlobalTab());
+        this.tabContainer.addChild(this.globalTab, -1);
     }
 
     @Override

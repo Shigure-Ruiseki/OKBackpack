@@ -43,18 +43,13 @@ public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase<U, ?>> ext
 
     @Override
     public void updateTabState() {
-        int currentTabId = this.getStorageWrapper()
-            .getOpenTabId()
+        int currentTabId = this.storageWrapper.getOpenTabId()
             .orElse(-1);
-        int targetTabId = this.getSlotIndex();
-        int newTabId = currentTabId == targetTabId ? -1 : targetTabId;
-        this.getStorageWrapper()
-            .setOpenTabId(newTabId);
-        this.getStoragePanel()
-            .getStorageSH()
+        int newTabId = currentTabId == this.slotIndex ? -1 : this.slotIndex;
+        this.storageWrapper.setOpenTabId(newTabId);
+        this.storagePanel.getStorageSH()
             .syncToServer(StorageSHRegisters.OPENED_ID, buffer -> buffer.writeInt(newTabId));
-        this.getStoragePanel()
-            .updateUpgradeTabs();
+        this.storagePanel.updateUpgradeTabs();
     }
 
     protected Flow addUpgradeColumn() {

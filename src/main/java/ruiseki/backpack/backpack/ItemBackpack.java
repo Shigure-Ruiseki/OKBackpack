@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.function.IntSupplier;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,10 +33,14 @@ import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
 import ruiseki.okbackpack.common.init.TierRegistries;
 import ruiseki.okcore.capabilities.Capability;
 import ruiseki.okcore.capabilities.ICapabilityProvider;
+import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.datastructure.LazyOptional;
 import ruiseki.okcore.helper.CapabilityHelpers;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemBlockMetadata;
 import ruiseki.okstoragecore.capabilities.CapabilityStorageWrapperConfig;
+import ruiseki.okstoragecore.client.gui.tooltip.StorageContentHandler;
+import ruiseki.okstoragecore.upgrades.ITickableUpgrade;
 
 public class ItemBackpack extends ItemBlockMetadata implements IGuiHolder<PlayerInventoryGuiData> {
 
@@ -58,12 +65,18 @@ public class ItemBackpack extends ItemBlockMetadata implements IGuiHolder<Player
         return this.tier;
     }
 
-    public int getNumberOfSlots() {
-        return numberOfSlots.getAsInt();
+    @Override
+    public boolean hasCustomEntity(ItemStack stack) {
+        return true;
     }
 
-    public int getNumberOfUpgradeSlots() {
-        return numberOfUpgradeSlots.getAsInt();
+    @Override
+    public Entity createEntity(World world, Entity entity, ItemStack itemstack) {
+        if (!(entity instanceof EntityItem itemEntity)) {
+            return null;
+        }
+
+        return super.createEntity(world, entity, itemstack);
     }
 
     @Override
@@ -76,13 +89,65 @@ public class ItemBackpack extends ItemBlockMetadata implements IGuiHolder<Player
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean flag) {
-        super.addInformation(stack, player, list, flag);
-        if (stack.hasTagCompound()) {
-            list.add(
-                stack.getTagCompound()
-                    .toString());
+    public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
+        if (world.isRemote || player.isDead
+        // TODO add this onlyWornBackpackTriggersUpgrades config
+        // || Boolean.FALSE.equals(Config.SERVER.nerfsConfig.onlyWornBackpackTriggersUpgrades.get())
+        ) {
+            return;
         }
+        CapabilityHelpers.getCapability(stack, CapabilityBackpackWrapperConfig.CAPABILITY)
+            .ifPresent(
+                wrapper -> wrapper.getUpgradeHandler()
+                    .getWrappersThatImplement(ITickableUpgrade.class)
+                    .forEach(upgrade -> upgrade.tick(player, player.worldObj, new BlockPos(player))));
+        super.onArmorTick(world, player, stack);
+    }
+
+    @Override
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
+        if (world.isRemote || entity.isDead || !(entity instanceof EntityPlayer player)
+        // TODO add this onlyWornBackpackTriggersUpgrades config
+        // || Boolean.FALSE.equals(Config.SERVER.nerfsConfig.onlyWornBackpackTriggersUpgrades.get())
+            || slot > -1) {
+            return;
+        }
+        CapabilityHelpers.getCapability(stack, CapabilityBackpackWrapperConfig.CAPABILITY)
+            .ifPresent(
+                wrapper -> wrapper.getUpgradeHandler()
+                    .getWrappersThatImplement(ITickableUpgrade.class)
+                    .forEach(upgrade -> upgrade.tick(player, entity.worldObj, new BlockPos(entity))));
+        super.onUpdate(stack, world, entity, slot, isSelected);
+    }
+
+    public int getNumberOfSlots() {
+        return numberOfSlots.getAsInt();
+    }
+
+    public int getNumberOfUpgradeSlots() {
+        return numberOfUpgradeSlots.getAsInt();
+    }
+
+    @Override
+    public boolean isValidArmor(ItemStack stack, int armorType, Entity entity) {
+        return armorType == 1;
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean flag) {
+        if (!GuiScreen.isShiftKeyDown()) {
+            // "Press <Left Shift> to View Contents"
+            list.add(
+                "§7" + LangHelpers.localize(
+                    "tooltip.backpack.contents.press_for_contents",
+                    LangHelpers.localize("tooltip.backpack.contents.shift")));
+            StorageContentHandler.reset();
+        } else {
+            CapabilityHelpers.getCapability(stack, CapabilityStorageWrapperConfig.CAPABILITY)
+                .ifPresent(
+                    wrapper -> { list.addAll(StorageContentHandler.buildExpandedTooltipLines(stack, wrapper)); });
+        }
+        super.addInformation(stack, player, list, flag);
     }
 
     @Override

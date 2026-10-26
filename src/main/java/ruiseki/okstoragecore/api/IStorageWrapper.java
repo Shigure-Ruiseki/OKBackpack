@@ -91,6 +91,10 @@ public interface IStorageWrapper {
         return 0;
     }
 
+    default Optional<IStorageFluidHandler> getFluidHandler() {
+        return Optional.empty();
+    }
+
     default ItemStack getWrappedStorageStack() {
         return ItemHelpers.EMPTY;
     }

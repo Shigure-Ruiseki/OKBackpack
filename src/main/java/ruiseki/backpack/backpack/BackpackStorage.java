@@ -1,8 +1,6 @@
 package ruiseki.backpack.backpack;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,6 +12,7 @@ import ruiseki.okcore.persist.world.WorldStorage;
 public class BackpackStorage extends WorldStorage {
 
     private final Map<UUID, NBTTagCompound> contents = new HashMap<>();
+    private final Map<UUID, AccessLogRecord> accessLogRecords = new HashMap<>();
 
     private static BackpackStorage INSTANCE = null;
 
@@ -24,7 +23,8 @@ public class BackpackStorage extends WorldStorage {
 
     @Override
     public void reset() {
-        contents.clear();
+        this.contents.clear();
+        this.accessLogRecords.clear();
     }
 
     @Override
@@ -46,24 +46,43 @@ public class BackpackStorage extends WorldStorage {
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
-        NBTTagCompound entries = tag.getCompoundTag("contents");
-        for (String key : entries.func_150296_c()) {
-            UUID uuid = UUID.fromString(key);
-            contents.put(uuid, entries.getCompoundTag(key));
+
+        this.contents.clear();
+        this.accessLogRecords.clear();
+
+        NBTTagCompound contentsTag = tag.getCompoundTag("contents");
+        for (String key : contentsTag.func_150296_c()) {
+            this.contents.put(UUID.fromString(key), contentsTag.getCompoundTag(key));
+        }
+
+        NBTTagCompound accessLogTag = tag.getCompoundTag("accessLogRecords");
+        for (String key : accessLogTag.func_150296_c()) {
+            AccessLogRecord record = AccessLogRecord.deserializeFromNBT(accessLogTag.getCompoundTag(key));
+            this.accessLogRecords.put(record.getBackpackUuid(), record);
         }
     }
 
     @Override
     public void writeToNBT(NBTTagCompound tag) {
-        NBTTagCompound entries = new NBTTagCompound();
-        for (Map.Entry<UUID, NBTTagCompound> entry : contents.entrySet()) {
-            entries.setTag(
+        super.writeToNBT(tag);
+
+        NBTTagCompound contentsTag = new NBTTagCompound();
+        for (Map.Entry<UUID, NBTTagCompound> entry : this.contents.entrySet()) {
+            contentsTag.setTag(
                 entry.getKey()
                     .toString(),
                 entry.getValue());
         }
-        tag.setTag("contents", entries);
-        super.writeToNBT(tag);
+        tag.setTag("contents", contentsTag);
+
+        NBTTagCompound accessLogTag = new NBTTagCompound();
+        for (AccessLogRecord record : this.accessLogRecords.values()) {
+            accessLogTag.setTag(
+                record.getBackpackUuid()
+                    .toString(),
+                record.serializeToNBT());
+        }
+        tag.setTag("accessLogRecords", accessLogTag);
     }
 
     public NBTTagCompound getOrCreateBackpackContents(UUID uuid) {
@@ -71,6 +90,11 @@ public class BackpackStorage extends WorldStorage {
             this.markDirty();
             return new NBTTagCompound();
         });
+    }
+
+    public void putAccessLog(AccessLogRecord alr) {
+        accessLogRecords.put(alr.getBackpackUuid(), alr);
+        this.markDirty();
     }
 
     public void removeBackpackContents(UUID uuid) {
@@ -89,6 +113,10 @@ public class BackpackStorage extends WorldStorage {
         }
     }
 
+    public Map<UUID, AccessLogRecord> getAccessLogs() {
+        return accessLogRecords;
+    }
+
     public int removeNonPlayerContents(boolean onlyWithEmptyInventory) {
         AtomicInteger numberRemoved = new AtomicInteger(0);
         this.contents.entrySet()
@@ -104,5 +132,11 @@ public class BackpackStorage extends WorldStorage {
             markDirty();
         }
         return numberRemoved.get();
+    }
+
+    private final Set<UUID> updatedBackpackSettingsFlags = new HashSet<>();
+
+    public boolean removeUpdatedBackpackSettingsFlag(UUID backpackUuid) {
+        return updatedBackpackSettingsFlags.remove(backpackUuid);
     }
 }

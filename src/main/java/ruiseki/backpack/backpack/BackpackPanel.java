@@ -30,7 +30,10 @@ import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
 import ruiseki.okstoragecore.client.gui.slot.ModularStorageSlot;
 import ruiseki.okstoragecore.client.gui.sync.StorageSlotSH;
-import ruiseki.okstoragecore.client.gui.widget.*;
+import ruiseki.okstoragecore.client.gui.widget.SettingTab;
+import ruiseki.okstoragecore.client.gui.widget.StorageList;
+import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
+import ruiseki.okstoragecore.client.gui.widget.StorageSlotGrid;
 import ruiseki.okstoragecore.inventory.InventoryHandler;
 
 public class BackpackPanel extends StoragePanel {
@@ -43,7 +46,7 @@ public class BackpackPanel extends StoragePanel {
     @Override
     public void constructSettings() {
         this.getSettings()
-            .customContainer(() -> new BackpackContainer(this.getWrapper(), this.getPanel()));
+            .customContainer(() -> new BackpackContainer(this.getPlayer(), this.getWrapper(), this.getPanel()));
         this.getSettings()
             .customGui(() -> (container, screen) -> new BackpackGuiContainer(container, screen, this.getWrapper()));
     }
@@ -87,7 +90,7 @@ public class BackpackPanel extends StoragePanel {
             .getInventoryHandler();
         this.storageSlotSHs = new StorageSlotSH[handler.getSlots()];
         for (int i = 0; i < handler.getSlots(); i++) {
-            ModularStorageSlot slot = new ModularStorageSlot(handler, i, this.getWrapper(), this.getPanel());
+            ModularStorageSlot slot = new ModularStorageSlot(i, this.getWrapper(), this.getPanel());
             slot.slotGroup("storage_inventory");
             StorageSlotSH syncHandler = new BackpackSlotSH(slot, this.getWrapper(), this.getPanel());
             this.syncManager.syncValue("storage", i, syncHandler);

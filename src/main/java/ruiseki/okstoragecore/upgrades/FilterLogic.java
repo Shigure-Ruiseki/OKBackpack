@@ -1,22 +1,22 @@
 package ruiseki.okstoragecore.upgrades;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.Predicate;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.oredict.OreDictionary;
 
 import ruiseki.okcore.helper.InventoryHelpers;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.NBTHelpers;
-import ruiseki.okcore.helper.TagHelpers;
-import ruiseki.okcore.tag.TagKey;
 import ruiseki.okstoragecore.inventory.FilterItemStackHandler;
 
 public class FilterLogic extends FilterLogicBase {
@@ -58,8 +58,8 @@ public class FilterLogic extends FilterLogicBase {
 
     public boolean matchesFilter(ItemStack stack) {
         if (isAllowList()) {
-            if (getPrimaryMatch() == PrimaryMatch.TAG) {
-                return isTagMatch(stack);
+            if (getPrimaryMatch() == PrimaryMatch.ORE_DICT) {
+                return isOreDictMatch(stack);
             } else {
                 return (getFilterHandler().hasOnlyEmptyFilters() && emptyAllowListMatchesEverything)
                     || InventoryHelpers.iterate(
@@ -69,8 +69,8 @@ public class FilterLogic extends FilterLogicBase {
                         returnValue -> returnValue);
             }
         } else {
-            if (getPrimaryMatch() == PrimaryMatch.TAG) {
-                return !isTagMatch(stack);
+            if (getPrimaryMatch() == PrimaryMatch.ORE_DICT) {
+                return !isOreDictMatch(stack);
             } else {
                 return getFilterHandler().hasOnlyEmptyFilters() || InventoryHelpers.iterate(
                     getFilterHandler(),
@@ -81,31 +81,34 @@ public class FilterLogic extends FilterLogicBase {
         }
     }
 
-    private boolean isTagMatch(ItemStack stack) {
-        if (shouldMatchAnyTag()) {
-            return anyTagMatches(TagHelpers.getTags(stack));
+    private boolean isOreDictMatch(ItemStack stack) {
+        if (ItemHelpers.isEmpty(stack)) return false;
+        int[] oreIds = OreDictionary.getOreIDs(stack);
+        if (shouldMatchAnyOreDict()) {
+            return anyOreDictMatches(oreIds);
         }
-        return allTagsMatch(TagHelpers.getTags(stack));
+        return allOreDictsMatch(oreIds);
     }
 
-    private boolean allTagsMatch(Set<TagKey<Item>> tags) {
-        if (tagKeys == null) {
-            initTags();
+    private boolean allOreDictsMatch(int[] oreIds) {
+        List<String> entries = getOreDictEntries();
+        if (entries.isEmpty()) return false;
+        Set<String> oreNames = new HashSet<>();
+        for (int oreId : oreIds) {
+            oreNames.add(OreDictionary.getOreName(oreId));
         }
-        for (TagKey<Item> tagName : tagKeys) {
-            if (!tags.contains(tagName)) {
-                return false;
+        return oreNames.containsAll(entries);
+    }
+
+    private boolean anyOreDictMatches(int[] oreIds) {
+        List<String> entries = getOreDictEntries();
+        if (entries.isEmpty()) return false;
+        for (int oreId : oreIds) {
+            if (entries.contains(OreDictionary.getOreName(oreId))) {
+                return true;
             }
         }
-        return true;
-    }
-
-    private boolean anyTagMatches(Set<TagKey<Item>> tags) {
-        if (tagKeys == null) {
-            initTags();
-        }
-        return tags.stream()
-            .anyMatch(t -> tagKeys.contains(t));
+        return false;
     }
 
     public class ObservableFilterItemStackHandler extends FilterItemStackHandler {

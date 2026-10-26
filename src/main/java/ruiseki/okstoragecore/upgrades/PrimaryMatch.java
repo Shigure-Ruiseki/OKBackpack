@@ -10,8 +10,7 @@ public enum PrimaryMatch implements StringRepresentable {
 
     ITEM("item"),
     MOD("mod"),
-    ORE_DICT("ore_dict"),
-    TAG("tag");
+    ORE_DICT("ore_dict");
 
     private final String name;
 

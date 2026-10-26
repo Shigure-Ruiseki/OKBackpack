@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.client.gui.container;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -9,6 +10,11 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import org.jetbrains.annotations.Nullable;
+
+import com.cleanroommc.bogosorter.api.IPosSetter;
+import com.cleanroommc.bogosorter.api.ISortableContainer;
+import com.cleanroommc.bogosorter.api.ISortingContextBuilder;
 import com.cleanroommc.modularui.api.inventory.ClickType;
 import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.screen.NEAAnimationHandler;
@@ -16,10 +22,12 @@ import com.cleanroommc.modularui.utils.Platform;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
+import cpw.mods.fml.common.Optional;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
+import ruiseki.okstoragecore.client.gui.slot.ModularStorageSlot;
 import ruiseki.okstoragecore.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
@@ -27,21 +35,76 @@ import ruiseki.okstoragecore.upgrades.ISlotClickUpgrade;
 import ruiseki.okstoragecore.upgrades.IUpgradeItem;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 
-public class StorageContainer extends ModularContainer {
+@Optional.Interface(iface = "com.cleanroommc.bogosorter.api.ISortableContainer", modid = "bogosorter")
+public class StorageContainer extends ModularContainer implements ISortableContainer {
 
     private static final int DROP_TO_WORLD = -999;
     private static final int LEFT_MOUSE = 0;
     private static final int RIGHT_MOUSE = 1;
     private static final int THROW = 4;
+    private static final int STORAGE_SLOT_GROUP_PRIORITY = 10;
 
     private static final String PLAYER_INV = "player_inventory";
 
     protected final IStorageWrapper storageWrapper;
     protected final StoragePanel storagePanel;
 
-    public StorageContainer(IStorageWrapper storageWrapper, StoragePanel storagePanel) {
+    public StorageContainer(EntityPlayer player, IStorageWrapper storageWrapper, StoragePanel storagePanel) {
         this.storageWrapper = storageWrapper;
         this.storagePanel = storagePanel;
+    }
+
+    @Optional.Method(modid = "bogosorter")
+    @Override
+    public void buildSortingContext(ISortingContextBuilder builder) {
+        List<Slot> storageSlots = new ArrayList<>();
+
+        for (Slot slot : inventorySlots) {
+            if (slot instanceof ModularStorageSlot) {
+                storageSlots.add(slot);
+            }
+        }
+
+        if (storageSlots.isEmpty()) return;
+
+        int visualColumns = (int) storageSlots.stream()
+            .mapToInt(slot -> slot.xDisplayPosition)
+            .distinct()
+            .count();
+
+        int columns = Math.min(visualColumns, storageSlots.size());
+        builder.addSlotGroupOf(storageSlots, columns)
+            .priority(STORAGE_SLOT_GROUP_PRIORITY)
+            .buttonPosSetter((slotGroup, buttonPos) -> {
+                if (slotGroup.getSlots()
+                    .isEmpty()) {
+                    buttonPos.setEnabled(false);
+                    return;
+                }
+
+                int topY = storageSlots.stream()
+                    .mapToInt(slot -> slot.yDisplayPosition)
+                    .min()
+                    .orElse(0);
+                int topRightX = storageSlots.stream()
+                    .filter(slot -> slot.yDisplayPosition == topY)
+                    .mapToInt(slot -> slot.xDisplayPosition)
+                    .max()
+                    .orElse(0);
+
+                buttonPos.setHorizontal();
+                buttonPos.setTopRight();
+
+                buttonPos.setPos(topRightX - 32, topY - 14);
+            });
+    }
+
+    @Optional.Method(modid = "bogosorter")
+    @Override
+    public @Nullable IPosSetter getPlayerButtonPosSetter() {
+        return (slotGroup, buttonPos) -> {
+
+        };
     }
 
     public IStorageWrapper getStorageWrapper() {

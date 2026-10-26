@@ -38,7 +38,7 @@ public class OSCTextures {
 
     public static final UITexture MATCH_MOD = icon("match_mod", 32, 16);
     public static final IDrawable MATCH_ITEM = new ItemDrawable(Items.apple);
-    public static final UITexture MATCH_TAG = icon("match_tag", 80, 0);
+    public static final UITexture MATCH_TAG = icon("match_tag", 64, 0);
 
     public static final UITexture MATCH_DURABILITY = icon("match_duration", 0, 16);
     public static final UITexture IGNORE_DURABILITY = icon("ignore_duration", 16, 16);
@@ -49,12 +49,19 @@ public class OSCTextures {
     public static final UITexture MATCH_NBT = icon("match_nbt", 32, 0);
     public static final UITexture IGNORE_NBT = icon("ignore_nbt", 48, 0);
 
+    public static final UITexture TOGGLE_DISABLE_ICON = icon("disable", 0, 128, 4, 10);
+    public static final UITexture TOGGLE_ENABLE_ICON = icon("enable", 4, 128, 4, 10);
+
     public static UITexture icon(String name, int x, int y) {
         return icon(name, x, y, 16, 16, ICON_LOCATION);
     }
 
     public static UITexture icon(String name, int x, int y, ResourceLocation location) {
         return icon(name, x, y, 16, 16, location);
+    }
+
+    public static UITexture icon(String name, int x, int y, int w, int h) {
+        return icon(name, x, y, w, h, ICON_LOCATION);
     }
 
     public static UITexture icon(String name, int x, int y, int w, int h, ResourceLocation location) {

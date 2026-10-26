@@ -81,3 +81,17 @@ gui.okstoragecore.upgrades.buttons.match_durability=Match Durability
 gui.okstoragecore.upgrades.buttons.ignore_durability=Ignore Durability
 gui.okstoragecore.upgrades.buttons.match_nbt=Match NBT
 gui.okstoragecore.upgrades.buttons.ignore_nbt=Ignore NBT
+
+gui.okstoragecore.upgrades.buttons.add_ore_dict_entry=Add Ore Dict.
+gui.okstoragecore.upgrades.buttons.remove_ore_dict_entry=Remove Ore Dict.
+gui.okstoragecore.upgrades.buttons.ore_dict_list.title=Ore Dict
+gui.okstoragecore.upgrades.buttons.add_ore_dict=Add Ore Dict
+gui.okstoragecore.upgrades.buttons.add_ore_dict.no_item=<- Click an Item into slot to start adding its ore dicts
+gui.okstoragecore.upgrades.buttons.add_ore_dict.no_additional=All Item's ore dicts are already added
+gui.okstoragecore.upgrades.buttons.add_ore_dict.controls=Scroll to Select, Click to Add
+gui.okstoragecore.upgrades.buttons.remove_ore_dict=Remove Ore Dict
+gui.okstoragecore.upgrades.buttons.remove_ore_dict.empty=No ore dicts to remove
+gui.okstoragecore.upgrades.buttons.remove_ore_dict.controls=Scroll to Select, Click to Remove
+gui.okstoragecore.upgrades.buttons.match_any_ore_dict=Match Any Ore Dict
+gui.okstoragecore.upgrades.buttons.match_all_ore_dict=Match All Ore Dicts
+gui.okstoragecore.upgrades.buttons.ore_dict_input_help=You can input ore dictionary here, regex is supported

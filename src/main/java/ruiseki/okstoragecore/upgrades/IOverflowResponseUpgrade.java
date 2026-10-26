@@ -11,7 +11,7 @@ public interface IOverflowResponseUpgrade {
             return false;
         }
 
-        if (getFilterLogic().getPrimaryMatch() == PrimaryMatch.TAG) {
+        if (getFilterLogic().getPrimaryMatch() == PrimaryMatch.ORE_DICT) {
             return true;
         }
 

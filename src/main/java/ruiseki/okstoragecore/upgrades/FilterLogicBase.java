@@ -1,12 +1,14 @@
 package ruiseki.okstoragecore.upgrades;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -14,8 +16,6 @@ import org.jetbrains.annotations.Nullable;
 
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.NBTHelpers;
-import ruiseki.okcore.tag.Registries;
-import ruiseki.okcore.tag.TagKey;
 
 public class FilterLogicBase {
 
@@ -26,8 +26,6 @@ public class FilterLogicBase {
 
     private boolean allowListDefault = false;
 
-    @Nullable
-    protected Set<TagKey<Item>> tagKeys = null;
     @Nullable
     protected List<String> oreDictEntries = null;
 
@@ -65,10 +63,6 @@ public class FilterLogicBase {
             if (!ItemHelpers.areItemsEqual(stack, filter)) {
                 return false;
             }
-        } else if (primaryMatch == PrimaryMatch.ORE_DICT) {
-            if (!areOreDictionaryItemsEqual(stack, filter)) {
-                return false;
-            }
         }
 
         if (shouldMatchDurability() && stack.getItemDamage() != filter.getItemDamage()) {
@@ -76,61 +70,6 @@ public class FilterLogicBase {
         }
 
         return !shouldMatchNbt() || ItemHelpers.areItemsEqualIgnoreDurability(stack, filter);
-    }
-
-    public Set<TagKey<Item>> getTagKeys() {
-        if (tagKeys == null) {
-            initTags();
-        }
-        return Collections.unmodifiableSet(tagKeys);
-    }
-
-    public void addTag(TagKey<Item> tagName) {
-        if (tagKeys == null) {
-            initTags();
-        }
-        tagKeys.add(tagName);
-        serializeTags();
-        save();
-    }
-
-    private void serializeTags() {
-        if (tagKeys == null) {
-            return;
-        }
-        NBTHelpers.setList(
-            upgrade,
-            parentTagKey,
-            "tags",
-            tagKeys,
-            t -> new NBTTagString(
-                t.location()
-                    .toString()));
-    }
-
-    public void removeTagName(TagKey<Item> tagName) {
-        if (tagKeys == null) {
-            initTags();
-        }
-        tagKeys.remove(tagName);
-        serializeTags();
-        save();
-    }
-
-    protected void initTags() {
-        Comparator<TagKey<Item>> comparator = Comparator.comparing(
-            tag -> tag.location()
-                .toString());
-        tagKeys = NBTHelpers
-            .getCollection(
-                upgrade,
-                parentTagKey,
-                "tags",
-                Constants.NBT.TAG_STRING,
-                elementNbt -> Optional.of(
-                    TagKey.create(Registries.ITEM, new ResourceLocation(((NBTTagString) elementNbt).func_150285_a_()))),
-                () -> new TreeSet<>(comparator))
-            .orElseGet(() -> new TreeSet<>(comparator));
     }
 
     public List<String> getOreDictEntries() {
@@ -238,13 +177,13 @@ public class FilterLogicBase {
             .orElse(PrimaryMatch.ITEM);
     }
 
-    public boolean shouldMatchAnyTag() {
-        return NBTHelpers.getBoolean(upgrade, parentTagKey, "matchAnyTag")
+    public boolean shouldMatchAnyOreDict() {
+        return NBTHelpers.getBoolean(upgrade, parentTagKey, "matchAnyOreDict")
             .orElse(true);
     }
 
     public void setMatchAnyTag(boolean matchAnyTag) {
-        NBTHelpers.setBoolean(upgrade, parentTagKey, "matchAnyTag", matchAnyTag);
+        NBTHelpers.setBoolean(upgrade, parentTagKey, "matchAnyOreDict", matchAnyTag);
         save();
     }
 

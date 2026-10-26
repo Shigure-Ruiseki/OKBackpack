@@ -66,7 +66,6 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
             index -> {
                 this.getWrapper()
                     .setRefillCraftingGrid(index == 0);
-                syncToServer();
             }).size(20, 20);
     }
 
@@ -78,20 +77,7 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
             index -> {
                 this.getWrapper()
                     .setShiftClickIntoStorage(index == 0);
-                syncToServer();
             }).size(20, 20);
-    }
-
-    public void syncToServer() {
-        this.getSyncHandler()
-            .syncToServer(UpgradeSlotSHRegistries.CRAFTING_UPGRADE, buf -> {
-                buf.writeBoolean(
-                    this.getWrapper()
-                        .shouldRefillCraftingGrid());
-                buf.writeBoolean(
-                    this.getWrapper()
-                        .shouldShiftClickIntoStorage());
-            });
     }
 
     protected Flow addCraftingRow() {

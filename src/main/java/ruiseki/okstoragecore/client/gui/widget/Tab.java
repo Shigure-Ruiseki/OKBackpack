@@ -78,12 +78,11 @@ public class Tab extends SingleChildWidget<Tab> implements Interactable {
 
     public Tab setExpandedWidget(ExpandedTab value) {
         this.expandedWidget = value;
-
         if (value != null) {
             if (this.expandDirection == ExpandDirection.LEFT) {
                 value.right(0);
             }
-            child(value.setEnabledIf(expandedTabWidget -> this.showExpanded));
+            this.child(value.setEnabledIf(expandedTabWidget -> this.showExpanded));
         }
         return this;
     }
@@ -122,12 +121,7 @@ public class Tab extends SingleChildWidget<Tab> implements Interactable {
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         super.draw(context, widgetTheme);
-
-        if (this.showExpanded) {
-            return;
-        }
-
-        if (this.tabIcon != null) {
+        if (!this.showExpanded && this.tabIcon != null) {
             this.tabIcon.draw(context, 8, 6, 16, 16, widgetTheme.getTheme());
         }
     }
@@ -135,18 +129,13 @@ public class Tab extends SingleChildWidget<Tab> implements Interactable {
     @Override
     public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         super.drawBackground(context, widgetTheme);
-        if (this.showExpanded) {
-            return;
-        }
-
-        int index = (this.tabIndex == 0) ? -1 : 0;
-
+        if (this.showExpanded) return;
+        int index = this.tabIndex == 0 ? -1 : 0;
         switch (this.expandDirection) {
             case LEFT:
                 GuiTextures.TAB_LEFT.get(index, false)
                     .drawAtZero(context, TAB_TEXTURE.getWidth(), TAB_TEXTURE.getHeight(), widgetTheme.getTheme());
                 break;
-
             case RIGHT:
                 GuiTextures.TAB_RIGHT.get(index, false)
                     .drawAtZero(context, TAB_TEXTURE.getWidth(), TAB_TEXTURE.getHeight(), widgetTheme.getTheme());

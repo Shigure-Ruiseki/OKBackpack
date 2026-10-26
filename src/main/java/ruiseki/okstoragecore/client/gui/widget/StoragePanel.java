@@ -1,6 +1,5 @@
 package ruiseki.okstoragecore.client.gui.widget;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +51,10 @@ import ruiseki.okstoragecore.client.gui.container.StorageContainer;
 import ruiseki.okstoragecore.client.gui.container.StorageGuiContainer;
 import ruiseki.okstoragecore.client.gui.slot.ModularStorageSlot;
 import ruiseki.okstoragecore.client.gui.slot.ModularUpgradeSlot;
-import ruiseki.okstoragecore.client.gui.sync.*;
+import ruiseki.okstoragecore.client.gui.sync.StorageSH;
+import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
+import ruiseki.okstoragecore.client.gui.sync.StorageSlotSH;
+import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 import ruiseki.okstoragecore.helper.RenderHelpers;
 import ruiseki.okstoragecore.inventory.InventoryHandler;
@@ -100,8 +102,8 @@ public class StoragePanel extends ModularPanel {
     protected PlayerMainInvWrapper playerInventory;
 
     protected int width;
+    protected int height;
     protected int gridColumn;
-    protected int inventoryHeight;
     protected StringValue searchValue;
     protected SearchNode searchNode;
 
@@ -109,9 +111,8 @@ public class StoragePanel extends ModularPanel {
     protected StorageSlotGrid<ItemSlot> storageSlotGrid;
     protected UpgradeSlotGroup upgradeSlotGroup;
     protected UpgradeSlotUpdate[] upgradeSlotUpdates;
-    protected List<UpgradeSlot> upgradeSlots = new ArrayList<>();
     protected ItemStack[] lastUpgradeStacks;
-    protected List<Tab> tabs = new ArrayList<>();
+    protected IndexedChildWidget<Tab> tabContainer;
     protected int tabCount = 0;
 
     protected IPanelHandler settingPanelHandler;
@@ -161,7 +162,7 @@ public class StoragePanel extends ModularPanel {
 
     protected void constructSettings() {
         this.getSettings()
-            .customContainer(() -> new StorageContainer(this.getWrapper(), this.getPanel()));
+            .customContainer(() -> new StorageContainer(this.getPlayer(), this.getWrapper(), this.getPanel()));
         this.getSettings()
             .customGui(() -> (container, screen) -> new StorageGuiContainer(container, screen, this.getWrapper()));
     }
@@ -196,8 +197,7 @@ public class StoragePanel extends ModularPanel {
         this.height(Math.max(calculatedHeight, BackpackSettingPanel.getCompactMinimumPanelHeight()));
 
         // set list height
-        this.inventoryHeight = visibleRows * slotSize;
-        this.storageList.height(this.inventoryHeight);
+        this.storageList.height(visibleRows * slotSize);
         this.storageList.scheduleResize();
 
         this.scheduleResize();
@@ -354,7 +354,7 @@ public class StoragePanel extends ModularPanel {
             .getInventoryHandler();
         this.storageSlotSHs = new StorageSlotSH[handler.getSlots()];
         for (int i = 0; i < handler.getSlots(); i++) {
-            ModularStorageSlot slot = new ModularStorageSlot(handler, i, this.getWrapper(), this.getPanel());
+            ModularStorageSlot slot = new ModularStorageSlot(i, this.getWrapper(), this.getPanel());
             slot.slotGroup("storage_inventory");
             StorageSlotSH syncHandler = new StorageSlotSH(slot, this.getWrapper(), this.getPanel());
             this.getSyncManager()
@@ -459,7 +459,6 @@ public class StoragePanel extends ModularPanel {
                 .pos(5, 5 + i * ItemSlot.SIZE)
                 .name("slot_" + i);
             this.upgradeSlotGroup.child(slot);
-            this.upgradeSlots.add(slot);
         }
         this.child(this.upgradeSlotGroup);
     }
@@ -497,16 +496,16 @@ public class StoragePanel extends ModularPanel {
         int slotCount = this.getWrapper()
             .getUpgradeHandler()
             .getSlots();
-
+        this.tabContainer = new IndexedChildWidget<Tab>().size(0)
+            .top(0)
+            .right(0);
         for (int i = 0; i < slotCount; i++) {
             Tab tab = new Tab(i + 1).name("upgrade_tab_" + i);
             tab.setEnabled(false);
-            this.tabs.add(tab);
+            this.getTabContainer()
+                .child(tab);
         }
-
-        for (int i = this.tabs.size() - 1; i >= 0; i--) {
-            this.child(this.tabs.get(i));
-        }
+        this.child(this.getTabContainer());
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -519,120 +518,94 @@ public class StoragePanel extends ModularPanel {
             .getOpenTabId()
             .orElse(-1);
 
-        for (int slotIndex = 0; slotIndex < handler.getSlots(); slotIndex++) {
+        for (int i = 0; i < handler.getSlots(); i++) {
+            final int slotIndex = i;
             ItemStack stack = handler.getStackInSlot(slotIndex);
             IUpgradeWrapper upgradeWrapper = handler.getSlotWrapper(slotIndex);
             if (ItemHelpers.isEmpty(stack)) continue;
 
             Item item = stack.getItem();
             if (!(item instanceof IUpgradeItem upgrade)) continue;
-            if (upgradeWrapper == null) continue;
-            if (upgradeWrapper.hideSettingsTab()) continue;
+            if (upgradeWrapper == null || upgradeWrapper.hideSettingsTab()) continue;
 
-            Tab tab = this.tabs.get(tabCount);
             UpgradeSlotUpdate group = this.upgradeSlotUpdates[slotIndex];
-
-            boolean enabled = openedId == slotIndex;
-            tab.setShowExpanded(enabled);
-            tab.setTabIcon(
-                new ItemDrawable(stack).asIcon()
-                    .size(18));
-            tab.tooltip(
-                t -> t.clearText()
-                    .addLine(IKey.str(item.getItemStackDisplayName(stack)))
-                    .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
-
-            upgrade.getType()
-                .updateWidgetDelegates(upgradeWrapper, group);
-            ExpandedTab expanded = upgrade.getType()
-                .getExpandedTabWidget(
-                    slotIndex,
-                    upgradeWrapper,
-                    stack,
-                    this.getWrapper(),
-                    this.getPanel(),
-                    upgradeWrapper.getSettingLangKey());
-
-            if (expanded != null) {
-                tab.setExpandedWidget(expanded);
-                getContext().getUISettings()
-                    .getRecipeViewerSettings()
-                    .addExclusionArea(expanded);
-            }
-
+            this.tabContainer.getChild(tabCount)
+                .ifPresent(tab -> {
+                    tab.setEnabled(true);
+                    tab.setShowExpanded(openedId == slotIndex)
+                        .setTabIcon(
+                            new ItemDrawable(stack).asIcon()
+                                .size(18))
+                        .tooltip(
+                            t -> t.clearText()
+                                .addLine(IKey.str(item.getItemStackDisplayName(stack)))
+                                .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+                    ExpandedTab expanded = upgrade.getType()
+                        .getExpandedTabWidget(
+                            slotIndex,
+                            upgradeWrapper,
+                            stack,
+                            this.getWrapper(),
+                            this.getPanel(),
+                            upgradeWrapper.getSettingLangKey());
+                    if (expanded != null) {
+                        upgrade.getType()
+                            .updateWidgetDelegates(upgradeWrapper, group);
+                        tab.setExpandedWidget(expanded);
+                        getContext().getUISettings()
+                            .getRecipeViewerSettings()
+                            .addExclusionArea(expanded);
+                    }
+                });
             tabCount++;
         }
 
         this.tabCount = tabCount;
-        int startIndex = 0;
-        if (tabCount > 0) {
-            startIndex = this.getWrapper()
-                .getTabIndex()
-                .orElse(0);
-            startIndex = Math.floorMod(startIndex, tabCount);
-            this.getWrapper()
-                .setTabIndex(startIndex);
-        }
-
-        Integer openedRelIndex = null;
-        int coveredSize = 0;
-
-        for (int i = 0; i < tabCount; i++) {
-            Tab tab = this.tabs.get(i);
-            if (!tab.isShowExpanded()) continue;
-
-            openedRelIndex = Math.floorMod(i - startIndex, tabCount);
-
-            ExpandedTab expanded = tab.getExpandedWidget();
-            if (expanded != null) {
-                coveredSize = expanded.getCoveredTabSize();
-            }
-            break;
-        }
-
-        int maxVisible = this.getMaxVisibleTabs();
-
-        for (int i = 0; i < this.tabs.size(); i++) {
-            Tab tab = this.tabs.get(i);
-
-            if (i >= tabCount) {
-                tab.setEnabled(false);
-                continue;
-            }
-
-            int rel = Math.floorMod(i - startIndex, tabCount);
-            boolean visible = rel < maxVisible;
-            boolean enabled = visible;
-
-            if (openedRelIndex != null) {
-                int dist = rel - openedRelIndex;
-                if (dist > 0 && dist < coveredSize) {
-                    enabled = false;
-                }
-            }
-
-            tab.setEnabled(enabled);
-
-            if (visible) {
-                tab.top((rel + 1) * 30);
-            }
-        }
+        this.updateTabPositions();
 
         this.syncToggles();
-        this.disableUnusedTabWidgets(tabCount);
         this.scheduleResize();
     }
 
-    private int getMaxVisibleTabs() {
-        int panelHeight = this.resizer()
-            .getArea().height;
-        return Math.max(1, (panelHeight / 30) - 1);
+    public void updateTabPositions() {
+        IndexedChildWidget<Tab> container = this.getTabContainer();
+        int count = Math.min(this.tabCount, container.getSize());
+        if (count <= 0) return;
+        int startIndex = Math.floorMod(
+            this.getWrapper()
+                .getTabIndex()
+                .orElse(0),
+            count);
+        Tab openedTab = null;
+
+        // Update tab positions
+        for (int i = 0; i < count; i++) {
+            Tab tab = container.get(i);
+            int rel = Math.floorMod(i - startIndex, count);
+            tab.top((rel + 1) * 30);
+            if (tab.isShowExpanded()) {
+                openedTab = tab;
+            }
+        }
+
+        // Bottom tabs first, top tabs last
+        for (int rel = count - 1; rel >= 0; rel--) {
+            int index = (startIndex + rel) % count;
+            container.moveFront(container.get(index));
+        }
+
+        // Expanded tab always renders last
+        if (openedTab != null) {
+            container.moveFront(openedTab);
+        }
     }
 
     private void resetTabState() {
-        for (Tab tab : this.tabs) {
+        for (Tab tab : this.getTabContainer()
+            .getTypeChildren()) {
             if (tab.getExpandedWidget() != null) {
-                getContext().getUISettings()
+                this.getContext()
+                    .getUISettings()
                     .getRecipeViewerSettings()
                     .removeExclusionArea(tab.getExpandedWidget());
                 tab.setExpandedWidget(null);
@@ -656,27 +629,16 @@ public class StoragePanel extends ModularPanel {
         }
     }
 
-    private void disableUnusedTabWidgets(int startTabIndex) {
-        for (int i = startTabIndex; i < this.getWrapper()
-            .getUpgradeHandler()
-            .getSlots(); i++) {
-            Tab tab = this.tabs.get(i);
-            if (tab != null) {
-                tab.setEnabled(false);
-            }
-        }
-        this.scheduleResize();
-    }
-
     public void disableAllTabWidgets() {
         for (int i = 0; i < this.getWrapper()
             .getUpgradeHandler()
             .getSlots(); i++) {
-            Tab tabWidget = this.tabs.get(i);
-            if (tabWidget != null) {
-                tabWidget.setEnabled(false);
-                tabWidget.setShowExpanded(false);
-            }
+            this.getTabContainer()
+                .getChild(i)
+                .ifPresent(tab -> {
+                    tab.setEnabled(false);
+                    tab.setShowExpanded(false);
+                });
         }
         this.scheduleResize();
     }
@@ -696,10 +658,12 @@ public class StoragePanel extends ModularPanel {
         super.postDraw(context, transformed);
         LAYERED_TAB_TEXTURE.draw(
             context,
-            resizer().getArea().width - 6,
+            this.resizer()
+                .getArea().width - 6,
             0,
             6,
-            resizer().getArea().height,
+            this.resizer()
+                .getArea().height,
             WidgetTheme.getDefault()
                 .getTheme());
         RenderHelpers.renderErrorOverlay(this.getPanel());
@@ -780,11 +744,19 @@ public class StoragePanel extends ModularPanel {
     }
 
     public IPanelHandler getSettingPanelHandler() {
-        return settingPanelHandler;
+        return this.settingPanelHandler;
+    }
+
+    public UpgradeSlotGroup getUpgradeSlotGroup() {
+        return this.upgradeSlotGroup;
     }
 
     public UpgradeSlotUpdate[] getUpgradeSlotUpdates() {
-        return upgradeSlotUpdates;
+        return this.upgradeSlotUpdates;
+    }
+
+    public IndexedChildWidget<Tab> getTabContainer() {
+        return this.tabContainer;
     }
 
     public Optional<UpgradeSlotUpdate> getActiveUpgradeSlotUpdate() {
