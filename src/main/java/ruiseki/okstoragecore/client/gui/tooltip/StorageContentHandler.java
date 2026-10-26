@@ -16,8 +16,6 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import com.github.bsideup.jabel.Desugar;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.GeneralConfig;
@@ -43,7 +41,6 @@ public class StorageContentHandler {
     public static List<ItemStack> sortedContents = new ArrayList<>();
     public static List<String> upgradeTooltipLines = new ArrayList<>();
 
-    @Desugar
     public record UpgradeInfo(ItemStack stack, boolean canBeDisabled, boolean enabled) {}
 
     public static final String RIGHT_CLICK_ADD_KEY = "tooltip.backpack.inventory_interaction.right_click_add";
