@@ -43,6 +43,9 @@ public class StorageContainer extends ModularContainer implements ISortableConta
     private static final int RIGHT_MOUSE = 1;
     private static final int THROW = 4;
     private static final int STORAGE_SLOT_GROUP_PRIORITY = 10;
+    private static final int BOGO_BUTTON_SLEEPING_BAG_GAP = 2;
+    private static final int SLEEPING_BAG_BUTTON_SIZE = 14;
+    private static final int SLEEPING_BAG_RIGHT_OFFSET = 35;
 
     private static final String PLAYER_INV = "player_inventory";
 
@@ -103,7 +106,22 @@ public class StorageContainer extends ModularContainer implements ISortableConta
     @Override
     public @Nullable IPosSetter getPlayerButtonPosSetter() {
         return (slotGroup, buttonPos) -> {
-
+            if (slotGroup.getSlots()
+                .isEmpty()) {
+                buttonPos.setEnabled(false);
+                return;
+            }
+            buttonPos.setHorizontal();
+            buttonPos.setTopRight();
+            int rowSize = this.getStorageWrapper()
+                .getNumberOfSlotColumns();
+            int panelWidth = 20 + rowSize * 18;
+            int sleepingBagLeft = panelWidth - SLEEPING_BAG_RIGHT_OFFSET - SLEEPING_BAG_BUTTON_SIZE;
+            int topY = slotGroup.getSlots()
+                .getFirst()
+                .bogo$getY();
+            int buttonTop = topY - 14;
+            buttonPos.setPos(sleepingBagLeft - BOGO_BUTTON_SLEEPING_BAG_GAP, buttonTop);
         };
     }
 
