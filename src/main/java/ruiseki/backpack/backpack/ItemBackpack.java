@@ -3,8 +3,6 @@ package ruiseki.backpack.backpack;
 import java.util.List;
 import java.util.function.IntSupplier;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
@@ -26,6 +24,8 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.backpack.backpack.wrapper.BackpackWrapper;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
