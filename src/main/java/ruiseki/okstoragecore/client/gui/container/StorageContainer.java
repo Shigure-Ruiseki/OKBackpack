@@ -324,29 +324,26 @@ public class StorageContainer extends ModularContainer implements ISortableConta
     @Override
     protected ItemStack transferItem(ModularSlot fromSlot, ItemStack fromStack) {
         if (ItemHelpers.isEmpty(fromStack)) {
-            return ItemHelpers.EMPTY;
+            return fromStack;
         }
 
         int originalSize = fromStack.stackSize;
 
-        // 1. Upgrade-owned slots -> custom upgrade handling.
         if (fromSlot instanceof IndexedModularSlot indexedSlot) {
             IUpgradeWrapper wrapper = indexedSlot.getUpgradeWrapper();
             if (wrapper instanceof ISlotClickUpgrade slotClickUpgrade
                 && slotClickUpgrade.transferItem(this.getPlayer(), fromSlot, fromStack)) {
-                return ItemHelpers.isEmpty(fromStack) ? ItemHelpers.EMPTY : fromStack;
+                return fromStack;
             }
         }
 
         if (PLAYER_INV.equals(fromSlot.getSlotGroupName())) {
-            // 2. Player inventory -> upgrade slots.
             this.transferItemFilter(
                 fromSlot,
                 fromStack,
                 stack -> stack.getItem() instanceof IUpgradeItem,
                 slot -> slot instanceof ModularUpgradeSlot && !PLAYER_INV.equals(slot.getSlotGroupName()));
 
-            // 3. Player inventory -> selected memory slots.
             this.transferFiltered(
                 fromSlot,
                 fromStack,
@@ -354,7 +351,6 @@ public class StorageContainer extends ModularContainer implements ISortableConta
                     && this.getMemorySettings()
                         .isSlotSelected(slot.getSlotIndex()));
 
-            // 4. Player inventory -> non-memory storage slots.
             this.transferFiltered(
                 fromSlot,
                 fromStack,
@@ -362,12 +358,7 @@ public class StorageContainer extends ModularContainer implements ISortableConta
                     && !this.getMemorySettings()
                         .isSlotSelected(slot.getSlotIndex()));
         } else {
-            // 5. Storage/upgrade slots -> player inventory.
             this.transferFiltered(fromSlot, fromStack, slot -> PLAYER_INV.equals(slot.getSlotGroupName()));
-        }
-
-        if (ItemHelpers.isEmpty(fromStack)) {
-            return ItemHelpers.EMPTY;
         }
 
         if (fromStack.stackSize != originalSize) {

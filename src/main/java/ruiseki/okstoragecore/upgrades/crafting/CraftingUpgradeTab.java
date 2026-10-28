@@ -44,6 +44,11 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
         super(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
     }
 
+    public CraftingUpgradeTab(int slotIndex, CraftingUpgradeWrapper wrapper, ItemStack stack,
+        IStorageWrapper storageWrapper, StoragePanel storagePanel) {
+        this(slotIndex, wrapper, stack, storageWrapper, storagePanel, "gui.okstoragecore.upgrades.crafting");
+    }
+
     @Override
     protected Flow addUpgradeColumn() {
         return super.addUpgradeColumn().child(this.addButtonRow())

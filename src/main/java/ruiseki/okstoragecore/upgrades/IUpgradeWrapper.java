@@ -25,6 +25,4 @@ public interface IUpgradeWrapper {
     default void onAdded() {
         // noop
     }
-
-    String getSettingLangKey();
 }

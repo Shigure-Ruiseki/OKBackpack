@@ -51,9 +51,7 @@ public class ModularCraftingSlot extends IndexedModularSlot {
      */
     @Override
     public ItemStack decrStackSize(int amount) {
-        if (this.getHasStack()) {
-            this.amountCrafted += Math.min(amount, this.getStack().stackSize);
-        }
+        this.amountCrafted += Math.min(amount, ItemHelpers.getCount(getStack()));
         return super.decrStackSize(amount);
     }
 
@@ -78,109 +76,110 @@ public class ModularCraftingSlot extends IndexedModularSlot {
      * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood.
      */
     @Override
-    protected void onCrafting(ItemStack p_75208_1_) {
-        p_75208_1_.onCrafting(getPlayer().worldObj, getPlayer(), this.amountCrafted);
+    protected void onCrafting(ItemStack stack) {
+        if (ItemHelpers.isEmpty(stack)) return;
+
+        EntityPlayer player = getPlayer();
+        stack.onCrafting(player.worldObj, player, this.amountCrafted);
         this.amountCrafted = 0;
 
-        if (p_75208_1_.getItem() == Item.getItemFromBlock(Blocks.crafting_table)) {
-            getPlayer().addStat(AchievementList.buildWorkBench, 1);
+        Item item = ItemHelpers.getItem(stack);
+
+        if (item == Item.getItemFromBlock(Blocks.crafting_table)) {
+            player.addStat(AchievementList.buildWorkBench, 1);
         }
 
-        if (p_75208_1_.getItem() instanceof ItemPickaxe) {
-            getPlayer().addStat(AchievementList.buildPickaxe, 1);
+        if (item instanceof ItemPickaxe) {
+            player.addStat(AchievementList.buildPickaxe, 1);
+
+            if (((ItemPickaxe) item).func_150913_i() != Item.ToolMaterial.WOOD) {
+                player.addStat(AchievementList.buildBetterPickaxe, 1);
+            }
         }
 
-        if (p_75208_1_.getItem() == Item.getItemFromBlock(Blocks.furnace)) {
-            getPlayer().addStat(AchievementList.buildFurnace, 1);
+        if (item == Item.getItemFromBlock(Blocks.furnace)) {
+            player.addStat(AchievementList.buildFurnace, 1);
         }
 
-        if (p_75208_1_.getItem() instanceof ItemHoe) {
-            getPlayer().addStat(AchievementList.buildHoe, 1);
+        if (item instanceof ItemHoe) {
+            player.addStat(AchievementList.buildHoe, 1);
         }
 
-        if (p_75208_1_.getItem() == Items.bread) {
-            getPlayer().addStat(AchievementList.makeBread, 1);
+        if (item == Items.bread) {
+            player.addStat(AchievementList.makeBread, 1);
         }
 
-        if (p_75208_1_.getItem() == Items.cake) {
-            getPlayer().addStat(AchievementList.bakeCake, 1);
+        if (item == Items.cake) {
+            player.addStat(AchievementList.bakeCake, 1);
         }
 
-        if (p_75208_1_.getItem() instanceof ItemPickaxe
-            && ((ItemPickaxe) p_75208_1_.getItem()).func_150913_i() != Item.ToolMaterial.WOOD) {
-            getPlayer().addStat(AchievementList.buildBetterPickaxe, 1);
+        if (item instanceof ItemSword) {
+            player.addStat(AchievementList.buildSword, 1);
         }
 
-        if (p_75208_1_.getItem() instanceof ItemSword) {
-            getPlayer().addStat(AchievementList.buildSword, 1);
+        if (item == Item.getItemFromBlock(Blocks.enchanting_table)) {
+            player.addStat(AchievementList.enchantments, 1);
         }
 
-        if (p_75208_1_.getItem() == Item.getItemFromBlock(Blocks.enchanting_table)) {
-            getPlayer().addStat(AchievementList.enchantments, 1);
-        }
-
-        if (p_75208_1_.getItem() == Item.getItemFromBlock(Blocks.bookshelf)) {
-            getPlayer().addStat(AchievementList.bookcase, 1);
+        if (item == Item.getItemFromBlock(Blocks.bookshelf)) {
+            player.addStat(AchievementList.bookcase, 1);
         }
     }
 
     @Override
     public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
-        if (this.craftMatrix == null || ItemHelpers.isEmpty(stack)) {
-            return;
-        }
+        if (this.getCraftMatrix() == null || ItemHelpers.isEmpty(stack)) return;
 
-        CraftingUpgradeWrapper upgrade = this.getUpgradeWrapper();
+        CraftingUpgradeWrapper upgrade = getUpgradeWrapper();
         boolean refill = upgrade.shouldRefillCraftingGrid();
 
         FMLCommonHandler.instance()
-            .firePlayerCraftingEvent(player, stack, craftMatrix);
+            .firePlayerCraftingEvent(player, stack, this.getCraftMatrix());
 
-        this.onCrafting(stack);
+        onCrafting(stack);
 
-        for (int i = 0; i < craftMatrix.getSizeInventory() - 1; i++) {
-            ItemStack ingredient = craftMatrix.getStackInSlot(i);
+        for (int i = 0; i < this.getCraftMatrix()
+            .getSizeInventory() - 1; i++) {
+            ItemStack ingredient = this.getCraftMatrix()
+                .getStackInSlot(i);
+            if (ItemHelpers.isEmpty(ingredient)) continue;
 
-            if (ItemHelpers.isEmpty(ingredient)) {
-                continue;
-            }
+            ItemStack original = ItemHelpers.copy(ingredient);
+            ItemStack containerItem = ItemHelpers.getContainerItem(original);
 
-            ItemStack original = ingredient.copy();
-            Item item = original.getItem();
-
-            // Determine the container item before consuming.
-            ItemStack containerItem = item.hasContainerItem(original) ? item.getContainerItem(original) : null;
-
-            // Refill from storage/player only when no container item must be returned.
             boolean refilled = ItemHelpers.isEmpty(containerItem) && refill
                 && upgrade.extractFromStorageOrPlayer(player, original);
 
             if (!refilled) {
-                ItemStack remaining = ingredient.copy();
+                ItemStack remaining = ItemHelpers.copy(ingredient);
                 ItemHelpers.shrink(remaining, 1);
 
-                if (remaining.stackSize <= 0) {
-                    remaining = ItemHelpers.EMPTY;
+                this.getCraftMatrix()
+                    .setSlot(i, ItemHelpers.isEmpty(remaining) ? ItemHelpers.EMPTY : remaining, false);
+            }
+
+            if (ItemHelpers.isEmpty(containerItem)) continue;
+
+            ItemStack current = this.getCraftMatrix()
+                .getStackInSlot(i);
+
+            if (ItemHelpers.isEmpty(current)) {
+                this.getCraftMatrix()
+                    .setSlot(i, containerItem, false);
+            } else if (ItemHandlerHelpers.canItemStacksStack(current, containerItem)
+                && ItemHelpers.getCount(current) + ItemHelpers.getCount(containerItem)
+                    <= ItemHelpers.getItemStackSize(current)) {
+
+                        ItemHelpers.grow(current, ItemHelpers.getCount(containerItem));
+                        this.getCraftMatrix()
+                            .setSlot(i, current, false);
+                    } else
+                if (!player.inventory.addItemStackToInventory(containerItem)) {
+                    player.dropPlayerItemWithRandomChoice(containerItem, false);
                 }
-
-                this.craftMatrix.setSlot(i, remaining, false);
-            }
-
-            if (!ItemHelpers.isEmpty(containerItem)) {
-                ItemStack current = this.craftMatrix.getStackInSlot(i);
-
-                if (ItemHelpers.isEmpty(current)) {
-                    this.craftMatrix.setSlot(i, containerItem, false);
-                } else if (ItemHandlerHelpers.canItemStacksStack(current, containerItem)
-                    && current.stackSize + containerItem.stackSize <= current.getMaxStackSize()) {
-                        ItemHelpers.grow(current, containerItem.stackSize);
-                        this.craftMatrix.setSlot(i, current, false);
-                    } else if (!player.inventory.addItemStackToInventory(containerItem)) {
-                        player.dropPlayerItemWithRandomChoice(containerItem, false);
-                    }
-            }
         }
-        this.craftMatrix.notifyContainer();
+
+        craftMatrix.notifyContainer();
     }
 
     public void updateResult(ItemStack stack) {

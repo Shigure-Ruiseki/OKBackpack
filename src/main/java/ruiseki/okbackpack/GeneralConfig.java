@@ -59,6 +59,18 @@ public class GeneralConfig extends DummyConfig {
 
     public static final MaxUpgradesPerStorageConfig maxUpgradesPerStorageConfig = new MaxUpgradesPerStorageConfig();
 
+    @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
+    public static boolean tickDedupeLogicDisabled = false;
+    @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
+    public static int maxNumberOfBackpacks = 10;
+    @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
+    public static int slownessLevelsPerAdditionalBackpack = 1;
+    @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
+    public static boolean tooManyBackpacksSlowness = false;
+
+    @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
+    public static boolean onlyWornBackpackTriggersUpgrades = false;
+
     public GeneralConfig() {
         super(OKBackpack._instance, true, "general", null);
     }

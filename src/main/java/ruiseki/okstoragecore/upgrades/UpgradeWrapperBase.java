@@ -37,15 +37,15 @@ public abstract class UpgradeWrapperBase<W extends IUpgradeWrapper, T extends It
     }
 
     protected void setCooldown(World world, int time) {
-        cooldown = world.getWorldTime() + time;
+        cooldown = world.getTotalWorldTime() + time;
+    }
+
+    public boolean isInCooldown(World world) {
+        return cooldown > world.getTotalWorldTime();
     }
 
     public long getCooldownTime() {
         return cooldown;
-    }
-
-    public boolean isInCooldown(World world) {
-        return getCooldownTime() > world.getWorldTime();
     }
 
     @Override
@@ -60,10 +60,5 @@ public abstract class UpgradeWrapperBase<W extends IUpgradeWrapper, T extends It
         save();
         storageWrapper.getUpgradeHandler()
             .refreshWrappersThatImplementAndTypeWrappers();
-    }
-
-    @Override
-    public String getSettingLangKey() {
-        return "";
     }
 }

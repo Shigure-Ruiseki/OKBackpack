@@ -10,6 +10,7 @@ import net.minecraft.util.AxisAlignedBB;
 
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
+import ruiseki.backpack.client.gui.container.BackpackContainer;
 import ruiseki.backpack.helpers.PlayerInventoryProvider;
 import ruiseki.okcore.helper.CapabilityHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
@@ -84,5 +85,28 @@ public class UUIDDeduplicator {
                 return false;
             })
             .orElse(false);
+    }
+
+    public static boolean isSameBackpack(IBackpackWrapper first, IBackpackWrapper second) {
+        if (first == null || second == null) {
+            return false;
+        }
+
+        return first.getContentsUuid()
+            .flatMap(
+                uuid -> second.getContentsUuid()
+                    .filter(uuid::equals))
+            .isPresent();
+    }
+
+    public static IBackpackWrapper getWrapper(IBackpackWrapper openedWrapper, IBackpackWrapper wrapper) {
+        return isSameBackpack(openedWrapper, wrapper) ? openedWrapper : wrapper;
+    }
+
+    public static IBackpackWrapper getWrapper(EntityPlayer player, IBackpackWrapper wrapper) {
+        IBackpackWrapper openedWrapper = player.openContainer instanceof BackpackContainer container
+            ? container.getStorageWrapper()
+            : null;
+        return getWrapper(openedWrapper, wrapper);
     }
 }

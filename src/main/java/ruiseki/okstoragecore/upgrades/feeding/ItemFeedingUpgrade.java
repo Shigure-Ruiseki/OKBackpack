@@ -36,10 +36,10 @@ public class ItemFeedingUpgrade extends ItemUpgradeBase<FeedingUpgradeWrapper> {
 
         @Override
         public ExpandedTab createExpandedTab(int slotIndex, FeedingUpgradeWrapper wrapper, ItemStack stack,
-            IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey) {
+            IStorageWrapper storageWrapper, StoragePanel storagePanel) {
             return wrapper.getSlotCount() == 9
-                ? new FeedingUpgradeTab.Basic(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey)
-                : new FeedingUpgradeTab.Advanced(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
+                ? new FeedingUpgradeTab.Basic(slotIndex, wrapper, stack, storageWrapper, storagePanel)
+                : new FeedingUpgradeTab.Advanced(slotIndex, wrapper, stack, storageWrapper, storagePanel);
         }
     });
 

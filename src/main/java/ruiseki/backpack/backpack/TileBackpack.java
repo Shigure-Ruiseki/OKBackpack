@@ -2,6 +2,8 @@ package ruiseki.backpack.backpack;
 
 import java.util.Objects;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -101,6 +103,7 @@ public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData>
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public ModularScreen createScreen(PosGuiData data, ModularPanel mainPanel) {
         return new BackpackGuiHolder.TileEntityGuiHolder<>(backpackWrapper).createScreen(data, mainPanel);
     }

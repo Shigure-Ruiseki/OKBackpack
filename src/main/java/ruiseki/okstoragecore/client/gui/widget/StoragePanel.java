@@ -541,13 +541,7 @@ public class StoragePanel extends ModularPanel {
                                 .addLine(IKey.str(item.getItemStackDisplayName(stack)))
                                 .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
                     ExpandedTab expanded = upgrade.getType()
-                        .getExpandedTabWidget(
-                            slotIndex,
-                            upgradeWrapper,
-                            stack,
-                            this.getWrapper(),
-                            this.getPanel(),
-                            upgradeWrapper.getSettingLangKey());
+                        .getExpandedTabWidget(slotIndex, upgradeWrapper, stack, this.getWrapper(), this.getPanel());
                     if (expanded != null) {
                         upgrade.getType()
                             .updateWidgetDelegates(upgradeWrapper, group);

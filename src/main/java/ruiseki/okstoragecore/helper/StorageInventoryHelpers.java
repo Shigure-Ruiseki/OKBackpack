@@ -5,7 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
+import org.jetbrains.annotations.Nullable;
 
 import ruiseki.okcore.helper.CapabilityHelpers;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
@@ -16,6 +22,8 @@ import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.capabilities.CapabilityStorageWrapperConfig;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.inventory.InventoryHandler;
+import ruiseki.okstoragecore.upgrades.IPickupResponseUpgrade;
+import ruiseki.okstoragecore.upgrades.UpgradeHandler;
 
 public class StorageInventoryHelpers {
 
@@ -207,4 +215,46 @@ public class StorageInventoryHelpers {
         }
 
     }
+
+    public static ItemStack runPickupOnPickupResponseUpgrades(World level, UpgradeHandler upgradeHandler,
+        ItemStack remainingStack, boolean simulate) {
+        return runPickupOnPickupResponseUpgrades(level, null, upgradeHandler, remainingStack, simulate);
+    }
+
+    public static ItemStack runPickupOnPickupResponseUpgrades(World level, @Nullable EntityPlayer player,
+        UpgradeHandler upgradeHandler, ItemStack remainingStack, boolean simulate) {
+        if (ItemHelpers.isEmpty(remainingStack) || remainingStack.getMaxStackSize() <= 0) {
+            return remainingStack;
+        }
+
+        List<IPickupResponseUpgrade> pickupUpgrades = upgradeHandler
+            .getWrappersThatImplement(IPickupResponseUpgrade.class);
+
+        for (IPickupResponseUpgrade pickupUpgrade : pickupUpgrades) {
+            int countBeforePickup = ItemHelpers.getCount(remainingStack);
+
+            remainingStack = pickupUpgrade.pickup(level, remainingStack, simulate);
+
+            int countAfterPickup = ItemHelpers.getCount(remainingStack);
+
+            if (!simulate && player != null && countAfterPickup < countBeforePickup) {
+                playPickupSound(level, player);
+            }
+
+            if (ItemHelpers.isEmpty(remainingStack)) {
+                return ItemHelpers.EMPTY;
+            }
+        }
+
+        return remainingStack;
+    }
+
+    private static void playPickupSound(World world, @Nonnull EntityPlayer player) {
+        world.playSoundAtEntity(
+            player,
+            "random.pop",
+            0.2F,
+            ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+    }
+
 }

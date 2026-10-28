@@ -105,9 +105,9 @@ public class OKBGuiTextures {
     public static final UITexture MATCH_NBT_ICON = icon("consider_nbt", 32, 0);
     public static final UITexture IGNORE_NBT_ICON = icon("ignore_nbt", 48, 0);
 
-    public static final UITexture COMPLETE_HUNGER_ICON = icon("complete_hunger", 96, 0);
-    public static final UITexture HALF_HUNGER_ICON = icon("half_hunger", 112, 0);
-    public static final UITexture IMMEDIATE_HUNGER_ICON = icon("impose_hunger", 128, 0);
+    public static final UITexture FULL_HUNGER = icon("full_hunger", 96, 0);
+    public static final UITexture HALF_HUNGER = icon("half_hunger", 112, 0);
+    public static final UITexture ANY_HUNGER = icon("any_hunger", 128, 0);
 
     public static final UITexture MATCH_DURABILITY_ICON = icon("consider_duration", 0, 16);
     public static final UITexture IGNORE_DURABILITY_ICON = icon("ignore_duration", 16, 16);

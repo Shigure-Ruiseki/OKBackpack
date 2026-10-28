@@ -14,6 +14,8 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import com.github.bsideup.jabel.Desugar;
 
+import ruiseki.okcore.helper.ItemHelpers;
+
 /**
  * Caches compacting recipes (2x2 and 3x3 grids filled with a single item type)
  * and optionally checks reversibility (output can be uncrafted back to input).
@@ -103,16 +105,16 @@ public class CompactingRecipeCache {
         World world) {
         // All input slots must be valid, non-null items
         ItemStack first = inputs[0];
-        if (!isValidStack(first)) return;
+        if (!ItemHelpers.isEmpty(first)) return;
 
         for (int i = 1; i < gridSize; i++) {
-            if (!isValidStack(inputs[i])) return;
+            if (!ItemHelpers.isEmpty(inputs[i])) return;
             if (!inputs[i].isItemEqual(first)) return;
         }
 
         // Verify recipe produces a valid output
         ItemStack output = getRecipeOutput(recipe, first, gridSize, world);
-        if (!isValidStack(output)) return;
+        if (!ItemHelpers.isEmpty(output)) return;
 
         // Don't cache if output is same as input
         if (output.isItemEqual(first)) return;
@@ -153,7 +155,7 @@ public class CompactingRecipeCache {
         for (int i = 0; i < oreInputs.length; i++) {
             Object input = oreInputs[i];
             if (input instanceof ItemStack stack) {
-                if (!isValidStack(stack)) return null;
+                if (ItemHelpers.isEmpty(stack, false)) return null;
                 resolved[i] = stack;
             } else if (input instanceof List) {
                 List<ItemStack> list = (List<ItemStack>) input;
@@ -162,7 +164,7 @@ public class CompactingRecipeCache {
                 // Find the first valid item stack in the list
                 ItemStack validCandidate = null;
                 for (ItemStack stack : list) {
-                    if (isValidStack(stack)) {
+                    if (ItemHelpers.isEmpty(stack)) {
                         validCandidate = stack;
                         break;
                     }
@@ -176,10 +178,6 @@ public class CompactingRecipeCache {
         return resolved;
     }
 
-    private boolean isValidStack(ItemStack stack) {
-        return stack != null && stack.getItem() != null;
-    }
-
     /**
      * Find a compacting result for the given item.
      *
@@ -189,7 +187,7 @@ public class CompactingRecipeCache {
      * @return The compacting result, or null if none found
      */
     public CompactingResult findCompactingRecipe(ItemStack stack, boolean allow3x3, boolean onlyReversible) {
-        if (!isValidStack(stack)) return null;
+        if (ItemHelpers.isEmpty(stack, false)) return null;
 
         String key = makeKey(stack);
         if (key.isEmpty()) return null;
@@ -219,7 +217,7 @@ public class CompactingRecipeCache {
      * This means: the output item has a recipe where it produces gridSize of some item.
      */
     private boolean isReversible(ItemStack output, int gridSize) {
-        if (!isValidStack(output)) return false;
+        if (!ItemHelpers.isEmpty(output)) return false;
         String outputKey = makeKey(output);
 
         // Check if any recipe uses this output as input in the other direction
@@ -245,10 +243,9 @@ public class CompactingRecipeCache {
     }
 
     private static String makeKey(ItemStack stack) {
-        if (stack == null || stack.getItem() == null) return "";
-        return stack.getItem()
-            .getUnlocalizedName() + "@"
-            + stack.getItemDamage();
+        return ItemHelpers.getItemOptional(stack)
+            .map(item -> item.getUnlocalizedName() + "@" + ItemHelpers.getStackMeta(stack))
+            .orElse("");
     }
 
     /**

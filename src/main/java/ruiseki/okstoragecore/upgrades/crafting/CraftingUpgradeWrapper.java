@@ -41,11 +41,6 @@ public class CraftingUpgradeWrapper extends UpgradeWrapperBase<CraftingUpgradeWr
     }
 
     @Override
-    public String getSettingLangKey() {
-        return "gui.okstoragecore.upgrades.crafting";
-    }
-
-    @Override
     public ItemStackHandler getStorage() {
         return inventory;
     }

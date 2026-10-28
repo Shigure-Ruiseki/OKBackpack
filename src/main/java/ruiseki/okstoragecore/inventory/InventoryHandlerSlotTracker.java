@@ -62,7 +62,7 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
         })
             .add(slot);
         this.partiallyFilledSlotStacks.put(slot, stackKey);
-        this.itemStackKeys.computeIfAbsent(stack.getItem(), i -> new HashSet<>())
+        this.itemStackKeys.computeIfAbsent(ItemHelpers.getItem(stack), i -> new HashSet<>())
             .add(stackKey);
     }
 
@@ -91,7 +91,7 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
         })
             .add(slot);
         this.fullSlotStacks.put(slot, stackKey);
-        this.itemStackKeys.computeIfAbsent(stack.getItem(), i -> new HashSet<>())
+        this.itemStackKeys.computeIfAbsent(ItemHelpers.getItem(stack), i -> new HashSet<>())
             .add(stackKey);
     }
 
@@ -142,23 +142,14 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
     }
 
     private void onStackKeyRemoved(ItemStackKey stackKey) {
-        this.itemStackKeys.computeIfPresent(
-            stackKey.getStack()
-                .getItem(),
-            (i, stackKeys) -> {
-                stackKeys.remove(stackKey);
-                return stackKeys;
-            });
-        if (this.itemStackKeys.containsKey(
-            stackKey.getStack()
-                .getItem())
-            && this.itemStackKeys.get(
-                stackKey.getStack()
-                    .getItem())
+        this.itemStackKeys.computeIfPresent(ItemHelpers.getItem(stackKey.getStack()), (i, stackKeys) -> {
+            stackKeys.remove(stackKey);
+            return stackKeys;
+        });
+        if (this.itemStackKeys.containsKey(ItemHelpers.getItem(stackKey.getStack()))
+            && this.itemStackKeys.get(ItemHelpers.getItem(stackKey.getStack()))
                 .isEmpty()) {
-            this.itemStackKeys.remove(
-                stackKey.getStack()
-                    .getItem());
+            this.itemStackKeys.remove(ItemHelpers.getItem(stackKey.getStack()));
         }
 
         this.onRemoveStackKey.accept(stackKey);
@@ -272,7 +263,7 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
     @Override
     public ItemStack insertItemIntoHandler(InventoryHandler itemHandler, IItemHandlerInserter inserter,
         UnaryOperator<ItemStack> overflowHandler, ItemStack stack, boolean simulate) {
-        if (this.emptySlots.isEmpty() && !this.itemStackKeys.containsKey(stack.getItem())) {
+        if (this.emptySlots.isEmpty() && !this.itemStackKeys.containsKey(ItemHelpers.getItem(stack))) {
             return stack;
         }
 

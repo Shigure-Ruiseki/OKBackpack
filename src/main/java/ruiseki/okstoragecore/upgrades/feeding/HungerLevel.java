@@ -39,6 +39,13 @@ public enum HungerLevel implements StringRepresentable {
         VALUES = values();
     }
 
+    public static HungerLevel fromOrdinal(int ordinal) {
+        if (ordinal < 0 || ordinal >= VALUES.length) {
+            return ANY;
+        }
+        return VALUES[ordinal];
+    }
+
     public static HungerLevel fromName(String name) {
         return NAME_VALUES.getOrDefault(name, HALF);
     }

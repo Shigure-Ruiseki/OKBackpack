@@ -26,8 +26,8 @@ public class UpgradeType<T extends IUpgradeWrapper> {
     }
 
     public ExpandedTab getExpandedTabWidget(int slotIndex, T wrapper, ItemStack stack, IStorageWrapper storageWrapper,
-        StoragePanel storagePanel, String titleKey) {
-        return factory.createExpandedTab(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
+        StoragePanel storagePanel) {
+        return factory.createExpandedTab(slotIndex, wrapper, stack, storageWrapper, storagePanel);
     }
 
     public interface IFactory<T extends IUpgradeWrapper> {
@@ -39,7 +39,7 @@ public class UpgradeType<T extends IUpgradeWrapper> {
         }
 
         default ExpandedTab createExpandedTab(int slotIndex, T wrapper, ItemStack stack, IStorageWrapper storageWrapper,
-            StoragePanel storagePanel, String titleKey) {
+            StoragePanel storagePanel) {
             return null;
         }
     }

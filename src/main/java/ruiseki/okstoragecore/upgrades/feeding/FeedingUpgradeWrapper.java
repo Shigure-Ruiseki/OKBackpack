@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 
@@ -50,24 +51,20 @@ public class FeedingUpgradeWrapper extends UpgradeWrapperBase<FeedingUpgradeWrap
 
     @Override
     public void tick(@Nullable EntityLivingBase entity, World world, BlockPos pos) {
-        if (world.isRemote || isInCooldown(world)) {
-            return;
-        }
+        if (world.isRemote || isInCooldown(world)) return;
 
-        if (entity != null && !(entity instanceof EntityPlayer)) {
-            return;
-        }
+        if (entity != null && !(entity instanceof EntityPlayer)) return;
 
         boolean hungryPlayer = false;
 
-        if (entity instanceof EntityPlayer) {
-            hungryPlayer = feedPlayerAndGetHungry((EntityPlayer) entity, world);
+        if (entity instanceof EntityPlayer player) {
+            hungryPlayer = this.feedPlayerAndGetHungry(player, world);
         } else {
             double x = pos.getX();
             double y = pos.getY();
             double z = pos.getZ();
 
-            net.minecraft.util.AxisAlignedBB area = net.minecraft.util.AxisAlignedBB.getBoundingBox(
+            AxisAlignedBB area = AxisAlignedBB.getBoundingBox(
                 x - FEEDING_RANGE,
                 y - FEEDING_RANGE,
                 z - FEEDING_RANGE,
@@ -75,38 +72,37 @@ public class FeedingUpgradeWrapper extends UpgradeWrapperBase<FeedingUpgradeWrap
                 y + 1 + FEEDING_RANGE,
                 z + 1 + FEEDING_RANGE);
 
-            for (Object object : world.getEntitiesWithinAABB(EntityPlayer.class, area)) {
-
-                if (feedPlayerAndGetHungry((EntityPlayer) object, world)) {
+            for (EntityPlayer player : world.getEntitiesWithinAABB(EntityPlayer.class, area)) {
+                if (this.feedPlayerAndGetHungry(player, world)) {
                     hungryPlayer = true;
                 }
             }
         }
 
-        setCooldown(world, hungryPlayer ? STILL_HUNGRY_COOLDOWN : COOLDOWN);
+        this.setCooldown(world, hungryPlayer ? STILL_HUNGRY_COOLDOWN : COOLDOWN);
     }
 
     private boolean feedPlayerAndGetHungry(EntityPlayer player, World world) {
         int hungerLevel = 20 - player.getFoodStats()
             .getFoodLevel();
         if (hungerLevel <= 0) return false;
-        return tryFeedingFoodFromStorage(world, hungerLevel, player) && player.getFoodStats()
+        return this.tryFeedingFoodFromStorage(world, hungerLevel, player) && player.getFoodStats()
             .getFoodLevel() < 20;
     }
 
     private boolean tryFeedingFoodFromStorage(World world, int hungerLevel, EntityPlayer player) {
         boolean isHurt = player.getHealth() < player.getMaxHealth() - 0.1F;
 
-        IItemHandlerModifiable inventory = storageWrapper.getInventoryForUpgradeProcessing();
+        IItemHandlerModifiable inventory = this.storageWrapper.getInventoryForUpgradeProcessing();
         final boolean[] fedPlayer = { false };
 
         InventoryHelpers.iterate(inventory, (slot, stack) -> {
-            if (!isEdible(stack) || !filterLogic.matchesFilter(stack)) {
+            if (!isEdible(stack) || !this.filterLogic.matchesFilter(stack)) {
                 return false;
             }
 
-            if (!isHungryEnoughForFood(hungerLevel, stack, player)
-                && !(shouldFeedImmediatelyWhenHurt() && hungerLevel > 0 && isHurt)) {
+            if (!this.isHungryEnoughForFood(hungerLevel, stack, player)
+                && !(this.shouldFeedImmediatelyWhenHurt() && hungerLevel > 0 && isHurt)) {
                 return false;
             }
 
@@ -143,15 +139,9 @@ public class FeedingUpgradeWrapper extends UpgradeWrapperBase<FeedingUpgradeWrap
     }
 
     private boolean isHungryEnoughForFood(int hungerLevel, ItemStack stack, EntityPlayer player) {
-        if (!isEdible(stack)) {
-            return false;
-        }
-
-        HungerLevel feedAtHungerLevel = getFeedAtHungerLevel();
-        if (feedAtHungerLevel == HungerLevel.ANY) {
-            return true;
-        }
-
+        if (!isEdible(stack)) return false;
+        HungerLevel feedAtHungerLevel = this.getFeedAtHungerLevel();
+        if (feedAtHungerLevel == HungerLevel.ANY) return true;
         int nutrition = ((ItemFood) stack.getItem()).func_150905_g(stack);
         return (feedAtHungerLevel == HungerLevel.HALF ? nutrition / 2 : nutrition) <= hungerLevel;
     }
@@ -168,7 +158,7 @@ public class FeedingUpgradeWrapper extends UpgradeWrapperBase<FeedingUpgradeWrap
 
     public void setFeedAtHungerLevel(HungerLevel hungerLevel) {
         NBTHelpers.setEnumConstant(upgrade, "feedAtHungerLevel", hungerLevel);
-        save();
+        this.save();
     }
 
     public boolean shouldFeedImmediatelyWhenHurt() {
@@ -178,6 +168,6 @@ public class FeedingUpgradeWrapper extends UpgradeWrapperBase<FeedingUpgradeWrap
 
     public void setFeedImmediatelyWhenHurt(boolean value) {
         NBTHelpers.setBoolean(upgrade, "feedImmediatelyWhenHurt", value);
-        save();
+        this.save();
     }
 }

@@ -36,6 +36,13 @@ public class OSCTextures {
     public static final UITexture ROTATED_LEFT = icon("rotated_left", 48, 0, CRAFTING_TWEAKS);
     public static final UITexture SPREAD = icon("spread", 80, 0, CRAFTING_TWEAKS);
 
+    public static final UITexture FULL_HUNGER = icon("full_hunger", 96, 0);
+    public static final UITexture HALF_HUNGER = icon("half_hunger", 112, 0);
+    public static final UITexture ANY_HUNGER = icon("any_hunger", 128, 0);
+
+    public static final UITexture HALF_HEART = icon("half_heart", 96, 16);
+    public static final UITexture IGNORE_HALF_HEART = icon("ignore_half_heart", 112, 16);
+
     public static final UITexture MATCH_MOD = icon("match_mod", 32, 16);
     public static final IDrawable MATCH_ITEM = new ItemDrawable(Items.apple);
     public static final UITexture MATCH_TAG = icon("match_tag", 64, 0);
