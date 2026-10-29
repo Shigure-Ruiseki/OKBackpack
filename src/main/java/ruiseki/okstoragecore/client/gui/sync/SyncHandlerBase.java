@@ -14,15 +14,14 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 public class SyncHandlerBase<T extends SyncHandlerBase<T>> extends SyncHandler<T> {
 
     private final StoragePanel panel;
-    private final IStorageWrapper wrapper;
 
-    public SyncHandlerBase(IStorageWrapper wrapper, StoragePanel panel) {
+    public SyncHandlerBase(StoragePanel panel) {
         this.panel = panel;
-        this.wrapper = wrapper;
     }
 
     public IStorageWrapper getWrapper() {
-        return wrapper;
+        return this.getPanel()
+            .getWrapper();
     }
 
     public StoragePanel getPanel() {

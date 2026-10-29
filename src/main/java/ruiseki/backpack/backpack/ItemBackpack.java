@@ -164,7 +164,7 @@ public class ItemBackpack extends ItemBlockMetadata implements IGuiHolder<Player
     public ModularPanel buildUI(PlayerInventoryGuiData data, PanelSyncManager syncManager, UISettings settings) {
         IBackpackWrapper wrapper = CapabilityHelpers
             .getCapability(data.getUsedItemStack(), CapabilityBackpackWrapperConfig.CAPABILITY)
-            .orElse(IBackpackWrapper.Noop.INSTANCE);
-        return new BackpackGuiHolder.ItemStackGuiHolder(wrapper).buildUI(data, syncManager, settings);
+            .orElse(IBackpackWrapper.NoopBackpackWrapper.INSTANCE);
+        return new BackpackGuiHolder.ItemStackGuiHolder().buildUI(data, syncManager, settings);
     }
 }

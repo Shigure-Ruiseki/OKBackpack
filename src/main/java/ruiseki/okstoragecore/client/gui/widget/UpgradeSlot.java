@@ -14,12 +14,10 @@ public class UpgradeSlot extends ItemSlot {
 
     public static final int ERROR_SLOT_COLOR = 0xAAB02E26;
 
-    private final IStorageWrapper storageWrapper;
     private final StoragePanel storagePanel;
     private final int slotIndex;
 
-    public UpgradeSlot(IStorageWrapper storageWrapper, StoragePanel storagePanel, int slotIndex) {
-        this.storageWrapper = storageWrapper;
+    public UpgradeSlot(StoragePanel storagePanel, int slotIndex) {
         this.storagePanel = storagePanel;
         this.slotIndex = slotIndex;
     }
@@ -33,7 +31,8 @@ public class UpgradeSlot extends ItemSlot {
     }
 
     public IStorageWrapper getStorageWrapper() {
-        return this.storageWrapper;
+        return this.getStoragePanel()
+            .getWrapper();
     }
 
     @Override

@@ -14,12 +14,10 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 
 public class StorageSlotSH extends ItemSlotSH {
 
-    private final IStorageWrapper wrapper;
     private final StoragePanel panel;
 
-    public StorageSlotSH(ModularSlot slot, IStorageWrapper wrapper, StoragePanel panel) {
+    public StorageSlotSH(ModularSlot slot, StoragePanel panel) {
         super(slot);
-        this.wrapper = wrapper;
         this.panel = panel;
     }
 
@@ -76,7 +74,8 @@ public class StorageSlotSH extends ItemSlotSH {
     }
 
     public IStorageWrapper getWrapper() {
-        return wrapper;
+        return this.getPanel()
+            .getWrapper();
     }
 
     public StoragePanel getPanel() {

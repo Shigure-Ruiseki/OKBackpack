@@ -7,13 +7,14 @@ import ruiseki.okstoragecore.client.gui.sync.StorageSH;
 
 public class BackpackSH extends StorageSH {
 
-    public BackpackSH(PlayerMainInvWrapper playerInventory, IBackpackWrapper wrapper, BackpackPanel panel) {
-        super(playerInventory, wrapper, panel);
+    public BackpackSH(PlayerMainInvWrapper playerInventory, BackpackPanel panel) {
+        super(playerInventory, panel);
     }
 
     @Override
     public IBackpackWrapper getWrapper() {
-        return (IBackpackWrapper) super.getWrapper();
+        return this.getPanel()
+            .getWrapper();
     }
 
     @Override

@@ -31,9 +31,12 @@ import ruiseki.okcore.tileentity.TileEntityOK;
 
 public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData> {
 
-    private IBackpackWrapper backpackWrapper = IBackpackWrapper.Noop.INSTANCE;
+    private IBackpackWrapper backpackWrapper = IBackpackWrapper.NoopBackpackWrapper.INSTANCE;
 
     public TileBackpack() {
+        this.capabilityCache.addCapabilityResolver(
+            BasicCapabilityResolver.create(CapabilityBackpackWrapperConfig.CAPABILITY, this::getBackpackWrapper));
+
         this.capabilityCache.addCapabilityResolver(
             BasicCapabilityResolver.create(
                 CapabilityItemHandler.ITEM_HANDLER,
@@ -51,7 +54,7 @@ public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData>
 
     public void setBackpack(ItemStack stack) {
         this.backpackWrapper = CapabilityHelpers.getCapability(stack, CapabilityBackpackWrapperConfig.CAPABILITY)
-            .orElse(IBackpackWrapper.Noop.INSTANCE);
+            .orElse(IBackpackWrapper.NoopBackpackWrapper.INSTANCE);
         this.backpackWrapper.setSaveHandler(() -> {
             markDirty();
             onSendUpdate();
@@ -105,11 +108,11 @@ public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData>
     @Override
     @SideOnly(Side.CLIENT)
     public ModularScreen createScreen(PosGuiData data, ModularPanel mainPanel) {
-        return new BackpackGuiHolder.TileEntityGuiHolder<>(backpackWrapper).createScreen(data, mainPanel);
+        return new BackpackGuiHolder.TileEntityGuiHolder<>().createScreen(data, mainPanel);
     }
 
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new BackpackGuiHolder.TileEntityGuiHolder<>(backpackWrapper).buildUI(data, syncManager, settings);
+        return new BackpackGuiHolder.TileEntityGuiHolder<>().buildUI(data, syncManager, settings);
     }
 }

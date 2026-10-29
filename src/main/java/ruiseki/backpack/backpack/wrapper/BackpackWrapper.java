@@ -96,15 +96,10 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public InventoryHandler getInventoryHandler() {
         if (handler == null) {
-            handler = new BackpackInventoryHandler(
-                getNumberOfInventorySlots() - (getNumberOfSlotRows() * getColumnsTaken()),
-                this,
-                getBackpackContentsNbt(),
-                () -> {
-                    this.markBackpackContentsDirty();
-                    this.inventorySlotChangeHandler.run();
-                },
-                ItemStackUpgrade.getInventorySlotLimit(this));
+            handler = new BackpackInventoryHandler(getNumberOfInventorySlots(), this, getBackpackContentsNbt(), () -> {
+                this.markBackpackContentsDirty();
+                this.inventorySlotChangeHandler.run();
+            }, ItemStackUpgrade.getInventorySlotLimit(this));
             // handler.addListener(getSettingsHandler().getTypeCategory(ItemDisplaySettingsCategory.class)::itemChanged);
         }
         return handler;
@@ -168,7 +163,7 @@ public class BackpackWrapper implements IBackpackWrapper {
                     getBackpackContentsNbt(),
                     this::markBackpackContentsDirty);
             } else {
-                settingsHandler = Noop.INSTANCE.getSettingsHandler();
+                settingsHandler = NoopBackpackWrapper.INSTANCE.getSettingsHandler();
             }
         }
         return settingsHandler;
@@ -211,7 +206,7 @@ public class BackpackWrapper implements IBackpackWrapper {
                     }
                 };
             } else {
-                upgradeHandler = Noop.INSTANCE.getUpgradeHandler();
+                upgradeHandler = NoopBackpackWrapper.INSTANCE.getUpgradeHandler();
             }
         }
         return upgradeHandler;
@@ -253,10 +248,10 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     private void clearDummyHandlers() {
-        if (upgradeHandler == Noop.INSTANCE.getUpgradeHandler()) {
+        if (upgradeHandler == NoopBackpackWrapper.INSTANCE.getUpgradeHandler()) {
             upgradeHandler = null;
         }
-        if (settingsHandler == Noop.INSTANCE.getSettingsHandler()) {
+        if (settingsHandler == NoopBackpackWrapper.INSTANCE.getSettingsHandler()) {
             settingsHandler = null;
         }
     }
@@ -367,11 +362,6 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public @Nullable ItemStack getBackpack() {
         return this.backpack;
-    }
-
-    @Override
-    public void setBackpack(@Nullable ItemStack stack) {
-        this.backpack = stack;
     }
 
     @Override

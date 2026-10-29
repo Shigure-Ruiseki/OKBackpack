@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import ruiseki.backpack.api.IBlockPickResponseUpgrade;
-import ruiseki.backpack.backpack.UUIDDeduplicator;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.backpack.helpers.PlayerInventoryProvider;
 import ruiseki.okcore.helper.CapabilityHelpers;
@@ -42,7 +41,6 @@ public class PacketBlockPick extends PacketCodec {
                 player,
                 (backpack, inventoryHandlerName, identifier, slot) -> CapabilityHelpers
                     .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
-                    .map(wrapper -> UUIDDeduplicator.getWrapper(player, wrapper))
                     .map(wrapper -> {
                         for (IBlockPickResponseUpgrade upgrade : wrapper.getUpgradeHandler()
                             .getWrappersThatImplement(IBlockPickResponseUpgrade.class)) {

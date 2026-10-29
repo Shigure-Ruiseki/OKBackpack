@@ -12,8 +12,6 @@ public interface IBackpackWrapper extends IStorageWrapper {
 
     ItemStack getBackpack();
 
-    void setBackpack(ItemStack stack);
-
     void setSlotNumbers(int numberOfInventorySlots, int numberOfUpgradeSlots);
 
     void setContentsUuid(UUID storageUuid);
@@ -42,20 +40,15 @@ public interface IBackpackWrapper extends IStorageWrapper {
         // noop
     }
 
-    class Noop extends NoopStorageWrapper implements IBackpackWrapper {
+    class NoopBackpackWrapper extends NoopStorageWrapper implements IBackpackWrapper {
 
-        public static final Noop INSTANCE = new Noop();
+        public static final NoopBackpackWrapper INSTANCE = new NoopBackpackWrapper();
 
         private final ItemStack backpack = new ItemStack(BlockBackpackTestConfig._instance.getItemInstance());
 
         @Override
         public ItemStack getBackpack() {
             return backpack;
-        }
-
-        @Override
-        public void setBackpack(ItemStack stack) {
-
         }
 
         @Override

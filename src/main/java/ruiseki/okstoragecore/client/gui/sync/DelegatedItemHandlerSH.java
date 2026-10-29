@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import ruiseki.okbackpack.client.gui.handler.DelegatedItemHandler;
 import ruiseki.okcore.item.handler.EmptyHandler;
 import ruiseki.okcore.item.handler.IItemHandlerModifiable;
-import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.container.StorageContainer;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
@@ -18,9 +17,9 @@ public class DelegatedItemHandlerSH extends SyncHandlerBase<DelegatedItemHandler
 
     private final DelegatedItemHandler itemHandler;
 
-    public DelegatedItemHandlerSH(IStorageWrapper storageWrapper, StoragePanel storagePanel,
-        Supplier<StorageContainer> containerSupplier, int slotIndex, int wrappedSlotAmount) {
-        super(storageWrapper, storagePanel);
+    public DelegatedItemHandlerSH(StoragePanel storagePanel, Supplier<StorageContainer> containerSupplier,
+        int slotIndex, int wrappedSlotAmount) {
+        super(storagePanel);
         this.slotIndex = slotIndex;
         this.wrappedSlotAmount = wrappedSlotAmount;
         this.containerSupplier = containerSupplier;

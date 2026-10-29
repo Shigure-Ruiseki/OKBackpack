@@ -15,7 +15,6 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 public class UpgradeSlotUpdate {
 
     private final StoragePanel panel;
-    private final IStorageWrapper wrapper;
     private final int slotIndex;
     private final PanelSyncManager syncManager;
 
@@ -23,8 +22,7 @@ public class UpgradeSlotUpdate {
 
     final Map<String, Object> components = new HashMap<>();
 
-    public UpgradeSlotUpdate(IStorageWrapper wrapper, StoragePanel panel, int slotIndex) {
-        this.wrapper = wrapper;
+    public UpgradeSlotUpdate(StoragePanel panel, int slotIndex) {
         this.panel = panel;
         this.slotIndex = slotIndex;
         this.syncManager = panel.getSyncManager();
@@ -69,7 +67,8 @@ public class UpgradeSlotUpdate {
     }
 
     public IStorageWrapper getWrapper() {
-        return this.wrapper;
+        return this.getPanel()
+            .getWrapper();
     }
 
     public EntityPlayer getPlayer() {

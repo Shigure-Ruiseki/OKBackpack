@@ -14,7 +14,6 @@ public class BasicFilterLogicUpdate implements IUpgradeSlotUpdateFactory {
     public void build(UpgradeSlotUpdate group) {
 
         DelegatedFilterLogicSH logicSH = new DelegatedFilterLogicSH(
-            group.getWrapper(),
             group.getPanel(),
             group::getContainer,
             group.getSlotIndex(),

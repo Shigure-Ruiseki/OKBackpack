@@ -7,15 +7,14 @@ import ruiseki.backpack.backpack.BackpackPanel;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.client.gui.widget.setting.main.BackpackMainSettingTab;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
-import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.StorageSettingPanel;
 import ruiseki.okstoragecore.client.gui.widget.Tab;
 
 public class BackpackSettingPanel extends StorageSettingPanel {
 
-    public BackpackSettingPanel(IStorageWrapper storageWrapper, StoragePanel storagePanel) {
-        super(storageWrapper, storagePanel);
+    public BackpackSettingPanel(StoragePanel storagePanel) {
+        super(storagePanel);
     }
 
     @Override
@@ -32,7 +31,8 @@ public class BackpackSettingPanel extends StorageSettingPanel {
 
     @Override
     public IBackpackWrapper getStorageWrapper() {
-        return (IBackpackWrapper) super.getStorageWrapper();
+        return this.getStoragePanel()
+            .getWrapper();
     }
 
     @Override

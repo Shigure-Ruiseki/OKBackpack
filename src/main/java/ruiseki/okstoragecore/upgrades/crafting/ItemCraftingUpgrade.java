@@ -35,8 +35,8 @@ public class ItemCraftingUpgrade extends ItemUpgradeBase<CraftingUpgradeWrapper>
 
             @Override
             public ExpandedTab createExpandedTab(int slotIndex, CraftingUpgradeWrapper wrapper, ItemStack stack,
-                IStorageWrapper storageWrapper, StoragePanel storagePanel) {
-                return new CraftingUpgradeTab(slotIndex, wrapper, stack, storageWrapper, storagePanel);
+                StoragePanel storagePanel) {
+                return new CraftingUpgradeTab(slotIndex, wrapper, stack, storagePanel);
             }
         });
 

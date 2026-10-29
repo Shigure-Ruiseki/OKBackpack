@@ -43,14 +43,12 @@ import ruiseki.okstoragecore.settings.nosort.NoSortSettingsCategory;
 
 public class StorageSlot extends ResizableItemSlot {
 
-    private final IStorageWrapper storageWrapper;
     private final StoragePanel storagePanel;
     private final int slotIndex;
 
     protected StorageSlotSH syncHandler;
 
-    public StorageSlot(IStorageWrapper storageWrapper, StoragePanel storagePanel, int slotIndex) {
-        this.storageWrapper = storageWrapper;
+    public StorageSlot(StoragePanel storagePanel, int slotIndex) {
         this.storagePanel = storagePanel;
         this.slotIndex = slotIndex;
     }
@@ -260,7 +258,8 @@ public class StorageSlot extends ResizableItemSlot {
     }
 
     protected IStorageWrapper getStorageWrapper() {
-        return this.storageWrapper;
+        return this.getStoragePanel()
+            .getWrapper();
     }
 
     protected StoragePanel getStoragePanel() {

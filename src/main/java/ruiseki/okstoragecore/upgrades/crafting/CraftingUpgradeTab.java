@@ -14,7 +14,6 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import ruiseki.okbackpack.client.gui.slot.ResizableItemSlot;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.ShiftButtonWidget;
-import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
@@ -39,14 +38,14 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
             IKey.lang("gui.okstoragecore.upgrades.buttons.do_not_refill_crafting_grid"),
             OSCTextures.DO_NOT_FILL_CRAFTING));
 
-    public CraftingUpgradeTab(int slotIndex, CraftingUpgradeWrapper wrapper, ItemStack stack,
-        IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey) {
-        super(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
+    public CraftingUpgradeTab(int slotIndex, CraftingUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel,
+        String titleKey) {
+        super(slotIndex, wrapper, stack, storagePanel, titleKey);
     }
 
     public CraftingUpgradeTab(int slotIndex, CraftingUpgradeWrapper wrapper, ItemStack stack,
-        IStorageWrapper storageWrapper, StoragePanel storagePanel) {
-        this(slotIndex, wrapper, stack, storageWrapper, storagePanel, "gui.okstoragecore.upgrades.crafting");
+        StoragePanel storagePanel) {
+        this(slotIndex, wrapper, stack, storagePanel, "gui.okstoragecore.upgrades.crafting");
     }
 
     @Override

@@ -16,7 +16,6 @@ import ruiseki.okstoragecore.client.gui.widget.setting.StorageMainSettingTab;
 
 public class StorageSettingPanel extends ModularPanel {
 
-    protected final IStorageWrapper storageWrapper;
     protected final StoragePanel storagePanel;
 
     protected IndexedChildWidget<Tab> tabContainer;
@@ -25,9 +24,8 @@ public class StorageSettingPanel extends ModularPanel {
     protected Tab sortingTab;
     protected Tab memoryTab;
 
-    public StorageSettingPanel(IStorageWrapper storageWrapper, StoragePanel storagePanel) {
+    public StorageSettingPanel(StoragePanel storagePanel) {
         super("settings");
-        this.storageWrapper = storageWrapper;
         this.storagePanel = storagePanel;
 
         this.size(
@@ -150,7 +148,8 @@ public class StorageSettingPanel extends ModularPanel {
     }
 
     public IStorageWrapper getStorageWrapper() {
-        return this.storageWrapper;
+        return this.getStoragePanel()
+            .getWrapper();
     }
 
     public StoragePanel getStoragePanel() {

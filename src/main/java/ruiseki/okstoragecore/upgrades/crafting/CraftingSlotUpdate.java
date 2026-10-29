@@ -20,7 +20,6 @@ public class CraftingSlotUpdate implements IUpgradeSlotUpdateFactory {
         String resultGroupName = "crafting_result_" + slotIndex;
 
         DelegatedItemHandlerSH craftingHandler = new DelegatedItemHandlerSH(
-            group.getWrapper(),
             group.getPanel(),
             group::getContainer,
             slotIndex,

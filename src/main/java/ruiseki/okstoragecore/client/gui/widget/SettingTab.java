@@ -18,11 +18,9 @@ public class SettingTab extends Widget<SettingTab> implements Interactable {
 
     public static final TabTexture TAB_TEXTURE = GuiTextures.TAB_RIGHT;
 
-    private final IStorageWrapper storageWrapper;
     private final StoragePanel storagePanel;
 
-    public SettingTab(IStorageWrapper storageWrapper, StoragePanel storagePanel) {
-        this.storageWrapper = storageWrapper;
+    public SettingTab(StoragePanel storagePanel) {
         this.storagePanel = storagePanel;
         this.size(TAB_TEXTURE.getWidth(), TAB_TEXTURE.getHeight())
             .right(-TAB_TEXTURE.getWidth() + 4)
@@ -88,6 +86,7 @@ public class SettingTab extends Widget<SettingTab> implements Interactable {
     }
 
     public IStorageWrapper getStorageWrapper() {
-        return this.storageWrapper;
+        return this.getStoragePanel()
+            .getWrapper();
     }
 }

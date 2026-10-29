@@ -9,7 +9,6 @@ import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
-import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.filter.FilterLogicControl;
@@ -17,16 +16,15 @@ import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
 
 public class FeedingUpgradeTab extends ExpandedUpgradeTab<FeedingUpgradeWrapper> {
 
-    public FeedingUpgradeTab(int slotIndex, FeedingUpgradeWrapper wrapper, ItemStack stack,
-        IStorageWrapper storageWrapper, StoragePanel storagePanel, String titleKey) {
-        super(slotIndex, wrapper, stack, storageWrapper, storagePanel, titleKey);
+    public FeedingUpgradeTab(int slotIndex, FeedingUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel,
+        String titleKey) {
+        super(slotIndex, wrapper, stack, storagePanel, titleKey);
     }
 
     public static class Basic extends FeedingUpgradeTab {
 
-        public Basic(int slotIndex, FeedingUpgradeWrapper wrapper, ItemStack stack, IStorageWrapper storageWrapper,
-            StoragePanel storagePanel) {
-            super(slotIndex, wrapper, stack, storageWrapper, storagePanel, "gui.okstoragecore.upgrades.feeding");
+        public Basic(int slotIndex, FeedingUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
+            super(slotIndex, wrapper, stack, storagePanel, "gui.okstoragecore.upgrades.feeding");
         }
 
         @Override
@@ -57,15 +55,8 @@ public class FeedingUpgradeTab extends ExpandedUpgradeTab<FeedingUpgradeWrapper>
                 IKey.lang("gui.okstoragecore.upgrades.buttons.do_not_consider_health"),
                 OSCTextures.IGNORE_HALF_HEART));
 
-        public Advanced(int slotIndex, FeedingUpgradeWrapper wrapper, ItemStack stack, IStorageWrapper storageWrapper,
-            StoragePanel storagePanel) {
-            super(
-                slotIndex,
-                wrapper,
-                stack,
-                storageWrapper,
-                storagePanel,
-                "gui.okstoragecore.upgrades.advanced_feeding");
+        public Advanced(int slotIndex, FeedingUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
+            super(slotIndex, wrapper, stack, storagePanel, "gui.okstoragecore.upgrades.advanced_feeding");
         }
 
         @Override

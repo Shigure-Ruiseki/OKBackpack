@@ -21,12 +21,13 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import ruiseki.backpack.api.IAttackEntityResponseUpgrade;
 import ruiseki.backpack.api.IBlockClickResponseUpgrade;
-import ruiseki.backpack.backpack.UUIDDeduplicator;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.backpack.helpers.PlayerInventoryProvider;
 import ruiseki.okbackpack.GeneralConfig;
+import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionExecutor;
 import ruiseki.okcore.datastructure.BlockPos;
+import ruiseki.okcore.event.gui.SlotClickEvent;
 import ruiseki.okcore.event.interaction.PlayerInteractEvent;
 import ruiseki.okcore.helper.CapabilityHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
@@ -119,7 +120,6 @@ public class CommonEventHandler {
                 player,
                 (backpack, inventoryHandlerName, identifier, slot) -> CapabilityHelpers
                     .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
-                    .map(wrapper -> UUIDDeduplicator.getWrapper(player, wrapper))
                     .map(wrapper -> {
                         for (IBlockClickResponseUpgrade upgrade : wrapper.getUpgradeHandler()
                             .getWrappersThatImplement(IBlockClickResponseUpgrade.class)) {
@@ -132,7 +132,8 @@ public class CommonEventHandler {
                     .orElse(false));
     }
 
-    private void onAttackEntity(AttackEntityEvent event) {
+    @SubscribeEvent
+    public void onAttackEntity(AttackEntityEvent event) {
         EntityPlayer player = event.entityPlayer;
         if (player.worldObj.isRemote) {
             return;
@@ -142,7 +143,6 @@ public class CommonEventHandler {
                 player,
                 (backpack, inventoryHandlerName, identifier, slot) -> CapabilityHelpers
                     .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
-                    .map(wrapper -> UUIDDeduplicator.getWrapper(player, wrapper))
                     .map(wrapper -> {
                         for (IAttackEntityResponseUpgrade upgrade : wrapper.getUpgradeHandler()
                             .getWrappersThatImplement(IAttackEntityResponseUpgrade.class)) {
@@ -172,7 +172,6 @@ public class CommonEventHandler {
                 player,
                 (backpack, inventoryHandlerName, identifier, slot) -> CapabilityHelpers
                     .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
-                    .map(wrapper -> UUIDDeduplicator.getWrapper(player, wrapper))
                     .map(wrapper -> {
                         remainingStackSimulated.set(
                             StorageInventoryHelpers.runPickupOnPickupResponseUpgrades(
@@ -194,7 +193,6 @@ public class CommonEventHandler {
                     player,
                     (backpack, inventoryHandlerName, identifier, slot) -> CapabilityHelpers
                         .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
-                        .map(wrapper -> UUIDDeduplicator.getWrapper(player, wrapper))
                         .map(wrapper -> {
                             remainingStack.set(
                                 StorageInventoryHelpers.runPickupOnPickupResponseUpgrades(
@@ -226,7 +224,6 @@ public class CommonEventHandler {
         PlayerInventoryProvider.get()
             .runOnBackpacks(player, (backpack, handlerName, identifier, slot) -> {
                 CapabilityHelpers.getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
-                    .map(wrapper -> UUIDDeduplicator.getWrapper(player, wrapper))
                     .ifPresent(wrapper -> {
                         wrapper.getUpgradeHandler()
                             .getWrappersThatImplement(ITickableUpgrade.class)
@@ -236,4 +233,21 @@ public class CommonEventHandler {
             }, GeneralConfig.onlyWornBackpackTriggersUpgrades);
     }
 
+    @SubscribeEvent
+    public void onSlotClick(SlotClickEvent.Pre event) {
+        if (event.isCanceled()) return;
+
+        if (!BackpackInventoryInteractionExecutor.tryExecute(
+            event.getContainer(),
+            event.getPlayer(),
+            event.getSlotId(),
+            event.getMouseButton(),
+            event.getMode()
+                .toNumber())) {
+            return;
+        }
+
+        event.setResultStack(null);
+        event.setCanceled(true);
+    }
 }

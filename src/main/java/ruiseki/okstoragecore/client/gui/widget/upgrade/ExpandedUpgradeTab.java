@@ -19,16 +19,13 @@ public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase<U, ?>> ext
 
     protected UpgradeSlotSH slotSyncHandler = null;
 
-    protected IStorageWrapper storageWrapper;
     protected StoragePanel storagePanel;
     protected int slotIndex;
     protected U wrapper;
 
-    public ExpandedUpgradeTab(int slotIndex, U wrapper, ItemStack stack, IStorageWrapper storageWrapper,
-        StoragePanel storagePanel, String titleKey) {
+    public ExpandedUpgradeTab(int slotIndex, U wrapper, ItemStack stack, StoragePanel storagePanel, String titleKey) {
         super(new ItemDrawable(stack), titleKey);
         this.wrapper = wrapper;
-        this.storageWrapper = storageWrapper;
         this.storagePanel = storagePanel;
         this.slotIndex = slotIndex;
         this.syncHandler("upgrades", this.getSlotIndex());
@@ -43,13 +40,17 @@ public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase<U, ?>> ext
 
     @Override
     public void updateTabState() {
-        int currentTabId = this.storageWrapper.getOpenTabId()
+        int currentTabId = this.getStorageWrapper()
+            .getOpenTabId()
             .orElse(-1);
-        int newTabId = currentTabId == this.slotIndex ? -1 : this.slotIndex;
-        this.storageWrapper.setOpenTabId(newTabId);
-        this.storagePanel.getStorageSH()
+        int newTabId = currentTabId == this.getSlotIndex() ? -1 : this.getSlotIndex();
+        this.getStorageWrapper()
+            .setOpenTabId(newTabId);
+        this.getStoragePanel()
+            .getStorageSH()
             .syncToServer(StorageSHRegisters.OPENED_ID, buffer -> buffer.writeInt(newTabId));
-        this.storagePanel.updateUpgradeTabs();
+        this.getStoragePanel()
+            .updateUpgradeTabs();
     }
 
     protected Flow addUpgradeColumn() {
@@ -75,7 +76,8 @@ public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase<U, ?>> ext
     }
 
     public IStorageWrapper getStorageWrapper() {
-        return this.storageWrapper;
+        return this.getStoragePanel()
+            .getWrapper();
     }
 
     public int getSlotIndex() {

@@ -18,6 +18,7 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
+import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.backpack.client.gui.container.BackpackContainer;
 import ruiseki.backpack.client.gui.container.BackpackGuiContainer;
 import ruiseki.backpack.client.gui.slot.LockedPlayerSlot;
@@ -26,6 +27,8 @@ import ruiseki.backpack.client.gui.sync.BackpackSlotSH;
 import ruiseki.backpack.client.gui.widget.BackpackSettingPanel;
 import ruiseki.backpack.client.gui.widget.BackpackSlot;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
+import ruiseki.okcore.helper.CapabilityHelpers;
+import ruiseki.okcore.helper.InventoryHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
 import ruiseki.okstoragecore.client.gui.slot.ModularStorageSlot;
@@ -39,21 +42,21 @@ import ruiseki.okstoragecore.inventory.InventoryHandler;
 public class BackpackPanel extends StoragePanel {
 
     public BackpackPanel(EntityPlayer player, TileEntity tile, PanelSyncManager syncManager, UISettings settings,
-        IBackpackWrapper wrapper, int width) {
-        super(player, tile, syncManager, settings, wrapper, width);
+        Integer slotIndex, InventoryType type) {
+        super(player, tile, syncManager, settings, slotIndex, type);
     }
 
     @Override
     public void constructSettings() {
         this.getSettings()
-            .customContainer(() -> new BackpackContainer(this.getPlayer(), this.getWrapper(), this.getPanel()));
+            .customContainer(() -> new BackpackContainer(this.getPanel()));
         this.getSettings()
-            .customGui(() -> (container, screen) -> new BackpackGuiContainer(container, screen, this.getWrapper()));
+            .customGui(() -> BackpackGuiContainer::new);
     }
 
     @Override
     protected void constructStorageHandler() {
-        this.storageSH = new BackpackSH(this.getPlayerInventory(), this.getWrapper(), this.getPanel());
+        this.storageSH = new BackpackSH(this.getPlayerInventory(), this.getPanel());
     }
 
     @Override
@@ -69,7 +72,7 @@ public class BackpackPanel extends StoragePanel {
             .maxSlots(inventorySlots)
             .key(
                 'I',
-                i -> new BackpackSlot(this.getWrapper(), this.getPanel(), i).syncHandler(this.getStorageSlotSH(i))
+                i -> new BackpackSlot(this.getPanel(), i).syncHandler(this.getStorageSlotSH(i))
                     .setEnabledIf(slot -> {
                         if (this.searchValue.getStringValue()
                             .isEmpty()) return true;
@@ -90,9 +93,9 @@ public class BackpackPanel extends StoragePanel {
             .getInventoryHandler();
         this.storageSlotSHs = new StorageSlotSH[handler.getSlots()];
         for (int i = 0; i < handler.getSlots(); i++) {
-            ModularStorageSlot slot = new ModularStorageSlot(i, this.getWrapper(), this.getPanel());
+            ModularStorageSlot slot = new ModularStorageSlot(i, this.getPanel());
             slot.slotGroup("storage_inventory");
-            StorageSlotSH syncHandler = new BackpackSlotSH(slot, this.getWrapper(), this.getPanel());
+            StorageSlotSH syncHandler = new BackpackSlotSH(slot, this.getPanel());
             this.syncManager.syncValue("storage", i, syncHandler);
             this.storageSlotSHs[i] = syncHandler;
         }
@@ -125,9 +128,8 @@ public class BackpackPanel extends StoragePanel {
             .syncedPanel(
                 "setting_panel",
                 true,
-                (syncManager1,
-                    syncHandler) -> this.settingPanel = new BackpackSettingPanel(this.getWrapper(), this.getPanel()));
-        this.child(new SettingTab(this.getWrapper(), this.getPanel()).tooltipDynamic(tooltip -> {
+                (syncManager1, syncHandler) -> this.settingPanel = new BackpackSettingPanel(this.getPanel()));
+        this.child(new SettingTab(this.getPanel()).tooltipDynamic(tooltip -> {
             tooltip.clearText();
             if (this.settingPanelHandler.isPanelOpen()) {
                 tooltip.addLine(IKey.lang("gui.okbackpack.settings.backpack"))
@@ -156,7 +158,15 @@ public class BackpackPanel extends StoragePanel {
 
     @Override
     public IBackpackWrapper getWrapper() {
-        return (IBackpackWrapper) super.getWrapper();
+        if (tile != null) return CapabilityHelpers.getCapability(tile, CapabilityBackpackWrapperConfig.CAPABILITY)
+            .orElse(IBackpackWrapper.NoopBackpackWrapper.INSTANCE);
+        return slotIndex != null
+            ? CapabilityHelpers
+                .getCapability(
+                    InventoryHelpers.getItemFromIndex(this.getPlayer(), this.getSlotIndex()),
+                    CapabilityBackpackWrapperConfig.CAPABILITY)
+                .orElse(IBackpackWrapper.NoopBackpackWrapper.INSTANCE)
+            : IBackpackWrapper.NoopBackpackWrapper.INSTANCE;
     }
 
     @Override

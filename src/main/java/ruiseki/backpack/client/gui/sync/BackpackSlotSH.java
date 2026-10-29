@@ -8,13 +8,14 @@ import ruiseki.okstoragecore.client.gui.sync.StorageSlotSH;
 
 public class BackpackSlotSH extends StorageSlotSH {
 
-    public BackpackSlotSH(ModularSlot slot, IBackpackWrapper wrapper, BackpackPanel panel) {
-        super(slot, wrapper, panel);
+    public BackpackSlotSH(ModularSlot slot, BackpackPanel panel) {
+        super(slot, panel);
     }
 
     @Override
     public IBackpackWrapper getWrapper() {
-        return (IBackpackWrapper) super.getWrapper();
+        return this.getPanel()
+            .getWrapper();
     }
 
     @Override

@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import org.jetbrains.annotations.Nullable;
+
+import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 
 import ruiseki.okcore.datastructure.NonNullList;
 import ruiseki.okcore.helper.InventoryHelpers;
@@ -21,7 +24,7 @@ import ruiseki.okcore.helper.MinecraftHelpers;
 import ruiseki.okcore.item.handler.ItemStackHandler;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 
-public class UpgradeHandler extends ItemStackHandler {
+public class UpgradeHandler extends ItemStackHandler implements IItemHandlerModifiable {
 
     public static final String UPGRADE_INVENTORY_TAG = "upgradeInventory";
     private final IStorageWrapper storageWrapper;
@@ -285,6 +288,16 @@ public class UpgradeHandler extends ItemStackHandler {
     @Override
     public int getSlotLimit(int slot) {
         return 1;
+    }
+
+    @Override
+    public List<ItemStack> getStacks() {
+        return super.getStacks();
+    }
+
+    @Override
+    public boolean isSlotFromInventory(int index, IInventory inventory, int invIndex) {
+        return super.isSlotFromInventory(index, inventory, invIndex);
     }
 
     private static class Accessor implements IUpgradeWrapperAccessor {

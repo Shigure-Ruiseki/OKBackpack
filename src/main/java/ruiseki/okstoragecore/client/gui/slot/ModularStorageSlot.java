@@ -12,30 +12,59 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 
 public class ModularStorageSlot extends ModularItemSlot {
 
-    protected final IStorageWrapper wrapper;
     protected final StoragePanel panel;
 
-    public ModularStorageSlot(int index, IStorageWrapper wrapper, StoragePanel panel) {
-        super(wrapper.getInventoryHandler(), index);
-        this.wrapper = wrapper;
+    public ModularStorageSlot(int index, StoragePanel panel) {
+        super(
+            panel.getWrapper()
+                .getInventoryHandler(),
+            index);
         this.panel = panel;
+    }
+
+    public StoragePanel getPanel() {
+        return panel;
+    }
+
+    public IStorageWrapper getWrapper() {
+        return panel.getWrapper();
+    }
+
+    @Override
+    public com.cleanroommc.modularui.utils.item.IItemHandler getItemHandler() {
+        return this.getWrapper()
+            .getInventoryHandler();
     }
 
     @Override
     public int getSlotStackLimit() {
-        return this.wrapper.getInventoryHandler()
+        return this.getWrapper()
+            .getInventoryHandler()
             .getBaseSlotLimit();
+    }
+
+    @Override
+    public int getItemStackLimit(@NotNull ItemStack stack) {
+        return this.getWrapper()
+            .getInventoryHandler()
+            .getStackLimit(this.getSlotIndex(), stack);
     }
 
     @Override
     public void onSlotChanged() {
         super.onSlotChanged();
+
         // saving here as well because there are many cases where vanilla modifies stack directly without and inventory
         // handler isn't aware of it
         // however it does notify the slot of change
-        this.wrapper.getInventoryHandler()
+        this.getWrapper()
+            .getInventoryHandler()
             .onContentsChanged(this.getSlotIndex());
-        this.processSlotChangeResponse(this.getSlotIndex(), wrapper.getInventoryHandler(), wrapper);
+        this.processSlotChangeResponse(
+            this.getSlotIndex(),
+            this.getWrapper()
+                .getInventoryHandler(),
+            this.getWrapper());
     }
 
     protected void processSlotChangeResponse(int slot, IItemHandler handler, IStorageWrapper storageWrapper) {
@@ -44,11 +73,5 @@ public class ModularStorageSlot extends ModularItemSlot {
                 .getWrappersThatImplementFromMainStorage(ISlotChangeResponseUpgrade.class)
                 .forEach(u -> u.onSlotChange(handler, slot));
         }
-    }
-
-    @Override
-    public int getItemStackLimit(@NotNull ItemStack stack) {
-        return this.wrapper.getInventoryHandler()
-            .getStackLimit(this.getSlotIndex(), stack);
     }
 }

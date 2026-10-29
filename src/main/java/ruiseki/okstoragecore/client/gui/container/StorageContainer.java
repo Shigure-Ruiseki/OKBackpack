@@ -49,11 +49,9 @@ public class StorageContainer extends ModularContainer implements ISortableConta
 
     private static final String PLAYER_INV = "player_inventory";
 
-    protected final IStorageWrapper storageWrapper;
     protected final StoragePanel storagePanel;
 
-    public StorageContainer(EntityPlayer player, IStorageWrapper storageWrapper, StoragePanel storagePanel) {
-        this.storageWrapper = storageWrapper;
+    public StorageContainer(StoragePanel storagePanel) {
         this.storagePanel = storagePanel;
     }
 
@@ -126,7 +124,8 @@ public class StorageContainer extends ModularContainer implements ISortableConta
     }
 
     public IStorageWrapper getStorageWrapper() {
-        return storageWrapper;
+        return this.getStoragePanel()
+            .getWrapper();
     }
 
     public StoragePanel getStoragePanel() {

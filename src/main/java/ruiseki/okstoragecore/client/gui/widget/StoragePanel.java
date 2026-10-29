@@ -18,6 +18,7 @@ import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.AdaptableUITexture;
 import com.cleanroommc.modularui.drawable.ItemDrawable;
 import com.cleanroommc.modularui.drawable.UITexture;
+import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.network.NetworkUtils;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.RichTooltip;
@@ -39,6 +40,8 @@ import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.ShiftButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.TileWidget;
 import ruiseki.okbackpack.common.block.BackpackSettingPanel;
+import ruiseki.okcore.helper.CapabilityHelpers;
+import ruiseki.okcore.helper.InventoryHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
@@ -47,6 +50,7 @@ import ruiseki.okcore.inventory.search.SearchNode;
 import ruiseki.okcore.inventory.search.SearchParser;
 import ruiseki.okcore.item.capability.wrapper.PlayerMainInvWrapper;
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.capabilities.CapabilityStorageWrapperConfig;
 import ruiseki.okstoragecore.client.gui.container.StorageContainer;
 import ruiseki.okstoragecore.client.gui.container.StorageGuiContainer;
 import ruiseki.okstoragecore.client.gui.slot.ModularStorageSlot;
@@ -93,8 +97,9 @@ public class StoragePanel extends ModularPanel {
     protected final EntityPlayer player;
     protected final PanelSyncManager syncManager;
     protected final UISettings settings;
-    protected final IStorageWrapper wrapper;
     protected final TileEntity tile;
+    protected final Integer slotIndex;
+    protected final InventoryType type;
 
     protected StorageSH storageSH;
     protected StorageSlotSH[] storageSlotSHs;
@@ -123,16 +128,19 @@ public class StoragePanel extends ModularPanel {
     private UpgradeSlotChangeResult errorUpgradeSlotChangeResult;
 
     public StoragePanel(EntityPlayer player, TileEntity tile, PanelSyncManager syncManager, UISettings settings,
-        IStorageWrapper wrapper, int width) {
+        Integer slotIndex, InventoryType type) {
         super("gui");
 
         this.player = player;
         this.tile = tile;
+        this.slotIndex = slotIndex;
+        this.type = type;
         this.syncManager = syncManager;
         this.settings = settings;
-        this.wrapper = wrapper;
 
-        this.width(this.width = width);
+        this.width = 20 + this.getWrapper()
+            .getNumberOfSlotColumns() * ItemSlot.SIZE;
+        this.width(this.width);
         this.gridColumn = this.getWrapper()
             .getNumberOfSlotColumns();
 
@@ -157,26 +165,26 @@ public class StoragePanel extends ModularPanel {
     }
 
     protected void constructStorageHandler() {
-        this.storageSH = new StorageSH(this.getPlayerInventory(), this.getWrapper(), this.getPanel());
+        this.storageSH = new StorageSH(this.getPlayerInventory(), this.getPanel());
     }
 
     protected void constructSettings() {
         this.getSettings()
-            .customContainer(() -> new StorageContainer(this.getPlayer(), this.getWrapper(), this.getPanel()));
+            .customContainer(() -> new StorageContainer(this.getPanel()));
         this.getSettings()
-            .customGui(() -> (container, screen) -> new StorageGuiContainer(container, screen, this.getWrapper()));
+            .customGui(() -> StorageGuiContainer::new);
     }
 
     @Override
     public void onInit() {
         super.onInit();
-        updateListHeight();
+        this.updateListHeight();
     }
 
     @Override
     public void onResized() {
         super.onResized();
-        updateListHeight();
+        this.updateListHeight();
     }
 
     private void updateListHeight() {
@@ -334,7 +342,7 @@ public class StoragePanel extends ModularPanel {
             .maxSlots(inventorySlots)
             .key(
                 'I',
-                i -> new StorageSlot(this.getWrapper(), this.getPanel(), i).syncHandler(this.getStorageSlotSH(i))
+                i -> new StorageSlot(this.getPanel(), i).syncHandler(this.getStorageSlotSH(i))
                     .setEnabledIf(slot -> {
                         if (this.searchValue.getStringValue()
                             .isEmpty()) return true;
@@ -354,9 +362,9 @@ public class StoragePanel extends ModularPanel {
             .getInventoryHandler();
         this.storageSlotSHs = new StorageSlotSH[handler.getSlots()];
         for (int i = 0; i < handler.getSlots(); i++) {
-            ModularStorageSlot slot = new ModularStorageSlot(i, this.getWrapper(), this.getPanel());
+            ModularStorageSlot slot = new ModularStorageSlot(i, this.getPanel());
             slot.slotGroup("storage_inventory");
-            StorageSlotSH syncHandler = new StorageSlotSH(slot, this.getWrapper(), this.getPanel());
+            StorageSlotSH syncHandler = new StorageSlotSH(slot, this.getPanel());
             this.getSyncManager()
                 .syncValue("storages", i, syncHandler);
             this.storageSlotSHs[i] = syncHandler;
@@ -442,7 +450,7 @@ public class StoragePanel extends ModularPanel {
     }
 
     public void addUpgradeSlots() {
-        this.upgradeSlotGroup = new UpgradeSlotGroup(this.getWrapper(), this.getPanel());
+        this.upgradeSlotGroup = new UpgradeSlotGroup(this.getPanel());
         this.upgradeSlotGroup.name("upgrade_inventory")
             .resizer()
             .size(
@@ -454,7 +462,7 @@ public class StoragePanel extends ModularPanel {
         for (int i = 0; i < this.getWrapper()
             .getUpgradeHandler()
             .getSlots(); i++) {
-            UpgradeSlot slot = new UpgradeSlot(this.getWrapper(), this.getPanel(), i);
+            UpgradeSlot slot = new UpgradeSlot(this.getPanel(), i);
             slot.syncHandler(this.getUpgradeSlotSH(i))
                 .pos(5, 5 + i * ItemSlot.SIZE)
                 .name("slot_" + i);
@@ -472,9 +480,9 @@ public class StoragePanel extends ModularPanel {
         this.lastUpgradeStacks = new ItemStack[slotCount];
         for (int i = 0; i < handler.getSlots(); i++) {
             final int slotIndex = i;
-            this.upgradeSlotUpdates[slotIndex] = new UpgradeSlotUpdate(this.getWrapper(), this.getPanel(), slotIndex);
-            ModularUpgradeSlot slot = new ModularUpgradeSlot(handler, slotIndex, this.getWrapper(), this.getPanel());
-            UpgradeSlotSH syncHandler = new UpgradeSlotSH(slot, this.getWrapper(), this.getPanel());
+            this.upgradeSlotUpdates[slotIndex] = new UpgradeSlotUpdate(this.getPanel(), slotIndex);
+            ModularUpgradeSlot slot = new ModularUpgradeSlot(slotIndex, this.getPanel());
+            UpgradeSlotSH syncHandler = new UpgradeSlotSH(slot, this.getPanel());
             slot.slotGroup("upgrade_inventory")
                 .changeListener((stack, onlyAmountChanged, client, init) -> {
                     if (!client) return;
@@ -541,7 +549,7 @@ public class StoragePanel extends ModularPanel {
                                 .addLine(IKey.str(item.getItemStackDisplayName(stack)))
                                 .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
                     ExpandedTab expanded = upgrade.getType()
-                        .getExpandedTabWidget(slotIndex, upgradeWrapper, stack, this.getWrapper(), this.getPanel());
+                        .getExpandedTabWidget(slotIndex, upgradeWrapper, stack, this.getPanel());
                     if (expanded != null) {
                         upgrade.getType()
                             .updateWidgetDelegates(upgradeWrapper, group);
@@ -642,9 +650,8 @@ public class StoragePanel extends ModularPanel {
             .syncedPanel(
                 "setting_panel",
                 true,
-                (syncManager1,
-                    syncHandler) -> this.settingPanel = new StorageSettingPanel(this.getWrapper(), this.getPanel()));
-        this.child(new SettingTab(this.getWrapper(), this.getPanel()));
+                (syncManager1, syncHandler) -> this.settingPanel = new StorageSettingPanel(this.getPanel()));
+        this.child(new SettingTab(this.getPanel()));
     }
 
     @Override
@@ -687,16 +694,32 @@ public class StoragePanel extends ModularPanel {
         return settings;
     }
 
-    public IStorageWrapper getWrapper() {
-        return wrapper;
-    }
-
     public EntityPlayer getPlayer() {
         return player;
     }
 
     public TileEntity getTile() {
         return tile;
+    }
+
+    public int getSlotIndex() {
+        return slotIndex;
+    }
+
+    public InventoryType getType() {
+        return type;
+    }
+
+    public IStorageWrapper getWrapper() {
+        if (tile != null) return CapabilityHelpers.getCapability(tile, CapabilityStorageWrapperConfig.CAPABILITY)
+            .orElse(IStorageWrapper.NoopStorageWrapper.INSTANCE);
+        return slotIndex != null
+            ? CapabilityHelpers
+                .getCapability(
+                    InventoryHelpers.getItemFromIndex(this.getPlayer(), this.getSlotIndex()),
+                    CapabilityStorageWrapperConfig.CAPABILITY)
+                .orElse(IStorageWrapper.NoopStorageWrapper.INSTANCE)
+            : IStorageWrapper.NoopStorageWrapper.INSTANCE;
     }
 
     @Override

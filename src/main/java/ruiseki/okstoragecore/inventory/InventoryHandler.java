@@ -12,6 +12,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -21,6 +22,7 @@ import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
+import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 import com.gtnewhorizon.gtnhlib.util.data.ItemMeta;
 
 import ruiseki.okcore.datastructure.NonNullList;
@@ -36,7 +38,8 @@ import ruiseki.okstoragecore.upgrades.IInsertResponseUpgrade;
 import ruiseki.okstoragecore.upgrades.IOverflowResponseUpgrade;
 import ruiseki.okstoragecore.upgrades.ISlotLimitUpgrade;
 
-public abstract class InventoryHandler extends ItemStackHandler implements ITrackedContentsItemHandler {
+public abstract class InventoryHandler extends ItemStackHandler
+    implements ITrackedContentsItemHandler, IItemHandlerModifiable {
 
     public static final String INVENTORY_TAG = "inventory";
     private static final String PARTITIONER_TAG = "partitioner";
@@ -546,5 +549,15 @@ public abstract class InventoryHandler extends ItemStackHandler implements ITrac
     public void setShouldInsertIntoEmpty(BooleanSupplier shouldInsertIntoEmpty) {
         this.shouldInsertIntoEmpty = shouldInsertIntoEmpty;
         slotTracker.setShouldInsertIntoEmpty(shouldInsertIntoEmpty);
+    }
+
+    @Override
+    public List<ItemStack> getStacks() {
+        return super.getStacks();
+    }
+
+    @Override
+    public boolean isSlotFromInventory(int index, IInventory inventory, int invIndex) {
+        return super.isSlotFromInventory(index, inventory, invIndex);
     }
 }

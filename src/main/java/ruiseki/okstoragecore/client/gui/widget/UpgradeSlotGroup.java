@@ -44,13 +44,11 @@ public class UpgradeSlotGroup extends ParentWidget<UpgradeSlotGroup> {
         .xy(0, 199, 25, 5)
         .build();
 
-    private final IStorageWrapper storageWrapper;
     private final StoragePanel storagePanel;
 
     private final List<UpgradeToggleWidget> toggleWidgets;
 
-    public UpgradeSlotGroup(IStorageWrapper storageWrapper, StoragePanel storagePanel) {
-        this.storageWrapper = storageWrapper;
+    public UpgradeSlotGroup(StoragePanel storagePanel) {
         this.storagePanel = storagePanel;
 
         this.toggleWidgets = new ArrayList<>();
@@ -106,7 +104,8 @@ public class UpgradeSlotGroup extends ParentWidget<UpgradeSlotGroup> {
     }
 
     public IStorageWrapper getStorageWrapper() {
-        return this.storageWrapper;
+        return this.getStoragePanel()
+            .getWrapper();
     }
 
     public StoragePanel getStoragePanel() {
