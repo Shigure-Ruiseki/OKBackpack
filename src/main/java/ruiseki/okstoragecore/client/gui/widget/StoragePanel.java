@@ -41,7 +41,6 @@ import ruiseki.okbackpack.client.gui.widget.ShiftButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.TileWidget;
 import ruiseki.okbackpack.common.block.BackpackSettingPanel;
 import ruiseki.okcore.helper.CapabilityHelpers;
-import ruiseki.okcore.helper.InventoryHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
@@ -713,13 +712,11 @@ public class StoragePanel extends ModularPanel {
     public IStorageWrapper getWrapper() {
         if (tile != null) return CapabilityHelpers.getCapability(tile, CapabilityStorageWrapperConfig.CAPABILITY)
             .orElse(IStorageWrapper.NoopStorageWrapper.INSTANCE);
-        return slotIndex != null
-            ? CapabilityHelpers
-                .getCapability(
-                    InventoryHelpers.getItemFromIndex(this.getPlayer(), this.getSlotIndex()),
-                    CapabilityStorageWrapperConfig.CAPABILITY)
-                .orElse(IStorageWrapper.NoopStorageWrapper.INSTANCE)
-            : IStorageWrapper.NoopStorageWrapper.INSTANCE;
+        return slotIndex != null ? CapabilityHelpers.getCapability(
+            this.getType()
+                .getStackInSlot(this.getPlayer(), this.getSlotIndex()),
+            CapabilityStorageWrapperConfig.CAPABILITY)
+            .orElse(IStorageWrapper.NoopStorageWrapper.INSTANCE) : IStorageWrapper.NoopStorageWrapper.INSTANCE;
     }
 
     @Override

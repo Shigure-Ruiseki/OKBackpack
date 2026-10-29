@@ -28,7 +28,6 @@ import ruiseki.backpack.client.gui.widget.BackpackSettingPanel;
 import ruiseki.backpack.client.gui.widget.BackpackSlot;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okcore.helper.CapabilityHelpers;
-import ruiseki.okcore.helper.InventoryHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
 import ruiseki.okstoragecore.client.gui.slot.ModularStorageSlot;
@@ -160,13 +159,11 @@ public class BackpackPanel extends StoragePanel {
     public IBackpackWrapper getWrapper() {
         if (tile != null) return CapabilityHelpers.getCapability(tile, CapabilityBackpackWrapperConfig.CAPABILITY)
             .orElse(IBackpackWrapper.NoopBackpackWrapper.INSTANCE);
-        return slotIndex != null
-            ? CapabilityHelpers
-                .getCapability(
-                    InventoryHelpers.getItemFromIndex(this.getPlayer(), this.getSlotIndex()),
-                    CapabilityBackpackWrapperConfig.CAPABILITY)
-                .orElse(IBackpackWrapper.NoopBackpackWrapper.INSTANCE)
-            : IBackpackWrapper.NoopBackpackWrapper.INSTANCE;
+        return slotIndex != null ? CapabilityHelpers.getCapability(
+            this.getType()
+                .getStackInSlot(this.getPlayer(), this.getSlotIndex()),
+            CapabilityBackpackWrapperConfig.CAPABILITY)
+            .orElse(IBackpackWrapper.NoopBackpackWrapper.INSTANCE) : IBackpackWrapper.NoopBackpackWrapper.INSTANCE;
     }
 
     @Override
