@@ -22,7 +22,6 @@ import ruiseki.backpack.helpers.InteractionHelpers.InteractionResult;
 import ruiseki.backpack.helpers.InteractionRenderHelpers;
 import ruiseki.backpack.network.packet.PacketBlockPick;
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionOverlay;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.event.gui.SlotRenderEvent;
 import ruiseki.okcore.helper.CapabilityHelpers;
