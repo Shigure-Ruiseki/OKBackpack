@@ -16,23 +16,23 @@ public class BasicFilterLogicUpdate implements IUpgradeSlotUpdateFactory {
         DelegatedFilterLogicSH logicSH = new DelegatedFilterLogicSH(
             group.getPanel(),
             group::getContainer,
-            group.getSlotIndex(),
+            group.getUpgradeIndex(),
             9);
         group.getSyncManager()
-            .syncValue("basic_filter_delegation_" + group.getSlotIndex(), logicSH);
+            .syncValue("basic_filter_delegation_" + group.getUpgradeIndex(), logicSH);
         group.put("basic_filter_logic", logicSH);
 
         ModularFilterSlot[] slots = new ModularFilterSlot[9];
         for (int i = 0; i < 9; i++) {
             ModularFilterSlot slot = new ModularFilterSlot(logicSH.getItemHandler(), i);
-            slot.slotGroup("basic_filters_" + group.getSlotIndex());
+            slot.slotGroup("basic_filters_" + group.getUpgradeIndex());
             group.getSyncManager()
-                .syncValue("basic_filter_" + group.getSlotIndex(), i, new FilterSlotSH(slot));
+                .syncValue("basic_filter_" + group.getUpgradeIndex(), i, new FilterSlotSH(slot));
             slots[i] = slot;
         }
 
         group.put("basic_filter_slots", slots);
         group.getSyncManager()
-            .registerSlotGroup(new SlotGroup("basic_filters_" + group.getSlotIndex(), 9, false));
+            .registerSlotGroup(new SlotGroup("basic_filters_" + group.getUpgradeIndex(), 9, false));
     }
 }

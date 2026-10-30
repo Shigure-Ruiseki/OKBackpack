@@ -23,9 +23,9 @@ import ruiseki.backpack.api.IAttackEntityResponseUpgrade;
 import ruiseki.backpack.api.IBlockClickResponseUpgrade;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
+import ruiseki.backpack.helpers.InteractionHelpers;
 import ruiseki.backpack.helpers.PlayerInventoryProvider;
 import ruiseki.okbackpack.GeneralConfig;
-import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionExecutor;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.event.gui.SlotClickEvent;
 import ruiseki.okcore.event.interaction.PlayerInteractEvent;
@@ -236,18 +236,14 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onSlotClick(SlotClickEvent.Pre event) {
         if (event.isCanceled()) return;
-
-        if (!BackpackInventoryInteractionExecutor.tryExecute(
+        if (InteractionHelpers.slotClick(
             event.getContainer(),
             event.getPlayer(),
             event.getSlotId(),
             event.getMouseButton(),
-            event.getMode()
-                .toNumber())) {
-            return;
+            event.getMode())) {
+            event.setResultStack(null);
+            event.setCanceled(true);
         }
-
-        event.setResultStack(null);
-        event.setCanceled(true);
     }
 }

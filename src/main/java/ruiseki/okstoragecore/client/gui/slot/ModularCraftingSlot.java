@@ -16,7 +16,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.item.handler.ItemStackHandler;
-import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.inventory.InventoryCraftingWrapper;
 import ruiseki.okstoragecore.upgrades.crafting.CraftingUpgradeWrapper;
@@ -26,13 +25,12 @@ public class ModularCraftingSlot extends IndexedModularSlot {
     private InventoryCraftingWrapper craftMatrix;
     private int amountCrafted;
 
-    public ModularCraftingSlot(IStorageWrapper storageWrapper, StoragePanel storagePanel, int upgradeIndex) {
-        this(new ItemStackHandler(1), storageWrapper, storagePanel, upgradeIndex);
+    public ModularCraftingSlot(StoragePanel storagePanel, int upgradeIndex) {
+        this(new ItemStackHandler(1), storagePanel, upgradeIndex);
     }
 
-    private ModularCraftingSlot(ItemStackHandler resultHandler, IStorageWrapper storageWrapper,
-        StoragePanel storagePanel, int upgradeIndex) {
-        super(resultHandler, 0, storageWrapper, storagePanel, upgradeIndex);
+    private ModularCraftingSlot(ItemStackHandler resultHandler, StoragePanel storagePanel, int upgradeIndex) {
+        super(resultHandler, 0, storagePanel, upgradeIndex);
     }
 
     @Override

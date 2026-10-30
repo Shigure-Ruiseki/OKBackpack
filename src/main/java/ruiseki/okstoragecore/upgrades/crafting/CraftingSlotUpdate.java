@@ -14,7 +14,7 @@ public class CraftingSlotUpdate implements IUpgradeSlotUpdateFactory {
 
     @Override
     public void build(UpgradeSlotUpdate group) {
-        int slotIndex = group.getSlotIndex();
+        int slotIndex = group.getUpgradeIndex();
 
         String matrixGroupName = "crafting_matrix_" + slotIndex;
         String resultGroupName = "crafting_result_" + slotIndex;
@@ -40,9 +40,8 @@ public class CraftingSlotUpdate implements IUpgradeSlotUpdateFactory {
             IndexedModularSlot slot = new IndexedModularSlot(
                 craftingHandler.getItemHandler(),
                 i,
-                group.getWrapper(),
                 group.getPanel(),
-                group.getSlotIndex());
+                group.getUpgradeIndex());
             slot.slotGroup(matrixGroupName);
             group.getSyncManager()
                 .syncValue("crafting_slot_" + slotIndex, i, new ItemSlotSH(slot));
@@ -51,10 +50,7 @@ public class CraftingSlotUpdate implements IUpgradeSlotUpdateFactory {
 
         group.put("crafting_matrix_slots", slots);
 
-        ModularCraftingSlot craftingResultSlot = new ModularCraftingSlot(
-            group.getWrapper(),
-            group.getPanel(),
-            slotIndex);
+        ModularCraftingSlot craftingResultSlot = new ModularCraftingSlot(group.getPanel(), slotIndex);
 
         craftingResultSlot.slotGroup(resultGroupName);
 
@@ -68,7 +64,7 @@ public class CraftingSlotUpdate implements IUpgradeSlotUpdateFactory {
             group.getPanel(),
             craftingHandler.getContainerSupplier(),
             group.getPlayer(),
-            group.getSlotIndex(),
+            group.getUpgradeIndex(),
             3,
             3,
             craftingHandler.getItemHandler());

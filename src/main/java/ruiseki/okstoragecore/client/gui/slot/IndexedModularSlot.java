@@ -8,20 +8,18 @@ import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 
 public class IndexedModularSlot extends ModularItemSlot {
 
-    protected final IStorageWrapper storageWrapper;
     protected final StoragePanel storagePanel;
     protected final int upgradeIndex;
 
-    public IndexedModularSlot(IItemHandler itemHandler, int index, IStorageWrapper storageWrapper,
-        StoragePanel storagePanel, int upgradeIndex) {
+    public IndexedModularSlot(IItemHandler itemHandler, int index, StoragePanel storagePanel, int upgradeIndex) {
         super(itemHandler, index);
-        this.storageWrapper = storageWrapper;
         this.storagePanel = storagePanel;
         this.upgradeIndex = upgradeIndex;
     }
 
     public IStorageWrapper getStorageWrapper() {
-        return storageWrapper;
+        return this.getStoragePanel()
+            .getWrapper();
     }
 
     public StoragePanel getStoragePanel() {

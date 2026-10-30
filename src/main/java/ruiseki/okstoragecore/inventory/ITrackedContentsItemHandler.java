@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import ruiseki.okcore.inventory.ItemStackKey;
+import ruiseki.okcore.item.handler.IItemHandlerSimpleInserter;
 
 public interface ITrackedContentsItemHandler extends IItemHandlerSimpleInserter {
 

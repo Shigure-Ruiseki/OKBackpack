@@ -8,7 +8,9 @@ import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
+import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 
 public final class BackpackInventoryInteractionExecutor {
 
@@ -25,9 +27,6 @@ public final class BackpackInventoryInteractionExecutor {
     }
 
     public static boolean tryExecute(Container container, EntityPlayer player, int slotId, int mouseButton, int mode) {
-        if (!GeneralConfig.enableBackpackInventoryInteraction) {
-            return false;
-        }
 
         if (container == null || player == null
             || !isSupportedClick(slotId, mouseButton, mode)
@@ -36,9 +35,18 @@ public final class BackpackInventoryInteractionExecutor {
         }
 
         Slot slot = (Slot) container.inventorySlots.get(slotId);
+        if (slot == null) return false;
+
         ItemStack cursorStack = player.inventory.getItemStack();
+        ItemStack slotStack = slot.getStack();
+
+        if (!isBackpack(cursorStack) && !isBackpack(slotStack)) {
+            return false;
+        }
+
         BackpackInventoryInteractionResult result = BackpackInventoryInteractionAnalyzer
             .analyze(player, slot, cursorStack);
+
         if (!result.canExecuteTransfer()) {
             return false;
         }
@@ -46,8 +54,10 @@ public final class BackpackInventoryInteractionExecutor {
         switch (result.getKind()) {
             case INSERT_SLOT_INTO_CARRIED_BACKPACK:
                 return executeSlotIntoCarriedBackpack(container, player, slot, cursorStack, result);
+
             case INSERT_CURSOR_INTO_SLOTTED_BACKPACK:
                 return executeCursorIntoSlottedBackpack(container, player, slot, cursorStack);
+
             default:
                 return false;
         }
@@ -122,6 +132,11 @@ public final class BackpackInventoryInteractionExecutor {
         slot.onSlotChanged();
         syncContainer(container, player);
         return true;
+    }
+
+    private static boolean isBackpack(ItemStack stack) {
+        return ItemHelpers.getItem(stack, BlockBackpack.ItemBackpack.class)
+            .isPresent();
     }
 
     private static void syncContainer(Container container, EntityPlayer player) {

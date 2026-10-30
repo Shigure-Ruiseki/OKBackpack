@@ -33,7 +33,6 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
 import ruiseki.okstoragecore.upgrades.ISlotClickUpgrade;
 import ruiseki.okstoragecore.upgrades.IUpgradeItem;
-import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 
 @Optional.Interface(iface = "com.cleanroommc.bogosorter.api.ISortableContainer", modid = "bogosorter")
 public class StorageContainer extends ModularContainer implements ISortableContainer {
@@ -327,10 +326,12 @@ public class StorageContainer extends ModularContainer implements ISortableConta
         }
 
         int originalSize = fromStack.stackSize;
-
         if (fromSlot instanceof IndexedModularSlot indexedSlot) {
-            IUpgradeWrapper wrapper = indexedSlot.getUpgradeWrapper();
-            if (wrapper instanceof ISlotClickUpgrade slotClickUpgrade
+            boolean activated = indexedSlot.getUpgradeIndex() == this.getStoragePanel()
+                .getWrapper()
+                .getOpenTabId()
+                .orElse(-1);
+            if (activated && indexedSlot.getUpgradeWrapper() instanceof ISlotClickUpgrade slotClickUpgrade
                 && slotClickUpgrade.transferItem(this.getPlayer(), fromSlot, fromStack)) {
                 return fromStack;
             }
@@ -376,13 +377,13 @@ public class StorageContainer extends ModularContainer implements ISortableConta
     @SafeVarargs
     protected final void transferItemFilter(ModularSlot fromSlot, ItemStack fromStack,
         Predicate<ItemStack> fromStackFilter, Predicate<ModularSlot>... slotFilters) {
-        if (ItemHelpers.isEmpty(fromStack) || !fromStackFilter.test(fromStack)) {
+        if (ItemHelpers.isEmpty(fromStack) || !fromSlot.canTakeStack(this.getPlayer())
+            || !fromStackFilter.test(fromStack)) {
             return;
         }
 
         SlotGroup fromSlotGroup = fromSlot.getSlotGroup();
 
-        // Each predicate represents one priority group.
         for (Predicate<ModularSlot> slotFilter : slotFilters) {
             if (ItemHelpers.isEmpty(fromStack)) {
                 return;
@@ -391,6 +392,16 @@ public class StorageContainer extends ModularContainer implements ISortableConta
             List<ModularSlot> targets = this.inventorySlots.stream()
                 .map(slot -> (ModularSlot) slot)
                 .filter(slot -> slot.getSlotGroup() != fromSlotGroup)
+                .filter(slot -> {
+                    if (slot instanceof IndexedModularSlot indexedSlot) {
+                        return indexedSlot.getUpgradeIndex() == this.getStoragePanel()
+                            .getWrapper()
+                            .getOpenTabId()
+                            .orElse(-1);
+                    }
+                    return true;
+                })
+                .filter(slot -> slot.isItemValid(fromStack))
                 .filter(slotFilter)
                 .toList();
 
@@ -405,20 +416,21 @@ public class StorageContainer extends ModularContainer implements ISortableConta
     }
 
     protected void transferToSlot(ModularSlot fromSlot, ModularSlot toSlot, ItemStack fromStack) {
-        if (ItemHelpers.isEmpty(fromStack) || !toSlot.isItemValid(fromStack)) {
+        if (ItemHelpers.isEmpty(fromStack) || !fromSlot.canTakeStack(this.getPlayer())
+            || !toSlot.isItemValid(fromStack)) {
             return;
         }
 
         ItemStack toStack = toSlot.getStack();
         int limit = stackLimit(toSlot, fromStack);
 
-        // Merge into an existing stack.
-        if (!fromSlot.isPhantom() && ItemHandlerHelpers.canItemStacksStack(fromStack, toStack)) {
+        if (limit <= 0) return;
+
+        if (!fromSlot.isPhantom() && !ItemHelpers.isEmpty(toStack)
+            && ItemHandlerHelpers.canItemStacksStack(fromStack, toStack)) {
 
             int space = limit - toStack.stackSize;
-            if (space <= 0) {
-                return;
-            }
+            if (space <= 0) return;
 
             int move = Math.min(space, fromStack.stackSize);
 
@@ -428,19 +440,15 @@ public class StorageContainer extends ModularContainer implements ISortableConta
 
             updateSlotStack(toSlot, merged);
         } else if (ItemHelpers.isEmpty(toStack)) {
-            // Insert into an empty slot.
+
             int move = Math.min(fromStack.stackSize, limit);
-            if (move <= 0) {
-                return;
-            }
+            if (move <= 0) return;
 
             ItemStack inserted = fromStack.splitStack(move);
 
-            toSlot.putStack(inserted);
-            toSlot.onSlotChanged();
+            updateSlotStack(toSlot, inserted);
         }
 
-        // Normalize the source stack after transfer.
         if (fromStack.stackSize <= 0) {
             fromStack.stackSize = 0;
             updateSlotStack(fromSlot, ItemHelpers.EMPTY);

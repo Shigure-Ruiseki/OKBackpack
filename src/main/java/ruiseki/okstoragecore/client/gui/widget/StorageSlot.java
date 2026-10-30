@@ -10,10 +10,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.common.MinecraftForge;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.cleanroommc.modularui.ModularUI;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.value.ISyncOrValue;
 import com.cleanroommc.modularui.core.mixins.early.minecraft.GuiAccessor;
@@ -28,12 +28,12 @@ import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.utils.GlStateManager;
 import com.cleanroommc.modularui.utils.NumberFormat;
 import com.cleanroommc.modularui.utils.Platform;
-import com.cleanroommc.neverenoughanimations.NEAConfig;
 
 import cpw.mods.fml.common.Optional;
 import ruiseki.okbackpack.client.gui.slot.ResizableItemSlot;
 import ruiseki.okbackpack.client.gui.slot.UpgradeSlot;
 import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
+import ruiseki.okcore.event.gui.SlotRenderEvent;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
@@ -232,20 +232,21 @@ public class StorageSlot extends ResizableItemSlot {
 
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetThemeEntry) {
+        if (MinecraftForge.EVENT_BUS.post(new SlotRenderEvent.Pre(this.getSlot(), this.getSlotX(), this.getSlotY())))
+            return;
+
         WidgetTheme widgetTheme = widgetThemeEntry.getTheme() != null ? widgetThemeEntry.getTheme()
             : WidgetTheme.getDefault()
                 .getTheme();
 
-        if (this.isNoSortingSlot()) drawLockedSlot(context, widgetTheme);
+        if (this.isNoSortingSlot()) this.drawLockedSlot(context, widgetTheme);
 
-        if (this.isInSettingMode()) drawSettingStack(context, widgetTheme);
-        else drawNormalStack(context, widgetTheme);
+        if (this.isInSettingMode()) this.drawSettingStack(context, widgetTheme);
+        else this.drawNormalStack(context, widgetTheme);
 
-        if (this.shouldHighlightConflict()) {
-            GlStateManager.disableDepth();
-            GuiDraw.drawRect(1, 1, 16, 16, UpgradeSlot.ERROR_SLOT_COLOR);
-            GlStateManager.enableDepth();
-        }
+        this.drawHighlightConflict();
+
+        MinecraftForge.EVENT_BUS.post(new SlotRenderEvent.Post(this.getSlot(), this.getSlotX(), this.getSlotY()));
     }
 
     protected boolean shouldHighlightConflict() {
@@ -255,6 +256,14 @@ public class StorageSlot extends ResizableItemSlot {
                 result -> result.getErrorInventorySlots()
                     .contains(this.getSlotIndex()))
             .orElse(false);
+    }
+
+    protected void drawHighlightConflict() {
+        if (this.shouldHighlightConflict()) {
+            GlStateManager.disableDepth();
+            GuiDraw.drawRect(this.getSlotX(), this.getSlotY(), 16, 16, UpgradeSlot.ERROR_SLOT_COLOR);
+            GlStateManager.enableDepth();
+        }
     }
 
     protected IStorageWrapper getStorageWrapper() {
@@ -425,19 +434,10 @@ public class StorageSlot extends ResizableItemSlot {
     }
 
     @Override
-    protected void drawOverlay() {
-        if (this.isHovering() && (!ModularUI.Mods.NEA.isLoaded() || NEAConfig.itemHoverOverlay)) {
-            GlStateManager.colorMask(true, true, true, false);
-            GuiDraw.drawRect(1, 1, 16, 16, getSlotHoverColor());
-            GlStateManager.colorMask(true, true, true, true);
-        }
-    }
-
-    @Override
     protected void drawSlotAmountText(int amount, String format) {
-        if (amount >= Integer.MAX_VALUE) {
+        if (amount == Integer.MAX_VALUE) {
             FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-            String infinityText = "\u221E";
+            String infinityText = "∞";
             int x = this.getArea().width - font.getStringWidth(infinityText) - 1;
             int y = this.getArea().height - font.FONT_HEIGHT;
             font.drawStringWithShadow(infinityText, x, y, 0xFFFFFF);

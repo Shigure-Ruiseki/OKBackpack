@@ -2,7 +2,7 @@ package ruiseki.okstoragecore.upgrades;
 
 import net.minecraft.item.ItemStack;
 
-import ruiseki.okstoragecore.inventory.IItemHandlerSimpleInserter;
+import ruiseki.okcore.item.handler.IItemHandlerSimpleInserter;
 
 public interface IInsertResponseUpgrade {
 

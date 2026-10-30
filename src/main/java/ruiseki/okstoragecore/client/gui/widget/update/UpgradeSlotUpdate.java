@@ -30,7 +30,7 @@ public class UpgradeSlotUpdate {
             this.getWrapper(),
             this.getPanel(),
             this.getPlayer(),
-            this.getSlotIndex());
+            this.getUpgradeIndex());
 
         for (IUpgradeSlotUpdateFactory factory : UpgradeSlotUpdateRegistry.getFactories()) {
             factory.build(this);
@@ -81,7 +81,7 @@ public class UpgradeSlotUpdate {
             .getContainer();
     }
 
-    public int getSlotIndex() {
+    public int getUpgradeIndex() {
         return this.slotIndex;
     }
 

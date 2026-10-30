@@ -31,6 +31,7 @@ import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.MathHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
+import ruiseki.okcore.item.handler.IItemHandlerSimpleInserter;
 import ruiseki.okcore.item.handler.ItemStackHandler;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;

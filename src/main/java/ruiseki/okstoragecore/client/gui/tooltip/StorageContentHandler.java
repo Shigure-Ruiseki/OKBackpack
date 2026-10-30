@@ -56,14 +56,12 @@ public class StorageContentHandler {
      * Prepares storage render lines and returns the accompanying text lines.
      * Call during addInformation() while Shift is held.
      */
-    public static List<String> buildExpandedTooltipLines(ItemStack stack, IStorageWrapper wrapper) {
+    public static List<String> buildExpandedTooltipLines(IStorageWrapper wrapper) {
         List<String> lines = new ArrayList<>();
 
         reset();
 
-        if (stack == null || wrapper == null) {
-            return lines;
-        }
+        if (wrapper == null) return lines;
 
         prepareContents(wrapper);
 
@@ -138,8 +136,8 @@ public class StorageContentHandler {
         return lines;
     }
 
-    public static List<String> buildInteractionTooltipLines(ItemStack stack, IStorageWrapper wrapper) {
-        return prependInteractionLine(buildExpandedTooltipLines(stack, wrapper));
+    public static List<String> buildInteractionTooltipLines(IStorageWrapper wrapper) {
+        return prependInteractionLine(buildExpandedTooltipLines(wrapper));
     }
 
     private static int getUpgradeWidth(List<UpgradeInfo> upgrades) {

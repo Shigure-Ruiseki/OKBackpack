@@ -113,8 +113,7 @@ public class ItemBackpack extends ItemBlockMetadata implements IGuiHolder<Player
             StorageContentHandler.reset();
         } else {
             CapabilityHelpers.getCapability(stack, CapabilityStorageWrapperConfig.CAPABILITY)
-                .ifPresent(
-                    wrapper -> { list.addAll(StorageContentHandler.buildExpandedTooltipLines(stack, wrapper)); });
+                .ifPresent(wrapper -> { list.addAll(StorageContentHandler.buildExpandedTooltipLines(wrapper)); });
         }
         super.addInformation(stack, player, list, flag);
     }
