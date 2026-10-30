@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
-import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionOverlay;
@@ -20,25 +19,6 @@ import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionRes
 
 @Mixin(ItemSlot.class)
 public abstract class MixinItemSlotBackpackInteraction {
-
-    @Inject(method = "draw", at = @At("TAIL"), remap = false)
-    private void okbackpack$renderInventoryInteractionOverlay(ModularGuiContext context,
-        WidgetThemeEntry<?> widgetTheme, CallbackInfo ci) {
-        ItemSlot self = (ItemSlot) (Object) this;
-        Minecraft minecraft = Minecraft.getMinecraft();
-        if (minecraft == null || minecraft.thePlayer == null || minecraft.fontRenderer == null) {
-            return;
-        }
-
-        ItemStack cursorStack = minecraft.thePlayer.inventory.getItemStack();
-        if (cursorStack == null || cursorStack.stackSize <= 0) {
-            return;
-        }
-
-        BackpackInventoryInteractionResult result = BackpackInventoryInteractionOverlay
-            .getRenderableResult(minecraft.thePlayer, self.getSlot(), cursorStack);
-        BackpackInventoryInteractionOverlay.renderOverlayAt(minecraft.fontRenderer, result, 1, 1);
-    }
 
     @Inject(method = "drawForeground", at = @At("HEAD"), cancellable = true, remap = false)
     private void okbackpack$renderInventoryInteractionTooltip(ModularGuiContext context, CallbackInfo ci) {

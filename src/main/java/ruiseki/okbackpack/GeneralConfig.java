@@ -1,15 +1,14 @@
+
 package ruiseki.okbackpack;
 
 import org.apache.logging.log4j.Level;
 
+import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
-import ruiseki.okcore.config.ConfigurableType;
 import ruiseki.okcore.config.extendedconfig.DummyConfig;
 import ruiseki.okcore.tracking.Versions;
+import ruiseki.okstoragecore.config.MaxUpgradesPerStorageConfig;
 
-/**
- * General config for OKBackpack using OKCore config system.
- */
 public class GeneralConfig extends DummyConfig {
 
     @ConfigurableProperty(
@@ -23,7 +22,7 @@ public class GeneralConfig extends DummyConfig {
     @ConfigurableProperty(category = "core", comment = "Magnet Upgrade item suction range.")
     public static int magnetRange = 5;
 
-    // --- Feature Toggles ---
+    // Feature toggles
 
     @ConfigurableProperty(
         category = "core",
@@ -51,10 +50,26 @@ public class GeneralConfig extends DummyConfig {
         comment = "Maximum number of item stacks to display per row in the backpack tooltip.")
     public static int tooltipMaxItemsPerRow = 9;
 
-    /**
-     * Config type instance.
-     */
-    public static ConfigurableType TYPE = ConfigurableType.DUMMY;
+    @ConfigurableProperty(
+        category = "core",
+        comment = "Maximum number of upgrades per backpack. Format: UpgradeRegistryPath|Max or UpgradeGroup|Max, separated by semicolons.",
+        configLocation = ConfigLocation.SERVER,
+        changedCallback = MaxUpgradesPerStorageConfig.class)
+    public static String maxUpgradesPerStorage = "stack|3;cooking|1;jukebox_upgrade|1";
+
+    public static final MaxUpgradesPerStorageConfig maxUpgradesPerStorageConfig = new MaxUpgradesPerStorageConfig();
+
+    @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
+    public static boolean tickDedupeLogicDisabled = false;
+    @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
+    public static int maxNumberOfBackpacks = 10;
+    @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
+    public static int slownessLevelsPerAdditionalBackpack = 1;
+    @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
+    public static boolean tooManyBackpacksSlowness = false;
+
+    @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
+    public static boolean onlyWornBackpackTriggersUpgrades = false;
 
     public GeneralConfig() {
         super(OKBackpack._instance, true, "general", null);
@@ -66,7 +81,8 @@ public class GeneralConfig extends DummyConfig {
             getMod().log(
                 Level.WARN,
                 "The config file of " + Reference.MOD_NAME
-                    + " is out of date and might cause problems, please remove it so it can be regenerated.");
+                    + " is out of date and might cause problems, "
+                    + "please remove it so it can be regenerated.");
         }
 
         if (useVersionChecker) {

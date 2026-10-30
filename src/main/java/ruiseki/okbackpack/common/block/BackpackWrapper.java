@@ -26,7 +26,7 @@ import com.github.bsideup.jabel.Desugar;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
-import ruiseki.okbackpack.api.SortType;
+import ruiseki.okbackpack.api.SortBy;
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
@@ -73,7 +73,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     public int mainColor;
     public int accentColor;
 
-    public SortType sortType;
+    public SortBy sortBy;
 
     public boolean lockBackpack;
     public String playerUuid;
@@ -135,7 +135,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         this.upgradeSlots = tier.getUpgradeSlots();
         this.mainColor = 0xFFCC613A;
         this.accentColor = 0xFF622E1A;
-        this.sortType = SortType.BY_NAME;
+        this.sortBy = SortBy.NAME;
         this.lockBackpack = false;
         this.uuid = resolveUuid(backpack);
         this.playerUuid = "";
@@ -880,7 +880,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         }
         tag.setByteArray(LOCKED_SLOTS_TAG, lockedBytes);
 
-        tag.setByte(SORT_TYPE_TAG, (byte) sortType.ordinal());
+        tag.setByte(SORT_TYPE_TAG, (byte) sortBy.ordinal());
 
         tag.setBoolean(LOCKED_BACKPACK_TAG, lockBackpack);
 
@@ -996,8 +996,8 @@ public class BackpackWrapper implements IBackpackWrapper {
 
         if (tag.hasKey(SORT_TYPE_TAG, 1)) {
             byte type = tag.getByte(SORT_TYPE_TAG);
-            if (type >= 0 && type < SortType.values().length) {
-                this.sortType = SortType.values()[type];
+            if (type >= 0 && type < SortBy.values().length) {
+                this.sortBy = SortBy.values()[type];
             }
         }
 
@@ -1069,13 +1069,13 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     @Override
-    public void setSortType(SortType sortType) {
-        this.sortType = sortType;
+    public void setSortType(SortBy sortBy) {
+        this.sortBy = sortBy;
     }
 
     @Override
-    public SortType getSortType() {
-        return sortType;
+    public SortBy getSortType() {
+        return sortBy;
     }
 
     @Override

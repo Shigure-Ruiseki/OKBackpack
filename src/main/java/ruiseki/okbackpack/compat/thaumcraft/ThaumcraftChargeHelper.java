@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okcore.helper.ItemHelpers;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.items.wands.ItemWandCasting;
@@ -56,30 +57,25 @@ public final class ThaumcraftChargeHelper {
     }
 
     public static boolean chargeStackInternal(ItemStack stack, VisConsumer consumer, int maxRequestPerAspect) {
-        if (!ThaumcraftHelpers.isWand(stack) || consumer == null) return false;
-
-        ItemWandCasting wand = (ItemWandCasting) stack.getItem();
-        AspectList aspectsWithRoom = wand.getAspectsWithRoom(stack);
-        if (aspectsWithRoom == null || aspectsWithRoom.size() <= 0) return false;
-
-        boolean charged = false;
-        int maxVis = wand.getMaxVis(stack);
-
-        for (Aspect aspect : aspectsWithRoom.getAspects()) {
-            if (aspect == null) continue;
-
-            int currentVis = wand.getVis(stack, aspect);
-            int requested = Math.min(maxRequestPerAspect, maxVis - currentVis);
-            if (requested <= 0) continue;
-
-            int drained = consumer.consume(aspect, requested);
-            if (drained <= 0) continue;
-
-            wand.addRealVis(stack, aspect, drained, true);
-            charged = true;
-        }
-
-        return charged;
+        if (consumer == null || maxRequestPerAspect <= 0) return false;
+        return ItemHelpers.getItem(stack, ItemWandCasting.class)
+            .map(wand -> {
+                AspectList aspectsWithRoom = wand.getAspectsWithRoom(stack);
+                if (aspectsWithRoom == null || aspectsWithRoom.size() <= 0) return false;
+                boolean charged = false;
+                int maxVis = wand.getMaxVis(stack);
+                for (Aspect aspect : aspectsWithRoom.getAspects()) {
+                    if (aspect == null) continue;
+                    int requested = Math.min(maxRequestPerAspect, maxVis - wand.getVis(stack, aspect));
+                    if (requested <= 0) continue;
+                    int drained = consumer.consume(aspect, requested);
+                    if (drained <= 0) continue;
+                    int added = wand.addRealVis(stack, aspect, drained, true);
+                    if (added > 0) charged = true;
+                }
+                return charged;
+            })
+            .orElse(false);
     }
 
     @FunctionalInterface

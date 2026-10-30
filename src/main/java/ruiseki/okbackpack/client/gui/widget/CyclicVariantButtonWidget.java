@@ -12,7 +12,6 @@ import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 
 import lombok.Getter;
-import lombok.Setter;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 
 public class CyclicVariantButtonWidget extends ButtonWidget<CyclicVariantButtonWidget> {
@@ -35,8 +34,6 @@ public class CyclicVariantButtonWidget extends ButtonWidget<CyclicVariantButtonW
 
     private final List<IntConsumer> mousePressedUpdaters = new ArrayList<>();
 
-    @Getter
-    @Setter
     private boolean inEffect = true;
 
     public CyclicVariantButtonWidget(List<Variant> variants, int index, int iconOffset, int iconSize,
@@ -98,6 +95,11 @@ public class CyclicVariantButtonWidget extends ButtonWidget<CyclicVariantButtonW
     public CyclicVariantButtonWidget setIndex(int index) {
         this.index = Math.floorMod(index, variants.size());
         markTooltipDirty();
+        return this;
+    }
+
+    public CyclicVariantButtonWidget setInEffect(boolean inEffect) {
+        this.inEffect = inEffect;
         return this;
     }
 

@@ -19,7 +19,7 @@ import ruiseki.okbackpack.client.gui.slot.IndexedModularCraftingSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
 import ruiseki.okcore.item.handler.EmptyHandler;
-import ruiseki.okcore.item.handler.IItemHandler;
+import ruiseki.okcore.item.handler.IItemHandlerModifiable;
 
 public class CraftingSlotGroup implements IUpgradeSlotGroupFactory {
 
@@ -33,7 +33,7 @@ public class CraftingSlotGroup implements IUpgradeSlotGroupFactory {
             10) {
 
             @Override
-            public void setDelegatedStackHandler(Supplier<IItemHandler> delegated) {
+            public void setDelegatedStackHandler(Supplier<IItemHandlerModifiable> delegated) {
                 super.setDelegatedStackHandler(delegated);
                 updateInventoryCrafting(this);
             }

@@ -1,0 +1,109 @@
+
+#REFACTOR
+gui.okstoragecore.stack_size_extra=Count: %s / %s
+gui.okstoragecore.error.add.upgrade_not_allowed=%s can't be used in %s
+gui.okstoragecore.error.add.only_single_upgrade_allowed=Only single %s can be used in %s
+gui.okstoragecore.error.add.only_x_upgrades_allowed=Only %dx %s can be used in %s
+gui.okstoragecore.error.add.any_upgrade_exists=All upgrade slots need to be empty
+gui.okstoragecore.error.add.no_upgrade_can_be_added=No upgrade can be added
+gui.okstoragecore.error.add.upgrade_high=Backpack can't support %1$s. Upgrade backpack or add stack multiplier to at least %2$s
+gui.okstoragecore.error.add.battery_exists=There's already Battery Upgrade in another upgrade slot
+gui.okstoragecore.error.add.needs_occupied_inventory_slots=There's an item in at least one of the last %s slots needed for %s
+gui.okstoragecore.error.remove.infinity_upgrade_only_admin=Only admins can remove Infinity Upgrade
+gui.okstoragecore.error.remove.banned_item=This item must be removed before the upgrade can be
+gui.okstoragecore.error.remove.stack_low_multiplier=There's at least one slot or upgrade that requires multiplier higher than %s
+gui.okstoragecore.error.remove.inception_sub_backpack=There's one or more backpacks in the backpack
+
+gui.okstoragecore.backpack_settings=Storage Settings
+gui.okstoragecore.no_sorting_settings=No Sort Slot Settings
+gui.okstoragecore.no_sorting_settings.tooltip_detail=Exclude selected slots from sorting\nOpen the tab to change this setting
+gui.okstoragecore.no_sorting_settings.tooltip_open_detail=Left click or drag to select slots\nRight click or drag to unselect slots\nSelect all slots\nUnselect all slots\nCycle highlight color
+gui.okstoragecore.memory_settings=Slot Memory Settings
+gui.okstoragecore.memory_settings.tooltip_detail=Make selected slots remember the current item\nOpen the tab to change this setting
+gui.okstoragecore.memory_settings.tooltip_open_detail=Left click or drag to select slots\nRight click or drag to unselect slots\nSelect all slots\nUnselect all slots\nToggle matching NBT
+
+gui.okstoragecore.settings_context_storage=Storage
+gui.okstoragecore.settings_context_storage.tooltip=This Storage's settings\nInherited from player or overriden for this storage
+gui.okstoragecore.settings_context_player=Player
+gui.okstoragecore.settings_context_player.tooltip=Player level settings\nApply to all storages unless overriden
+
+gui.okstoragecore.memorized_slot=Memorized Slot
+gui.okstoragecore.memorize_all=Select All Slots
+gui.okstoragecore.unmemorize_all=Unselect All Slots
+gui.okstoragecore.select_all_slots=Select All Slots
+gui.okstoragecore.unselect_all_slots=Unselect All Slots
+
+gui.okstoragecore.no_sorting_slot=No Sorting Slot
+gui.okstoragecore.lock_all_sort=Select All Slots
+gui.okstoragecore.unlock_all_sort=Unselect All Slots
+
+gui.okstoragecore.match_nbt=Match NBT
+gui.okstoragecore.ignore_nbt=Ignore NBT
+
+gui.okstoragecore.crafting_settings=Crafting
+
+
+
+#Settings
+gui.okstoragecore.settings.storage=Storage
+gui.okstoragecore.settings.storage.tooltip=Storage Settings
+gui.okstoragecore.settings.buttons.context_player=Player
+gui.okstoragecore.settings.buttons.context_player.tooltip=Player level settings
+gui.okstoragecore.settings.buttons.context_player.tooltip_detail=Apply to all backpacks/storages unless overriden
+gui.okstoragecore.settings.buttons.context_storage=Storage
+gui.okstoragecore.settings.buttons.context_storage.tooltip=This Storage's settings
+gui.okstoragecore.settings.buttons.context_storage.tooltip_detail=Inherited from player or overriden for this storage
+gui.okstoragecore.settings.buttons.shift_click_open_tab.on=Shift Click Into Open Tab First
+gui.okstoragecore.settings.buttons.shift_click_open_tab.off=Shift Click Into Inventory First
+gui.okstoragecore.settings.buttons.shift_click_open_tab.on.tooltip=Shift click from storage/inventory will first try to put the stack in an open tab and only then into inventory/storage.
+gui.okstoragecore.settings.buttons.shift_click_open_tab.off.tooltip=Shift click from storage/inventory will first try to put the stack in inventory/storage and only then into an open tab.
+gui.okstoragecore.settings.buttons.keep_tab_open.on=Keep Tab Open: ON
+gui.okstoragecore.settings.buttons.keep_tab_open.off=Keep Tab Open: OFF
+gui.okstoragecore.settings.buttons.keep_tab_open.on.tooltip=On close of its gui the backpack/storage records which upgrade tab was last open and opens it when the gui is open next time
+gui.okstoragecore.settings.buttons.keep_tab_open.off.tooltip=Open upgrade tab gets closed when the backpack/storage gui is closed and when the gui is next open all of the tabs are closed
+gui.okstoragecore.settings.buttons.keep_search_phrase.on=Keep Search Phrase: ON
+gui.okstoragecore.settings.buttons.keep_search_phrase.off=Keep Search Phrase: OFF
+gui.okstoragecore.settings.buttons.keep_search_phrase.on.tooltip=Backpack / Storage gui keeps the search phrase and prefills it / filters by it when open again
+gui.okstoragecore.settings.buttons.keep_search_phrase.off.tooltip=Backpack / Storage gui clears the search phrase when closed and shows all unfiltered item when open again
+
+#Upgrade
+gui.okstoragecore.upgrades.crafting=Craft
+gui.okstoragecore.upgrades.buttons.refill_crafting_grid=Refill Crafting Grid
+gui.okstoragecore.upgrades.buttons.do_not_refill_crafting_grid=Do Not Refill Crafting Grid
+
+gui.okstoragecore.upgrades.feeding=Feeding
+gui.okstoragecore.upgrades.advanced_feeding=Adv. Feeding
+gui.okstoragecore.upgrades.buttons.hunger_level_any=Feed as soon as player is tiny bit hungry\nwastes quite a few hunger points of the food
+gui.okstoragecore.upgrades.buttons.hunger_level_half=Only feed when player is hungry enough\nto only waste half hunger points of the food at most
+gui.okstoragecore.upgrades.buttons.hunger_level_full=Only feed when player is hungry enough\nto not waste any hunger points of the food at all
+gui.okstoragecore.upgrades.buttons.feed_immediately_when_hurt=Feed player immediately when hurt\nIgnores hunger setting when player is not at max health
+gui.okstoragecore.upgrades.buttons.do_not_consider_health=Do not consider health\nIgnores player's health and only feeds based on hunger setting
+
+gui.okstoragecore.upgrades.battery=Batt.
+gui.okstoragecore.upgrades.battery.tooltip=Battery
+gui.okstoragecore.upgrades.battery.contents_tooltip=%s FE out of %s FE
+
+gui.okstoragecore.upgrades.buttons.allow=Allow
+gui.okstoragecore.upgrades.buttons.block=Block
+gui.okstoragecore.upgrades.buttons.match_mod=Match Mod
+gui.okstoragecore.upgrades.buttons.match_item=Match Item
+gui.okstoragecore.upgrades.buttons.match_ore_dict=Match OreDict
+gui.okstoragecore.upgrades.buttons.match_tag=Match Tag
+gui.okstoragecore.upgrades.buttons.match_durability=Match Durability
+gui.okstoragecore.upgrades.buttons.ignore_durability=Ignore Durability
+gui.okstoragecore.upgrades.buttons.match_nbt=Match NBT
+gui.okstoragecore.upgrades.buttons.ignore_nbt=Ignore NBT
+
+gui.okstoragecore.upgrades.buttons.add_ore_dict_entry=Add Ore Dict.
+gui.okstoragecore.upgrades.buttons.remove_ore_dict_entry=Remove Ore Dict.
+gui.okstoragecore.upgrades.buttons.ore_dict_list.title=Ore Dict
+gui.okstoragecore.upgrades.buttons.add_ore_dict=Add Ore Dict
+gui.okstoragecore.upgrades.buttons.add_ore_dict.no_item=<- Click an Item into slot to start adding its ore dicts
+gui.okstoragecore.upgrades.buttons.add_ore_dict.no_additional=All Item's ore dicts are already added
+gui.okstoragecore.upgrades.buttons.add_ore_dict.controls=Scroll to Select, Click to Add
+gui.okstoragecore.upgrades.buttons.remove_ore_dict=Remove Ore Dict
+gui.okstoragecore.upgrades.buttons.remove_ore_dict.empty=No ore dicts to remove
+gui.okstoragecore.upgrades.buttons.remove_ore_dict.controls=Scroll to Select, Click to Remove
+gui.okstoragecore.upgrades.buttons.match_any_ore_dict=Match Any Ore Dict
+gui.okstoragecore.upgrades.buttons.match_all_ore_dict=Match All Ore Dicts
+gui.okstoragecore.upgrades.buttons.ore_dict_input_help=You can input ore dictionary here, regex is supported

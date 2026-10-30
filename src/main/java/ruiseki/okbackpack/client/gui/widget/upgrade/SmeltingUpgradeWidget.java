@@ -9,7 +9,7 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
-import ruiseki.okbackpack.client.gui.slot.BigItemSlot;
+import ruiseki.okbackpack.client.gui.slot.ResizableItemSlot;
 import ruiseki.okbackpack.common.item.smelter.SmeltingUpgradeWrapperBase;
 
 public class SmeltingUpgradeWidget<T extends SmeltingUpgradeWrapperBase> extends ExpandedUpgradeTabWidget<T> {
@@ -48,7 +48,8 @@ public class SmeltingUpgradeWidget<T extends SmeltingUpgradeWrapperBase> extends
             .pos(24, 18);
         furnaceGroup.child(arrowProgress);
 
-        BigItemSlot outputSlot = (BigItemSlot) new BigItemSlot().syncHandler("smelting_slot_" + slotIndex, 2)
+        ResizableItemSlot outputSlot = (ResizableItemSlot) new ResizableItemSlot(26)
+            .syncHandler("smelting_slot_" + slotIndex, 2)
             .pos(56, 14)
             .name("smelting_output_" + slotIndex);
         furnaceGroup.child(outputSlot);

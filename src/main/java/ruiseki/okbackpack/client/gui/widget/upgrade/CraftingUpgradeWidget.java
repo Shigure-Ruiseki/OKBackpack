@@ -16,13 +16,14 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
-import ruiseki.okbackpack.client.gui.slot.BigItemSlot;
+import ruiseki.okbackpack.client.gui.slot.ResizableItemSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okbackpack.client.gui.widget.ShiftButtonWidget;
 import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
 import ruiseki.okbackpack.common.item.crafting.CraftingUpgradeWrapper;
+import ruiseki.okstoragecore.client.gui.OSCTextures;
 
 public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgradeWrapper> {
 
@@ -69,7 +70,8 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
             .child(craftingDesButton)
             .child(usedBackpackButton);
 
-        ShiftButtonWidget rotated = new ShiftButtonWidget(OKBGuiTextures.ROTATED_RIGHT, OKBGuiTextures.ROTATED_LEFT)
+        ShiftButtonWidget rotated = new ShiftButtonWidget().setNotShift(OSCTextures.ROTATED_RIGHT)
+            .setShift(OSCTextures.ROTATED_LEFT)
             .size(16)
             .onMousePressed(button -> {
                 if (button == 0) {
@@ -85,7 +87,9 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
                 return false;
             });
 
-        ShiftButtonWidget grid = new ShiftButtonWidget(OKBGuiTextures.BALANCE, OKBGuiTextures.SPREAD).size(16)
+        ShiftButtonWidget grid = new ShiftButtonWidget().setNotShift(OSCTextures.BALANCE)
+            .setShift(OSCTextures.SPREAD)
+            .size(16)
             .onMousePressed(button -> {
                 if (button == 0) {
                     Interactable.playButtonClickSound();
@@ -104,7 +108,7 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
                 return false;
             });
 
-        ButtonWidget<?> clear = new ButtonWidget<>().overlay(OKBGuiTextures.CLEAR)
+        ButtonWidget<?> clear = new ButtonWidget<>().overlay(OSCTextures.CLEAR)
             .size(16)
             .onMousePressed(button -> {
                 if (button == 0) {
@@ -140,7 +144,7 @@ public class CraftingUpgradeWidget extends ExpandedUpgradeTabWidget<CraftingUpgr
             craftingMatrix[i] = itemSlot;
         }
 
-        craftingResult = new BigItemSlot().syncHandler("crafting_result_" + slotIndex, 0)
+        craftingResult = new ResizableItemSlot(26).syncHandler("crafting_result_" + slotIndex, 0)
             .pos(18, 18 * 3 + 9)
             .name("crafting_result_" + slotIndex);
         craftingGroupsWidget.child(craftingResult);

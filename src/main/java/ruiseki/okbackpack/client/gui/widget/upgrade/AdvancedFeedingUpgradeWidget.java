@@ -20,13 +20,9 @@ import ruiseki.okbackpack.common.item.feeding.AdvancedFeedingUpgradeWrapper;
 public class AdvancedFeedingUpgradeWidget extends AdvancedExpandedTabWidget<AdvancedFeedingUpgradeWrapper> {
 
     private static final List<CyclicVariantButtonWidget.Variant> HUNGER_VARIANTS = Arrays.asList(
-        new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.backpack.complete_hunger"),
-            OKBGuiTextures.COMPLETE_HUNGER_ICON),
-        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.half_hunger"), OKBGuiTextures.HALF_HUNGER_ICON),
-        new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.backpack.immediate_hunger"),
-            OKBGuiTextures.IMMEDIATE_HUNGER_ICON));
+        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.complete_hunger"), OKBGuiTextures.FULL_HUNGER),
+        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.half_hunger"), OKBGuiTextures.HALF_HUNGER),
+        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.immediate_hunger"), OKBGuiTextures.ANY_HUNGER));
 
     private static final List<CyclicVariantButtonWidget.Variant> HEART_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(

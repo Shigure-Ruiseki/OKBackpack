@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.common.MinecraftForge;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,14 +39,13 @@ import lombok.Getter;
 import lombok.Setter;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
-import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionOverlay;
-import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionResult;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.upgrade.SortingSettingWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
 import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
 import ruiseki.okbackpack.mixins.early.modularui2.ItemSlotInvoker;
+import ruiseki.okcore.event.gui.SlotRenderEvent;
 
 public class BackpackSlot extends ItemSlot {
 
@@ -212,6 +212,7 @@ public class BackpackSlot extends ItemSlot {
 
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetThemeEntry) {
+        if (MinecraftForge.EVENT_BUS.post(new SlotRenderEvent.Pre(this.getSlot(), 1, 1))) return;
         WidgetTheme widgetTheme = widgetThemeEntry.getTheme() != null ? widgetThemeEntry.getTheme()
             : WidgetTheme.getDefault()
                 .getTheme();
@@ -232,7 +233,7 @@ public class BackpackSlot extends ItemSlot {
             GlStateManager.enableDepth();
         }
 
-        renderInventoryInteractionOverlay();
+        MinecraftForge.EVENT_BUS.post(new SlotRenderEvent.Post(this.getSlot(), 1, 1));
     }
 
     private boolean shouldHighlightConflict() {
@@ -243,7 +244,7 @@ public class BackpackSlot extends ItemSlot {
     }
 
     private void drawDimmedSlot(ModularGuiContext context) {
-        GuiDraw.drawRect(1, 1, 17, 17, 0x88000000);
+        GuiDraw.drawRect(1, 1, 16, 16, 0x88000000);
     }
 
     private void drawSettingStack(ModularGuiContext context, WidgetTheme widgetTheme) {
@@ -370,22 +371,6 @@ public class BackpackSlot extends ItemSlot {
             GuiDraw.drawRect(1, 1, 16, 16, getSlotHoverColor());
             GlStateManager.colorMask(true, true, true, true);
         }
-    }
-
-    private void renderInventoryInteractionOverlay() {
-        Minecraft minecraft = Minecraft.getMinecraft();
-        if (minecraft == null || minecraft.thePlayer == null || minecraft.fontRenderer == null) {
-            return;
-        }
-
-        ItemStack cursorStack = minecraft.thePlayer.inventory.getItemStack();
-        if (cursorStack == null || cursorStack.stackSize <= 0) {
-            return;
-        }
-
-        BackpackInventoryInteractionResult result = BackpackInventoryInteractionOverlay
-            .getRenderableResult(minecraft.thePlayer, getSlot(), cursorStack);
-        BackpackInventoryInteractionOverlay.renderOverlayAt(minecraft.fontRenderer, result, 1, 1);
     }
 
     @SideOnly(Side.CLIENT)

@@ -13,6 +13,7 @@ import ruiseki.okbackpack.api.wrapper.ISlotModifiable;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class InceptionUpgradeWrapper extends UpgradeWrapperBase implements ISlotModifiable, IInceptionUpgrade {
@@ -55,7 +56,7 @@ public class InceptionUpgradeWrapper extends UpgradeWrapperBase implements ISlot
             return UpgradeSlotChangeResult.success();
         }
 
-        if (replacement.getItem() == upgrade.getItem()) {
+        if (ItemHelpers.isSameItem(replacement, upgrade)) {
             return UpgradeSlotChangeResult.success();
         }
 
@@ -101,7 +102,7 @@ public class InceptionUpgradeWrapper extends UpgradeWrapperBase implements ISlot
         int count = 0;
         for (ItemStack stack : storage.getUpgradeHandler()
             .getStacks()) {
-            if (stack != null && stack.getItem() == upgrade.getItem()) {
+            if (ItemHelpers.isSameItem(stack, upgrade)) {
                 count++;
             }
         }

@@ -24,6 +24,7 @@ import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
@@ -44,7 +45,7 @@ public class ThaumcraftHelpers {
     private static Field shapedMirroredField;
 
     public static boolean isWand(ItemStack stack) {
-        return stack != null && stack.getItem() instanceof ItemWandCasting;
+        return ItemHelpers.hasItem(stack, ItemWandCasting.class);
     }
 
     private static TileMagicWorkbench createWorkbenchProxy(IInventory inventory) {
@@ -77,7 +78,7 @@ public class ThaumcraftHelpers {
 
     public static boolean consumeAllVisCrafting(ItemStack wandStack, EntityPlayer player,
         Map<String, Integer> aspects) {
-        if (wandStack == null || !(wandStack.getItem() instanceof ItemWandCasting wand)) return false;
+        if (!(ItemHelpers.getItem(wandStack) instanceof ItemWandCasting wand)) return false;
         AspectList list = new AspectList();
         for (Map.Entry<String, Integer> entry : aspects.entrySet()) {
             Aspect a = Aspect.getAspect(entry.getKey());
@@ -90,26 +91,26 @@ public class ThaumcraftHelpers {
     }
 
     public static int getWandVis(ItemStack wandStack, String aspectTag) {
-        if (wandStack == null || !(wandStack.getItem() instanceof ItemWandCasting wand)) return 0;
+        if (!(ItemHelpers.getItem(wandStack) instanceof ItemWandCasting wand)) return 0;
         Aspect aspect = Aspect.getAspect(aspectTag);
         if (aspect == null) return 0;
         return wand.getVis(wandStack, aspect);
     }
 
     public static int getWandMaxVis(ItemStack wandStack) {
-        if (wandStack == null || !(wandStack.getItem() instanceof ItemWandCasting wand)) return 0;
+        if (!(ItemHelpers.getItem(wandStack) instanceof ItemWandCasting wand)) return 0;
         return wand.getMaxVis(wandStack);
     }
 
     public static int addRealVis(ItemStack wandStack, String aspectTag, int amount) {
-        if (wandStack == null || !(wandStack.getItem() instanceof ItemWandCasting wand)) return 0;
+        if (!(ItemHelpers.getItem(wandStack) instanceof ItemWandCasting wand)) return 0;
         Aspect aspect = Aspect.getAspect(aspectTag);
         if (aspect == null) return 0;
         return wand.addRealVis(wandStack, aspect, amount, true);
     }
 
     public static Map<String, Integer> getAspectsWithRoom(ItemStack wandStack) {
-        if (wandStack == null || !(wandStack.getItem() instanceof ItemWandCasting wand)) {
+        if (!(ItemHelpers.getItem(wandStack) instanceof ItemWandCasting wand)) {
             return new LinkedHashMap<>();
         }
         AspectList list = wand.getAspectsWithRoom(wandStack);
@@ -314,12 +315,11 @@ public class ThaumcraftHelpers {
     }
 
     private static boolean checkItemEquals(ItemStack target, ItemStack input) {
-        if (input == null && target != null) return false;
-        if (input != null && target == null) return false;
-        if (input == null) return true;
-        return target.getItem() == input.getItem()
+        if (ItemHelpers.isEmpty(target)) return ItemHelpers.isEmpty(input);
+        if (ItemHelpers.isEmpty(input)) return false;
+        return ItemHelpers.isSameItem(target, input)
             && (!target.hasTagCompound() || ThaumcraftApiHelper.areItemStackTagsEqualForCrafting(input, target))
-            && (target.getItemDamage() == 32767 || target.getItemDamage() == input.getItemDamage());
+            && ItemHelpers.doMetasMatch(ItemHelpers.getStackMeta(target), ItemHelpers.getStackMeta(input));
     }
 
     private static boolean getShapedMirrored(ShapedArcaneRecipe recipe) {
@@ -340,13 +340,15 @@ public class ThaumcraftHelpers {
         for (IArcaneCraftingUpgrade upgrade : upgrades.values()) {
             ItemStack wand = upgrade.getStorage()
                 .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
-            if (isWand(wand)) {
-                ItemWandCasting wandItem = (ItemWandCasting) wand.getItem();
-                for (Aspect a : Aspect.getPrimalAspects()) {
-                    int vis = wandItem.getVis(wand, a);
-                    if (vis > 0) list.add(a, vis);
-                }
-            }
+            ItemHelpers.getItem(wand, ItemWandCasting.class)
+                .ifPresent(wandItem -> {
+                    for (Aspect aspect : Aspect.getPrimalAspects()) {
+                        int vis = wandItem.getVis(wand, aspect);
+                        if (vis > 0) {
+                            list.add(aspect, vis);
+                        }
+                    }
+                });
         }
         return list;
     }
@@ -357,9 +359,10 @@ public class ThaumcraftHelpers {
         for (IArcaneCraftingUpgrade upgrade : upgrades.values()) {
             ItemStack wand = upgrade.getStorage()
                 .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
-            if (isWand(wand)) {
-                ItemWandCasting wandItem = (ItemWandCasting) wand.getItem();
-                if (wandItem.getVis(wand, aspect) < wandItem.getMaxVis(wand)) return true;
+            if (isWand(wand) && ItemHelpers.getItem(wand, ItemWandCasting.class)
+                .map(item -> item.getVis(wand, aspect) < item.getMaxVis(wand))
+                .orElse(false)) {
+                return true;
             }
         }
         return false;
@@ -372,12 +375,12 @@ public class ThaumcraftHelpers {
         for (IArcaneCraftingUpgrade upgrade : upgrades.values()) {
             ItemStack wand = upgrade.getStorage()
                 .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
-            if (isWand(wand)) {
-                ItemWandCasting wandItem = (ItemWandCasting) wand.getItem();
-                int added = wandItem.addRealVis(wand, aspect, remaining, true);
-                remaining -= added;
-                if (remaining <= 0) return 0;
-            }
+            final int available = remaining;
+            int added = ItemHelpers.getItem(wand, ItemWandCasting.class)
+                .map(item -> item.addRealVis(wand, aspect, available, true))
+                .orElse(0);
+            remaining -= added;
+            if (remaining <= 0) return 0;
         }
         return remaining;
     }
@@ -389,10 +392,9 @@ public class ThaumcraftHelpers {
         for (IArcaneCraftingUpgrade upgrade : upgrades.values()) {
             ItemStack wand = upgrade.getStorage()
                 .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
-            if (isWand(wand)) {
-                ItemWandCasting wandItem = (ItemWandCasting) wand.getItem();
-                total += wandItem.getVis(wand, aspect);
-            }
+            total += ItemHelpers.getItem(wand, ItemWandCasting.class)
+                .map(item -> item.getVis(wand, aspect))
+                .orElse(0);
         }
         return total;
     }

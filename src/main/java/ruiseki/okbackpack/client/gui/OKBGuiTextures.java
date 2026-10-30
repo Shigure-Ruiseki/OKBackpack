@@ -21,11 +21,6 @@ public class OKBGuiTextures {
         .name("vanilla_search")
         .build();
 
-    public static final UITexture BREEDER_PROGRESS = UITexture.builder()
-        .location(Reference.MOD_ID, "gui/widgets/progress_breeder")
-        .imageSize(36, 36)
-        .build();
-
     public static final UITexture BASIC_BAR = UITexture.builder()
         .location(Reference.MOD_ID, "gui/progress_white")
         .imageSize(64, 32)
@@ -110,9 +105,9 @@ public class OKBGuiTextures {
     public static final UITexture MATCH_NBT_ICON = icon("consider_nbt", 32, 0);
     public static final UITexture IGNORE_NBT_ICON = icon("ignore_nbt", 48, 0);
 
-    public static final UITexture COMPLETE_HUNGER_ICON = icon("complete_hunger", 96, 0);
-    public static final UITexture HALF_HUNGER_ICON = icon("half_hunger", 112, 0);
-    public static final UITexture IMMEDIATE_HUNGER_ICON = icon("impose_hunger", 128, 0);
+    public static final UITexture FULL_HUNGER = icon("full_hunger", 96, 0);
+    public static final UITexture HALF_HUNGER = icon("half_hunger", 112, 0);
+    public static final UITexture ANY_HUNGER = icon("any_hunger", 128, 0);
 
     public static final UITexture MATCH_DURABILITY_ICON = icon("consider_duration", 0, 16);
     public static final UITexture IGNORE_DURABILITY_ICON = icon("ignore_duration", 16, 16);
@@ -155,9 +150,6 @@ public class OKBGuiTextures {
     public static final IDrawable ALL_FOUR_SLOT_ICON = icon("all_in_four_slot", 16, 80);
     public static final IDrawable NO_SORT_ICON = icon("no_sort", 32, 80);
     public static final IDrawable NONE_FOUR_SLOT_ICON = icon("none_in_four_slot", 48, 80);
-
-    public static final IDrawable SETTING_ICON = icon("setting", 16, 96);
-    public static final IDrawable BACK_ICON = icon("back", 64, 80);
 
     public static final IDrawable EXP_MAGNET_ICON = icon("exp_magnet", 96, 48);
     public static final IDrawable IGNORE_EXP_MAGNET_ICON = icon("ignore_exp_magnet", 112, 48);
@@ -213,12 +205,6 @@ public class OKBGuiTextures {
     public static final UITexture XP_PUMP_STORE_LEVELS_ICON = icon("xp_pump_store_levels", 176, 16);
     public static final UITexture XP_PUMP_STORE_ALL_ICON = icon("xp_pump_store_all", 192, 16);
 
-    public static final UITexture ROTATED_RIGHT = icon("rotated_right", 0, 170);
-    public static final UITexture ROTATED_LEFT = icon("rotated_left", 48, 170);
-    public static final UITexture BALANCE = icon("balance", 32, 170);
-    public static final UITexture SPREAD = icon("spread", 80, 170);
-    public static final UITexture CLEAR = icon("clear", 16, 170);
-
     public static final UITexture SOLID_UP_ARROW_ICON = icon("solid_up_arrow", 0, 144, 12, 12);
     public static final UITexture SOLID_DOWN_ARROW_ICON = icon("solid_down_arrow", 12, 156, 12, 12);
     public static final UITexture DOT_DOWN_ARROW_ICON = icon("dot_down_arrow", 24, 156, 12, 12);
@@ -227,6 +213,7 @@ public class OKBGuiTextures {
     public static final UITexture TOGGLE_DISABLE_ICON = icon("disable", 0, 128, 4, 10);
     public static final UITexture TOGGLE_ENABLE_ICON = icon("enable", 4, 128, 4, 10);
     public static final UITexture SMALL_M_ICON = icon("small_m", 0, 156, 12, 12);
+    public static final UITexture SMALL_T_ICON = icon("small_a", 12, 144, 12, 12);
     public static final UITexture SMALL_A_ICON = icon("small_a", 24, 144, 12, 12);
     public static final UITexture SMALL_1_ICON = icon("small_1", 36, 144, 12, 12);
     public static final UITexture SMALL_O_ICON = icon("small_ore_dict", 64, 144, 12, 12);

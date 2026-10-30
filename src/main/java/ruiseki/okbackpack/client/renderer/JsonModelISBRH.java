@@ -22,6 +22,8 @@ import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.ModelQuadView;
 import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.properties.ModelQuadFacing;
 import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 
+import ruiseki.okcore.helper.RenderHelpers;
+
 @ThreadSafeISBRH(perThread = true)
 public class JsonModelISBRH extends ModelISBRH {
 
