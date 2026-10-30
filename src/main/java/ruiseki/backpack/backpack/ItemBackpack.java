@@ -24,8 +24,10 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
+import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import lombok.experimental.Delegate;
 import ruiseki.backpack.backpack.wrapper.BackpackWrapper;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
@@ -36,13 +38,19 @@ import ruiseki.okbackpack.common.init.TierRegistries;
 import ruiseki.okcore.capabilities.Capability;
 import ruiseki.okcore.capabilities.ICapabilityProvider;
 import ruiseki.okcore.datastructure.LazyOptional;
+import ruiseki.okcore.energy.capability.CapabilityEnergy;
+import ruiseki.okcore.energy.component.EnergyContainerItemComponent;
 import ruiseki.okcore.helper.CapabilityHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemBlockMetadata;
 import ruiseki.okstoragecore.capabilities.CapabilityStorageWrapperConfig;
 import ruiseki.okstoragecore.client.gui.tooltip.StorageContentHandler;
 
-public class ItemBackpack extends ItemBlockMetadata implements IGuiHolder<PlayerInventoryGuiData> {
+public class ItemBackpack extends ItemBlockMetadata
+    implements IGuiHolder<PlayerInventoryGuiData>, IEnergyContainerItem {
+
+    @Delegate
+    private final EnergyContainerItemComponent energyStorage = new EnergyContainerItemComponent();
 
     private String tierId = TierRegistries.LEATHER;
     private BackpackTier tier = null;
@@ -138,16 +146,20 @@ public class ItemBackpack extends ItemBlockMetadata implements IGuiHolder<Player
                     return LazyOptional.of(() -> wrapper)
                         .cast();
                 }
+
+                if (capability == CapabilityEnergy.ENERGY) {
+                    return wrapper.getEnergyStorage()
+                        .<LazyOptional<T>>map(
+                            storage -> LazyOptional.of(() -> storage)
+                                .cast())
+                        .orElseGet(LazyOptional::empty);
+                }
                 return LazyOptional.empty();
             }
 
             private void initCap() {
                 if (this.wrapper == null) {
                     this.wrapper = new BackpackWrapper(stack, tierId);
-                    if (this.wrapper.getContentsUuid()
-                        .isEmpty()) {
-                        this.wrapper.getOrCreateContentsUuid();
-                    }
                 }
             }
         };

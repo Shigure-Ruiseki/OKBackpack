@@ -26,6 +26,7 @@ public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlo
     private boolean compactRows = true;
 
     private int gridColumns;
+    private int gridRows;
 
     private final Map<IWidget, GridPosition> childPositions = new IdentityHashMap<>();
 
@@ -86,30 +87,62 @@ public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlo
         this.childPositions.put(widget, new GridPosition(column, row));
     }
 
+    public StorageSlotGrid<T> columns(int columns) {
+        if (columns <= 0) {
+            throw new IllegalArgumentException("Columns must be greater than 0");
+        }
+
+        this.gridColumns = columns;
+        refreshGridLayout();
+        return getThis();
+    }
+
+    public StorageSlotGrid<T> rows(int rows) {
+        if (rows <= 0) {
+            throw new IllegalArgumentException("Rows must be greater than 0");
+        }
+
+        this.gridRows = rows;
+        refreshGridLayout();
+        return getThis();
+    }
+
+    public StorageSlotGrid<T> matrix(int columns, int rows) {
+        if (columns <= 0 || rows < 0) {
+            throw new IllegalArgumentException("Invalid grid dimensions");
+        }
+
+        this.gridColumns = columns;
+        this.gridRows = rows;
+
+        refreshGridLayout();
+        return getThis();
+    }
+
     /**
      * Compact enabled slots across the entire grid, not independently
      * within each original row.
      */
+
     public void refreshGridLayout() {
+        if (this.gridColumns <= 0) return;
+
+        int visibleIndex = 0;
         int maxColumn = 0;
         int maxRow = 0;
-        int visibleIndex = 0;
 
         for (IWidget child : getChildren()) {
             GridPosition original = this.childPositions.get(child);
-
             if (original == null) continue;
 
-            if (this.collapseDisabledChild && !child.isEnabled()) {
+            if (!child.isEnabled() && this.collapseDisabledChild) {
                 continue;
             }
 
             int column;
             int row;
 
-            if (this.collapseDisabledChild && this.compactRows) {
-                if (this.gridColumns <= 0) continue;
-
+            if (this.compactRows) {
                 column = visibleIndex % this.gridColumns;
                 row = visibleIndex / this.gridColumns;
                 visibleIndex++;
@@ -126,9 +159,12 @@ public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlo
             maxRow = Math.max(maxRow, row + 1);
         }
 
-        resizer().size(maxColumn * this.slotSize, maxRow * this.slotSize);
+        int heightRows = Math.max(this.gridRows, maxRow);
 
-        scheduleResize();
+        this.resizer()
+            .size(this.gridColumns * this.slotSize, heightRows * this.slotSize);
+
+        this.scheduleResize();
     }
 
     private static final class GridPosition {
@@ -154,7 +190,7 @@ public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlo
 
         private boolean collapseDisabledChild = true;
         private boolean compactRows = true;
-
+        private int gridRows;
         private int slotSize = 18;
 
         private Builder() {
@@ -216,6 +252,11 @@ public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlo
             return this;
         }
 
+        public Builder<T> rows(int rows) {
+            this.gridRows = rows;
+            return this;
+        }
+
         public StorageSlotGrid<T> build() {
             StorageSlotGrid<T> grid = new StorageSlotGrid<>();
 
@@ -261,6 +302,7 @@ public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlo
             }
 
             grid.gridColumns = maxColumns;
+            grid.gridRows = this.gridRows;
             grid.slotSize(this.slotSize);
             grid.refreshGridLayout();
 

@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.AdaptableUITexture;
 import com.cleanroommc.modularui.drawable.ItemDrawable;
@@ -28,6 +29,7 @@ import com.cleanroommc.modularui.theme.WidgetTheme;
 import com.cleanroommc.modularui.value.StringValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widget.ParentWidget;
+import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
@@ -113,6 +115,9 @@ public class StoragePanel extends ModularPanel {
 
     protected StorageList storageList;
     protected StorageSlotGrid<ItemSlot> storageSlotGrid;
+    protected Flow storageSlotRow;
+    protected Flow[] slotWidgets;
+
     protected UpgradeSlotGroup upgradeSlotGroup;
     protected UpgradeSlotUpdate[] upgradeSlotUpdates;
     protected ItemStack[] lastUpgradeStacks;
@@ -177,16 +182,16 @@ public class StoragePanel extends ModularPanel {
     @Override
     public void onInit() {
         super.onInit();
-        this.updateListHeight();
+        this.updateGridHeight();
     }
 
     @Override
     public void onResized() {
         super.onResized();
-        this.updateListHeight();
+        this.updateGridHeight();
     }
 
-    private void updateListHeight() {
+    private void updateGridHeight() {
         int totalSlots = this.getWrapper()
             .getInventoryHandler()
             .getSlots();
@@ -206,6 +211,14 @@ public class StoragePanel extends ModularPanel {
         // set list height
         this.storageList.height(visibleRows * slotSize);
         this.storageList.scheduleResize();
+
+        for (Flow widget : this.slotWidgets) {
+            if (widget == null) continue;
+            widget.height(visibleRows * slotSize);
+            widget.getChildren()
+                .forEach(IWidget::scheduleResize);
+            widget.scheduleResize();
+        }
 
         this.scheduleResize();
     }
@@ -230,9 +243,9 @@ public class StoragePanel extends ModularPanel {
                 .coverChildren()
                 .childPadding(2)
                 .pos(10, 6)
-                .child(addToolBar())
-                .child(addInventoryGrid())
-                .child(addTransferBar()));
+                .child(this.addToolBar())
+                .child(this.addStorageSlotRow())
+                .child(this.addTransferBar()));
     }
 
     // Search/Sort
@@ -328,6 +341,14 @@ public class StoragePanel extends ModularPanel {
                             .size(12)));
     }
 
+    public Flow addStorageSlotRow() {
+        this.storageSlotRow = Flow.row()
+            .coverChildren()
+            .name("storage_slot_row");
+        this.storageSlotRow.child(this.addInventoryGrid());
+        return this.storageSlotRow;
+    }
+
     // Inventory Grid
     protected StorageList addInventoryGrid() {
         int inventorySlots = this.getWrapper()
@@ -343,13 +364,25 @@ public class StoragePanel extends ModularPanel {
                 'I',
                 i -> new StorageSlot(this.getPanel(), i).syncHandler(this.getStorageSlotSH(i))
                     .setEnabledIf(slot -> {
+                        IStorageWrapper wrapper = this.getWrapper();
+
+                        int availableSlots = Math.max(
+                            0,
+                            wrapper.getNumberOfInventorySlots()
+                                - wrapper.getNumberOfSlotRows() * wrapper.getColumnsTaken());
+
+                        if (i >= availableSlots) return false;
+
                         if (this.searchValue.getStringValue()
-                            .isEmpty()) return true;
+                            .isEmpty()) {
+                            return true;
+                        }
+
                         ItemStack stack = slot.getSlot()
                             .getStack();
-                        if (ItemHelpers.isEmpty(stack)) return false;
-                        ItemStackKey key = ItemStackKey.of(stack);
-                        return this.searchNode.matches(key);
+
+                        return !ItemHelpers.isEmpty(stack) && this.searchNode != null
+                            && this.searchNode.matches(ItemStackKey.of(stack));
                     }))
             .slotGroup("storage_inventory")
             .build();
@@ -477,6 +510,7 @@ public class StoragePanel extends ModularPanel {
         this.upgradeSlotSHs = new UpgradeSlotSH[slotCount];
         this.upgradeSlotUpdates = new UpgradeSlotUpdate[slotCount];
         this.lastUpgradeStacks = new ItemStack[slotCount];
+        this.slotWidgets = new Flow[slotCount];
         for (int i = 0; i < handler.getSlots(); i++) {
             final int slotIndex = i;
             this.upgradeSlotUpdates[slotIndex] = new UpgradeSlotUpdate(this.getPanel(), slotIndex);
@@ -492,6 +526,8 @@ public class StoragePanel extends ModularPanel {
                     this.lastUpgradeStacks[slotIndex] = stack == null ? null : stack.copy();
 
                     this.updateUpgradeTabs();
+                    this.updateInventoryGrid();
+                    this.updateSlotWidgets();
                 });
             this.syncManager.syncValue("upgrades", slotIndex, syncHandler);
             this.upgradeSlotSHs[slotIndex] = syncHandler;
@@ -548,7 +584,7 @@ public class StoragePanel extends ModularPanel {
                                 .addLine(IKey.str(item.getItemStackDisplayName(stack)))
                                 .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
                     ExpandedTab expanded = upgrade.getType()
-                        .getExpandedTabWidget(slotIndex, upgradeWrapper, stack, this.getPanel());
+                        .createExpandedTab(slotIndex, upgradeWrapper, stack, this.getPanel());
                     if (expanded != null) {
                         upgrade.getType()
                             .updateWidgetDelegates(upgradeWrapper, group);
@@ -565,6 +601,67 @@ public class StoragePanel extends ModularPanel {
         this.updateTabPositions();
 
         this.syncToggles();
+        this.scheduleResize();
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected void updateSlotWidgets() {
+        if (this.storageSlotRow == null || this.storageList == null) return;
+        UpgradeHandler handler = this.getWrapper()
+            .getUpgradeHandler();
+        int slotCount = handler.getSlots();
+
+        for (int slotIndex = 0; slotIndex < slotCount; slotIndex++) {
+            // Remove old column
+            Flow oldColumn = this.slotWidgets[slotIndex];
+            if (oldColumn != null) {
+                this.storageSlotRow.remove(oldColumn);
+                this.slotWidgets[slotIndex] = null;
+            }
+
+            ItemStack stack = handler.getStackInSlot(slotIndex);
+            if (ItemHelpers.isEmpty(stack)) continue;
+            if (!(stack.getItem() instanceof IUpgradeItem upgrade)) continue;
+
+            IUpgradeWrapper upgradeWrapper = handler.getSlotWrapper(slotIndex);
+            if (upgradeWrapper == null) continue;
+
+            Widget<?> widget = upgrade.getType()
+                .createSlotWidget(slotIndex, upgradeWrapper, stack, this.getPanel());
+            if (widget == null) continue;
+
+            int columnsTaken = Math.max(0, upgrade.getInventoryColumnsTaken());
+            if (columnsTaken == 0) continue;
+
+            Flow column = Flow.column()
+                .name("slot_widget_colum_" + slotIndex)
+                .size(columnsTaken * ItemSlot.SIZE, this.storageList.getArea().height);
+
+            this.slotWidgets[slotIndex] = column;
+
+            UpgradeSlotUpdate group = this.upgradeSlotUpdates[slotIndex];
+            upgrade.getType()
+                .updateWidgetDelegates(upgradeWrapper, group);
+
+            column.child(widget);
+            this.storageSlotRow.child(column);
+
+            column.scheduleResize();
+        }
+        this.storageSlotRow.scheduleResize();
+        this.scheduleResize();
+    }
+
+    protected void updateInventoryGrid() {
+        IStorageWrapper wrapper = this.getWrapper();
+        int totalColumns = wrapper.getNumberOfSlotColumns();
+        int totalRows = wrapper.getNumberOfSlotRows();
+        int columnsTaken = wrapper.getColumnsTaken();
+        int columns = Math.max(1, totalColumns - columnsTaken);
+        int availableSlots = Math.max(0, wrapper.getNumberOfInventorySlots() - columnsTaken * totalRows);
+        int rows = (availableSlots + columns - 1) / columns;
+        this.storageList.columns(columns);
+        this.storageSlotGrid.matrix(columns, rows);
         this.scheduleResize();
     }
 
@@ -604,6 +701,7 @@ public class StoragePanel extends ModularPanel {
     private void resetTabState() {
         for (Tab tab : this.getTabContainer()
             .getTypeChildren()) {
+            tab.setEnabled(false);
             if (tab.getExpandedWidget() != null) {
                 this.getContext()
                     .getUISettings()

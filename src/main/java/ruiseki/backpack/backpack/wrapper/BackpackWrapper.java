@@ -14,10 +14,13 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import org.jetbrains.annotations.Nullable;
 
+import cofh.api.energy.IEnergyStorage;
+import ruiseki.backpack.api.IEnergyStorageUpgradeWrapper;
 import ruiseki.backpack.backpack.BackpackStorage;
 import ruiseki.backpack.backpack.ItemBackpack;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.tier.TierRegistry;
+import ruiseki.okcore.energy.capability.EmptyEnergyStorage;
 import ruiseki.okcore.helper.Helpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.NBTHelpers;
@@ -64,6 +67,10 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Nullable
     private SettingsHandler settingsHandler = null;
 
+    private boolean energyStorageInitialized = false;
+    @Nullable
+    private IEnergyStorage energyStorage = null;
+
     private IntConsumer onSlotsChange = diff -> {};
 
     private Runnable onInventoryHandlerRefresh = () -> {};
@@ -105,7 +112,8 @@ public class BackpackWrapper implements IBackpackWrapper {
         return handler;
     }
 
-    private int getNumberOfInventorySlots() {
+    @Override
+    public int getNumberOfInventorySlots() {
         Optional<Integer> inventorySlots = NBTHelpers.getInteger(backpack, INVENTORY_SLOTS_TAG);
 
         if (inventorySlots.isPresent()) {
@@ -155,6 +163,27 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     @Override
+    public Optional<IEnergyStorage> getEnergyStorage() {
+        if (!energyStorageInitialized) {
+            IEnergyStorage wrappedStorage = getUpgradeHandler().getWrappersThatImplement(IEnergyStorage.class)
+                .stream()
+                .findFirst()
+                .orElse(null);
+
+            for (IEnergyStorageUpgradeWrapper energyStorageWrapperUpgrade : getUpgradeHandler()
+                .getWrappersThatImplement(IEnergyStorageUpgradeWrapper.class)) {
+                wrappedStorage = energyStorageWrapperUpgrade.wrapStorage(wrappedStorage);
+            }
+
+            energyStorage = wrappedStorage;
+        }
+
+        return energyStorage == null || energyStorage.getMaxEnergyStored() == 0
+            ? Optional.of(EmptyEnergyStorage.INSTANCE)
+            : Optional.of(energyStorage);
+    }
+
+    @Override
     public SettingsHandler getSettingsHandler() {
         if (settingsHandler == null) {
             if (getContentsUuid().isPresent()) {
@@ -189,8 +218,8 @@ public class BackpackWrapper implements IBackpackWrapper {
                         inventoryModificationHandler = null;
                         // fluidHandlerInitialized = false;
                         // fluidHandler = null;
-                        // energyStorageInitialized = false;
-                        // energyStorage = null;
+                        energyStorageInitialized = false;
+                        energyStorage = null;
                         upgradeCachesInvalidatedHandler.run();
                     }) {
 
@@ -431,8 +460,8 @@ public class BackpackWrapper implements IBackpackWrapper {
         inventoryModificationHandler = null;
         // fluidHandler = null;
         // fluidHandlerInitialized = false;
-        // energyStorage = null;
-        // energyStorageInitialized = false;
+        energyStorage = null;
+        energyStorageInitialized = false;
         refreshInventoryForInputOutput();
     }
 

@@ -73,13 +73,21 @@ public class BackpackPanel extends StoragePanel {
                 'I',
                 i -> new BackpackSlot(this.getPanel(), i).syncHandler(this.getStorageSlotSH(i))
                     .setEnabledIf(slot -> {
+                        IBackpackWrapper wrapper = this.getWrapper();
+                        int availableSlots = Math.max(
+                            0,
+                            wrapper.getNumberOfInventorySlots()
+                                - wrapper.getNumberOfSlotRows() * wrapper.getColumnsTaken());
+                        if (i >= availableSlots) return false;
                         if (this.searchValue.getStringValue()
-                            .isEmpty()) return true;
+                            .isEmpty()) {
+                            return true;
+                        }
+
                         ItemStack stack = slot.getSlot()
                             .getStack();
-                        if (ItemHelpers.isEmpty(stack)) return false;
-                        ItemStackKey key = ItemStackKey.of(stack);
-                        return this.searchNode.matches(key);
+                        return !ItemHelpers.isEmpty(stack) && this.searchNode != null
+                            && this.searchNode.matches(ItemStackKey.of(stack));
                     }))
             .slotGroup("storage_inventory")
             .build();

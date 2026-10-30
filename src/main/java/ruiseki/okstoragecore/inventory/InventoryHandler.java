@@ -385,15 +385,16 @@ public abstract class InventoryHandler extends ItemStackHandler
 
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
-        inventoryPartitioner.getPartBySlot(slot)
+        this.inventoryPartitioner.getPartBySlot(slot)
             .setStackInSlot(slot, stack, super::setStackInSlot);
-        slotTracker.removeAndSetSlotIndexes(this, slot, stack);
+        this.slotTracker.removeAndSetSlotIndexes(this, slot, stack);
     }
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
-        return inventoryPartitioner.getPartBySlot(slot)
-            .isItemValid(slot, stack) && isAllowed(stack)
+        return this.isSlotAvailable(slot) && this.inventoryPartitioner.getPartBySlot(slot)
+            .isItemValid(slot, stack)
+            && this.isAllowed(stack)
             && storageWrapper.getSettingsHandler()
                 .getTypeCategory(MemorySettingsCategory.class)
                 .matchesFilter(slot, stack);
@@ -550,6 +551,18 @@ public abstract class InventoryHandler extends ItemStackHandler
     public void setShouldInsertIntoEmpty(BooleanSupplier shouldInsertIntoEmpty) {
         this.shouldInsertIntoEmpty = shouldInsertIntoEmpty;
         slotTracker.setShouldInsertIntoEmpty(shouldInsertIntoEmpty);
+    }
+
+    public int getAvailableSlots() {
+        int total = getSlots();
+
+        int taken = storageWrapper.getNumberOfSlotRows() * storageWrapper.getColumnsTaken();
+
+        return Math.max(0, Math.min(total, total - taken));
+    }
+
+    public boolean isSlotAvailable(int slot) {
+        return slot >= 0 && slot < getAvailableSlots();
     }
 
     @Override

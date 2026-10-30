@@ -79,6 +79,10 @@ gui.okstoragecore.upgrades.buttons.hunger_level_full=Only feed when player is hu
 gui.okstoragecore.upgrades.buttons.feed_immediately_when_hurt=Feed player immediately when hurt\nIgnores hunger setting when player is not at max health
 gui.okstoragecore.upgrades.buttons.do_not_consider_health=Do not consider health\nIgnores player's health and only feeds based on hunger setting
 
+gui.okstoragecore.upgrades.battery=Batt.
+gui.okstoragecore.upgrades.battery.tooltip=Battery
+gui.okstoragecore.upgrades.battery.contents_tooltip=%s FE out of %s FE
+
 gui.okstoragecore.upgrades.buttons.allow=Allow
 gui.okstoragecore.upgrades.buttons.block=Block
 gui.okstoragecore.upgrades.buttons.match_mod=Match Mod

@@ -89,4 +89,37 @@ public class ModularUpgradeSlot extends ModularItemSlot {
         return result.isSuccessful();
     }
 
+    @Override
+    public void putStack(@Nullable ItemStack stack) {
+        int oldColumnsTaken = getColumnsTaken(this.getStack());
+        super.putStack(stack);
+        this.updateColumnsTaken(oldColumnsTaken);
+    }
+
+    @Override
+    public ItemStack decrStackSize(int amount) {
+        int oldColumnsTaken = getColumnsTaken(this.getStack());
+        ItemStack extracted = super.decrStackSize(amount);
+        this.updateColumnsTaken(oldColumnsTaken);
+        return extracted;
+    }
+
+    private int getColumnsTaken(@Nullable ItemStack stack) {
+        if (ItemHelpers.isEmpty(stack)) return 0;
+
+        if (stack.getItem() instanceof IUpgradeItem<?>upgrade) {
+            return Math.max(0, upgrade.getInventoryColumnsTaken());
+        }
+
+        return 0;
+    }
+
+    private void updateColumnsTaken(int oldColumnsTaken) {
+        int newColumnsTaken = getColumnsTaken(this.getStack());
+        int delta = newColumnsTaken - oldColumnsTaken;
+        if (delta == 0) return;
+        IStorageWrapper wrapper = this.getWrapper();
+        int totalColumnsTaken = Math.max(0, wrapper.getColumnsTaken() + delta);
+        wrapper.setColumnsTaken(totalColumnsTaken, true);
+    }
 }

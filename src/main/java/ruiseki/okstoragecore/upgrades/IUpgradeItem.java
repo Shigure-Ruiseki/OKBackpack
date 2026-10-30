@@ -14,8 +14,10 @@ public interface IUpgradeItem<W extends IUpgradeWrapper> {
 
     UpgradeType<W> getType();
 
-    default UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper storageWrapper, ItemStack upgradeStac) {
-        return checkUpgradePerStorageTypeLimit(storageWrapper);
+    default UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper storageWrapper, ItemStack upgradeStack) {
+        UpgradeSlotChangeResult result = checkUpgradePerStorageTypeLimit(storageWrapper);
+        if (!result.isSuccessful()) return result;
+        return checkInventoryColumns(storageWrapper, 0, getInventoryColumnsTaken());
     }
 
     private UpgradeSlotChangeResult checkUpgradePerStorageTypeLimit(IStorageWrapper storageWrapper) {
@@ -86,6 +88,56 @@ public interface IUpgradeItem<W extends IUpgradeWrapper> {
         return new UpgradeSlotChangeResult.Success();
     }
 
+    private static UpgradeSlotChangeResult checkInventoryColumns(IStorageWrapper storageWrapper, int oldColumnsTaken,
+        int newColumnsTaken) {
+        int columnsDelta = newColumnsTaken - oldColumnsTaken;
+
+        if (columnsDelta <= 0) {
+            return new UpgradeSlotChangeResult.Success();
+        }
+
+        int totalColumns = storageWrapper.getNumberOfSlotColumns();
+        int totalRows = storageWrapper.getNumberOfSlotRows();
+        int currentTaken = storageWrapper.getColumnsTaken();
+
+        int resultingTaken = currentTaken + columnsDelta;
+
+        if (resultingTaken >= totalColumns) {
+            return new UpgradeSlotChangeResult.Fail(
+                TranslateHelpers.error("add.not_enough_columns"),
+                Set.of(),
+                Set.of(),
+                Set.of());
+        }
+
+        int currentAvailable = Math.max(0, storageWrapper.getNumberOfInventorySlots() - totalRows * currentTaken);
+
+        int newAvailable = Math.max(0, storageWrapper.getNumberOfInventorySlots() - totalRows * resultingTaken);
+
+        var inventory = storageWrapper.getInventoryHandler();
+        Set<Integer> occupiedSlots = new HashSet<>();
+
+        int end = Math.min(currentAvailable, inventory.getSlots());
+
+        for (int slot = newAvailable; slot < end; slot++) {
+            ItemStack stack = inventory.getStackInSlot(slot);
+
+            if (stack != null && stack.stackSize > 0) {
+                occupiedSlots.add(slot);
+            }
+        }
+
+        if (!occupiedSlots.isEmpty()) {
+            return new UpgradeSlotChangeResult.Fail(
+                TranslateHelpers.error("add.inventory_slots_occupied"),
+                Set.of(),
+                occupiedSlots,
+                Set.of());
+        }
+
+        return new UpgradeSlotChangeResult.Success();
+    }
+
     default UpgradeSlotChangeResult canRemoveUpgradeFrom(IStorageWrapper storageWrapper) {
         return new UpgradeSlotChangeResult.Success();
     }
@@ -111,7 +163,17 @@ public interface IUpgradeItem<W extends IUpgradeWrapper> {
             }
         }
 
-        return canRemoveUpgradeFrom(storageWrapper);
+        UpgradeSlotChangeResult result = canRemoveUpgradeFrom(storageWrapper);
+        if (!result.isSuccessful()) return result;
+
+        if (!(upgradeStackToPut.getItem() instanceof IUpgradeItem<?>upgradeToPut)) {
+            return new UpgradeSlotChangeResult.Success();
+        }
+
+        return checkInventoryColumns(
+            storageWrapper,
+            getInventoryColumnsTaken(),
+            upgradeToPut.getInventoryColumnsTaken());
     }
 
     default int getInventoryColumnsTaken() {

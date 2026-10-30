@@ -22,6 +22,7 @@ import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSHRegisters;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
 import ruiseki.okstoragecore.client.gui.sync.StorageSlotSHRegistries;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
+import ruiseki.okstoragecore.client.gui.sync.value.DelegatedValueSHRegisters;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdateRegistries;
 
 @Mod(
@@ -53,6 +54,7 @@ public class OKStorageCore extends ModBaseVersionable {
         UpgradeSlotUpdateRegistries.load();
         DelegatedItemHandlerSHRegisters.load();
         DelegatedFilterLogicSHRegisters.load();
+        DelegatedValueSHRegisters.load();
     }
 
     @Override

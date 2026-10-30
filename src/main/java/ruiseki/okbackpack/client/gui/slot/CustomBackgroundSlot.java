@@ -3,9 +3,8 @@ package ruiseki.okbackpack.client.gui.slot;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
-import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
-public class CustomBackgroundSlot extends ItemSlot {
+public class CustomBackgroundSlot extends ResizableItemSlot {
 
     private final UITexture emptyIcon;
 
@@ -17,7 +16,7 @@ public class CustomBackgroundSlot extends ItemSlot {
     public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         super.drawBackground(context, widgetTheme);
         if (context != null && getSlot().getStack() == null) {
-            emptyIcon.draw(context, 1, 1, 16, 16, widgetTheme.getTheme());
+            emptyIcon.draw(context, this.getSlotX(), this.getSlotY(), 16, 16, widgetTheme.getTheme());
         }
     }
 }

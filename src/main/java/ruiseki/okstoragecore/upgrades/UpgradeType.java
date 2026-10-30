@@ -4,6 +4,8 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import com.cleanroommc.modularui.widget.Widget;
+
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.widget.ExpandedTab;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
@@ -25,8 +27,12 @@ public class UpgradeType<T extends IUpgradeWrapper> {
         factory.updateTabDelegates(wrapper, group);
     }
 
-    public ExpandedTab getExpandedTabWidget(int slotIndex, T wrapper, ItemStack stack, StoragePanel storagePanel) {
+    public ExpandedTab createExpandedTab(int slotIndex, T wrapper, ItemStack stack, StoragePanel storagePanel) {
         return factory.createExpandedTab(slotIndex, wrapper, stack, storagePanel);
+    }
+
+    public Widget<?> createSlotWidget(int slotIndex, T wrapper, ItemStack stack, StoragePanel storagePanel) {
+        return factory.createSlotWidget(slotIndex, wrapper, stack, storagePanel);
     }
 
     public interface IFactory<T extends IUpgradeWrapper> {
@@ -38,6 +44,10 @@ public class UpgradeType<T extends IUpgradeWrapper> {
         }
 
         default ExpandedTab createExpandedTab(int slotIndex, T wrapper, ItemStack stack, StoragePanel storagePanel) {
+            return null;
+        }
+
+        default Widget<?> createSlotWidget(int slotIndex, T wrapper, ItemStack stack, StoragePanel storagePanel) {
             return null;
         }
     }

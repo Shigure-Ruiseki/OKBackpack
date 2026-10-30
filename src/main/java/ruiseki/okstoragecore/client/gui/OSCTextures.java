@@ -12,6 +12,7 @@ import ruiseki.okstoragecore.Reference;
 public class OSCTextures {
 
     private static final ResourceLocation ICON_LOCATION = new ResourceLocation(Reference.MOD_ID, "gui/icons");
+    private static final ResourceLocation GUI_CONTROLS = new ResourceLocation(Reference.MOD_ID, "gui/gui_controls.png");
     private static final ResourceLocation CRAFTING_TWEAKS = new ResourceLocation(
         Reference.MOD_ID,
         "gui/crafting_tweaks");
@@ -58,6 +59,42 @@ public class OSCTextures {
 
     public static final UITexture TOGGLE_DISABLE_ICON = icon("disable", 0, 128, 4, 10);
     public static final UITexture TOGGLE_ENABLE_ICON = icon("enable", 4, 128, 4, 10);
+
+    // Battery upgrade GUI textures
+    public static final UITexture BATTERY_BAR_BACKGROUND = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(29, 30, 18, 54)
+        .name("battery_bar_bg")
+        .build();
+
+    public static final UITexture BATTERY_OVERLAY = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(47, 56, 16, 18)
+        .name("battery_overlay")
+        .build();
+
+    public static final UITexture BATTERY_CHARGE_SEGMENT = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(47, 74, 16, 6)
+        .name("battery_charge_segment")
+        .build();
+
+    public static final UITexture BATTERY_CONNECTION_TOP = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(47, 48, 16, 4)
+        .name("battery_connection_top")
+        .build();
+
+    public static final UITexture BATTERY_CONNECTION_BOTTOM = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(47, 52, 16, 4)
+        .name("battery_connection_bottom")
+        .build();
 
     public static UITexture icon(String name, int x, int y) {
         return icon(name, x, y, 16, 16, ICON_LOCATION);

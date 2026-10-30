@@ -2,6 +2,7 @@ package ruiseki.okbackpack;
 
 import ruiseki.backpack.backpack.BlockBackpackTestConfig;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
+import ruiseki.backpack.init.item.battery.ItemBatteryUpgradeTest;
 import ruiseki.backpack.init.item.crafting.ItemCraftingUpgradeTest;
 import ruiseki.backpack.init.item.feeding.ItemAdvFeedingUpgradeTest;
 import ruiseki.backpack.init.item.stack.ItemStackUpgradeTest;
@@ -177,5 +178,6 @@ public class Configs {
         configHandler.add(new ItemStackUpgradeTest());
         configHandler.add(new ItemCraftingUpgradeTest());
         configHandler.add(new ItemAdvFeedingUpgradeTest());
+        configHandler.add(new ItemBatteryUpgradeTest());
     }
 }

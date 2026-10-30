@@ -16,6 +16,7 @@ public class StorageList extends ListWidget<StorageSlotGrid<?>, StorageList> {
     private final StoragePanel panel;
     private final int thickness = 2;
     private int pendingScroll = -1;
+    private int columns;
 
     public StorageList(StoragePanel panel) {
         this(panel, 0);
@@ -26,9 +27,24 @@ public class StorageList extends ListWidget<StorageSlotGrid<?>, StorageList> {
         if (initialScroll > 0) {
             this.pendingScroll = initialScroll;
         }
-        width(panel.gridColumn * ItemSlot.SIZE + thickness * 2);
-        showScrollShadows(false);
-        crossAxisAlignment(Alignment.CrossAxis.START);
+
+        this.columns(panel.gridColumn);
+        this.showScrollShadows(false);
+        this.crossAxisAlignment(Alignment.CrossAxis.START);
+    }
+
+    public StorageList columns(int columns) {
+        if (columns <= 0) {
+            throw new IllegalArgumentException("Columns must be greater than 0");
+        }
+        this.columns = columns;
+        this.width(columns * ItemSlot.SIZE + thickness * 2);
+        this.scheduleResize();
+        return this;
+    }
+
+    public int getColumns() {
+        return columns;
     }
 
     public void clearPendingScroll() {

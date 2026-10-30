@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import org.jetbrains.annotations.Nullable;
 
+import cofh.api.energy.IEnergyStorage;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.SortBy;
 import ruiseki.okstoragecore.inventory.ITrackedContentsItemHandler;
@@ -83,6 +84,10 @@ public interface IStorageWrapper {
         return false;
     }
 
+    default int getNumberOfInventorySlots() {
+        return 0;
+    }
+
     default int getNumberOfSlotRows() {
         return 0;
     }
@@ -92,6 +97,10 @@ public interface IStorageWrapper {
     }
 
     default Optional<IStorageFluidHandler> getFluidHandler() {
+        return Optional.empty();
+    }
+
+    default Optional<IEnergyStorage> getEnergyStorage() {
         return Optional.empty();
     }
 
