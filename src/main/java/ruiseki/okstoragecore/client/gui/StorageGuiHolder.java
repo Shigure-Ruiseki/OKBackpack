@@ -43,7 +43,8 @@ public class StorageGuiHolder<T extends StoragePanel> {
 
         @Override
         public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-            StoragePanel panel = this.buildUI(syncManager, settings, data.getPlayer(), data.getTileEntity(), null, null);
+            StoragePanel panel = this
+                .buildUI(syncManager, settings, data.getPlayer(), data.getTileEntity(), null, null);
             this.addCommonWidgets(panel);
             return panel;
         }

@@ -35,13 +35,8 @@ public class BackpackGuiHolder extends StorageGuiHolder<BackpackPanel> {
 
         @Override
         public ModularPanel buildUI(PlayerInventoryGuiData data, PanelSyncManager syncManager, UISettings settings) {
-            BackpackPanel panel = this.buildUI(
-                syncManager,
-                settings,
-                data.getPlayer(),
-                null,
-                data.getSlotIndex(),
-                data.getInventoryType());
+            BackpackPanel panel = this
+                .buildUI(syncManager, settings, data.getPlayer(), null, data.getSlotIndex(), data.getInventoryType());
             this.addCommonWidgets(panel);
             panel.modifyPlayerSlot(syncManager, data.getInventoryType(), data.getSlotIndex(), data.getPlayer());
             return panel;
