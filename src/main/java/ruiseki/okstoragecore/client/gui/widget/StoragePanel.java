@@ -748,7 +748,19 @@ public class StoragePanel extends ModularPanel {
                 "setting_panel",
                 true,
                 (syncManager1, syncHandler) -> this.settingPanel = new StorageSettingPanel(this.getPanel()));
-        this.child(new SettingTab(this.getPanel()));
+        this.child(
+            new SettingTab(this.getPanel()).tooltipAutoUpdate(true)
+                .tooltipDynamic(tooltip -> {
+                    if (this.getSettingPanelHandler()
+                        .isPanelOpen()) {
+                        tooltip.addLine(IKey.lang("gui.okstoragecore.back_to_storage.tooltip"))
+                            .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+                    } else {
+                        tooltip.addLine(IKey.lang("gui.okstoragecore.settings.storage.tooltip"))
+                            .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+                    }
+                    tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+                }));
     }
 
     @Override

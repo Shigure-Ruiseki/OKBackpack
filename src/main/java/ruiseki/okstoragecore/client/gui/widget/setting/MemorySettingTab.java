@@ -23,15 +23,17 @@ public class MemorySettingTab extends SettingTab {
 
     private static final List<CyclicVariantButtonWidget.Variant> RESPECT_NBT_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.okstoragecore.ignore_nbt"),
+            IKey.lang("gui.okstoragecore.upgrades.buttons.ignore_nbt"),
             OKBGuiTextures.IGNORE_NBT_ICON),
-        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.okstoragecore.match_nbt"), OKBGuiTextures.MATCH_NBT_ICON));
+        new CyclicVariantButtonWidget.Variant(
+            IKey.lang("gui.okstoragecore.upgrades.buttons.match_nbt"),
+            OKBGuiTextures.MATCH_NBT_ICON));
 
     public MemorySettingTab(IStorageWrapper storageWrapper, StoragePanel storagePanel, StorageSettingPanel settingPanel,
         Tab parentTab) {
         super(
             OKBGuiTextures.BRAIN_ICON,
-            "gui.okstoragecore.memory_settings",
+            "gui.okstoragecore.settings.memory",
             Tab.ExpandDirection.RIGHT,
             storageWrapper,
             storagePanel,
@@ -42,7 +44,7 @@ public class MemorySettingTab extends SettingTab {
             .getTabIcon()
             .tooltipDynamic(tooltip -> {
                 tooltip.clearText();
-                tooltip.addLine(IKey.lang("gui.okstoragecore.memory_settings.tooltip_open_detail"));
+                tooltip.addLine(IKey.lang("gui.okstoragecore.settings.memory.tooltip_open_detail"));
                 tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
             })
             .tooltipAutoUpdate(true);
@@ -78,7 +80,7 @@ public class MemorySettingTab extends SettingTab {
                 return false;
             })
             .tooltipStatic(
-                t -> t.addLine(IKey.lang("gui.okstoragecore.select_all_slots"))
+                t -> t.addLine(IKey.lang("gui.okstoragecore.settings.buttons.select_all_slots"))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
     }
 
@@ -98,7 +100,7 @@ public class MemorySettingTab extends SettingTab {
                 return false;
             })
             .tooltipStatic(
-                t -> t.addLine(IKey.lang("gui.okstoragecore.unselect_all_slots"))
+                t -> t.addLine(IKey.lang("gui.okstoragecore.settings.buttons.unselect_all_slots"))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
     }
 

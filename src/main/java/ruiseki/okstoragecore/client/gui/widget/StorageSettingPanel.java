@@ -47,9 +47,11 @@ public class StorageSettingPanel extends ModularPanel {
     }
 
     protected void addGlobalTab() {
-        this.globalTab = new Tab(1).tooltipStatic(
-            tooltip -> tooltip.addLine(IKey.lang("gui.okstoragecore.storage_settings"))
-                .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+        this.globalTab = new Tab(1).tooltipStatic(tooltip -> {
+            tooltip.clearText();
+            tooltip.addLine(IKey.lang("gui.okstoragecore.storage_settings"));
+            tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+        });
 
         this.globalTab.setTabIcon(OKBGuiTextures.BACKPACK_ICON);
         this.globalTab.setExpandedWidget(
@@ -61,11 +63,11 @@ public class StorageSettingPanel extends ModularPanel {
         this.sortingTab = new Tab(2).tooltipDynamic(tooltip -> {
             tooltip.clearText();
             if (this.sortingTab.isShowExpanded()) {
-                tooltip.addLine(IKey.lang("gui.okstoragecore.no_sorting_settings.tooltip_open_detail"));
+                tooltip.addLine(IKey.lang("gui.okstoragecore.settings.no_sort.tooltip_open_detail"));
             } else {
-                tooltip.addLine(IKey.lang("gui.okstoragecore.no_sorting_settings"))
+                tooltip.addLine(IKey.lang("gui.okstoragecore.settings.no_sort.tooltip"))
                     .addLine(
-                        IKey.lang("gui.okstoragecore.no_sorting_settings.tooltip_detail")
+                        IKey.lang("gui.okstoragecore.settings.no_sort.tooltip_detail")
                             .style(IKey.GRAY));
             }
             tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
@@ -82,11 +84,11 @@ public class StorageSettingPanel extends ModularPanel {
         this.memoryTab = new Tab(3).tooltipDynamic(tooltip -> {
             tooltip.clearText();
             if (this.memoryTab.isShowExpanded()) {
-                tooltip.addLine(IKey.lang("gui.okstoragecore.memory_settings.tooltip_open_detail"));
+                tooltip.addLine(IKey.lang("gui.okstoragecore.settings.memory.tooltip_open_detail"));
             } else {
-                tooltip.addLine(IKey.lang("gui.okstoragecore.memory_settings"))
+                tooltip.addLine(IKey.lang("gui.okstoragecore.settings.memory.tooltip"))
                     .addLine(
-                        IKey.lang("gui.okstoragecore.memory_settings.tooltip_detail")
+                        IKey.lang("gui.okstoragecore.settings.memory.tooltip_detail")
                             .style(IKey.GRAY));
             }
             tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);

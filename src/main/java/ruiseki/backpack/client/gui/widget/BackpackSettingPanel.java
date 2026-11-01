@@ -19,9 +19,11 @@ public class BackpackSettingPanel extends StorageSettingPanel {
 
     @Override
     protected void addGlobalTab() {
-        this.globalTab = new Tab(1).tooltipStatic(
-            tooltip -> tooltip.addLine(IKey.lang("gui.okbackpack.setting.backpack.tooltip"))
-                .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
+        this.globalTab = new Tab(1).tooltipStatic(tooltip -> {
+            tooltip.clearText();
+            tooltip.addLine(IKey.lang("gui.okbackpack.settings.backpack"));
+            tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+        });
         // Change to other icon
         this.globalTab.setTabIcon(OKBGuiTextures.BACKPACK_ICON);
         this.globalTab.setExpandedWidget(

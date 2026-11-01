@@ -136,17 +136,19 @@ public class BackpackPanel extends StoragePanel {
                 "setting_panel",
                 true,
                 (syncManager1, syncHandler) -> this.settingPanel = new BackpackSettingPanel(this.getPanel()));
-        this.child(new SettingTab(this.getPanel()).tooltipDynamic(tooltip -> {
-            tooltip.clearText();
-            if (this.settingPanelHandler.isPanelOpen()) {
-                tooltip.addLine(IKey.lang("gui.okbackpack.settings.backpack"))
-                    .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
-            } else {
-                tooltip.addLine(IKey.lang("gui.okbackpack.settings.backpack.tooltip"))
-                    .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
-            }
-            tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
-        }));
+        this.child(
+            new SettingTab(this.getPanel()).tooltipAutoUpdate(true)
+                .tooltipDynamic(tooltip -> {
+                    tooltip.clearText();
+                    if (this.settingPanelHandler.isPanelOpen()) {
+                        tooltip.addLine(IKey.lang("gui.okbackpack.back_to_backpack.tooltip"))
+                            .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+                    } else {
+                        tooltip.addLine(IKey.lang("gui.okbackpack.settings.backpack.tooltip"))
+                            .pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+                    }
+                    tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+                }));
     }
 
     public void modifyPlayerSlot(PanelSyncManager syncManager, InventoryType inventoryType, int slotIndex,

@@ -29,7 +29,7 @@ public class NoSortingSettingTab extends SettingTab {
         StorageSettingPanel settingPanel, Tab parentTab) {
         super(
             OKBGuiTextures.NO_SORT_ICON,
-            "gui.okstoragecore.no_sorting_settings",
+            "gui.okstoragecore.settings.no_sort",
             Tab.ExpandDirection.RIGHT,
             storageWrapper,
             storagePanel,
@@ -40,7 +40,7 @@ public class NoSortingSettingTab extends SettingTab {
             .getTabIcon()
             .tooltipDynamic(tooltip -> {
                 tooltip.clearText();
-                tooltip.addLine(IKey.lang("gui.okstoragecore.no_sorting_settings.tooltip_open_detail"));
+                tooltip.addLine(IKey.lang("gui.okstoragecore.settings.no_sort.tooltip_open_detail"));
                 tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
             })
             .tooltipAutoUpdate(true);
@@ -76,7 +76,7 @@ public class NoSortingSettingTab extends SettingTab {
                 return false;
             })
             .tooltipStatic(
-                t -> t.addLine(IKey.lang("gui.okstoragecore.select_all_slots"))
+                t -> t.addLine(IKey.lang("gui.okstoragecore.settings.buttons.select_all_slots"))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
     }
 
@@ -96,7 +96,7 @@ public class NoSortingSettingTab extends SettingTab {
                 return false;
             })
             .tooltipStatic(
-                t -> t.addLine(IKey.lang("gui.okstoragecore.unselect_all_slots"))
+                t -> t.addLine(IKey.lang("gui.okstoragecore.settings.buttons.unselect_all_slots"))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
     }
 
@@ -139,9 +139,9 @@ public class NoSortingSettingTab extends SettingTab {
                 return false;
             })
             .tooltipStatic(
-                t -> t.addLine(IKey.lang("gui.okstoragecore.toggle_color"))
+                t -> t.addLine(IKey.lang("gui.okstoragecore.settings.buttons.change_color"))
                     .addLine(
-                        IKey.lang("gui.okstoragecore.toggle_color_detail")
+                        IKey.lang("gui.okstoragecore.settings.buttons.change_color_detail")
                             .style(IKey.GRAY))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
         this.currentColor = this.getNoSortSettingsCategory()

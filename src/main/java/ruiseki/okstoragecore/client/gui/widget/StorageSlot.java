@@ -29,9 +29,9 @@ import com.cleanroommc.modularui.utils.GlStateManager;
 import com.cleanroommc.modularui.utils.NumberFormat;
 import com.cleanroommc.modularui.utils.Platform;
 
-import cpw.mods.fml.common.Optional;
 import ruiseki.okbackpack.client.gui.slot.ResizableItemSlot;
 import ruiseki.okbackpack.client.gui.slot.UpgradeSlot;
+import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
 import ruiseki.okcore.event.gui.SlotRenderEvent;
 import ruiseki.okcore.helper.ItemHelpers;
@@ -93,63 +93,61 @@ public class StorageSlot extends ResizableItemSlot {
 
     @Override
     public void buildTooltip(ItemStack stack, RichTooltip tooltip) {
-        ItemStack memorizedStack = this.getMemoryStack();
+        ItemStack displayStack = !ItemHelpers.isEmpty(stack) ? stack : this.getMemoryStack();
+        if (!ItemHelpers.isEmpty(displayStack)) buildItemTooltip(stack, displayStack, tooltip);
+        buildSlotTooltip(displayStack, tooltip);
+        buildMemoryTooltip(tooltip);
+        buildNoSortingSlot(tooltip);
+    }
 
+    private void buildItemTooltip(ItemStack stack, ItemStack displayStack, RichTooltip tooltip) {
+        super.buildTooltip(displayStack, tooltip);
+        if (!ItemHelpers.isEmpty(stack)) {
+            tooltip.addLine(IKey.lang("gui.okstoragecore.tooltip.stack_count", formatTooltipValue(stack.stackSize)));
+        }
+    }
+
+    private void buildSlotTooltip(ItemStack stack, RichTooltip tooltip) {
+        int limit = ItemHelpers.isEmpty(stack) ? this.getSlot()
+            .getSlotStackLimit()
+            : this.getSlot()
+                .getItemStackLimit(stack);
+        tooltip.addLine(IKey.lang("gui.okstoragecore.tooltip.stack_limit", formatTooltipValue(limit)));
+    }
+
+    private void buildMemoryTooltip(RichTooltip tooltip) {
+        if (!this.isMemorySlot()) return;
+        tooltip.addLine(
+            IKey.lang("gui.okstoragecore.settings.memory")
+                .style(IKey.LIGHT_PURPLE));
+        if (this.getMemorySetting()
+            .ignoresNbt()) {
+            tooltip.addLine(
+                IKey.comp(IKey.str("- "), IKey.lang("gui.okstoragecore.upgrades.buttons.ignore_nbt"))
+                    .style(EnumChatFormatting.GRAY));
+        } else {
+            tooltip.addLine(
+                IKey.comp(IKey.str("- "), IKey.lang("gui.okstoragecore.upgrades.buttons.match_nbt"))
+                    .style(EnumChatFormatting.YELLOW));
+        }
+    }
+
+    private void buildNoSortingSlot(RichTooltip tooltip) {
+        if (!this.isNoSortingSlot()) return;
+        tooltip.addLine(
+            IKey.lang("gui.okstoragecore.settings.no_sort")
+                .style(EnumChatFormatting.DARK_RED));
+    }
+
+    private String formatTooltipValue(int value) {
         NumberFormat.Params p = NumberFormat.DEFAULT.copyToBuilder()
             .build();
         p.format.setMaximumFractionDigits(2);
         p.format.setMinimumFractionDigits(0);
 
-        String count = "0";
-        String limit = String.valueOf(
-            this.getSlot()
-                .getSlotStackLimit());
-        if (!ItemHelpers.isEmpty(stack)) {
-            super.buildTooltip(stack, tooltip);
-            count = NumberFormat.format(stack.stackSize, p);
-            limit = NumberFormat.format(
-                this.getSlot()
-                    .getItemStackLimit(stack),
-                p);
-        } else if (!ItemHelpers.isEmpty(memorizedStack)) {
-            super.buildTooltip(memorizedStack, tooltip);
-            count = "0";
-            limit = NumberFormat.format(
-                this.getSlot()
-                    .getItemStackLimit(memorizedStack),
-                p);
-        }
-
-        tooltip.addLine(
-            IKey.lang(
-                "gui.okstoragecore.stack_size_extra",
-                new ChatComponentText(count).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.AQUA))
-                    .getFormattedText(),
-                new ChatComponentText(limit).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.AQUA))
-                    .getFormattedText()));
-
-        if (this.isMemorySlot()) {
-            tooltip.addLine(
-                IKey.lang("gui.okstoragecore.memorized_slot")
-                    .style(IKey.LIGHT_PURPLE));
-
-            if (this.getMemorySetting()
-                .ignoresNbt()) {
-                tooltip.addLine(
-                    IKey.comp(IKey.str("- "), IKey.lang("gui.okstoragecore.ignore_nbt"))
-                        .style(EnumChatFormatting.GRAY));
-            } else {
-                tooltip.addLine(
-                    IKey.comp(IKey.str("- "), IKey.lang("gui.okstoragecore.match_nbt"))
-                        .style(EnumChatFormatting.YELLOW));
-            }
-        }
-
-        if (this.isNoSortingSlot()) {
-            tooltip.addLine(
-                IKey.lang("gui.okstoragecore.no_sorting_slot")
-                    .style(EnumChatFormatting.DARK_RED));
-        }
+        return new ChatComponentText(NumberFormat.format(value, p))
+            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.AQUA))
+            .getFormattedText();
     }
 
     @Override
@@ -184,7 +182,9 @@ public class StorageSlot extends ResizableItemSlot {
                 this.getStoragePanel()
                     .getStorageSH()
                     .syncToServer(StorageSHRegisters.UNSET_MEMORY_SLOT, buffer -> buffer.writeInt(this.getSlotIndex()));
-                refreshBogoSortingContext();
+                if (Mods.InventoryBogoSorter.isModLoaded()) {
+                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                }
                 return Result.SUCCESS;
             } else if (!isMemorySet && mouseButton == 0) {
                 MemorySettingsCategory settings = this.getMemorySetting();
@@ -192,7 +192,9 @@ public class StorageSlot extends ResizableItemSlot {
                 this.getStoragePanel()
                     .getStorageSH()
                     .syncToServer(StorageSHRegisters.SET_MEMORY_SLOT, buffer -> buffer.writeInt(this.getSlotIndex()));
-                refreshBogoSortingContext();
+                if (Mods.InventoryBogoSorter.isModLoaded()) {
+                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                }
                 return Result.SUCCESS;
             }
             return Result.STOP;
@@ -208,7 +210,9 @@ public class StorageSlot extends ResizableItemSlot {
                     .syncToServer(
                         StorageSHRegisters.UNSET_NO_SORT_SLOT,
                         buffer -> buffer.writeInt(this.getSlotIndex()));
-                refreshBogoSortingContext();
+                if (Mods.InventoryBogoSorter.isModLoaded()) {
+                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                }
                 return Result.SUCCESS;
             } else if (!noSorting && mouseButton == 0) {
                 NoSortSettingsCategory settings = this.getNoSortingSettings();
@@ -216,18 +220,15 @@ public class StorageSlot extends ResizableItemSlot {
                 this.getStoragePanel()
                     .getStorageSH()
                     .syncToServer(StorageSHRegisters.SET_NO_SORT_SLOT, buffer -> buffer.writeInt(this.getSlotIndex()));
-                refreshBogoSortingContext();
+                if (Mods.InventoryBogoSorter.isModLoaded()) {
+                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                }
                 return Result.SUCCESS;
             }
             return Result.STOP;
         }
 
         return null;
-    }
-
-    @Optional.Method(modid = "bogosorter")
-    private static void refreshBogoSortingContext() {
-        BackpackBogoSorterClientCompat.invalidateSortingContext();
     }
 
     @Override

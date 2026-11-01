@@ -32,7 +32,6 @@ import com.cleanroommc.modularui.utils.Platform;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
@@ -43,6 +42,7 @@ import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.upgrade.SortingSettingWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
+import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
 import ruiseki.okbackpack.mixins.early.modularui2.ItemSlotInvoker;
 import ruiseki.okcore.event.gui.SlotRenderEvent;
@@ -170,7 +170,9 @@ public class BackpackSlot extends ItemSlot {
             if (isMemorySet && mouseButton == 1) {
                 wrapper.unsetMemoryStack(index);
                 getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_MEMORY_STACK));
-                refreshBogoSortingContext();
+                if (Mods.InventoryBogoSorter.isModLoaded()) {
+                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                }
                 return Result.SUCCESS;
 
             } else if (!isMemorySet && mouseButton == 0) {
@@ -178,7 +180,9 @@ public class BackpackSlot extends ItemSlot {
                 getSyncHandler().syncToServer(
                     BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_MEMORY_STACK),
                     buf -> buf.writeBoolean(panel.shouldMemorizeRespectNBT()));
-                refreshBogoSortingContext();
+                if (Mods.InventoryBogoSorter.isModLoaded()) {
+                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                }
                 return Result.SUCCESS;
 
             }
@@ -191,23 +195,22 @@ public class BackpackSlot extends ItemSlot {
             if (locked && mouseButton == 1) {
                 wrapper.setSlotLocked(index, false);
                 getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_SLOT_LOCK));
-                refreshBogoSortingContext();
+                if (Mods.InventoryBogoSorter.isModLoaded()) {
+                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                }
                 return Result.SUCCESS;
             } else if (!locked && mouseButton == 0) {
                 wrapper.setSlotLocked(index, true);
                 getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_SLOT_LOCK));
-                refreshBogoSortingContext();
+                if (Mods.InventoryBogoSorter.isModLoaded()) {
+                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                }
                 return Result.SUCCESS;
             }
             return Result.STOP;
         }
 
         return null;
-    }
-
-    @Optional.Method(modid = "bogosorter")
-    private static void refreshBogoSortingContext() {
-        BackpackBogoSorterClientCompat.invalidateSortingContext();
     }
 
     @Override
