@@ -10,15 +10,15 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 public class DelegatedBooleanSH extends DelegatedValueSH<Boolean, DelegatedBooleanSH>
     implements IBoolSyncValue<Boolean>, IStringSyncValue<Boolean> {
 
-    public DelegatedBooleanSupplier delegatedSupplier;
+    public DelegatedBoolean delegatedSupplier;
 
     public DelegatedBooleanSH(StoragePanel panel, int slotIndex) {
         super(panel, slotIndex);
-        this.delegatedSupplier = new DelegatedBooleanSupplier(() -> false);
+        this.delegatedSupplier = new DelegatedBoolean(() -> false);
         this.cache = false;
     }
 
-    public void setDelegatedSupplier(DelegatedBooleanSupplier delegated) {
+    public void setDelegatedSupplier(DelegatedBoolean delegated) {
         delegatedSupplier.setDelegated(delegated);
     }
 

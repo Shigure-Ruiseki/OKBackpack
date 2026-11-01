@@ -2,11 +2,11 @@ package ruiseki.okstoragecore.client.gui.sync.value;
 
 import java.util.function.Supplier;
 
-public class DelegatedEnumSupplier<T> implements Supplier<T> {
+public class DelegatedEnum<T> implements Supplier<T> {
 
     private Supplier<T> delegated;
 
-    public DelegatedEnumSupplier(Supplier<T> delegated) {
+    public DelegatedEnum(Supplier<T> delegated) {
         this.delegated = delegated;
     }
 

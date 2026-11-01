@@ -12,11 +12,11 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 public class DelegatedFloatSH extends DelegatedValueSH<Float, DelegatedFloatSH>
     implements IFloatSyncValue<Float>, IDoubleSyncValue<Float>, IStringSyncValue<Float> {
 
-    public DelegatedFloatSupplier delegatedSupplier;
+    public DelegatedFloat delegatedSupplier;
 
     public DelegatedFloatSH(StoragePanel panel, int slotIndex) {
         super(panel, slotIndex);
-        this.delegatedSupplier = new DelegatedFloatSupplier(() -> 0f);
+        this.delegatedSupplier = new DelegatedFloat(() -> 0f);
         this.cache = 0f;
     }
 

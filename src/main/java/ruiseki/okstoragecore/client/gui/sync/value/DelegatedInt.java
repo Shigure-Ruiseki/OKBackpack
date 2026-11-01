@@ -2,11 +2,11 @@ package ruiseki.okstoragecore.client.gui.sync.value;
 
 import java.util.function.IntSupplier;
 
-public class DelegatedIntSupplier implements IntSupplier {
+public class DelegatedInt implements IntSupplier {
 
     private IntSupplier delegated;
 
-    public DelegatedIntSupplier(IntSupplier delegated) {
+    public DelegatedInt(IntSupplier delegated) {
         this.delegated = delegated;
     }
 

@@ -1,5 +1,8 @@
 package ruiseki.okstoragecore.upgrades;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 
 public interface IUpgradeWrapper {
@@ -24,5 +27,10 @@ public interface IUpgradeWrapper {
 
     default void onAdded() {
         // noop
+    }
+
+    default List<String> getTooltipLines() {
+        // noop
+        return new ArrayList<>();
     }
 }

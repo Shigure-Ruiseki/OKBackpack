@@ -21,6 +21,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okcore.client.gui.tooltip.ITooltipLine;
 import ruiseki.okcore.client.gui.tooltip.TooltipLineHandler;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.handler.IItemHandler;
 import ruiseki.okstoragecore.api.IStorageWrapper;
@@ -35,6 +36,7 @@ public class StorageContentHandler {
     public static final int DEFAULT_STACK_WIDTH = 18;
     public static final int COUNT_PADDING = 2;
     public static final int STACK_ROW_HEIGHT = 20;
+    public static final int UPGRADE_ROW_HEIGHT = 18;
     public static final int SECTION_SPACING = 2;
 
     public static List<UpgradeInfo> upgradeInfos = new ArrayList<>();
@@ -86,13 +88,13 @@ public class StorageContentHandler {
                     }
 
                     @Override
-                    public int getHeight(FontRenderer font) {
-                        return DEFAULT_STACK_WIDTH;
+                    public int getHeight(FontRenderer font, int width) {
+                        return getUpgradeHeight(upgrades, width);
                     }
 
                     @Override
-                    public void draw(FontRenderer font, int x, int y) {
-                        renderUpgrades(upgrades, font, x, y);
+                    public void draw(FontRenderer font, int x, int y, int mouseX, int mouseY, int width, int height) {
+                        renderUpgrades(upgrades, font, x, y, width, height);
                     }
                 }));
             }
@@ -108,13 +110,13 @@ public class StorageContentHandler {
                     }
 
                     @Override
-                    public int getHeight(FontRenderer font) {
-                        return getContentsHeight(contents);
+                    public int getHeight(FontRenderer font, int width) {
+                        return getContentsHeight(contents, font, width);
                     }
 
                     @Override
-                    public void draw(FontRenderer font, int x, int y) {
-                        renderContents(contents, font, x, y);
+                    public void draw(FontRenderer font, int x, int y, int mouseX, int mouseY, int width, int height) {
+                        renderContents(contents, font, x, y, width, height);
                     }
                 }));
             }
@@ -130,8 +132,7 @@ public class StorageContentHandler {
             LangHelpers.localize(
                 "tooltip.backpack.upgrade_slots_size",
                 wrapper.getUpgradeHandler()
-                    .getSlotWrappers()
-                    .size()));
+                    .getSlots()));
 
         return lines;
     }
@@ -140,56 +141,129 @@ public class StorageContentHandler {
         return prependInteractionLine(buildExpandedTooltipLines(wrapper));
     }
 
+    private static int getUpgradeItemWidth(UpgradeInfo info) {
+        return DEFAULT_STACK_WIDTH + (info.canBeDisabled() ? 4 : 0);
+    }
+
     private static int getUpgradeWidth(List<UpgradeInfo> upgrades) {
         int width = 0;
 
         for (UpgradeInfo info : upgrades) {
-            width += DEFAULT_STACK_WIDTH;
-
-            if (info.canBeDisabled()) {
-                width += 4;
-            }
+            width += getUpgradeItemWidth(info);
         }
 
         return width;
     }
 
-    private static int getContentsWidth(List<ItemStack> contents, FontRenderer font) {
-        if (contents.isEmpty()) return 0;
+    private static int getUpgradeRowCount(List<UpgradeInfo> upgrades, int width) {
+        if (upgrades.isEmpty()) {
+            return 0;
+        }
 
-        int maxPerRow = Math.max(1, GeneralConfig.tooltipMaxItemsPerRow);
-
-        int width = 0;
+        int availableWidth = Math.max(1, width);
+        int rows = 1;
         int rowWidth = 0;
 
-        for (int i = 0; i < contents.size(); i++) {
-            if (i > 0 && i % maxPerRow == 0) {
-                width = Math.max(width, rowWidth);
+        for (UpgradeInfo info : upgrades) {
+            int itemWidth = getUpgradeItemWidth(info);
+
+            if (rowWidth > 0 && rowWidth + itemWidth > availableWidth) {
+                rows++;
                 rowWidth = 0;
             }
 
-            ItemStack stack = contents.get(i);
-
-            int countWidth = font.getStringWidth(abbreviateCount(stack.stackSize)) + COUNT_PADDING;
-
-            rowWidth += Math.max(countWidth, DEFAULT_STACK_WIDTH);
+            rowWidth += itemWidth;
         }
 
-        return Math.max(width, rowWidth);
+        return rows;
     }
 
-    private static int getContentsHeight(List<ItemStack> contents) {
-        if (contents.isEmpty()) return 0;
+    private static int getUpgradeHeight(List<UpgradeInfo> upgrades, int width) {
+        return getUpgradeRowCount(upgrades, width) * UPGRADE_ROW_HEIGHT;
+    }
+
+    private static int getContentsWidth(List<ItemStack> contents, FontRenderer font) {
+        if (contents.isEmpty()) {
+            return 0;
+        }
 
         int maxPerRow = Math.max(1, GeneralConfig.tooltipMaxItemsPerRow);
 
-        int rows = (contents.size() + maxPerRow - 1) / maxPerRow;
+        int maxWidth = 0;
+        int rowWidth = 0;
+        int itemsInRow = 0;
 
-        return rows * STACK_ROW_HEIGHT;
+        for (ItemStack stack : contents) {
+            int stackWidth = getContentStackWidth(stack, font);
+
+            if (stackWidth <= 0) {
+                continue;
+            }
+
+            if (itemsInRow >= maxPerRow) {
+                maxWidth = Math.max(maxWidth, rowWidth);
+                rowWidth = 0;
+                itemsInRow = 0;
+            }
+
+            rowWidth += stackWidth;
+            itemsInRow++;
+        }
+
+        return Math.max(maxWidth, rowWidth);
     }
 
-    private static void renderUpgrades(List<UpgradeInfo> upgrades, FontRenderer font, int x, int y) {
-        if (upgrades.isEmpty()) return;
+    private static int getContentsHeight(List<ItemStack> contents, FontRenderer font, int width) {
+        return getContentsRowCount(contents, font, width) * STACK_ROW_HEIGHT;
+    }
+
+    private static int getContentsRowCount(List<ItemStack> contents, FontRenderer font, int width) {
+        if (contents.isEmpty()) {
+            return 0;
+        }
+
+        int maxPerRow = Math.max(1, GeneralConfig.tooltipMaxItemsPerRow);
+        int availableWidth = Math.max(1, width);
+
+        int rows = 1;
+        int rowWidth = 0;
+        int itemsInRow = 0;
+
+        for (ItemStack stack : contents) {
+            int stackWidth = getContentStackWidth(stack, font);
+
+            if (stackWidth <= 0) {
+                continue;
+            }
+
+            if (itemsInRow > 0 && (itemsInRow >= maxPerRow || rowWidth + stackWidth > availableWidth)) {
+                rows++;
+                rowWidth = 0;
+                itemsInRow = 0;
+            }
+
+            rowWidth += stackWidth;
+            itemsInRow++;
+        }
+
+        return rows;
+    }
+
+    private static int getContentStackWidth(ItemStack stack, FontRenderer font) {
+        if (ItemHelpers.isEmpty(stack)) {
+            return 0;
+        }
+
+        int countWidth = font.getStringWidth(abbreviateCount(stack.stackSize)) + COUNT_PADDING;
+
+        return Math.max(countWidth, DEFAULT_STACK_WIDTH);
+    }
+
+    private static void renderUpgrades(List<UpgradeInfo> upgrades, FontRenderer font, int x, int y, int width,
+        int height) {
+        if (upgrades.isEmpty() || width <= 0 || height <= 0) {
+            return;
+        }
 
         Minecraft mc = Minecraft.getMinecraft();
         RenderItem itemRender = RenderItem.getInstance();
@@ -209,17 +283,34 @@ public class StorageContentHandler {
 
             itemRender.zLevel = 300.0F;
 
+            int availableWidth = Math.max(1, width);
+            int row = 0;
+            int rowWidth = 0;
             int drawX = x;
 
             for (UpgradeInfo info : upgrades) {
+                int itemWidth = getUpgradeItemWidth(info);
+
+                if (rowWidth > 0 && rowWidth + itemWidth > availableWidth) {
+                    row++;
+                    rowWidth = 0;
+                    drawX = x;
+                }
+
+                int drawY = y + row * UPGRADE_ROW_HEIGHT;
+
+                if ((row + 1) * UPGRADE_ROW_HEIGHT > height) {
+                    break;
+                }
+
                 if (info.canBeDisabled()) {
                     GL11.glDisable(GL11.GL_LIGHTING);
                     GL11.glDisable(GL11.GL_DEPTH_TEST);
 
                     if (info.enabled()) {
-                        OSCTextures.TOGGLE_ENABLE_ICON.draw(drawX, y + 3, 4, 10);
+                        OSCTextures.TOGGLE_ENABLE_ICON.draw(drawX, drawY + 3, 4, 10);
                     } else {
-                        OSCTextures.TOGGLE_DISABLE_ICON.draw(drawX, y + 3, 4, 10);
+                        OSCTextures.TOGGLE_DISABLE_ICON.draw(drawX, drawY + 3, 4, 10);
                     }
 
                     GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -231,10 +322,11 @@ public class StorageContentHandler {
                 ItemStack stack = info.stack();
 
                 if (stack != null) {
-                    itemRender.renderItemAndEffectIntoGUI(font, mc.getTextureManager(), stack, drawX, y);
+                    itemRender.renderItemAndEffectIntoGUI(font, mc.getTextureManager(), stack, drawX, drawY);
                 }
 
                 drawX += DEFAULT_STACK_WIDTH;
+                rowWidth += itemWidth;
             }
         } finally {
             itemRender.zLevel = oldZ;
@@ -244,13 +336,17 @@ public class StorageContentHandler {
         }
     }
 
-    private static void renderContents(List<ItemStack> contents, FontRenderer font, int x, int y) {
-        if (contents.isEmpty()) return;
+    private static void renderContents(List<ItemStack> contents, FontRenderer font, int x, int y, int width,
+        int height) {
+        if (contents.isEmpty() || width <= 0 || height <= 0) {
+            return;
+        }
 
         Minecraft mc = Minecraft.getMinecraft();
         RenderItem itemRender = RenderItem.getInstance();
 
         int maxPerRow = Math.max(1, GeneralConfig.tooltipMaxItemsPerRow);
+        int availableWidth = Math.max(1, width);
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GL11.glPushMatrix();
@@ -267,25 +363,32 @@ public class StorageContentHandler {
 
             itemRender.zLevel = 300.0F;
 
+            int row = 0;
+            int rowWidth = 0;
+            int itemsInRow = 0;
             int drawX = x;
 
-            for (int i = 0; i < contents.size(); i++) {
-                if (i > 0 && i % maxPerRow == 0) {
+            for (ItemStack stack : contents) {
+                int stackWidth = getContentStackWidth(stack, font);
+
+                if (stackWidth <= 0) {
+                    continue;
+                }
+
+                if (itemsInRow > 0 && (itemsInRow >= maxPerRow || rowWidth + stackWidth > availableWidth)) {
+                    row++;
+                    rowWidth = 0;
+                    itemsInRow = 0;
                     drawX = x;
                 }
 
-                int row = i / maxPerRow;
                 int drawY = y + row * STACK_ROW_HEIGHT;
 
-                ItemStack stack = contents.get(i);
-
-                if (stack == null) continue;
+                if (drawY + STACK_ROW_HEIGHT > y + height) {
+                    break;
+                }
 
                 String countText = abbreviateCount(stack.stackSize);
-
-                int countWidth = font.getStringWidth(countText) + COUNT_PADDING;
-
-                int stackWidth = Math.max(countWidth, DEFAULT_STACK_WIDTH);
 
                 int renderX = drawX + stackWidth - DEFAULT_STACK_WIDTH;
 
@@ -294,6 +397,8 @@ public class StorageContentHandler {
                 itemRender.renderItemOverlayIntoGUI(font, mc.getTextureManager(), stack, renderX, drawY, countText);
 
                 drawX += stackWidth;
+                rowWidth += stackWidth;
+                itemsInRow++;
             }
         } finally {
             itemRender.zLevel = oldZ;
@@ -315,33 +420,25 @@ public class StorageContentHandler {
      */
     public static void prepareContents(IStorageWrapper wrapper) {
         reset();
-
         Map<Integer, IUpgradeWrapper> wrappers = wrapper.getUpgradeHandler()
             .getSlotWrappers();
-
         for (IUpgradeWrapper uw : wrappers.values()) {
             boolean canBeDisabled = uw.canBeDisabled();
-
             boolean enabled = !canBeDisabled || uw.isEnabled();
-
             upgradeInfos.add(new UpgradeInfo(uw.getUpgradeStack(), canBeDisabled, enabled));
+            upgradeTooltipLines.addAll(uw.getTooltipLines());
         }
-
         sortedContents = getCompactedStacksSortedByCount(wrapper.getInventoryHandler());
     }
 
     public static List<ItemStack> getCompactedStacksSortedByCount(IItemHandler handler) {
         Map<String, ItemStack> merged = new LinkedHashMap<>();
-
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack stack = handler.getStackInSlot(i);
-
-            if (stack == null) continue;
-
+            if (ItemHelpers.isEmpty(stack)) continue;
             String key = stack.getItem()
                 .getUnlocalizedName() + ":"
                 + stack.getItemDamage();
-
             if (merged.containsKey(key)) {
                 merged.get(key).stackSize += stack.stackSize;
             } else {
@@ -350,11 +447,9 @@ public class StorageContentHandler {
         }
 
         List<ItemStack> result = new ArrayList<>(merged.values());
-
         result.sort(
             Comparator.comparingInt((ItemStack s) -> s.stackSize)
                 .reversed());
-
         return result;
     }
 
@@ -364,7 +459,6 @@ public class StorageContentHandler {
         }
 
         DecimalFormat df = new DecimalFormat("0.#");
-
         if (count < 1_000_000) {
             return df.format(count / 1000.0) + "K";
         }

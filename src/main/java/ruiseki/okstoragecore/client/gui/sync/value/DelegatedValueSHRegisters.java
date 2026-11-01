@@ -6,6 +6,7 @@ import cofh.api.energy.IEnergyStorage;
 import ruiseki.okstoragecore.Reference;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegistry;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
+import ruiseki.okstoragecore.upgrades.tank.TankUpgradeWrapper;
 
 public class DelegatedValueSHRegisters {
 
@@ -18,6 +19,10 @@ public class DelegatedValueSHRegisters {
     public static final ResourceLocation BATTERY_MAX_ENERGY = new ResourceLocation(
         Reference.MOD_ID,
         "storage_batter_max_energy");
+    public static final ResourceLocation TANK_FLUID = new ResourceLocation(Reference.MOD_ID, "storage_tank_fluid");
+    public static final ResourceLocation TANK_CAPACITY = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_tank_capacity");
 
     public static void load() {
         REGISTRY.registerServer(BATTERY_ENERGY, (value, buf) -> {
@@ -31,6 +36,18 @@ public class DelegatedValueSHRegisters {
             if (!(value instanceof DelegatedIntSH handler)) return;
             if (!(wrapper instanceof IEnergyStorage upgrade)) return;
             handler.setDelegatedSupplier(upgrade::getMaxEnergyStored);
+        });
+        REGISTRY.registerServer(TANK_FLUID, (value, buf) -> {
+            IUpgradeWrapper wrapper = value.getUpgradeWrapper();
+            if (!(value instanceof DelegatedFluidStackSH handler)) return;
+            if (!(wrapper instanceof TankUpgradeWrapper upgrade)) return;
+            handler.setDelegatedSupplier(upgrade::getContents);
+        });
+        REGISTRY.registerServer(TANK_CAPACITY, (value, buf) -> {
+            IUpgradeWrapper wrapper = value.getUpgradeWrapper();
+            if (!(value instanceof DelegatedIntSH handler)) return;
+            if (!(wrapper instanceof TankUpgradeWrapper upgrade)) return;
+            handler.setDelegatedSupplier(upgrade::getTankCapacity);
         });
     }
 }

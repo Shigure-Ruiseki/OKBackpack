@@ -6,6 +6,7 @@ import ruiseki.backpack.init.item.battery.ItemBatteryUpgradeTest;
 import ruiseki.backpack.init.item.crafting.ItemCraftingUpgradeTest;
 import ruiseki.backpack.init.item.feeding.ItemAdvFeedingUpgradeTest;
 import ruiseki.backpack.init.item.stack.ItemStackUpgradeTest;
+import ruiseki.backpack.init.item.tank.ItemTankUpgradeTest;
 import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockIronBackpackConfig;
@@ -179,5 +180,6 @@ public class Configs {
         configHandler.add(new ItemCraftingUpgradeTest());
         configHandler.add(new ItemAdvFeedingUpgradeTest());
         configHandler.add(new ItemBatteryUpgradeTest());
+        configHandler.add(new ItemTankUpgradeTest());
     }
 }

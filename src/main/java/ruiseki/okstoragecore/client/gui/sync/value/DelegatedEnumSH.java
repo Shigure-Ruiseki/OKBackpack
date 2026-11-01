@@ -14,12 +14,12 @@ public class DelegatedEnumSH<T extends Enum<T>> extends DelegatedValueSH<T, Dele
     implements IEnumValue<T>, IIntSyncValue<T> {
 
     protected final Class<T> enumClass;
-    public DelegatedEnumSupplier<T> delegatedSupplier;
+    public DelegatedEnum<T> delegatedSupplier;
 
     public DelegatedEnumSH(StoragePanel panel, int slotIndex, Class<T> enumClass) {
         super(panel, slotIndex);
         this.enumClass = enumClass;
-        this.delegatedSupplier = new DelegatedEnumSupplier<T>(() -> null);
+        this.delegatedSupplier = new DelegatedEnum<T>(() -> null);
     }
 
     public void setDelegatedSupplier(Supplier<T> delegated) {

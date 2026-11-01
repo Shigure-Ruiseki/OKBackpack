@@ -96,6 +96,63 @@ public class OSCTextures {
         .name("battery_connection_bottom")
         .build();
 
+    // Tank upgrade GUI textures
+    public static final UITexture TANK_BAR_TOP = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(29, 30, 18, 18)
+        .name("tank_bar_top")
+        .build();
+
+    public static final UITexture TANK_BAR_MIDDLE = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(29, 48, 18, 18)
+        .name("tank_bar_middle")
+        .build();
+
+    public static final UITexture TANK_BAR_BOTTOM = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(29, 66, 18, 18)
+        .name("tank_bar_bottom")
+        .build();
+
+    public static final UITexture TANK_OVERLAY = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(47, 30, 16, 18)
+        .name("tank_overlay")
+        .build();
+
+    public static final UITexture TANK_SLOT_ARROW = UITexture.builder()
+        .location(GUI_CONTROLS)
+        .imageSize(256, 256)
+        .xy(97, 216, 15, 8)
+        .name("tank_slot_arrow")
+        .build();
+
+    public static final UITexture EMPTY_BATTERY_INPUT = UITexture.builder()
+        .location(Reference.MOD_ID, "items/empty_battery_input_slot")
+        .imageSize(16, 16)
+        .build();
+    public static final UITexture EMPTY_BATTERY_OUTPUT = UITexture.builder()
+        .location(Reference.MOD_ID, "items/empty_battery_output_slot")
+        .imageSize(16, 16)
+        .build();
+    public static final UITexture EMPTY_TANK_INPUT = UITexture.builder()
+        .location(Reference.MOD_ID, "items/empty_tank_input_slot")
+        .imageSize(16, 16)
+        .build();
+    public static final UITexture EMPTY_TANK_OUTPUT = UITexture.builder()
+        .location(Reference.MOD_ID, "items/empty_tank_output_slot")
+        .imageSize(16, 16)
+        .build();
+    public static final UITexture INACCESSIBLE_SLOT = UITexture.builder()
+        .location(Reference.MOD_ID, "items/inaccessible_slot")
+        .imageSize(16, 16)
+        .build();
+
     public static UITexture icon(String name, int x, int y) {
         return icon(name, x, y, 16, 16, ICON_LOCATION);
     }

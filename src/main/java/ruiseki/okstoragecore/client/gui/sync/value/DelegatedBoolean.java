@@ -2,11 +2,11 @@ package ruiseki.okstoragecore.client.gui.sync.value;
 
 import java.util.function.BooleanSupplier;
 
-public class DelegatedBooleanSupplier implements BooleanSupplier {
+public class DelegatedBoolean implements BooleanSupplier {
 
     private BooleanSupplier delegated;
 
-    public DelegatedBooleanSupplier(BooleanSupplier delegated) {
+    public DelegatedBoolean(BooleanSupplier delegated) {
         this.delegated = delegated;
     }
 

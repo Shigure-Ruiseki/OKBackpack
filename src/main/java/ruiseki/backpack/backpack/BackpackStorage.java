@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import net.minecraft.nbt.NBTTagCompound;
 
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.init.ModBase;
 import ruiseki.okcore.persist.world.WorldStorage;
@@ -34,6 +35,11 @@ public class BackpackStorage extends WorldStorage {
     @Override
     protected String getDataId() {
         return "storage";
+    }
+
+    @Override
+    public void onStartedEvent(FMLServerStartedEvent event) {
+        super.onStartedEvent(event);
     }
 
     public static BackpackStorage getInstance(ModBase modBase) {
@@ -133,7 +139,7 @@ public class BackpackStorage extends WorldStorage {
                 return false;
             });
         if (numberRemoved.get() > 0) {
-            markDirty();
+            this.markDirty();
         }
         return numberRemoved.get();
     }

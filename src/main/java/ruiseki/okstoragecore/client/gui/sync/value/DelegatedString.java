@@ -2,11 +2,11 @@ package ruiseki.okstoragecore.client.gui.sync.value;
 
 import java.util.function.Supplier;
 
-public class DelegatedStringSupplier implements Supplier<String> {
+public class DelegatedString implements Supplier<String> {
 
     private Supplier<String> delegated;
 
-    public DelegatedStringSupplier(Supplier<String> delegated) {
+    public DelegatedString(Supplier<String> delegated) {
         this.delegated = delegated;
     }
 

@@ -13,11 +13,11 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 public class DelegatedLongSH extends DelegatedValueSH<Long, DelegatedLongSH>
     implements ILongSyncValue<Long>, IIntSyncValue<Long>, IStringSyncValue<Long> {
 
-    public DelegatedLongSupplier delegatedSupplier;
+    public DelegatedLong delegatedSupplier;
 
     public DelegatedLongSH(StoragePanel panel, int slotIndex) {
         super(panel, slotIndex);
-        this.delegatedSupplier = new DelegatedLongSupplier(() -> 0);
+        this.delegatedSupplier = new DelegatedLong(() -> 0);
         this.cache = 0L;
     }
 

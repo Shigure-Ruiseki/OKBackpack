@@ -11,15 +11,15 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 public class DelegatedDoubleSH extends DelegatedValueSH<Double, DelegatedDoubleSH>
     implements IFloatSyncValue<Double>, IDoubleSyncValue<Double>, IStringSyncValue<Double> {
 
-    public DelegatedDoubleSupplier delegatedSupplier;
+    public DelegatedDouble delegatedSupplier;
 
     public DelegatedDoubleSH(StoragePanel panel, int slotIndex) {
         super(panel, slotIndex);
-        this.delegatedSupplier = new DelegatedDoubleSupplier(() -> 0);
+        this.delegatedSupplier = new DelegatedDouble(() -> 0);
         this.cache = 0d;
     }
 
-    public void setDelegatedSupplier(DelegatedDoubleSupplier delegated) {
+    public void setDelegatedSupplier(DelegatedDouble delegated) {
         delegatedSupplier.setDelegated(delegated);
     }
 

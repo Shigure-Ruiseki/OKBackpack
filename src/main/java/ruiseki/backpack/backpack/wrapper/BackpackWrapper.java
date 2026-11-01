@@ -2,6 +2,7 @@ package ruiseki.backpack.backpack.wrapper;
 
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -16,17 +17,18 @@ import org.jetbrains.annotations.Nullable;
 
 import cofh.api.energy.IEnergyStorage;
 import ruiseki.backpack.api.IEnergyStorageUpgradeWrapper;
+import ruiseki.backpack.api.IFluidHandlerWrapperUpgrade;
 import ruiseki.backpack.backpack.BackpackStorage;
 import ruiseki.backpack.backpack.ItemBackpack;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.tier.TierRegistry;
-import ruiseki.okcore.energy.capability.EmptyEnergyStorage;
 import ruiseki.okcore.helper.Helpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.NBTHelpers;
 import ruiseki.okcore.inventory.InventorySorter;
 import ruiseki.okcore.inventory.ItemStackKey;
 import ruiseki.okcore.inventory.SortBy;
+import ruiseki.okstoragecore.api.IStorageFluidHandler;
 import ruiseki.okstoragecore.inventory.ITrackedContentsItemHandler;
 import ruiseki.okstoragecore.inventory.InventoryHandler;
 import ruiseki.okstoragecore.inventory.InventoryIOHandler;
@@ -35,6 +37,7 @@ import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
 import ruiseki.okstoragecore.settings.nosort.NoSortSettingsCategory;
 import ruiseki.okstoragecore.upgrades.UpgradeHandler;
 import ruiseki.okstoragecore.upgrades.stack.ItemStackUpgrade;
+import ruiseki.okstoragecore.upgrades.tank.ItemTankUpgrade;
 
 public class BackpackWrapper implements IBackpackWrapper {
 
@@ -67,6 +70,9 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Nullable
     private SettingsHandler settingsHandler = null;
 
+    private boolean fluidHandlerInitialized = false;
+    @Nullable
+    private IStorageFluidHandler fluidHandler = null;
     private boolean energyStorageInitialized = false;
     @Nullable
     private IEnergyStorage energyStorage = null;
@@ -163,6 +169,24 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     @Override
+    public Optional<IStorageFluidHandler> getFluidHandler() {
+        if (!fluidHandlerInitialized) {
+            IStorageFluidHandler wrappedHandler = getUpgradeHandler().getTypeWrappers(ItemTankUpgrade.TYPE)
+                .isEmpty() ? null : new BackpackFluidHandler(this);
+            List<IFluidHandlerWrapperUpgrade> fluidHandlerWrapperUpgrades = getUpgradeHandler()
+                .getWrappersThatImplement(IFluidHandlerWrapperUpgrade.class);
+
+            for (IFluidHandlerWrapperUpgrade fluidHandlerWrapperUpgrade : fluidHandlerWrapperUpgrades) {
+                wrappedHandler = fluidHandlerWrapperUpgrade.wrapHandler(wrappedHandler, backpack);
+            }
+
+            fluidHandler = wrappedHandler;
+        }
+
+        return Optional.ofNullable(fluidHandler);
+    }
+
+    @Override
     public Optional<IEnergyStorage> getEnergyStorage() {
         if (!energyStorageInitialized) {
             IEnergyStorage wrappedStorage = getUpgradeHandler().getWrappersThatImplement(IEnergyStorage.class)
@@ -178,8 +202,7 @@ public class BackpackWrapper implements IBackpackWrapper {
             energyStorage = wrappedStorage;
         }
 
-        return energyStorage == null || energyStorage.getMaxEnergyStored() == 0
-            ? Optional.of(EmptyEnergyStorage.INSTANCE)
+        return energyStorage == null || energyStorage.getMaxEnergyStored() == 0 ? Optional.empty()
             : Optional.of(energyStorage);
     }
 
@@ -216,8 +239,8 @@ public class BackpackWrapper implements IBackpackWrapper {
                         // handler.addListener(getSettingsHandler().getTypeCategory(ItemDisplaySettingsCategory.class)::itemChanged);
                         inventoryIOHandler = null;
                         inventoryModificationHandler = null;
-                        // fluidHandlerInitialized = false;
-                        // fluidHandler = null;
+                        fluidHandlerInitialized = false;
+                        fluidHandler = null;
                         energyStorageInitialized = false;
                         energyStorage = null;
                         upgradeCachesInvalidatedHandler.run();
@@ -458,8 +481,8 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public void refreshInventoryForUpgradeProcessing() {
         inventoryModificationHandler = null;
-        // fluidHandler = null;
-        // fluidHandlerInitialized = false;
+        fluidHandler = null;
+        fluidHandlerInitialized = false;
         energyStorage = null;
         energyStorageInitialized = false;
         refreshInventoryForInputOutput();

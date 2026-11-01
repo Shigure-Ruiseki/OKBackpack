@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.IFluidContainerItem;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +40,11 @@ import ruiseki.okcore.capabilities.Capability;
 import ruiseki.okcore.capabilities.ICapabilityProvider;
 import ruiseki.okcore.datastructure.LazyOptional;
 import ruiseki.okcore.energy.capability.CapabilityEnergy;
+import ruiseki.okcore.energy.capability.EmptyEnergyStorage;
 import ruiseki.okcore.energy.component.EnergyContainerItemComponent;
+import ruiseki.okcore.fluid.capability.CapabilityFluidHandler;
+import ruiseki.okcore.fluid.capability.EmptyFluidHandlerItem;
+import ruiseki.okcore.fluid.component.FluidContainerItemComponent;
 import ruiseki.okcore.helper.CapabilityHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okcore.item.ItemBlockMetadata;
@@ -47,10 +52,12 @@ import ruiseki.okstoragecore.capabilities.CapabilityStorageWrapperConfig;
 import ruiseki.okstoragecore.client.gui.tooltip.StorageContentHandler;
 
 public class ItemBackpack extends ItemBlockMetadata
-    implements IGuiHolder<PlayerInventoryGuiData>, IEnergyContainerItem {
+    implements IGuiHolder<PlayerInventoryGuiData>, IEnergyContainerItem, IFluidContainerItem {
 
     @Delegate
     private final EnergyContainerItemComponent energyStorage = new EnergyContainerItemComponent();
+    @Delegate
+    private final FluidContainerItemComponent tank = new FluidContainerItemComponent();
 
     private String tierId = TierRegistries.LEATHER;
     private BackpackTier tier = null;
@@ -59,6 +66,7 @@ public class ItemBackpack extends ItemBlockMetadata
 
     public ItemBackpack(Block block) {
         super(block);
+        this.setMaxStackSize(1);
         if (block instanceof BlockBackpack backpack) {
             this.tierId = backpack.getTierId();
         }
@@ -135,24 +143,30 @@ public class ItemBackpack extends ItemBlockMetadata
             @Override
             public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability,
                 @Nullable ForgeDirection forgeDirection) {
-                initCap();
 
+                this.initCap();
                 if (capability == CapabilityBackpackWrapperConfig.CAPABILITY) {
                     return LazyOptional.of(() -> wrapper)
                         .cast();
-                }
-
-                if (capability == CapabilityStorageWrapperConfig.CAPABILITY) {
+                } else if (capability == CapabilityStorageWrapperConfig.CAPABILITY) {
                     return LazyOptional.of(() -> wrapper)
                         .cast();
-                }
-
-                if (capability == CapabilityEnergy.ENERGY) {
+                } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM) {
+                    return wrapper.getFluidHandler()
+                        .<LazyOptional<T>>map(
+                            handler -> LazyOptional.of(() -> handler)
+                                .cast())
+                        .orElse(
+                            LazyOptional.of(() -> EmptyFluidHandlerItem.INSTANCE)
+                                .cast());
+                } else if (capability == CapabilityEnergy.ENERGY) {
                     return wrapper.getEnergyStorage()
                         .<LazyOptional<T>>map(
                             storage -> LazyOptional.of(() -> storage)
                                 .cast())
-                        .orElseGet(LazyOptional::empty);
+                        .orElse(
+                            LazyOptional.of(() -> EmptyEnergyStorage.INSTANCE)
+                                .cast());
                 }
                 return LazyOptional.empty();
             }

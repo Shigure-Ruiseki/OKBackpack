@@ -2,11 +2,11 @@ package ruiseki.okstoragecore.client.gui.sync.value;
 
 import java.util.function.LongSupplier;
 
-public class DelegatedLongSupplier implements LongSupplier {
+public class DelegatedLong implements LongSupplier {
 
     private LongSupplier delegated;
 
-    public DelegatedLongSupplier(LongSupplier delegated) {
+    public DelegatedLong(LongSupplier delegated) {
         this.delegated = delegated;
     }
 

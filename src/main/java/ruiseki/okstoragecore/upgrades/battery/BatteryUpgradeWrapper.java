@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.upgrades.battery;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -9,6 +10,8 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import cofh.api.energy.IEnergyStorage;
+import ruiseki.okcore.client.gui.tooltip.EnergyTooltipLine;
+import ruiseki.okcore.client.gui.tooltip.TooltipLineHandler;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.energy.capability.CapabilityEnergy;
 import ruiseki.okcore.helper.CapabilityHelpers;
@@ -176,6 +179,13 @@ public class BatteryUpgradeWrapper extends UpgradeWrapperBase<BatteryUpgradeWrap
     @Override
     public int getMinimumMultiplierRequired() {
         return (int) Math.ceil((float) energyStored / upgradeItem.getMaxEnergyBase(storageWrapper));
+    }
+
+    @Override
+    public List<String> getTooltipLines() {
+        List<String> list = super.getTooltipLines();
+        list.add(TooltipLineHandler.register(new EnergyTooltipLine(this)));
+        return list;
     }
 
     @Override

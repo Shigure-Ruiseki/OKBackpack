@@ -13,11 +13,11 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 public class DelegatedIntSH extends DelegatedValueSH<Integer, DelegatedIntSH>
     implements IIntSyncValue<Integer>, IDoubleSyncValue<Integer>, IStringSyncValue<Integer> {
 
-    public DelegatedIntSupplier delegatedSupplier;
+    public DelegatedInt delegatedSupplier;
 
     public DelegatedIntSH(StoragePanel panel, int slotIndex) {
         super(panel, slotIndex);
-        this.delegatedSupplier = new DelegatedIntSupplier(() -> 0);
+        this.delegatedSupplier = new DelegatedInt(() -> 0);
         this.cache = 0;
     }
 

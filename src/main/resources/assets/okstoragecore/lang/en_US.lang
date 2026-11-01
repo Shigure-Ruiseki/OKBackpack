@@ -81,7 +81,15 @@ gui.okstoragecore.upgrades.buttons.do_not_consider_health=Do not consider health
 
 gui.okstoragecore.upgrades.battery=Batt.
 gui.okstoragecore.upgrades.battery.tooltip=Battery
-gui.okstoragecore.upgrades.battery.contents_tooltip=%s FE out of %s FE
+gui.okstoragecore.upgrades.battery.contents_tooltip=%s RF out of %s RF
+
+gui.okstoragecore.upgrades.tank=Tank
+gui.okstoragecore.upgrades.tank.tooltip=Tank
+gui.okstoragecore.upgrades.tank.contents_tooltip=%s mB out of %s mB
+
+gui.okstoragecore.upgrades.pump=Pump
+gui.okstoragecore.upgrades.pump.tooltip=Pump
+gui.okstoragecore.upgrades.tank.xp_contents_tooltip=%s out of %s xp levels
 
 gui.okstoragecore.upgrades.buttons.allow=Allow
 gui.okstoragecore.upgrades.buttons.block=Block
