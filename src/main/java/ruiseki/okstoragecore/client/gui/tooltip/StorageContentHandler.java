@@ -308,9 +308,9 @@ public class StorageContentHandler {
                     GL11.glDisable(GL11.GL_DEPTH_TEST);
 
                     if (info.enabled()) {
-                        OSCTextures.TOGGLE_ENABLE_ICON.draw(drawX, drawY + 3, 4, 10);
+                        OSCTextures.TOGGLE_ENABLE.draw(drawX, drawY + 3, 4, 10);
                     } else {
-                        OSCTextures.TOGGLE_DISABLE_ICON.draw(drawX, drawY + 3, 4, 10);
+                        OSCTextures.TOGGLE_DISABLE.draw(drawX, drawY + 3, 4, 10);
                     }
 
                     GL11.glEnable(GL11.GL_DEPTH_TEST);

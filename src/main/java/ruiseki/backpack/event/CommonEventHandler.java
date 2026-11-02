@@ -205,7 +205,10 @@ public class CommonEventHandler {
                         })
                         .orElse(false),
                     GeneralConfig.onlyWornBackpackTriggersUpgrades);
-            itemEntity.setEntityItemStack(remainingStack.get());
+
+            ItemStack remainder = remainingStack.get();
+            if (ItemHelpers.isEmpty(remainder)) itemEntity.setDead();
+            itemEntity.setEntityItemStack(remainder);
             event.setCanceled(true); // cancelling even when the stack isn't empty at this point to prevent full stack
                                      // from before pickup to be picked up by player
         }

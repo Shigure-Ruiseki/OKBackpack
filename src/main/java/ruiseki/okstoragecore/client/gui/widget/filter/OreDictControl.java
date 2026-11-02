@@ -1,6 +1,7 @@
 package ruiseki.okstoragecore.client.gui.widget.filter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
@@ -27,6 +28,7 @@ import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
 import ruiseki.okbackpack.Reference;
+import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
@@ -42,6 +44,14 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
         .adaptable(1)
         .tiled()
         .build();
+
+    private static final List<CyclicVariantButtonWidget.Variant> MATCH_TAG_VARIANTS = Arrays.asList(
+        new CyclicVariantButtonWidget.Variant(
+            IKey.lang("gui.okstoragecore.upgrades.buttons.match_any_tag"),
+            OSCTextures.ONE_IN_FOUR_SLOT),
+        new CyclicVariantButtonWidget.Variant(
+            IKey.lang("gui.okstoragecore.upgrades.buttons.match_all_tags"),
+            OSCTextures.ALL_FOUR_SLOT));
 
     protected final FilterLogicControlBase controller;
 
@@ -74,7 +84,7 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
             this.searchText = value;
             this.refreshOreDictList();
         });
-        this.textField = new TextFieldWidget().size(88, 10)
+        this.textField = new TextFieldWidget().size(86, 10)
             .value(this.textValue)
             .autoUpdateOnChange(true)
             .setMaxLength(256);
@@ -83,7 +93,7 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
 
     protected ListWidget<?, ?> addListOreDict() {
         ListWidget<Entry, ?> list = new ListWidget<>();
-        list.size(88, 49);
+        list.size(86, 49);
         list.left(0);
         list.collapseDisabledChild();
         list.background(BACKGROUND_TILE_TEXTURE);
@@ -110,7 +120,7 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
         this.oreDictList.removeAll();
         var entries = getFilterLogic().getOreDictEntries();
         for (String s : entries) {
-            this.oreDictList.child(new Entry(s, 88));
+            this.oreDictList.child(new Entry(s, 86));
         }
         this.oreDictList.scheduleResize();
     }
@@ -303,7 +313,14 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
     }
 
     protected ButtonWidget<?> addMatchTypeButton() {
-        return new ButtonWidget<>();
+        return new CyclicVariantButtonWidget(
+            MATCH_TAG_VARIANTS,
+            this.getFilterLogic()
+                .shouldMatchAnyOreDict() ? 0 : 1,
+            index -> {
+                this.getFilterLogic()
+                    .setMatchAnyTag(index == 0);
+            }).size(18);
     }
 
     private List<String> getAvailableOreDicts() {

@@ -20,8 +20,10 @@ public class OSCTextures {
     public static final IDrawable SHIFT_CLICK_INVENTORY = icon("shift_click_inv", 64, 96);
     public static final IDrawable SHIFT_CLICK_OPEN_TAB = icon("shift_click_tab", 80, 32);
 
-    public static final UITexture CHECK_ICON = icon("check", 0, 0);
-    public static final UITexture CROSS_ICON = icon("cross", 16, 0);
+    public static final UITexture CHECK = icon("check", 0, 0);
+    public static final UITexture CROSS = icon("cross", 16, 0);
+    public static final UITexture STORAGE = icon("storage", 64, 16);
+    public static final UITexture BACKPACK = icon("backpack", 80, 16);
 
     public static final IDrawable SETTING = icon("setting", 16, 96);
     public static final IDrawable BACK = icon("back", 64, 80);
@@ -57,8 +59,11 @@ public class OSCTextures {
     public static final UITexture MATCH_NBT = icon("match_nbt", 32, 0);
     public static final UITexture IGNORE_NBT = icon("ignore_nbt", 48, 0);
 
-    public static final UITexture TOGGLE_DISABLE_ICON = icon("disable", 0, 128, 4, 10);
-    public static final UITexture TOGGLE_ENABLE_ICON = icon("enable", 4, 128, 4, 10);
+    public static final IDrawable ONE_IN_FOUR_SLOT = icon("one_in_four_slot", 0, 80);
+    public static final IDrawable ALL_FOUR_SLOT = icon("all_in_four_slot", 16, 80);
+
+    public static final UITexture TOGGLE_DISABLE = icon("disable", 0, 128, 4, 10);
+    public static final UITexture TOGGLE_ENABLE = icon("enable", 4, 128, 4, 10);
 
     // Battery upgrade GUI textures
     public static final UITexture BATTERY_BAR_BACKGROUND = UITexture.builder()

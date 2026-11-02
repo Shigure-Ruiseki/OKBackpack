@@ -79,8 +79,12 @@ gui.okstoragecore.upgrades.pump=Pump
 gui.okstoragecore.upgrades.pump.tooltip=Pump
 gui.okstoragecore.upgrades.tank.xp_contents_tooltip=%s out of %s xp levels
 
+gui.okstoragecore.upgrades.pickup=Pickup
+gui.okstoragecore.upgrades.advanced_pickup=Adv. Pickup
+
 gui.okstoragecore.upgrades.buttons.allow=Allow
 gui.okstoragecore.upgrades.buttons.block=Block
+gui.okstoragecore.upgrades.buttons.inventory=Match Inventory Contents
 gui.okstoragecore.upgrades.buttons.match_mod=Match Mod
 gui.okstoragecore.upgrades.buttons.match_item=Match Item
 gui.okstoragecore.upgrades.buttons.match_ore_dict=Match OreDict
@@ -103,3 +107,5 @@ gui.okstoragecore.upgrades.buttons.remove_ore_dict.controls=Scroll to Select, Cl
 gui.okstoragecore.upgrades.buttons.match_any_ore_dict=Match Any Ore Dict
 gui.okstoragecore.upgrades.buttons.match_all_ore_dict=Match All Ore Dicts
 gui.okstoragecore.upgrades.buttons.ore_dict_input_help=You can input ore dictionary here, regex is supported
+gui.okstoragecore.upgrades.buttons.match_any_tag=Match Any Tag
+gui.okstoragecore.upgrades.buttons.match_all_tags=Match All Tags

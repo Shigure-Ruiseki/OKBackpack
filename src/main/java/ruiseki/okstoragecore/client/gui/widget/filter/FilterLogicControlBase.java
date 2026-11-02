@@ -25,12 +25,10 @@ import ruiseki.okstoragecore.upgrades.PrimaryMatch;
 public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase> {
 
     private static final List<CyclicVariantButtonWidget.Variant> ALLOW_LIST_VARIANTS = Arrays.asList(
-        new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.okstoragecore.upgrades.buttons.allow"),
-            OSCTextures.CHECK_ICON),
+        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.okstoragecore.upgrades.buttons.allow"), OSCTextures.CHECK),
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.upgrades.buttons.block"),
-            OSCTextures.CROSS_ICON));
+            OSCTextures.CROSS));
 
     private static final List<CyclicVariantButtonWidget.Variant> MATCH_TYPES_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
@@ -138,8 +136,12 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
                 .getPrimaryMatch()
                 .ordinal(),
             index -> {
+                PrimaryMatch next = PrimaryMatch.fromOrdinal(index);
+                if (next == PrimaryMatch.ORE_DICT) {
+                    onOreDictsMatchSelected();
+                }
                 this.filteredWrapper.getFilterLogic()
-                    .setPrimaryMatch(PrimaryMatch.fromOrdinal(index));
+                    .setPrimaryMatch(next);
             });
     }
 
@@ -207,6 +209,10 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
 
     public void setSlotsDisabled(BooleanSupplier disabled) {
         this.slotsDisabled = disabled;
+    }
+
+    protected void onOreDictsMatchSelected() {
+        // Default: do nothing.
     }
 
     @Override
