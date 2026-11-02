@@ -2,15 +2,18 @@ package ruiseki.okstoragecore.upgrades;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.oredict.OreDictionary;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +31,7 @@ public class FilterLogicBase {
 
     @Nullable
     protected List<String> oreDictEntries = null;
+    private final Map<String, Optional<Pattern>> oreDictPatternCache = new HashMap<>();
 
     public FilterLogicBase(ItemStack upgrade, Consumer<ItemStack> saveHandler, String parentTagKey) {
         this.upgrade = upgrade;
@@ -80,10 +84,14 @@ public class FilterLogicBase {
     }
 
     public boolean addOreDictEntry(String name) {
-        if (name == null || name.isEmpty()) {
+        if (name == null || name.trim()
+            .isEmpty()) {
             return false;
         }
-
+        name = name.trim();
+        if (!isValidOreDictEntry(name)) {
+            return false;
+        }
         if (oreDictEntries == null) {
             initOreDictEntries();
         }
@@ -95,6 +103,7 @@ public class FilterLogicBase {
         oreDictEntries.add(name);
         serializeOreDictEntries();
         save();
+
         return true;
     }
 
@@ -107,9 +116,12 @@ public class FilterLogicBase {
             return false;
         }
 
-        oreDictEntries.remove(index);
+        String removed = oreDictEntries.remove(index);
+        oreDictPatternCache.remove(removed);
+
         serializeOreDictEntries();
         save();
+
         return true;
     }
 
@@ -187,18 +199,25 @@ public class FilterLogicBase {
         save();
     }
 
-    private boolean areOreDictionaryItemsEqual(ItemStack stack, ItemStack filter) {
-        int[] stackOreIds = OreDictionary.getOreIDs(stack);
-        int[] filterOreIds = OreDictionary.getOreIDs(filter);
-
-        for (int stackOreId : stackOreIds) {
-            for (int filterOreId : filterOreIds) {
-                if (stackOreId == filterOreId) {
-                    return true;
-                }
+    @Nullable
+    private Pattern getOreDictPattern(String expression) {
+        return oreDictPatternCache.computeIfAbsent(expression, key -> {
+            try {
+                return Optional.of(Pattern.compile(key));
+            } catch (PatternSyntaxException e) {
+                return Optional.empty();
             }
-        }
+        })
+            .orElse(null);
+    }
 
-        return false;
+    private boolean isValidOreDictEntry(String expression) {
+        return getOreDictPattern(expression) != null;
+    }
+
+    public boolean matchesOreDictPattern(String oreName, String expression) {
+        Pattern pattern = getOreDictPattern(expression);
+        return pattern != null && pattern.matcher(oreName)
+            .matches();
     }
 }

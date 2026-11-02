@@ -16,6 +16,7 @@ import com.cleanroommc.modularui.api.value.ISyncOrValue;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.utils.Color;
+import com.cleanroommc.modularui.value.StringValue;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.ListWidget;
@@ -23,6 +24,7 @@ import com.cleanroommc.modularui.widgets.TextWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
+import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
 import ruiseki.okbackpack.Reference;
 import ruiseki.okcore.helper.ItemHelpers;
@@ -48,6 +50,9 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
 
     private int addScrollIndex = 0;
     private int removeScrollIndex = -1;
+    private StringValue.Dynamic textValue;
+    private TextFieldWidget textField;
+    private String searchText = "";
 
     public OreDictControl(FilterLogicControlBase controller) {
         this.controller = controller;
@@ -59,8 +64,21 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
     protected Flow addContents() {
         return Flow.column()
             .coverChildren()
+            .child(this.addTextField())
             .child(this.addListOreDict())
             .child(this.addControlRow());
+    }
+
+    protected TextFieldWidget addTextField() {
+        this.textValue = new StringValue.Dynamic(() -> this.searchText, value -> {
+            this.searchText = value;
+            this.refreshOreDictList();
+        });
+        this.textField = new TextFieldWidget().size(88, 10)
+            .value(this.textValue)
+            .autoUpdateOnChange(true)
+            .setMaxLength(256);
+        return this.textField;
     }
 
     protected ListWidget<?, ?> addListOreDict() {
@@ -91,8 +109,8 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
         if (this.oreDictList == null) return;
         this.oreDictList.removeAll();
         var entries = getFilterLogic().getOreDictEntries();
-        for (int i = 0; i < entries.size(); i++) {
-            this.oreDictList.child(new Entry(entries.get(i), 88));
+        for (String s : entries) {
+            this.oreDictList.child(new Entry(s, 88));
         }
         this.oreDictList.scheduleResize();
     }
@@ -127,6 +145,18 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
             })
             .onMousePressed(button -> {
                 if (button != 0) return false;
+
+                String expression = this.textValue.getStringValue()
+                    .trim();
+                if (!expression.isEmpty()) {
+                    boolean added = this.getFilterLogic()
+                        .addOreDictEntry(expression);
+                    if (!added) return false;
+                    this.textValue.setStringValue("");
+                    this.markTooltipDirty();
+                    return true;
+                }
+
                 List<String> available = this.getAvailableOreDicts();
                 if (available.isEmpty()) return false;
                 if (this.addScrollIndex < 0 || this.addScrollIndex >= available.size()) {
@@ -144,6 +174,14 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
             .tooltipDynamic(tooltip -> {
                 tooltip.addLine(IKey.lang("gui.okstoragecore.upgrades.buttons.add_ore_dict"));
                 tooltip.pos(RichTooltip.Pos.NEXT_TO_MOUSE);
+
+                String expression = this.textValue.getStringValue()
+                    .trim();
+                if (!expression.isEmpty()) {
+                    tooltip.addLine(
+                        IKey.str("Regex: " + expression)
+                            .style(EnumChatFormatting.AQUA));
+                }
 
                 ItemStack stack = this.filterSlot.isSynced() ? this.filterSlot.getSlot()
                     .getStack() : ItemHelpers.EMPTY;
@@ -290,12 +328,19 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
 
     public static class Entry extends TextWidget<Entry> {
 
+        private final String text;
+
         public Entry(String text, int width) {
             super(text);
+            this.text = text;
             this.size(width, 12);
             this.color(Color.GREY.main);
             this.shadow(true);
             this.padding(2, 0);
+        }
+
+        public String getText() {
+            return text;
         }
     }
 

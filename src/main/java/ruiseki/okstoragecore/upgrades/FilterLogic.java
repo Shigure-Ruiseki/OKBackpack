@@ -1,8 +1,6 @@
 package ruiseki.okstoragecore.upgrades;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.Predicate;
@@ -92,20 +90,32 @@ public class FilterLogic extends FilterLogicBase {
 
     private boolean allOreDictsMatch(int[] oreIds) {
         List<String> entries = getOreDictEntries();
-        if (entries.isEmpty()) return false;
-        Set<String> oreNames = new HashSet<>();
-        for (int oreId : oreIds) {
-            oreNames.add(OreDictionary.getOreName(oreId));
+        if (entries.isEmpty() || oreIds.length == 0) return false;
+        for (String entry : entries) {
+            boolean matched = false;
+            for (int oreId : oreIds) {
+                String oreName = OreDictionary.getOreName(oreId);
+                if (matchesOreDictPattern(oreName, entry)) {
+                    matched = true;
+                    break;
+                }
+            }
+            if (!matched) {
+                return false;
+            }
         }
-        return oreNames.containsAll(entries);
+        return true;
     }
 
     private boolean anyOreDictMatches(int[] oreIds) {
         List<String> entries = getOreDictEntries();
         if (entries.isEmpty()) return false;
         for (int oreId : oreIds) {
-            if (entries.contains(OreDictionary.getOreName(oreId))) {
-                return true;
+            String oreName = OreDictionary.getOreName(oreId);
+            for (String entry : entries) {
+                if (matchesOreDictPattern(oreName, entry)) {
+                    return true;
+                }
             }
         }
         return false;
