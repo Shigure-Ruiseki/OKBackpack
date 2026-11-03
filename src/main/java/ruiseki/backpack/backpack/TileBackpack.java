@@ -31,9 +31,10 @@ import ruiseki.okcore.inventory.component.IInventoryExclusion;
 import ruiseki.okcore.inventory.component.InventoryComponent;
 import ruiseki.okcore.item.IItemSharedTag;
 import ruiseki.okcore.item.capability.CapabilityItemHandler;
-import ruiseki.okcore.tileentity.TileEntityOK;
+import ruiseki.okcore.tileentity.TileTicking;
+import ruiseki.okstoragecore.upgrades.ITickableUpgrade;
 
-public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData>, IInventory {
+public class TileBackpack extends TileTicking implements IGuiHolder<PosGuiData>, IInventory {
 
     private IBackpackWrapper backpackWrapper = IBackpackWrapper.NoopBackpackWrapper.INSTANCE;
 
@@ -66,6 +67,16 @@ public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData>
             markDirty();
             onSendUpdate();
         });
+    }
+
+    @Override
+    protected void updateTileEntity() {
+        super.updateTileEntity();
+        if (backpackWrapper != null && !worldObj.isRemote) {
+            backpackWrapper.getUpgradeHandler()
+                .getWrappersThatImplement(ITickableUpgrade.class)
+                .forEach(upgrade -> upgrade.tick(null, worldObj, pos));
+        }
     }
 
     @Override

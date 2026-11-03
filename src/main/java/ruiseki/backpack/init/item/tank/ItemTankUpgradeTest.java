@@ -14,25 +14,25 @@ public class ItemTankUpgradeTest extends ItemConfig {
     public static ItemTankUpgradeTest _instance;
 
     @ConfigurableProperty(
-        category = "tank",
+        category = "upgrade.tank",
         comment = "Fluid capacity added per storage slot row.",
         configLocation = ConfigLocation.SERVER)
     public static int tankCapacityPerSlotRow = 16000;
 
     @ConfigurableProperty(
-        category = "tank",
+        category = "upgrade.tank",
         comment = "Fluid capacity multiplier per item stack.",
         configLocation = ConfigLocation.SERVER)
     public static double tankStackMultiplierRatio = 1.5D;
 
     @ConfigurableProperty(
-        category = "tank",
+        category = "upgrade.tank",
         comment = "Cooldown in ticks between automatic container operations.",
         configLocation = ConfigLocation.SERVER)
     public static int tankAutoFillDrainContainerCooldown = 10;
 
     @ConfigurableProperty(
-        category = "tank",
+        category = "upgrade.tank",
         comment = "Maximum fluid input and output per tick.",
         configLocation = ConfigLocation.SERVER)
     public static int tankMaxInputOutput = 1000;

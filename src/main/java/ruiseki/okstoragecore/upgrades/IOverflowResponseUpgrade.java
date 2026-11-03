@@ -7,6 +7,10 @@ import ruiseki.okcore.helper.ItemHelpers;
 public interface IOverflowResponseUpgrade {
 
     default boolean stackMatchesFilterStack(ItemStack stack, ItemStack filterStack) {
+        if (ItemHelpers.isEmpty(stack) || ItemHelpers.isEmpty(filterStack)) {
+            return false;
+        }
+
         if (stack.getItem() != filterStack.getItem()) {
             return false;
         }

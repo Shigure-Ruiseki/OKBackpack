@@ -96,6 +96,14 @@ gui.okstoragecore.upgrades.buttons.pickup_xp=Pickup Experience
 gui.okstoragecore.upgrades.buttons.pickup_xp.detail=Requires Tank Upgrade
 gui.okstoragecore.upgrades.buttons.do_not_pickup_xp=Do Not Pickup Experience
 
+gui.okstoragecore.upgrades.void=Void
+gui.okstoragecore.upgrades.advanced_void=Adv. Void
+gui.okstoragecore.upgrades.buttons.void_overflow=Void Overflow
+gui.okstoragecore.upgrades.buttons.void_overflow.detail=Allows single slot to be filled with the item\nand voids anything that overflows
+gui.okstoragecore.upgrades.buttons.void_any=Void Any
+gui.okstoragecore.upgrades.buttons.works_in_gui=Works in GUI as well
+gui.okstoragecore.upgrades.buttons.only_automatic=Only works with other upgrades/automation
+
 gui.okstoragecore.upgrades.buttons.allow=Allow
 gui.okstoragecore.upgrades.buttons.block=Block
 gui.okstoragecore.upgrades.buttons.inventory=Match Inventory Contents

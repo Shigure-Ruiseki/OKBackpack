@@ -13,19 +13,19 @@ public class ItemBatteryUpgradeTest extends ItemConfig {
     public static ItemBatteryUpgradeTest _instance;
 
     @ConfigurableProperty(
-        category = "battery",
+        category = "upgrade.battery",
         comment = "Energy capacity added per storage slot row.",
         configLocation = ConfigLocation.SERVER)
     public static int batteryEnergyPerSlotRow = 10000;
 
     @ConfigurableProperty(
-        category = "battery",
+        category = "upgrade.battery",
         comment = "Energy capacity multiplier per item stack.",
         configLocation = ConfigLocation.SERVER)
     public static double batteryStackMultiplierRatio = 1.5D;
 
     @ConfigurableProperty(
-        category = "battery",
+        category = "upgrade.battery",
         comment = "Maximum energy input and output per tick.",
         configLocation = ConfigLocation.SERVER)
     public static int batteryMaxInputOutput = 1000;

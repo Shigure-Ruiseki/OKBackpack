@@ -2,6 +2,7 @@ package ruiseki.okstoragecore.client.gui.container;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,6 +32,7 @@ import ruiseki.okstoragecore.client.gui.slot.ModularStorageSlot;
 import ruiseki.okstoragecore.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
+import ruiseki.okstoragecore.upgrades.IOverflowResponseUpgrade;
 import ruiseki.okstoragecore.upgrades.ISlotClickUpgrade;
 import ruiseki.okstoragecore.upgrades.IUpgradeItem;
 
@@ -175,6 +177,11 @@ public class StorageContainer extends ModularContainer implements ISortableConta
         ItemStack heldStack = playerInventory.getItemStack();
         ItemStack returnable = null;
 
+        if (isOverflowLogicSlotAndAction(slotId, clickTypeIn)
+            && handleOverflow(slotId, clickTypeIn, mouseButton, player)) {
+            return ItemHelpers.EMPTY;
+        }
+
         // Handle click events in the inventory
         if ((clickTypeIn == ClickType.PICKUP || clickTypeIn == ClickType.QUICK_MOVE)
             && (mouseButton == LEFT_MOUSE || mouseButton == RIGHT_MOUSE)) {
@@ -210,7 +217,7 @@ public class StorageContainer extends ModularContainer implements ISortableConta
                     if (ItemHelpers.isEmpty(slotStack)) {
                         // If the player is holding an item and the slot accepts it
                         if (!ItemHelpers.isEmpty(heldStack) && clickedSlot.isItemValid(heldStack)) {
-                            int stackCount = mouseButton == LEFT_MOUSE ? heldStack.stackSize : 1;
+                            int stackCount = mouseButton == LEFT_MOUSE ? ItemHelpers.getCount(heldStack) : 1;
 
                             // Limit the stack size that can be placed in the slot
                             int lim = stackLimit(clickedSlot, heldStack);
@@ -223,13 +230,13 @@ public class StorageContainer extends ModularContainer implements ISortableConta
                             updateSlotStack(clickedSlot, placed);
 
                             // If the player runs out of items in hand, set heldStack to null
-                            if (heldStack.stackSize <= 0) {
+                            if (ItemHelpers.getCount(heldStack) <= 0) {
                                 playerInventory.setItemStack(ItemHelpers.EMPTY);
                             }
                         }
                     } else if (clickedSlot.canTakeStack(player)) { // Slot has items and can be taken
                         if (ItemHelpers.isEmpty(heldStack)) { // Player is not holding any item
-                            int s = Math.min(slotStack.stackSize, slotStack.getMaxStackSize());
+                            int s = Math.min(ItemHelpers.getCount(slotStack), slotStack.getMaxStackSize());
                             int toRemove = (mouseButton == LEFT_MOUSE) ? s : (s + 1) / 2;
 
                             // Extract item from slot into player's hand
@@ -254,28 +261,28 @@ public class StorageContainer extends ModularContainer implements ISortableConta
                                 && slotStack.getItemDamage() == heldStack.getItemDamage()
                                 && ItemStack.areItemStackTagsEqual(slotStack, heldStack)) {
 
-                                int stackCount = mouseButton == LEFT_MOUSE ? heldStack.stackSize : 1;
+                                int stackCount = mouseButton == LEFT_MOUSE ? ItemHelpers.getCount(heldStack) : 1;
 
                                 // Limit the number of items that can be merged into the slot
                                 int lim = stackLimit(clickedSlot, heldStack);
-                                if (stackCount > lim - slotStack.stackSize) {
-                                    stackCount = lim - slotStack.stackSize;
+                                if (stackCount > lim - ItemHelpers.getCount(slotStack)) {
+                                    stackCount = lim - ItemHelpers.getCount(slotStack);
                                 }
 
                                 // Split items from player's hand
                                 if (stackCount > 0) {
-                                    heldStack.stackSize -= stackCount;
+                                    ItemHelpers.shrink(heldStack, stackCount);
 
-                                    if (heldStack.stackSize <= 0) {
+                                    if (ItemHelpers.getCount(heldStack) <= 0) {
                                         playerInventory.setItemStack(ItemHelpers.EMPTY);
                                     }
 
-                                    ItemStack merged = slotStack.copy();
-                                    merged.stackSize += stackCount;
+                                    ItemStack merged = ItemHelpers.copy(slotStack);
+                                    ItemHelpers.grow(merged, stackCount);
 
                                     updateSlotStack(clickedSlot, merged);
                                 }
-                            } else if (heldStack.stackSize <= stackLimit(clickedSlot, heldStack)) {
+                            } else if (ItemHelpers.getCount(heldStack) <= stackLimit(clickedSlot, heldStack)) {
                                 updateSlotStack(clickedSlot, heldStack);
                                 playerInventory.setItemStack(slotStack);
                             }
@@ -283,14 +290,15 @@ public class StorageContainer extends ModularContainer implements ISortableConta
                             && (!slotStack.getHasSubtypes() || slotStack.getItemDamage() == heldStack.getItemDamage())
                             && ItemStack.areItemStackTagsEqual(slotStack, heldStack)) {
 
-                                int stackCount = slotStack.stackSize;
+                                int stackCount = ItemHelpers.getCount(slotStack);
 
                                 // Merge slot stack into held stack if possible
-                                if (stackCount > 0 && stackCount + heldStack.stackSize <= heldStack.getMaxStackSize()) {
-                                    heldStack.stackSize += stackCount;
+                                if (stackCount > 0
+                                    && stackCount + ItemHelpers.getCount(heldStack) <= heldStack.getMaxStackSize()) {
+                                    ItemHelpers.grow(heldStack, stackCount);
                                     slotStack = clickedSlot.decrStackSize(stackCount);
 
-                                    if (slotStack.stackSize == 0) {
+                                    if (ItemHelpers.getCount(slotStack) == 0) {
                                         clickedSlot.putStack(ItemHelpers.EMPTY);
                                     }
 
@@ -313,6 +321,105 @@ public class StorageContainer extends ModularContainer implements ISortableConta
         slot.onSlotChanged();
     }
 
+    private boolean handleOverflow(int slotId, ClickType clickType, int dragType, EntityPlayer player) {
+        ItemStack cursorStack = clickType == ClickType.SWAP ? player.inventory.getStackInSlot(dragType)
+            : player.inventory.getItemStack();
+
+        Consumer<ItemStack> updateCursorStack = clickType == ClickType.SWAP
+            ? stack -> player.inventory.setInventorySlotContents(dragType, stack)
+            : player.inventory::setItemStack;
+
+        Slot slot = getSlot(slotId);
+        if (slot == null || (clickType != ClickType.SWAP && ItemHelpers.isEmpty(cursorStack))
+            || !slot.isItemValid(cursorStack)) {
+            return false;
+        }
+        ItemStack slotStack = slot.getStack();
+        if (ItemHelpers.isEmpty(slotStack) || (slot.canTakeStack(player) && slotStack.getItem() != cursorStack.getItem()
+            && ItemHelpers.getCount(cursorStack) <= stackLimit(slot, cursorStack)
+            && ItemHelpers.getCount(slotStack) <= slotStack.getMaxStackSize())) {
+            return processOverflowIfSlotWithSameItemFound(slotId, cursorStack, updateCursorStack);
+        } else if (slotStack.getItem() == cursorStack.getItem()) {
+            return processOverflowForAnythingOverSlotMaxSize(cursorStack, updateCursorStack, slot, slotStack);
+        }
+        return false;
+    }
+
+    private boolean processOverflowForAnythingOverSlotMaxSize(ItemStack cursorStack,
+        Consumer<ItemStack> updateCursorStack, Slot slot, ItemStack slotStack) {
+        int remainingSpaceInSlot = stackLimit(slot, cursorStack) - ItemHelpers.getCount(slotStack);
+        if (remainingSpaceInSlot < ItemHelpers.getCount(cursorStack)) {
+            ItemStack overflow = ItemHelpers.copy(cursorStack);
+            int overflowCount = ItemHelpers.getCount(cursorStack) - remainingSpaceInSlot;
+            ItemHelpers.setCount(overflow, overflowCount);
+            ItemStack result = processOverflowLogic(overflow);
+            if (ItemHelpers.getCount(result) < overflowCount) {
+                ItemHelpers.shrink(cursorStack, overflowCount - ItemHelpers.getCount(result));
+                if (ItemHelpers.isEmpty(cursorStack)) {
+                    updateCursorStack.accept(ItemHelpers.EMPTY);
+                    return true;
+                } else {
+                    updateCursorStack.accept(cursorStack);
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean processOverflowIfSlotWithSameItemFound(int slotId, ItemStack cursorStack,
+        Consumer<ItemStack> updateCursorStack) {
+        for (IOverflowResponseUpgrade overflowUpgrade : this.getStorageWrapper()
+            .getUpgradeHandler()
+            .getWrappersThatImplementFromMainStorage(IOverflowResponseUpgrade.class)) {
+            if (overflowUpgrade.stackMatchesFilter(cursorStack) && overflowUpgrade.worksInGui()
+                && findSlotWithMatchingStack(slotId, cursorStack, updateCursorStack, overflowUpgrade)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean findSlotWithMatchingStack(int slotId, ItemStack cursorStack, Consumer<ItemStack> updateCursorStack,
+        IOverflowResponseUpgrade overflowUpgrade) {
+        for (int slotIndex = 0; slotIndex < this.getStorageWrapper()
+            .getInventoryHandler()
+            .getSlots(); slotIndex++) {
+            if (slotIndex != slotId
+                && overflowUpgrade.stackMatchesFilterStack(getSlot(slotIndex).getStack(), cursorStack)) {
+                ItemStack result = cursorStack;
+                result = overflowUpgrade.onOverflow(result);
+                updateCursorStack.accept(result);
+                if (ItemHelpers.isEmpty(result)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected ItemStack processOverflowLogic(ItemStack stack) {
+        ItemStack result = stack;
+        for (IOverflowResponseUpgrade overflowUpgrade : this.getStorageWrapper()
+            .getUpgradeHandler()
+            .getWrappersThatImplementFromMainStorage(IOverflowResponseUpgrade.class)) {
+            if (overflowUpgrade.worksInGui()) {
+                result = overflowUpgrade.onOverflow(result);
+                if (ItemHelpers.isEmpty(result)) {
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean isOverflowLogicSlotAndAction(int slotId, ClickType clickType) {
+        return isStorageInventorySlot(slotId) && (clickType == ClickType.SWAP || clickType == ClickType.PICKUP);
+    }
+
+    public boolean isStorageInventorySlot(int index) {
+        return index >= 0 && this.inventorySlots.get(index) instanceof ModularStorageSlot;
+    }
+
     private MemorySettingsCategory getMemorySettings() {
         return this.getStorageWrapper()
             .getSettingsHandler()
@@ -325,7 +432,7 @@ public class StorageContainer extends ModularContainer implements ISortableConta
             return fromStack;
         }
 
-        int originalSize = fromStack.stackSize;
+        int originalSize = ItemHelpers.getCount(fromStack);
         if (fromSlot instanceof IndexedModularSlot indexedSlot) {
             boolean activated = indexedSlot.getUpgradeIndex() == this.getStoragePanel()
                 .getWrapper()
@@ -361,7 +468,7 @@ public class StorageContainer extends ModularContainer implements ISortableConta
             this.transferFiltered(fromSlot, fromStack, slot -> PLAYER_INV.equals(slot.getSlotGroupName()));
         }
 
-        if (fromStack.stackSize != originalSize) {
+        if (ItemHelpers.getCount(fromStack) != originalSize) {
             return fromStack;
         }
 
@@ -424,22 +531,39 @@ public class StorageContainer extends ModularContainer implements ISortableConta
 
         if (limit <= 0) return;
 
+        if (isStorageInventorySlot(toSlot.slotNumber)) {
+            int storageSlotIndex = toSlot.getSlotIndex();
+            Consumer<ItemStack> updateSourceStack = result -> ItemHelpers
+                .setCount(fromStack, ItemHelpers.getCount(result));
+            if (ItemHelpers.isEmpty(toStack)) {
+                // Find another storage slot containing a matching item
+                if (processOverflowIfSlotWithSameItemFound(storageSlotIndex, fromStack, updateSourceStack)) {
+                    updateSlotStack(fromSlot, ItemHelpers.EMPTY);
+                }
+            } else if (ItemHandlerHelpers.canItemStacksStack(fromStack, toStack)) {
+                // Handle anything exceeding the target slot limit
+                if (processOverflowForAnythingOverSlotMaxSize(fromStack, updateSourceStack, toSlot, toStack)) {
+                    updateSlotStack(fromSlot, ItemHelpers.EMPTY);
+                }
+            }
+        }
+
         if (!fromSlot.isPhantom() && !ItemHelpers.isEmpty(toStack)
             && ItemHandlerHelpers.canItemStacksStack(fromStack, toStack)) {
 
-            int space = limit - toStack.stackSize;
+            int space = limit - ItemHelpers.getCount(toStack);
             if (space <= 0) return;
 
-            int move = Math.min(space, fromStack.stackSize);
+            int move = Math.min(space, ItemHelpers.getCount(fromStack));
 
-            ItemStack merged = toStack.copy();
-            merged.stackSize += move;
-            fromStack.stackSize -= move;
+            ItemStack merged = ItemHelpers.copy(toStack);
+            ItemHelpers.grow(merged, move);
+            ItemHelpers.shrink(fromStack, move);
 
             updateSlotStack(toSlot, merged);
         } else if (ItemHelpers.isEmpty(toStack)) {
 
-            int move = Math.min(fromStack.stackSize, limit);
+            int move = Math.min(ItemHelpers.getCount(fromStack), limit);
             if (move <= 0) return;
 
             ItemStack inserted = fromStack.splitStack(move);
@@ -447,10 +571,9 @@ public class StorageContainer extends ModularContainer implements ISortableConta
             updateSlotStack(toSlot, inserted);
         }
 
-        if (fromStack.stackSize <= 0) {
-            fromStack.stackSize = 0;
+        if (ItemHelpers.getCount(fromStack) <= 0) {
+            ItemHelpers.setCount(fromStack, 0);
             updateSlotStack(fromSlot, ItemHelpers.EMPTY);
         }
     }
-
 }

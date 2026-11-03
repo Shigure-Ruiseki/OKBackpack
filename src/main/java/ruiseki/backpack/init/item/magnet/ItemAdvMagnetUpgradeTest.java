@@ -11,7 +11,7 @@ public class ItemAdvMagnetUpgradeTest extends ItemConfig {
 
     public static ItemAdvMagnetUpgradeTest _instance;
 
-    @ConfigurableProperty(category = "magnet", comment = "Magnet Range", configLocation = ConfigLocation.SERVER)
+    @ConfigurableProperty(category = "upgrade.magnet", comment = "Magnet Range", configLocation = ConfigLocation.SERVER)
     public static int magnetRange = 5;
 
     public ItemAdvMagnetUpgradeTest() {

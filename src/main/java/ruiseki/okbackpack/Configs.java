@@ -12,6 +12,7 @@ import ruiseki.backpack.init.item.magnet.ItemAdvMagnetUpgradeTest;
 import ruiseki.backpack.init.item.pickup.ItemAdvPickupUpgradeTest;
 import ruiseki.backpack.init.item.stack.ItemStackUpgradeTest;
 import ruiseki.backpack.init.item.tank.ItemTankUpgradeTest;
+import ruiseki.backpack.init.item.voiding.ItemAdvVoidUpgradeTest;
 import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockIronBackpackConfig;
@@ -191,5 +192,6 @@ public class Configs {
         configHandler.add(new ItemAdvFilterUpgradeTest());
         configHandler.add(new ItemInceptionUpgradeTest());
         configHandler.add(new ItemEverlastingUpgradeTest());
+        configHandler.add(new ItemAdvVoidUpgradeTest());
     }
 }

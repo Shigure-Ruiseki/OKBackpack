@@ -15,6 +15,7 @@ import ruiseki.okstoragecore.upgrades.feeding.HungerLevel;
 import ruiseki.okstoragecore.upgrades.filter.Direction;
 import ruiseki.okstoragecore.upgrades.filter.FilterUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.magnet.MagnetUpgradeWrapper;
+import ruiseki.okstoragecore.upgrades.voiding.VoidUpgradeWrapper;
 
 public class UpgradeSlotSHRegistries {
 
@@ -63,6 +64,11 @@ public class UpgradeSlotSHRegistries {
     public static final ResourceLocation FEED_WHEN_HURT = new ResourceLocation(
         Reference.MOD_ID,
         "storage_feed_when_hurt");
+
+    public static final ResourceLocation VOID_OVERFLOW = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_void_overflow");
+    public static final ResourceLocation WORK_IN_GUI = new ResourceLocation(Reference.MOD_ID, "storage_work_in_gui");
 
     public static final ResourceLocation PICKUP_XP = new ResourceLocation(Reference.MOD_ID, "storage_pickup_xp");
     public static final ResourceLocation PICKUP_ITEMS = new ResourceLocation(Reference.MOD_ID, "storage_pickup_item");
@@ -186,6 +192,17 @@ public class UpgradeSlotSHRegistries {
             IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
             if (!(wrapper instanceof FilterUpgradeWrapper upgradeWrapper)) return;
             upgradeWrapper.setDirection(Direction.fromOrdinal(buf.readInt()));
+        });
+
+        REGISTRY.registerServer(VOID_OVERFLOW, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof VoidUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setShouldVoidOverflow(buf.readBoolean());
+        });
+        REGISTRY.registerServer(WORK_IN_GUI, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof VoidUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setShouldWorkInGUI(buf.readBoolean());
         });
     }
 }
