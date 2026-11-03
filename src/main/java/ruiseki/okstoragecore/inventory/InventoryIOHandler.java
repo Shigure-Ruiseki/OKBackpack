@@ -15,7 +15,7 @@ public class InventoryIOHandler {
         List<FilterLogic> inputFilters = new ArrayList<>();
         List<FilterLogic> outputFilters = new ArrayList<>();
 
-        addFilters(storageWrapper, inputFilters, outputFilters);
+        this.addFilters(storageWrapper, inputFilters, outputFilters);
 
         ITrackedContentsItemHandler modifiedInventory = storageWrapper.getInventoryForUpgradeProcessing();
         if (inputFilters.isEmpty() && outputFilters.isEmpty()) {

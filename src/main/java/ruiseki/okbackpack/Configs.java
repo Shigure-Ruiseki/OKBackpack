@@ -5,6 +5,7 @@ import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.backpack.init.item.battery.ItemBatteryUpgradeTest;
 import ruiseki.backpack.init.item.crafting.ItemCraftingUpgradeTest;
 import ruiseki.backpack.init.item.feeding.ItemAdvFeedingUpgradeTest;
+import ruiseki.backpack.init.item.filter.ItemAdvFilterUpgradeTest;
 import ruiseki.backpack.init.item.magnet.ItemAdvMagnetUpgradeTest;
 import ruiseki.backpack.init.item.pickup.ItemAdvPickupUpgradeTest;
 import ruiseki.backpack.init.item.stack.ItemStackUpgradeTest;
@@ -185,5 +186,6 @@ public class Configs {
         configHandler.add(new ItemTankUpgradeTest());
         configHandler.add(new ItemAdvPickupUpgradeTest());
         configHandler.add(new ItemAdvMagnetUpgradeTest());
+        configHandler.add(new ItemAdvFilterUpgradeTest());
     }
 }

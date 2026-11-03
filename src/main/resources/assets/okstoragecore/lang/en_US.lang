@@ -82,6 +82,12 @@ gui.okstoragecore.upgrades.tank.xp_contents_tooltip=%s out of %s xp levels
 gui.okstoragecore.upgrades.pickup=Pickup
 gui.okstoragecore.upgrades.advanced_pickup=Adv. Pickup
 
+gui.okstoragecore.upgrades.filter=Filter
+gui.okstoragecore.upgrades.advanced_filter=Adv. Filter
+gui.okstoragecore.upgrades.buttons.direction_both=Input & Output
+gui.okstoragecore.upgrades.buttons.direction_input=Input
+gui.okstoragecore.upgrades.buttons.direction_output=Output
+
 gui.okstoragecore.upgrades.magnet=Magnet
 gui.okstoragecore.upgrades.advanced_magnet=Adv. Magnet
 gui.okstoragecore.upgrades.buttons.pickup_items=Pickup Items

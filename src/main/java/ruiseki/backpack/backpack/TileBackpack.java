@@ -3,6 +3,7 @@ package ruiseki.backpack.backpack;
 import java.util.Objects;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -18,6 +19,7 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import lombok.experimental.Delegate;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.okcore.capabilities.resolver.BasicCapabilityResolver;
@@ -25,13 +27,18 @@ import ruiseki.okcore.fluid.capability.CapabilityFluidHandler;
 import ruiseki.okcore.fluid.capability.EmptyFluidHandler;
 import ruiseki.okcore.fluid.handler.IFluidHandler;
 import ruiseki.okcore.helper.CapabilityHelpers;
+import ruiseki.okcore.inventory.component.IInventoryExclusion;
+import ruiseki.okcore.inventory.component.InventoryComponent;
 import ruiseki.okcore.item.IItemSharedTag;
 import ruiseki.okcore.item.capability.CapabilityItemHandler;
 import ruiseki.okcore.tileentity.TileEntityOK;
 
-public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData> {
+public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData>, IInventory {
 
     private IBackpackWrapper backpackWrapper = IBackpackWrapper.NoopBackpackWrapper.INSTANCE;
+
+    @Delegate(excludes = IInventoryExclusion.class)
+    private final InventoryComponent inventory = new InventoryComponent(this);
 
     public TileBackpack() {
         this.capabilityCache.addCapabilityResolver(
@@ -108,11 +115,11 @@ public class TileBackpack extends TileEntityOK implements IGuiHolder<PosGuiData>
     @Override
     @SideOnly(Side.CLIENT)
     public ModularScreen createScreen(PosGuiData data, ModularPanel mainPanel) {
-        return new BackpackGuiHolder.TileEntityGuiHolder<>().createScreen(data, mainPanel);
+        return new BackpackGuiHolder.TileEntityGuiHolder().createScreen(data, mainPanel);
     }
 
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new BackpackGuiHolder.TileEntityGuiHolder<>().buildUI(data, syncManager, settings);
+        return new BackpackGuiHolder.TileEntityGuiHolder().buildUI(data, syncManager, settings);
     }
 }

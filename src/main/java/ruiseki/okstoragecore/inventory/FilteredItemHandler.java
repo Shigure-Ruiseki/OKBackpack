@@ -69,7 +69,14 @@ public class FilteredItemHandler<T extends IItemHandler> implements IItemHandler
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
-        return inventoryHandler.isItemValid(slot, stack);
+        if (!inventoryHandler.isItemValid(slot, stack)) return false;
+        if (inputFilters.isEmpty()) return true;
+        for (FilterLogic filter : inputFilters) {
+            if (filter.matchesFilter(stack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static class Modifiable extends FilteredItemHandler<ITrackedContentsItemHandler>

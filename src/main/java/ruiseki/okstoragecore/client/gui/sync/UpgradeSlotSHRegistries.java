@@ -12,6 +12,8 @@ import ruiseki.okstoragecore.upgrades.PrimaryMatch;
 import ruiseki.okstoragecore.upgrades.crafting.CraftingUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.feeding.FeedingUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.feeding.HungerLevel;
+import ruiseki.okstoragecore.upgrades.filter.Direction;
+import ruiseki.okstoragecore.upgrades.filter.FilterUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.magnet.MagnetUpgradeWrapper;
 
 public class UpgradeSlotSHRegistries {
@@ -64,6 +66,8 @@ public class UpgradeSlotSHRegistries {
 
     public static final ResourceLocation PICKUP_XP = new ResourceLocation(Reference.MOD_ID, "storage_pickup_xp");
     public static final ResourceLocation PICKUP_ITEMS = new ResourceLocation(Reference.MOD_ID, "storage_pickup_item");
+
+    public static final ResourceLocation DIRECTION = new ResourceLocation(Reference.MOD_ID, "storage_direction");
 
     public static void load() {
 
@@ -176,6 +180,12 @@ public class UpgradeSlotSHRegistries {
             IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
             if (!(wrapper instanceof MagnetUpgradeWrapper upgradeWrapper)) return;
             upgradeWrapper.setPickupItems(buf.readBoolean());
+        });
+
+        REGISTRY.registerServer(DIRECTION, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof FilterUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setDirection(Direction.fromOrdinal(buf.readInt()));
         });
     }
 }
