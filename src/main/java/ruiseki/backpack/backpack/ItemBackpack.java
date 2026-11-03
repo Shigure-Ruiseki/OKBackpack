@@ -32,6 +32,8 @@ import lombok.experimental.Delegate;
 import ruiseki.backpack.backpack.wrapper.BackpackWrapper;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
+import ruiseki.backpack.upgrades.everlasting.EntityEverlastingItem;
+import ruiseki.backpack.upgrades.everlasting.ItemEverlastingUpgrade;
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
@@ -86,13 +88,26 @@ public class ItemBackpack extends ItemBlockMetadata
         return true;
     }
 
+    private boolean hasEverlastingUpgrade(ItemStack stack) {
+        return CapabilityHelpers.getCapability(stack, CapabilityBackpackWrapperConfig.CAPABILITY)
+            .map(
+                w -> !w.getUpgradeHandler()
+                    .getTypeWrappers(ItemEverlastingUpgrade.TYPE)
+                    .isEmpty())
+            .orElse(false);
+    }
+
     @Override
     public Entity createEntity(World world, Entity entity, ItemStack itemstack) {
         if (!(entity instanceof EntityItem itemEntity)) {
             return null;
         }
+        UUIDDeduplicator.dedupeBackpackItemEntityInArea(itemEntity);
+        return hasEverlastingUpgrade(itemstack) ? createEverlastingBackpack(world, itemEntity, itemstack) : null;
+    }
 
-        return super.createEntity(world, entity, itemstack);
+    private EntityEverlastingItem createEverlastingBackpack(World world, EntityItem itemEntity, ItemStack itemstack) {
+        return new EntityEverlastingItem(world, itemEntity, itemstack);
     }
 
     @Override
