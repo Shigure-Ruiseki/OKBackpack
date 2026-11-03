@@ -32,6 +32,7 @@ import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
+import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.upgrades.FilterLogic;
 import ruiseki.okstoragecore.upgrades.IFilteredUpgrade;
 
@@ -159,10 +160,14 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
                 String expression = this.textValue.getStringValue()
                     .trim();
                 if (!expression.isEmpty()) {
-                    boolean added = this.getFilterLogic()
+                    this.getFilterLogic()
                         .addOreDictEntry(expression);
-                    if (!added) return false;
+                    this.getSyncHandler()
+                        .syncToServer(
+                            UpgradeSlotSHRegistries.ORE_DICT_ADD,
+                            buffer -> buffer.writeStringToBuffer(expression));
                     this.textValue.setStringValue("");
+                    this.refreshOreDictList();
                     this.markTooltipDirty();
                     return true;
                 }
@@ -175,6 +180,9 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
                 String selected = available.get(this.addScrollIndex);
                 this.getFilterLogic()
                     .addOreDictEntry(selected);
+                this.getSyncHandler()
+                    .syncToServer(UpgradeSlotSHRegistries.ORE_DICT_ADD, buffer -> buffer.writeStringToBuffer(selected));
+
                 this.refreshOreDictList();
                 this.addScrollIndex = 0;
                 this.markTooltipDirty();
@@ -270,6 +278,8 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
                     .removeOreDictEntry(index)) {
                     return false;
                 }
+                this.getSyncHandler()
+                    .syncToServer(UpgradeSlotSHRegistries.ORE_DICT_REMOVE, buffer -> buffer.writeInt(index));
 
                 this.refreshOreDictList();
                 int remaining = this.getFilterLogic()
@@ -320,6 +330,10 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
             index -> {
                 this.getFilterLogic()
                     .setMatchAnyTag(index == 0);
+                this.getSyncHandler()
+                    .syncToServer(
+                        UpgradeSlotSHRegistries.ORE_DICT_MATCH_TYPE,
+                        buffer -> buffer.writeBoolean(index == 0));
             }).size(18);
     }
 

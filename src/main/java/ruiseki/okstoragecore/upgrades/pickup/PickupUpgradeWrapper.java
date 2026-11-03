@@ -21,24 +21,24 @@ public class PickupUpgradeWrapper extends UpgradeWrapperBase<PickupUpgradeWrappe
     protected PickupUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
         Consumer<ItemStack> upgradeSaveHandler) {
         super(storageWrapper, upgrade, upgradeSaveHandler);
-        this.slotCount = upgradeItem.getFilterSlotCount();
-        filterLogic = new ContentsFilterLogic(
+        this.slotCount = this.upgradeItem.getFilterSlotCount();
+        this.filterLogic = new ContentsFilterLogic(
             upgrade,
             stack -> save(),
-            upgradeItem.getFilterSlotCount(),
+            this.upgradeItem.getFilterSlotCount(),
             storageWrapper::getInventoryHandler,
             storageWrapper.getSettingsHandler()
                 .getTypeCategory(MemorySettingsCategory.class));
     }
 
     public int getSlotCount() {
-        return slotCount;
+        return this.slotCount;
     }
 
     @Override
     public ItemStack pickup(World world, ItemStack stack, boolean simulate) {
-        if (!filterLogic.matchesFilter(stack)) return stack;
-        return storageWrapper.getInventoryForUpgradeProcessing()
+        if (!this.filterLogic.matchesFilter(stack)) return stack;
+        return this.storageWrapper.getInventoryForUpgradeProcessing()
             .insertItem(stack, simulate);
     }
 

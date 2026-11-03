@@ -46,6 +46,11 @@ public class OSCTextures {
     public static final UITexture HALF_HEART = icon("half_heart", 96, 16);
     public static final UITexture IGNORE_HALF_HEART = icon("ignore_half_heart", 112, 16);
 
+    public static final IDrawable EXP_MAGNET = icon("exp_magnet", 96, 48);
+    public static final IDrawable IGNORE_EXP_MAGNET = icon("ignore_exp_magnet", 112, 48);
+    public static final IDrawable ITEM_MAGNET = icon("exp_magnet", 128, 48);
+    public static final IDrawable IGNORE_ITEM_MAGNET = icon("ignore_exp_magnet", 144, 48);
+
     public static final UITexture MATCH_MOD = icon("match_mod", 32, 16);
     public static final IDrawable MATCH_ITEM = new ItemDrawable(Items.apple);
     public static final UITexture MATCH_TAG = icon("match_tag", 64, 0);

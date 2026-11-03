@@ -82,6 +82,14 @@ gui.okstoragecore.upgrades.tank.xp_contents_tooltip=%s out of %s xp levels
 gui.okstoragecore.upgrades.pickup=Pickup
 gui.okstoragecore.upgrades.advanced_pickup=Adv. Pickup
 
+gui.okstoragecore.upgrades.magnet=Magnet
+gui.okstoragecore.upgrades.advanced_magnet=Adv. Magnet
+gui.okstoragecore.upgrades.buttons.pickup_items=Pickup Items
+gui.okstoragecore.upgrades.buttons.do_not_pickup_items=Do Not Pickup Items
+gui.okstoragecore.upgrades.buttons.pickup_xp=Pickup Experience
+gui.okstoragecore.upgrades.buttons.pickup_xp.detail=Requires Tank Upgrade
+gui.okstoragecore.upgrades.buttons.do_not_pickup_xp=Do Not Pickup Experience
+
 gui.okstoragecore.upgrades.buttons.allow=Allow
 gui.okstoragecore.upgrades.buttons.block=Block
 gui.okstoragecore.upgrades.buttons.inventory=Match Inventory Contents

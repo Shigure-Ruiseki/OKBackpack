@@ -17,6 +17,7 @@ import ruiseki.okbackpack.client.gui.slot.DisableablePhantomItemSlot;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
+import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.client.gui.widget.StorageSlotGrid;
 import ruiseki.okstoragecore.upgrades.FilterLogic;
 import ruiseki.okstoragecore.upgrades.IFilteredUpgrade;
@@ -126,6 +127,8 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
             index -> {
                 this.filteredWrapper.getFilterLogic()
                     .setAllowList(index == 0);
+                this.getSyncHandler()
+                    .syncToServer(UpgradeSlotSHRegistries.ALLOW_LIST, buffer -> buffer.writeBoolean(index == 0));
             });
     }
 
@@ -140,8 +143,13 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
                 if (next == PrimaryMatch.ORE_DICT) {
                     onOreDictsMatchSelected();
                 }
+                final PrimaryMatch finalMatch = next;
                 this.filteredWrapper.getFilterLogic()
-                    .setPrimaryMatch(next);
+                    .setPrimaryMatch(finalMatch);
+                this.getSyncHandler()
+                    .syncToServer(
+                        UpgradeSlotSHRegistries.PRIMAL_MATCH,
+                        buffer -> buffer.writeInt(finalMatch.ordinal()));
             });
     }
 
@@ -153,6 +161,8 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
             index -> {
                 this.filteredWrapper.getFilterLogic()
                     .setMatchDurability(index == 0);
+                this.getSyncHandler()
+                    .syncToServer(UpgradeSlotSHRegistries.MATCH_DURABILITY, buffer -> buffer.writeBoolean(index == 0));
             }).setInEffect(
                 this.filteredWrapper.getFilterLogic()
                     .getPrimaryMatch() == PrimaryMatch.ITEM);
@@ -166,6 +176,8 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
             index -> {
                 this.filteredWrapper.getFilterLogic()
                     .setMatchNbt(index == 0);
+                this.getSyncHandler()
+                    .syncToServer(UpgradeSlotSHRegistries.MATCH_NBT, buffer -> buffer.writeBoolean(index == 0));
             }).setInEffect(
                 this.filteredWrapper.getFilterLogic()
                     .getPrimaryMatch() == PrimaryMatch.ITEM);

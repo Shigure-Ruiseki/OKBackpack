@@ -9,6 +9,7 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
+import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.upgrades.ContentsFilterLogic;
 import ruiseki.okstoragecore.upgrades.ContentsFilterType;
 import ruiseki.okstoragecore.upgrades.IFilteredUpgrade;
@@ -22,6 +23,8 @@ public class ContentsFilterControl extends FilterLogicControl {
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.upgrades.buttons.inventory"),
             OSCTextures.BACKPACK));
+
+    private CyclicVariantButtonWidget contentsButton;
 
     public ContentsFilterControl(int slotIndex, IFilteredUpgrade filteredWrapper, String syncKey, int slotCount,
         MatchButton... showMatchButtons) {
@@ -37,12 +40,20 @@ public class ContentsFilterControl extends FilterLogicControl {
     }
 
     protected ButtonWidget<?> addContentsFilterButton() {
-        return new CyclicVariantButtonWidget(
+        this.contentsButton = new CyclicVariantButtonWidget(
             CONTENTS_FILTER_VARIANTS,
-            this.getContentsFilterLogic()
-                .getFilterType()
+            getContentsFilterLogic().getFilterType()
                 .ordinal(),
             this::setContentsFilterType);
+        return this.contentsButton;
+    }
+
+    @Override
+    protected void onOreDictsMatchSelected() {
+        if (this.getContentsFilterLogic()
+            .getFilterType() == ContentsFilterType.STORAGE) {
+            this.setContentsFilterType(ContentsFilterType.ALLOW);
+        }
     }
 
     protected void setContentsFilterType(int index) {
@@ -50,17 +61,15 @@ public class ContentsFilterControl extends FilterLogicControl {
         if (getFilterLogic().getPrimaryMatch() == PrimaryMatch.ORE_DICT && next == ContentsFilterType.STORAGE) {
             next = ContentsFilterType.ALLOW;
         }
-        this.getContentsFilterLogic()
-            .setDepositFilterType(next);
+        this.setContentsFilterType(next);
     }
 
-    @Override
-    protected void onOreDictsMatchSelected() {
-        if (this.getContentsFilterLogic()
-            .getFilterType() == ContentsFilterType.STORAGE) {
-            this.getContentsFilterLogic()
-                .setDepositFilterType(ContentsFilterType.ALLOW);
-        }
+    private void setContentsFilterType(ContentsFilterType filterType) {
+        this.getContentsFilterLogic()
+            .setDepositFilterType(filterType);
+        this.contentsButton.setIndex(filterType.ordinal());
+        this.getSyncHandler()
+            .syncToServer(UpgradeSlotSHRegistries.CONTENTS_FILTER, buffer -> buffer.writeInt(filterType.ordinal()));
     }
 
     protected ContentsFilterLogic getContentsFilterLogic() {

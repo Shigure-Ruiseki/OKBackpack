@@ -249,7 +249,7 @@ public class StorageInventoryHelpers {
         return remainingStack;
     }
 
-    private static void playPickupSound(World world, @Nonnull EntityPlayer player) {
+    public static void playPickupSound(World world, @Nonnull EntityPlayer player) {
         world.playSoundAtEntity(
             player,
             "random.pop",

@@ -24,7 +24,7 @@ public class PickupUpgradeTab extends ExpandedUpgradeTab<PickupUpgradeWrapper> {
         @Override
         protected Flow addUpgradeColumn() {
             return super.addUpgradeColumn()
-                .child(new ContentsFilterControl.Basic(this.getSlotIndex(), this.getWrapper(), "basic_filter_"));
+                .child(new ContentsFilterControl.Basic(this.getSlotIndex(), this.getWrapper(), "basic_filter"));
         }
     }
 

@@ -10,6 +10,7 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
+import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.filter.FilterLogicControl;
 import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
@@ -49,6 +50,8 @@ public class FeedingUpgradeTab extends ExpandedUpgradeTab<FeedingUpgradeWrapper>
             index -> {
                 this.getWrapper()
                     .setFeedAtHungerLevel(HungerLevel.fromOrdinal(index));
+                this.getSyncHandler()
+                    .syncToServer(UpgradeSlotSHRegistries.FEED_AT_HUNGER_LEVEL, buffer -> buffer.writeInt(index));
             }).size(20, 20);
     }
 
@@ -60,6 +63,8 @@ public class FeedingUpgradeTab extends ExpandedUpgradeTab<FeedingUpgradeWrapper>
             index -> {
                 this.getWrapper()
                     .setFeedImmediatelyWhenHurt(index == 0);
+                this.getSyncHandler()
+                    .syncToServer(UpgradeSlotSHRegistries.FEED_WHEN_HURT, buffer -> buffer.writeBoolean(index == 0));
             }).size(20, 20);
     }
 
@@ -72,7 +77,7 @@ public class FeedingUpgradeTab extends ExpandedUpgradeTab<FeedingUpgradeWrapper>
         @Override
         protected Flow addUpgradeColumn() {
             return super.addUpgradeColumn()
-                .child(new FilterLogicControl.Basic(this.getSlotIndex(), this.getWrapper(), "basic_filter_"));
+                .child(new FilterLogicControl.Basic(this.getSlotIndex(), this.getWrapper(), "basic_filter"));
         }
     }
 
