@@ -46,10 +46,10 @@ public class TankSlotWidget extends Widget<TankSlotWidget> implements Interactab
     public TankSlotWidget(int slotIndex, TankUpgradeWrapper wrapper, StoragePanel panel) {
         this.slotIndex = slotIndex;
         this.panel = panel;
-        this.fluidSH = (DelegatedFluidStackSH) panel.getSyncManager()
-            .findSyncHandlerNullable("tank_fluid_" + slotIndex, 0);
-        this.tankCapacitySH = (DelegatedIntSH) panel.getSyncManager()
-            .findSyncHandlerNullable("tank_capacity_" + slotIndex, 0);
+        this.fluidSH = panel.getSyncManager()
+            .findSyncHandler("tank_fluid_" + slotIndex, 0, DelegatedFluidStackSH.class);
+        this.tankCapacitySH = panel.getSyncManager()
+            .findSyncHandler("tank_capacity_" + slotIndex, 0, DelegatedIntSH.class);
         this.width(BAR_WIDTH);
         this.heightRel(1f);
         this.tooltipAutoUpdate(true);

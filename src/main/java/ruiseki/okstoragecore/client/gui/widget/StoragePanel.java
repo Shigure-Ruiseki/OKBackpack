@@ -518,8 +518,6 @@ public class StoragePanel extends ModularPanel {
             UpgradeSlotSH syncHandler = new UpgradeSlotSH(slot, this.getPanel());
             slot.slotGroup("upgrade_inventory")
                 .changeListener((stack, onlyAmountChanged, client, init) -> {
-                    if (!client) return;
-
                     ItemStack last = this.lastUpgradeStacks[slotIndex];
                     boolean itemChanged = !ItemHelpers.areItemsEqual(last, stack, true);
                     if (!itemChanged) return;
@@ -588,10 +586,15 @@ public class StoragePanel extends ModularPanel {
                     if (expanded != null) {
                         upgrade.getType()
                             .updateWidgetDelegates(upgradeWrapper, group);
+                        group.setUpgradeContainer(
+                            upgrade.getType()
+                                .createContainer(upgradeWrapper, group));
                         tab.setExpandedWidget(expanded);
-                        getContext().getUISettings()
-                            .getRecipeViewerSettings()
-                            .addExclusionArea(expanded);
+                        if (this.player.worldObj.isRemote) {
+                            getContext().getUISettings()
+                                .getRecipeViewerSettings()
+                                .addExclusionArea(expanded);
+                        }
                     }
                 });
             tabCount++;
@@ -703,10 +706,12 @@ public class StoragePanel extends ModularPanel {
             .getTypeChildren()) {
             tab.setEnabled(false);
             if (tab.getExpandedWidget() != null) {
-                this.getContext()
-                    .getUISettings()
-                    .getRecipeViewerSettings()
-                    .removeExclusionArea(tab.getExpandedWidget());
+                if (this.player.worldObj.isRemote) {
+                    this.getContext()
+                        .getUISettings()
+                        .getRecipeViewerSettings()
+                        .removeExclusionArea(tab.getExpandedWidget());
+                }
                 tab.setExpandedWidget(null);
                 tab.child(null);
             }

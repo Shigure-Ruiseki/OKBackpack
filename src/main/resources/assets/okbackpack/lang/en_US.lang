@@ -527,3 +527,5 @@ gui.okbackpack.upgrades.buttons.inventory_order_incepted_first=Upgrades work wit
 gui.okbackpack.upgrades.deposit=Deposit
 gui.okbackpack.upgrades.advanced_deposit=Adv. Deposit
 gui.okbackpack.upgrades.buttons.deposit_filter_type_inventory=Match Inventory Contents
+
+gui.okbackpack.upgrades.anvil=Anvil

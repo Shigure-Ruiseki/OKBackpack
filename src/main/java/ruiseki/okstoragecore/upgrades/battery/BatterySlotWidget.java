@@ -36,10 +36,10 @@ public class BatterySlotWidget extends Widget<BatterySlotWidget> {
     public BatterySlotWidget(int slotIndex, BatteryUpgradeWrapper wrapper, StoragePanel panel) {
         this.slotIndex = slotIndex;
         this.panel = panel;
-        this.energySH = (DelegatedIntSH) panel.getSyncManager()
-            .findSyncHandlerNullable("battery_energy_stored_" + slotIndex, 0);
-        this.energyMaxSH = (DelegatedIntSH) panel.getSyncManager()
-            .findSyncHandlerNullable("battery_max_energy_" + slotIndex, 0);
+        this.energySH = panel.getSyncManager()
+            .findSyncHandler("battery_energy_stored_" + slotIndex, 0, DelegatedIntSH.class);
+        this.energyMaxSH = panel.getSyncManager()
+            .findSyncHandler("battery_max_energy_" + slotIndex, 0, DelegatedIntSH.class);
         this.width(BAR_WIDTH);
         this.heightRel(1f);
         this.tooltipAutoUpdate(true);

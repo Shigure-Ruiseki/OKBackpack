@@ -2,6 +2,7 @@ package ruiseki.backpack.client.gui.sync;
 
 import net.minecraft.util.ResourceLocation;
 
+import ruiseki.backpack.upgrades.anvil.AnvilUpgradeWrapper;
 import ruiseki.backpack.upgrades.deposit.DepositFilterType;
 import ruiseki.backpack.upgrades.deposit.DepositUpgradeWrapper;
 import ruiseki.backpack.upgrades.inception.InceptionUpgradeWrapper;
@@ -19,6 +20,9 @@ public class OBUpgradeSlotSHRegistries {
         Reference.MOD_ID,
         "backpack_inventory_order");
     public static final ResourceLocation DEPOSIT_TYPE = new ResourceLocation(Reference.MOD_ID, "backpack_deposit_type");
+    public static final ResourceLocation SHIFT_INTO_STORAGE = new ResourceLocation(
+        Reference.MOD_ID,
+        "backpack_shift_into_storage");
 
     public static void load() {
         REGISTRY.registerServer(INVENTORY_ORDER, (slot, buf) -> {
@@ -31,6 +35,12 @@ public class OBUpgradeSlotSHRegistries {
             if (!(wrapper instanceof DepositUpgradeWrapper upgradeWrapper)) return;
             upgradeWrapper.getFilterLogic()
                 .setDepositFilterType(DepositFilterType.fromOrdinal(buf.readInt()));
+        });
+        REGISTRY.registerServer(SHIFT_INTO_STORAGE, (slot, buf) -> {
+            boolean shiftIntoStorage = buf.readBoolean();
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof AnvilUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setShiftClickIntoStorage(shiftIntoStorage);
         });
     }
 }
