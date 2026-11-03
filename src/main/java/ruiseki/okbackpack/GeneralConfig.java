@@ -53,11 +53,11 @@ public class GeneralConfig extends DummyConfig {
     @ConfigurableProperty(
         category = "core",
         comment = "Maximum number of upgrades per backpack. Format: UpgradeRegistryPath|Max or UpgradeGroup|Max, separated by semicolons.",
-        configLocation = ConfigLocation.SERVER,
-        changedCallback = MaxUpgradesPerStorageConfig.class)
+        configLocation = ConfigLocation.SERVER)
     public static String maxUpgradesPerStorage = "stack|3;cooking|1;jukebox_upgrade|1";
 
-    public static final MaxUpgradesPerStorageConfig maxUpgradesPerStorageConfig = new MaxUpgradesPerStorageConfig();
+    public static final MaxUpgradesPerStorageConfig maxUpgradesPerStorageConfig = new MaxUpgradesPerStorageConfig(
+        () -> maxUpgradesPerStorage);
 
     @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
     public static boolean tickDedupeLogicDisabled = false;
@@ -70,6 +70,11 @@ public class GeneralConfig extends DummyConfig {
 
     @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
     public static boolean onlyWornBackpackTriggersUpgrades = false;
+
+    @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
+    public static boolean upgradesUseInventoriesOfBackpacksInBackpack = true;
+    @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
+    public static boolean upgradesInContainedBackpacksAreFunctional = true;
 
     public GeneralConfig() {
         super(OKBackpack._instance, true, "general", null);

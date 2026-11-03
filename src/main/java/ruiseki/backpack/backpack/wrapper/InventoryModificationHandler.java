@@ -2,7 +2,7 @@ package ruiseki.backpack.backpack.wrapper;
 
 import java.util.List;
 
-import ruiseki.okstoragecore.api.IInventoryWrapperUpgrade;
+import ruiseki.backpack.api.IInventoryWrapperUpgrade;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.inventory.ITrackedContentsItemHandler;
 

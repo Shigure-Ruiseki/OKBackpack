@@ -22,6 +22,7 @@ import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import ruiseki.backpack.backpack.BackpackStorage;
 import ruiseki.backpack.client.gui.sync.BackpackSHRegistries;
+import ruiseki.backpack.client.gui.sync.OBUpgradeSlotSHRegistries;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
@@ -89,6 +90,7 @@ public class OKBackpack extends ModBaseVersionable {
         super.preInit(event);
 
         BackpackSHRegistries.load();
+        OBUpgradeSlotSHRegistries.load();
 
         if (MinecraftHelpers.isClientSide()) {
             ModelRegistry.registerModid(Reference.MOD_ID);

@@ -3,12 +3,16 @@ package ruiseki.backpack.upgrades.inception;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
 import ruiseki.backpack.backpack.ItemBackpack;
+import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okcore.helper.InventoryHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.widget.ExpandedTab;
+import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.helper.TranslateHelpers;
 import ruiseki.okstoragecore.upgrades.ItemUpgradeBase;
 import ruiseki.okstoragecore.upgrades.UpgradeSlotChangeResult;
@@ -16,10 +20,24 @@ import ruiseki.okstoragecore.upgrades.UpgradeType;
 
 public class ItemInceptionUpgrade extends ItemUpgradeBase<InceptionUpgradeWrapper> {
 
-    public static final UpgradeType<InceptionUpgradeWrapper> TYPE = new UpgradeType<>(InceptionUpgradeWrapper::new);
+    public static final UpgradeType<InceptionUpgradeWrapper> TYPE = new UpgradeType<>(
+        new UpgradeType.IFactory<InceptionUpgradeWrapper>() {
+
+            @Override
+            public InceptionUpgradeWrapper create(IStorageWrapper storageWrapper, ItemStack upgrade,
+                Consumer<ItemStack> upgradeSaveHandler) {
+                return new InceptionUpgradeWrapper(storageWrapper, upgrade, upgradeSaveHandler);
+            }
+
+            @Override
+            public ExpandedTab createExpandedTab(int slotIndex, InceptionUpgradeWrapper wrapper, ItemStack stack,
+                StoragePanel storagePanel) {
+                return new InceptionUpgradeTab(slotIndex, wrapper, stack, storagePanel);
+            }
+        });
 
     public ItemInceptionUpgrade() {
-        super(null);
+        super(GeneralConfig.maxUpgradesPerStorageConfig);
     }
 
     @Override

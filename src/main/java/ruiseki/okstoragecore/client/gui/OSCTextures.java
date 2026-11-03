@@ -51,6 +51,9 @@ public class OSCTextures {
     public static final IDrawable ITEM_MAGNET = icon("exp_magnet", 128, 48);
     public static final IDrawable IGNORE_ITEM_MAGNET = icon("ignore_exp_magnet", 144, 48);
 
+    public static final UITexture MAIN_FIRST = icon("main_first", 48, 32);
+    public static final UITexture INCEPTION_FIRST = icon("inception_first", 64, 32);
+
     public static final UITexture MATCH_MOD = icon("match_mod", 32, 16);
     public static final IDrawable MATCH_ITEM = new ItemDrawable(Items.apple);
     public static final UITexture MATCH_TAG = icon("match_tag", 64, 0);

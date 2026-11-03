@@ -2,7 +2,7 @@ package ruiseki.okstoragecore.client.gui.sync;
 
 import net.minecraft.util.ResourceLocation;
 
-import ruiseki.okbackpack.Reference;
+import ruiseki.okstoragecore.Reference;
 import ruiseki.okstoragecore.helper.StorageInventoryHelpers;
 import ruiseki.okstoragecore.upgrades.ContentsFilterType;
 import ruiseki.okstoragecore.upgrades.IContentsFilteredUpgrade;

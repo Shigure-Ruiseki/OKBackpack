@@ -517,3 +517,9 @@ gui.okbackpack.settings.buttons.another_player_can_open.on=Another player can op
 gui.okbackpack.settings.buttons.another_player_can_open.on.tooltip=When this backpack is worn and visible another player can open it when right clicking on this player's back
 gui.okbackpack.settings.buttons.another_player_can_open.off=Another player can NOT open
 gui.okbackpack.settings.buttons.another_player_can_open.off.tooltip=Backpack can not be open by another player when right clicking on this player's back even if the backpack is worn there
+
+#Upgrades
+
+gui.okbackpack.upgrades.inception=Inception
+gui.okbackpack.upgrades.buttons.inventory_order_main_first=Upgrades work with inventory\nof main backpack first
+gui.okbackpack.upgrades.buttons.inventory_order_incepted_first=Upgrades work with inventories\nof backpacks in backpack first
