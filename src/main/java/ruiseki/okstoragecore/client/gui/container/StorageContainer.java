@@ -377,8 +377,7 @@ public class StorageContainer extends ModularContainer implements ISortableConta
     @SafeVarargs
     protected final void transferItemFilter(ModularSlot fromSlot, ItemStack fromStack,
         Predicate<ItemStack> fromStackFilter, Predicate<ModularSlot>... slotFilters) {
-        if (ItemHelpers.isEmpty(fromStack) || !fromSlot.canTakeStack(this.getPlayer())
-            || !fromStackFilter.test(fromStack)) {
+        if (ItemHelpers.isEmpty(fromStack) || !fromStackFilter.test(fromStack)) {
             return;
         }
 
@@ -416,8 +415,7 @@ public class StorageContainer extends ModularContainer implements ISortableConta
     }
 
     protected void transferToSlot(ModularSlot fromSlot, ModularSlot toSlot, ItemStack fromStack) {
-        if (ItemHelpers.isEmpty(fromStack) || !fromSlot.canTakeStack(this.getPlayer())
-            || !toSlot.isItemValid(fromStack)) {
+        if (ItemHelpers.isEmpty(fromStack) || !toSlot.isItemValid(fromStack)) {
             return;
         }
 
