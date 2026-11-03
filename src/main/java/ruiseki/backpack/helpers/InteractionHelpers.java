@@ -1,20 +1,30 @@
 
 package ruiseki.backpack.helpers;
 
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S2FPacketSetSlot;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
+import ruiseki.backpack.api.IItemHandlerInteractionUpgrade;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.okbackpack.GeneralConfig;
+import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.CapabilityHelpers;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
+import ruiseki.okcore.helper.TileHelpers;
 import ruiseki.okcore.inventory.ClickType;
+import ruiseki.okcore.item.capability.CapabilityItemHandler;
+import ruiseki.okcore.item.handler.IItemHandler;
+import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
 import ruiseki.okstoragecore.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okstoragecore.inventory.InventoryHandler;
@@ -258,6 +268,36 @@ public class InteractionHelpers {
             }
         }
         return false;
+    }
+
+    public static boolean tryInventoryInteraction(BlockPos pos, World world, ItemStack backpack, ForgeDirection face,
+        EntityPlayer player) {
+        if (GeneralConfig.noInteractionBLocksConfig
+            .isBlockInteractionDisallowed(pos.getBlock(world), pos.getBlockMetadata(world))) {
+            return false;
+        }
+
+        return TileHelpers.get(world, pos)
+            .map(
+                te -> CapabilityHelpers.getCapability(te, CapabilityItemHandler.ITEM_HANDLER, face)
+                    .map(
+                        itemHandler -> player.worldObj.isRemote
+                            || CapabilityHelpers.getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
+                                .map(wrapper -> tryRunningInteractionWrappers(itemHandler, wrapper, player))
+                                .orElse(false))
+                    .orElse(false))
+            .orElse(false);
+    }
+
+    private static boolean tryRunningInteractionWrappers(IItemHandler itemHandler, IStorageWrapper wrapper,
+        EntityPlayer player) {
+        List<IItemHandlerInteractionUpgrade> wrappers = wrapper.getUpgradeHandler()
+            .getWrappersThatImplement(IItemHandlerInteractionUpgrade.class);
+        if (wrappers.isEmpty()) {
+            return false;
+        }
+        wrappers.forEach(upgrade -> upgrade.onHandlerInteract(itemHandler, player));
+        return true;
     }
 
 }

@@ -32,6 +32,7 @@ import lombok.experimental.Delegate;
 import ruiseki.backpack.backpack.wrapper.BackpackWrapper;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
+import ruiseki.backpack.helpers.InteractionHelpers;
 import ruiseki.backpack.upgrades.everlasting.EntityEverlastingItem;
 import ruiseki.backpack.upgrades.everlasting.ItemEverlastingUpgrade;
 import ruiseki.okbackpack.api.tier.BackpackTier;
@@ -40,6 +41,7 @@ import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
 import ruiseki.okbackpack.common.init.TierRegistries;
 import ruiseki.okcore.capabilities.Capability;
 import ruiseki.okcore.capabilities.ICapabilityProvider;
+import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.datastructure.LazyOptional;
 import ruiseki.okcore.energy.capability.CapabilityEnergy;
 import ruiseki.okcore.energy.capability.EmptyEnergyStorage;
@@ -108,6 +110,25 @@ public class ItemBackpack extends ItemBlockMetadata
 
     private EntityEverlastingItem createEverlastingBackpack(World world, EntityItem itemEntity, ItemStack itemstack) {
         return new EntityEverlastingItem(world, itemEntity, itemstack);
+    }
+
+    @Override
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+        float hitX, float hitY, float hitZ) {
+        if (stack == null) return false;
+        if (player.isSneaking()) {
+            if (InteractionHelpers.tryInventoryInteraction(
+                new BlockPos(x, y, z),
+                world,
+                stack,
+                ForgeDirection.getOrientation(side),
+                player)) {
+                return true;
+            }
+            if (world.getBlock(x, y, z) instanceof BlockBackpack) return false;
+            return super.onItemUse(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
+        }
+        return false;
     }
 
     @Override

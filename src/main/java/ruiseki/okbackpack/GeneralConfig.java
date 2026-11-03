@@ -3,6 +3,7 @@ package ruiseki.okbackpack;
 
 import org.apache.logging.log4j.Level;
 
+import ruiseki.backpack.config.NoInteractionBlocks;
 import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.DummyConfig;
@@ -75,6 +76,15 @@ public class GeneralConfig extends DummyConfig {
     public static boolean upgradesUseInventoriesOfBackpacksInBackpack = true;
     @ConfigurableProperty(category = "core", comment = "", configLocation = ConfigLocation.SERVER)
     public static boolean upgradesInContainedBackpacksAreFunctional = true;
+
+    @ConfigurableProperty(
+        category = "core",
+        comment = "List of blocks that inventory interaction upgrades cannot interact with. Format: modid:block_name[:metadata], separated by commas. Omit metadata to block all variants.",
+        configLocation = ConfigLocation.SERVER)
+    public static String noInteractionBLocks = "";
+
+    public static final NoInteractionBlocks noInteractionBLocksConfig = new NoInteractionBlocks(
+        () -> noInteractionBLocks);
 
     public GeneralConfig() {
         super(OKBackpack._instance, true, "general", null);
