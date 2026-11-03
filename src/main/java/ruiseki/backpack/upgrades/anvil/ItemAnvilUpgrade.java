@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okstoragecore.api.IStorageWrapper;
-import ruiseki.okstoragecore.client.gui.container.UpgradeContainer;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSH;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSHRegisters;
 import ruiseki.okstoragecore.client.gui.widget.ExpandedTab;

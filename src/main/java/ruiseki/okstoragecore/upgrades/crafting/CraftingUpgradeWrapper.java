@@ -5,15 +5,12 @@ import java.util.function.Consumer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import com.cleanroommc.modularui.widgets.slot.ModularSlot;
-
 import ruiseki.okcore.helper.InventoryHelpers;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.NBTHelpers;
 import ruiseki.okcore.item.handler.ItemStackHandler;
 import ruiseki.okstoragecore.api.IStorageWrapper;
-import ruiseki.okstoragecore.client.gui.container.StorageContainer;
 import ruiseki.okstoragecore.upgrades.ISlotClickUpgrade;
 import ruiseki.okstoragecore.upgrades.IStorageUpgrade;
 import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
@@ -93,17 +90,9 @@ public class CraftingUpgradeWrapper extends UpgradeWrapperBase<CraftingUpgradeWr
     }
 
     @Override
-    public boolean transferItem(EntityPlayer player, ModularSlot slot, ItemStack stack) {
-        if (ItemHelpers.isEmpty(stack)) return false;
-
-        if (this.shouldShiftClickIntoStorage()) {
-            ItemStack remaining = InventoryHelpers
-                .insertIntoInventory(stack, storageWrapper.getInventoryHandler(), false);
-            int remainingSize = ItemHelpers.isEmpty(remaining) ? 0 : remaining.stackSize;
-            stack.stackSize = remainingSize;
-            StorageContainer.updateSlotStack(slot, remainingSize <= 0 ? ItemHelpers.EMPTY : stack);
-            return remainingSize <= 0;
-        }
-        return false;
+    public ItemStack transferItem(EntityPlayer player, ItemStack stack) {
+        if (ItemHelpers.isEmpty(stack) || !this.shouldShiftClickIntoStorage()) return stack;
+        stack = InventoryHelpers.insertIntoInventory(stack, storageWrapper.getInventoryHandler(), false);
+        return stack;
     }
 }

@@ -126,7 +126,7 @@ public class ModularCraftingSlot extends IndexedModularSlot {
 
     @Override
     public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
-        if (this.getCraftMatrix() == null || ItemHelpers.isEmpty(stack)) return;
+        if (this.getCraftMatrix() == null) return;
 
         CraftingUpgradeWrapper upgrade = getUpgradeWrapper();
         boolean refill = upgrade.shouldRefillCraftingGrid();

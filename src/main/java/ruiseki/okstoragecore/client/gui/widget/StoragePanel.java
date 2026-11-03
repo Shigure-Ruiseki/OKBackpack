@@ -586,9 +586,6 @@ public class StoragePanel extends ModularPanel {
                     if (expanded != null) {
                         upgrade.getType()
                             .updateWidgetDelegates(upgradeWrapper, group);
-                        group.setUpgradeContainer(
-                            upgrade.getType()
-                                .createContainer(upgradeWrapper, group));
                         tab.setExpandedWidget(expanded);
                         if (this.player.worldObj.isRemote) {
                             getContext().getUISettings()
