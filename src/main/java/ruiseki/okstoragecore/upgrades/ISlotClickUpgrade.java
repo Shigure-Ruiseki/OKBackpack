@@ -2,6 +2,7 @@ package ruiseki.okstoragecore.upgrades;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+
 import org.jetbrains.annotations.Nullable;
 
 public interface ISlotClickUpgrade {
