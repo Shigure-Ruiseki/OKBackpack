@@ -588,8 +588,9 @@ public class StoragePanel extends ModularPanel {
                             t -> t.clearText()
                                 .addLine(IKey.str(item.getItemStackDisplayName(stack)))
                                 .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
-                    tab.setExpandedWidget(upgrade.getType()
-                        .createExpandedTab(slotIndex, upgradeWrapper, stack, this.getPanel()));
+                    tab.setExpandedWidget(
+                        upgrade.getType()
+                            .createExpandedTab(slotIndex, upgradeWrapper, stack, this.getPanel()));
                 });
             tabCount++;
         }
