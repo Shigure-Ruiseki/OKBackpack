@@ -333,7 +333,7 @@ public class StoragePanel extends ModularPanel {
                                     this.getStorageSH()
                                         .syncToServer(StorageSHRegisters.TAB_INDEX, buf -> buf.writeInt(index));
 
-                                    updateUpgradeTabs();
+                                    this.updateUpgradeTabs();
                                     return true;
                                 }
                                 return false;
@@ -525,7 +525,6 @@ public class StoragePanel extends ModularPanel {
 
                     this.updateUpgradeTabs();
                     this.updateInventoryGrid();
-                    this.updateSlotWidgets();
                 });
             this.syncManager.syncValue("upgrades", slotIndex, syncHandler);
             this.upgradeSlotSHs[slotIndex] = syncHandler;
@@ -553,6 +552,7 @@ public class StoragePanel extends ModularPanel {
     public void updateUpgradeTabs() {
         int tabCount = 0;
         this.resetTabState();
+
         UpgradeHandler handler = this.getWrapper()
             .getUpgradeHandler();
         int openedId = this.getWrapper()
@@ -563,13 +563,20 @@ public class StoragePanel extends ModularPanel {
             final int slotIndex = i;
             ItemStack stack = handler.getStackInSlot(slotIndex);
             IUpgradeWrapper upgradeWrapper = handler.getSlotWrapper(slotIndex);
+
             if (ItemHelpers.isEmpty(stack)) continue;
 
             Item item = stack.getItem();
             if (!(item instanceof IUpgradeItem upgrade)) continue;
-            if (upgradeWrapper == null || upgradeWrapper.hideSettingsTab()) continue;
+            if (upgradeWrapper == null) continue;
 
             UpgradeSlotUpdate group = this.upgradeSlotUpdates[slotIndex];
+            upgrade.getType()
+                .updateWidgetDelegates(upgradeWrapper, group);
+            upgrade.getType()
+                .updateContainer(upgradeWrapper, group);
+
+            if (upgradeWrapper.hideSettingsTab()) continue;
             this.tabContainer.getChild(tabCount)
                 .ifPresent(tab -> {
                     tab.setEnabled(true);
@@ -581,25 +588,15 @@ public class StoragePanel extends ModularPanel {
                             t -> t.clearText()
                                 .addLine(IKey.str(item.getItemStackDisplayName(stack)))
                                 .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
-                    ExpandedTab expanded = upgrade.getType()
-                        .createExpandedTab(slotIndex, upgradeWrapper, stack, this.getPanel());
-                    if (expanded != null) {
-                        upgrade.getType()
-                            .updateWidgetDelegates(upgradeWrapper, group);
-                        tab.setExpandedWidget(expanded);
-                        if (this.player.worldObj.isRemote) {
-                            getContext().getUISettings()
-                                .getRecipeViewerSettings()
-                                .addExclusionArea(expanded);
-                        }
-                    }
+                    tab.setExpandedWidget(upgrade.getType()
+                        .createExpandedTab(slotIndex, upgradeWrapper, stack, this.getPanel()));
                 });
             tabCount++;
         }
 
         this.tabCount = tabCount;
         this.updateTabPositions();
-
+        this.updateSlotWidgets();
         this.syncToggles();
         this.scheduleResize();
     }
@@ -628,7 +625,6 @@ public class StoragePanel extends ModularPanel {
 
             Widget<?> widget = upgrade.getType()
                 .createSlotWidget(slotIndex, upgradeWrapper, stack, this.getPanel());
-            if (widget == null) continue;
 
             int columnsTaken = Math.max(0, upgrade.getInventoryColumnsTaken());
             if (columnsTaken == 0) continue;
@@ -638,10 +634,6 @@ public class StoragePanel extends ModularPanel {
                 .size(columnsTaken * ItemSlot.SIZE, this.storageList.getArea().height);
 
             this.slotWidgets[slotIndex] = column;
-
-            UpgradeSlotUpdate group = this.upgradeSlotUpdates[slotIndex];
-            upgrade.getType()
-                .updateWidgetDelegates(upgradeWrapper, group);
 
             column.child(widget);
             this.storageSlotRow.child(column);
@@ -703,12 +695,6 @@ public class StoragePanel extends ModularPanel {
             .getTypeChildren()) {
             tab.setEnabled(false);
             if (tab.getExpandedWidget() != null) {
-                if (this.player.worldObj.isRemote) {
-                    this.getContext()
-                        .getUISettings()
-                        .getRecipeViewerSettings()
-                        .removeExclusionArea(tab.getExpandedWidget());
-                }
                 tab.setExpandedWidget(null);
                 tab.child(null);
             }

@@ -32,6 +32,7 @@ import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
 import ruiseki.okstoragecore.client.gui.slot.ModularStorageSlot;
 import ruiseki.okstoragecore.client.gui.slot.ModularUpgradeSlot;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
+import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
 import ruiseki.okstoragecore.upgrades.IOverflowResponseUpgrade;
 import ruiseki.okstoragecore.upgrades.ISlotClickUpgrade;
@@ -139,11 +140,8 @@ public class StorageContainer extends ModularContainer implements ISortableConta
         super.detectAndSendChanges();
         this.getStoragePanel()
             .getActiveUpgradeSlotUpdate()
-            .ifPresent(
-                update -> {
-                    update.getUpgradeContainer()
-                        .detectAndSendChanges();
-                });
+            .map(UpgradeSlotUpdate::getUpgradeContainer)
+            .ifPresent(UpgradeContainer::detectAndSendChanges);
     }
 
     @Override
@@ -151,11 +149,8 @@ public class StorageContainer extends ModularContainer implements ISortableConta
         super.onCraftMatrixChanged(inventory);
         this.getStoragePanel()
             .getActiveUpgradeSlotUpdate()
-            .ifPresent(
-                update -> {
-                    update.getUpgradeContainer()
-                        .onCraftMatrixChanged(inventory);
-                });
+            .map(UpgradeSlotUpdate::getUpgradeContainer)
+            .ifPresent(update -> update.onCraftMatrixChanged(inventory));
     }
 
     @Override
@@ -163,11 +158,8 @@ public class StorageContainer extends ModularContainer implements ISortableConta
         super.onContainerClosed(player);
         this.getStoragePanel()
             .getActiveUpgradeSlotUpdate()
-            .ifPresent(
-                update -> {
-                    update.getUpgradeContainer()
-                        .onContainerClosed(player);
-                });
+            .map(UpgradeSlotUpdate::getUpgradeContainer)
+            .ifPresent(update -> update.onContainerClosed(player));
     }
 
     @Override

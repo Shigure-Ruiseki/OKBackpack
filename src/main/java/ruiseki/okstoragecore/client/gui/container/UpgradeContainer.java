@@ -15,6 +15,10 @@ public class UpgradeContainer extends Container {
     private final EntityPlayer player;
     private final int slotIndex;
 
+    public UpgradeContainer(UpgradeSlotUpdate update) {
+        this(update.getWrapper(), update.getPanel(), update.getPlayer(), update.getUpgradeIndex());
+    }
+
     public UpgradeContainer(IStorageWrapper storageWrapper, StoragePanel storagePanel, EntityPlayer player,
         int upgradeIndex) {
         this.storageWrapper = storageWrapper;

@@ -7,16 +7,16 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.cleanroommc.modularui.widget.Widget;
 
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSH;
-import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSHRegisters;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedIntSH;
-import ruiseki.okstoragecore.client.gui.sync.value.DelegatedValueSHRegisters;
-import ruiseki.okstoragecore.client.gui.widget.ExpandedTab;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
+import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
 import ruiseki.okstoragecore.helper.TranslateHelpers;
 import ruiseki.okstoragecore.upgrades.IUpgradeCountLimitConfig;
 import ruiseki.okstoragecore.upgrades.ItemUpgradeBase;
@@ -37,29 +37,23 @@ public class ItemBatteryUpgrade extends ItemUpgradeBase<BatteryUpgradeWrapper> {
             @Override
             public void updateTabDelegates(BatteryUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
                 DelegatedItemHandlerSH batteryHandler = group.get("battery_handler");
-                if (batteryHandler == null) return;
                 batteryHandler.setItemHandler(wrapper::getStorage);
-                batteryHandler.syncToServer(DelegatedItemHandlerSHRegisters.STORAGE);
 
                 DelegatedIntSH energyStoredHandler = group.get("battery_energy_stored");
-                if (energyStoredHandler == null) return;
                 energyStoredHandler.setDelegatedSupplier(wrapper::getEnergyStored);
-                energyStoredHandler.syncToServer(DelegatedValueSHRegisters.BATTERY_ENERGY);
 
                 DelegatedIntSH maxEnergyHandler = group.get("battery_max_energy");
-                if (maxEnergyHandler == null) return;
                 maxEnergyHandler.setDelegatedSupplier(wrapper::getMaxEnergyStored);
-                maxEnergyHandler.syncToServer(DelegatedValueSHRegisters.BATTERY_MAX_ENERGY);
             }
 
             @Override
-            public ExpandedTab createExpandedTab(int slotIndex, BatteryUpgradeWrapper wrapper, ItemStack stack,
-                StoragePanel storagePanel) {
+            public @NotNull ExpandedUpgradeTab<BatteryUpgradeWrapper> createExpandedTab(int slotIndex,
+                BatteryUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
                 return new BatteryUpgradeTab(slotIndex, wrapper, stack, storagePanel);
             }
 
             @Override
-            public Widget<?> createSlotWidget(int slotIndex, BatteryUpgradeWrapper wrapper, ItemStack stack,
+            public @NotNull Widget<?> createSlotWidget(int slotIndex, BatteryUpgradeWrapper wrapper, ItemStack stack,
                 StoragePanel storagePanel) {
                 return new BatterySlotWidget(slotIndex, wrapper, storagePanel);
             }

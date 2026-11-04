@@ -26,12 +26,6 @@ public class UpgradeSlotUpdate {
         this.panel = panel;
         this.slotIndex = slotIndex;
         this.syncManager = panel.getSyncManager();
-        this.upgradeContainer = new UpgradeContainer(
-            this.getWrapper(),
-            this.getPanel(),
-            this.getPlayer(),
-            this.getUpgradeIndex());
-
         for (IUpgradeSlotUpdateFactory factory : UpgradeSlotUpdateRegistry.getFactories()) {
             factory.build(this);
         }
@@ -43,7 +37,7 @@ public class UpgradeSlotUpdate {
     }
 
     public UpgradeContainer getUpgradeContainer() {
-        return upgradeContainer;
+        return this.upgradeContainer;
     }
 
     public <T> void put(String key, T value) {

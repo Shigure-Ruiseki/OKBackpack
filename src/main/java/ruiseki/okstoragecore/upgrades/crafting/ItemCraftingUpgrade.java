@@ -4,12 +4,13 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import org.jetbrains.annotations.NotNull;
+
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSH;
-import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSHRegisters;
-import ruiseki.okstoragecore.client.gui.widget.ExpandedTab;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
+import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
 import ruiseki.okstoragecore.upgrades.IUpgradeCountLimitConfig;
 import ruiseki.okstoragecore.upgrades.ItemUpgradeBase;
 import ruiseki.okstoragecore.upgrades.UpgradeType;
@@ -28,14 +29,27 @@ public class ItemCraftingUpgrade extends ItemUpgradeBase<CraftingUpgradeWrapper>
             @Override
             public void updateTabDelegates(CraftingUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
                 DelegatedItemHandlerSH handler = group.get("crafting_handler");
-                if (handler == null) return;
                 handler.setItemHandler(wrapper::getStorage);
-                handler.syncToServer(DelegatedItemHandlerSHRegisters.STORAGE);
             }
 
             @Override
-            public ExpandedTab createExpandedTab(int slotIndex, CraftingUpgradeWrapper wrapper, ItemStack stack,
-                StoragePanel storagePanel) {
+            public void updateContainer(CraftingUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
+                DelegatedItemHandlerSH handler = group.get("crafting_handler");
+                CraftingContainer container = new CraftingContainer(
+                    group.getWrapper(),
+                    group.getPanel(),
+                    handler.getContainerSupplier(),
+                    group.getPlayer(),
+                    group.getUpgradeIndex(),
+                    3,
+                    3,
+                    handler.getItemHandler());
+                group.setUpgradeContainer(container);
+            }
+
+            @Override
+            public @NotNull ExpandedUpgradeTab<CraftingUpgradeWrapper> createExpandedTab(int slotIndex,
+                CraftingUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
                 return new CraftingUpgradeTab(slotIndex, wrapper, stack, storagePanel);
             }
         });

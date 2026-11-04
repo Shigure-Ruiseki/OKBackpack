@@ -58,17 +58,5 @@ public class AnvilSlotUpdate implements IUpgradeSlotUpdateFactory {
             .syncValue(resultGroupName, 0, new ItemSlotSH(resultSlot));
 
         group.put("anvil_result_slot", resultSlot);
-
-        AnvilContainer container = new AnvilContainer(
-            group.getWrapper(),
-            group.getPanel(),
-            anvilHandler.getContainerSupplier(),
-            group.getPlayer(),
-            slotIndex,
-            anvilHandler.getItemHandler());
-
-        resultSlot.setAnvilContainer(container);
-
-        group.setUpgradeContainer(container);
     }
 }

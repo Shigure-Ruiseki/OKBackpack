@@ -7,18 +7,18 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.cleanroommc.modularui.widget.Widget;
 
 import ruiseki.okcore.helper.FluidHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSH;
-import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSHRegisters;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedFluidStackSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedIntSH;
-import ruiseki.okstoragecore.client.gui.sync.value.DelegatedValueSHRegisters;
-import ruiseki.okstoragecore.client.gui.widget.ExpandedTab;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
+import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
 import ruiseki.okstoragecore.helper.TranslateHelpers;
 import ruiseki.okstoragecore.upgrades.IUpgradeCountLimitConfig;
 import ruiseki.okstoragecore.upgrades.ItemUpgradeBase;
@@ -27,45 +27,38 @@ import ruiseki.okstoragecore.upgrades.UpgradeType;
 
 public class ItemTankUpgrade extends ItemUpgradeBase<TankUpgradeWrapper> {
 
-    public static final UpgradeType<TankUpgradeWrapper> TYPE = new UpgradeType<>(
-        new UpgradeType.IFactory<TankUpgradeWrapper>() {
+    public static final UpgradeType<TankUpgradeWrapper> TYPE = new UpgradeType<>(new UpgradeType.IFactory<>() {
 
-            @Override
-            public TankUpgradeWrapper create(IStorageWrapper storageWrapper, ItemStack upgrade,
-                Consumer<ItemStack> upgradeSaveHandler) {
-                return new TankUpgradeWrapper(storageWrapper, upgrade, upgradeSaveHandler);
-            }
+        @Override
+        public TankUpgradeWrapper create(IStorageWrapper storageWrapper, ItemStack upgrade,
+            Consumer<ItemStack> upgradeSaveHandler) {
+            return new TankUpgradeWrapper(storageWrapper, upgrade, upgradeSaveHandler);
+        }
 
-            @Override
-            public void updateTabDelegates(TankUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
-                DelegatedItemHandlerSH tankHandler = group.get("tank_handler");
-                if (tankHandler == null) return;
-                tankHandler.setItemHandler(wrapper::getStorage);
-                tankHandler.syncToServer(DelegatedItemHandlerSHRegisters.STORAGE);
+        @Override
+        public void updateTabDelegates(TankUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
+            DelegatedItemHandlerSH tankHandler = group.get("tank_handler");
+            tankHandler.setItemHandler(wrapper::getStorage);
 
-                DelegatedFluidStackSH fluidStackHandler = group.get("tank_fluid");
-                if (fluidStackHandler == null) return;
-                fluidStackHandler.setDelegatedSupplier(wrapper::getContents);
-                fluidStackHandler.syncToServer(DelegatedValueSHRegisters.TANK_FLUID);
+            DelegatedFluidStackSH fluidStackHandler = group.get("tank_fluid");
+            fluidStackHandler.setDelegatedSupplier(wrapper::getContents);
 
-                DelegatedIntSH tankCapacityHandler = group.get("tank_capacity");
-                if (tankCapacityHandler == null) return;
-                tankCapacityHandler.setDelegatedSupplier(wrapper::getTankCapacity);
-                tankCapacityHandler.syncToServer(DelegatedValueSHRegisters.TANK_CAPACITY);
-            }
+            DelegatedIntSH tankCapacityHandler = group.get("tank_capacity");
+            tankCapacityHandler.setDelegatedSupplier(wrapper::getTankCapacity);
+        }
 
-            @Override
-            public ExpandedTab createExpandedTab(int slotIndex, TankUpgradeWrapper wrapper, ItemStack stack,
-                StoragePanel storagePanel) {
-                return new TankUpgradeTab(slotIndex, wrapper, stack, storagePanel);
-            }
+        @Override
+        public @NotNull ExpandedUpgradeTab<TankUpgradeWrapper> createExpandedTab(int slotIndex,
+            TankUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
+            return new TankUpgradeTab(slotIndex, wrapper, stack, storagePanel);
+        }
 
-            @Override
-            public Widget<?> createSlotWidget(int slotIndex, TankUpgradeWrapper wrapper, ItemStack stack,
-                StoragePanel storagePanel) {
-                return new TankSlotWidget(slotIndex, wrapper, storagePanel);
-            }
-        });
+        @Override
+        public @NotNull Widget<?> createSlotWidget(int slotIndex, TankUpgradeWrapper wrapper, ItemStack stack,
+            StoragePanel storagePanel) {
+            return new TankSlotWidget(slotIndex, wrapper, storagePanel);
+        }
+    });
 
     private final TankUpgradeConfig tankUpgradeConfig;
 

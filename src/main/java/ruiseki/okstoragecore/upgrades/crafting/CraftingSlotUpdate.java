@@ -58,16 +58,5 @@ public class CraftingSlotUpdate implements IUpgradeSlotUpdateFactory {
             .syncValue(resultGroupName, 0, new ItemSlotSH(craftingResultSlot));
 
         group.put("crafting_result_slot", craftingResultSlot);
-
-        CraftingContainer container = new CraftingContainer(
-            group.getWrapper(),
-            group.getPanel(),
-            craftingHandler.getContainerSupplier(),
-            group.getPlayer(),
-            group.getUpgradeIndex(),
-            3,
-            3,
-            craftingHandler.getItemHandler());
-        group.setUpgradeContainer(container);
     }
 }

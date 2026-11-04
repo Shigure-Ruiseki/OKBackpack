@@ -42,15 +42,15 @@ public class Tab extends SingleChildWidget<Tab> implements Interactable {
         this.tabIndex = tabIndex;
         this.expandDirection = expandDirection;
 
-        size(TAB_TEXTURE.getWidth(), TAB_TEXTURE.getHeight());
-        top(top);
+        this.size(TAB_TEXTURE.getWidth(), TAB_TEXTURE.getHeight());
+        this.top(top);
 
         switch (expandDirection) {
             case LEFT:
-                left(-TAB_TEXTURE.getWidth() + 4);
+                this.left(-TAB_TEXTURE.getWidth() + 4);
                 break;
             case RIGHT:
-                right(-TAB_TEXTURE.getWidth() + 4);
+                this.right(-TAB_TEXTURE.getWidth() + 4);
                 break;
         }
     }
@@ -77,13 +77,12 @@ public class Tab extends SingleChildWidget<Tab> implements Interactable {
     }
 
     public Tab setExpandedWidget(ExpandedTab value) {
+        if (this.expandedWidget == value) return this;
         this.expandedWidget = value;
-        if (value != null) {
-            if (this.expandDirection == ExpandDirection.LEFT) {
-                value.right(0);
-            }
-            this.child(value.setEnabledIf(expandedTabWidget -> this.showExpanded));
+        if (value != null && this.expandDirection == ExpandDirection.LEFT) {
+            value.right(0);
         }
+        this.child(value != null ? value.setEnabledIf(widget -> this.showExpanded) : null);
         return this;
     }
 
@@ -98,7 +97,8 @@ public class Tab extends SingleChildWidget<Tab> implements Interactable {
 
     @Override
     public void onInit() {
-        getContext().getUISettings()
+        this.getContext()
+            .getUISettings()
             .getRecipeViewerSettings()
             .addExclusionArea(this);
     }

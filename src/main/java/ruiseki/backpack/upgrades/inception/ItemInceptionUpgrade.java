@@ -7,12 +7,14 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import org.jetbrains.annotations.NotNull;
+
 import ruiseki.backpack.backpack.ItemBackpack;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okcore.helper.InventoryHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
-import ruiseki.okstoragecore.client.gui.widget.ExpandedTab;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
+import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
 import ruiseki.okstoragecore.helper.TranslateHelpers;
 import ruiseki.okstoragecore.upgrades.ItemUpgradeBase;
 import ruiseki.okstoragecore.upgrades.UpgradeSlotChangeResult;
@@ -30,8 +32,8 @@ public class ItemInceptionUpgrade extends ItemUpgradeBase<InceptionUpgradeWrappe
             }
 
             @Override
-            public ExpandedTab createExpandedTab(int slotIndex, InceptionUpgradeWrapper wrapper, ItemStack stack,
-                StoragePanel storagePanel) {
+            public @NotNull ExpandedUpgradeTab<InceptionUpgradeWrapper> createExpandedTab(int slotIndex,
+                InceptionUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
                 return new InceptionUpgradeTab(slotIndex, wrapper, stack, storagePanel);
             }
         });

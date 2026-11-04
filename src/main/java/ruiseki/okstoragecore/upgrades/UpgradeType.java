@@ -4,12 +4,15 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.cleanroommc.modularui.widget.Widget;
 
 import ruiseki.okstoragecore.api.IStorageWrapper;
-import ruiseki.okstoragecore.client.gui.widget.ExpandedTab;
+import ruiseki.okstoragecore.client.gui.container.UpgradeContainer;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
+import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
 
 public class UpgradeType<T extends IUpgradeWrapper> {
 
@@ -27,10 +30,17 @@ public class UpgradeType<T extends IUpgradeWrapper> {
         factory.updateTabDelegates(wrapper, group);
     }
 
-    public ExpandedTab createExpandedTab(int slotIndex, T wrapper, ItemStack stack, StoragePanel storagePanel) {
+    public void updateContainer(T wrapper, UpgradeSlotUpdate group) {
+        factory.updateContainer(wrapper, group);
+    }
+
+    @NotNull
+    public ExpandedUpgradeTab<T> createExpandedTab(int slotIndex, T wrapper, ItemStack stack,
+        StoragePanel storagePanel) {
         return factory.createExpandedTab(slotIndex, wrapper, stack, storagePanel);
     }
 
+    @NotNull
     public Widget<?> createSlotWidget(int slotIndex, T wrapper, ItemStack stack, StoragePanel storagePanel) {
         return factory.createSlotWidget(slotIndex, wrapper, stack, storagePanel);
     }
@@ -43,12 +53,19 @@ public class UpgradeType<T extends IUpgradeWrapper> {
 
         }
 
-        default ExpandedTab createExpandedTab(int slotIndex, T wrapper, ItemStack stack, StoragePanel storagePanel) {
-            return null;
+        default void updateContainer(T wrapper, UpgradeSlotUpdate group) {
+            group.setUpgradeContainer(new UpgradeContainer(group));
         }
 
+        @NotNull
+        default ExpandedUpgradeTab<T> createExpandedTab(int slotIndex, T wrapper, ItemStack stack,
+            StoragePanel storagePanel) {
+            return new ExpandedUpgradeTab<>(slotIndex, wrapper, stack, storagePanel, "");
+        }
+
+        @NotNull
         default Widget<?> createSlotWidget(int slotIndex, T wrapper, ItemStack stack, StoragePanel storagePanel) {
-            return null;
+            return new Widget<>();
         }
     }
 }

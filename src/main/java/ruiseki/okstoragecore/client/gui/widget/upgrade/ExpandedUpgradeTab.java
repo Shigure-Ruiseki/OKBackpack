@@ -13,9 +13,9 @@ import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
 import ruiseki.okstoragecore.client.gui.widget.ExpandedTab;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
-import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
+import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 
-public abstract class ExpandedUpgradeTab<U extends UpgradeWrapperBase<U, ?>> extends ExpandedTab {
+public class ExpandedUpgradeTab<U extends IUpgradeWrapper> extends ExpandedTab {
 
     protected UpgradeSlotSH slotSyncHandler = null;
 
