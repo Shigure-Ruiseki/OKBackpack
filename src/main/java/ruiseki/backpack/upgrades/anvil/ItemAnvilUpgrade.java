@@ -30,11 +30,7 @@ public class ItemAnvilUpgrade extends ItemUpgradeBase<AnvilUpgradeWrapper> {
         public void updateTabDelegates(AnvilUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
             DelegatedItemHandlerSH handler = group.get("anvil_handler");
             handler.setItemHandler(wrapper::getStorage);
-        }
 
-        @Override
-        public void updateContainer(AnvilUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
-            DelegatedItemHandlerSH handler = group.get("crafting_handler");
             AnvilContainer container = new AnvilContainer(
                 group.getWrapper(),
                 group.getPanel(),

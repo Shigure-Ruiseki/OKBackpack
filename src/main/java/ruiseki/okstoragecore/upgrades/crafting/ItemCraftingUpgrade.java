@@ -30,11 +30,7 @@ public class ItemCraftingUpgrade extends ItemUpgradeBase<CraftingUpgradeWrapper>
             public void updateTabDelegates(CraftingUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
                 DelegatedItemHandlerSH handler = group.get("crafting_handler");
                 handler.setItemHandler(wrapper::getStorage);
-            }
 
-            @Override
-            public void updateContainer(CraftingUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
-                DelegatedItemHandlerSH handler = group.get("crafting_handler");
                 CraftingContainer container = new CraftingContainer(
                     group.getWrapper(),
                     group.getPanel(),

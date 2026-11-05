@@ -24,7 +24,7 @@ public class CraftingUpgradeWrapper extends UpgradeWrapperBase<CraftingUpgradeWr
         Consumer<ItemStack> upgradeSaveHandler) {
         super(storageWrapper, upgrade, upgradeSaveHandler);
 
-        this.inventory = new ItemStackHandler(10) {
+        this.inventory = new ItemStackHandler(9) {
 
             @Override
             protected void onContentsChanged(int slot) {

@@ -23,7 +23,7 @@ public class CraftingSlotUpdate implements IUpgradeSlotUpdateFactory {
             group.getPanel(),
             group::getContainer,
             slotIndex,
-            10);
+            9);
 
         group.getSyncManager()
             .syncValue("crafting_delegation_" + slotIndex, craftingHandler);

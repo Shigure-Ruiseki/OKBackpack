@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import com.cleanroommc.modularui.widget.Widget;
 
 import ruiseki.okstoragecore.api.IStorageWrapper;
-import ruiseki.okstoragecore.client.gui.container.UpgradeContainer;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
@@ -30,10 +29,6 @@ public class UpgradeType<T extends IUpgradeWrapper> {
         factory.updateTabDelegates(wrapper, group);
     }
 
-    public void updateContainer(T wrapper, UpgradeSlotUpdate group) {
-        factory.updateContainer(wrapper, group);
-    }
-
     @NotNull
     public ExpandedUpgradeTab<T> createExpandedTab(int slotIndex, T wrapper, ItemStack stack,
         StoragePanel storagePanel) {
@@ -51,10 +46,6 @@ public class UpgradeType<T extends IUpgradeWrapper> {
 
         default void updateTabDelegates(T wrapper, UpgradeSlotUpdate group) {
 
-        }
-
-        default void updateContainer(T wrapper, UpgradeSlotUpdate group) {
-            group.setUpgradeContainer(new UpgradeContainer(group));
         }
 
         @NotNull

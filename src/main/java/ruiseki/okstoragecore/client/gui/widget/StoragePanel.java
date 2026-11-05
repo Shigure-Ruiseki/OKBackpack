@@ -573,8 +573,6 @@ public class StoragePanel extends ModularPanel {
             UpgradeSlotUpdate group = this.upgradeSlotUpdates[slotIndex];
             upgrade.getType()
                 .updateWidgetDelegates(upgradeWrapper, group);
-            upgrade.getType()
-                .updateContainer(upgradeWrapper, group);
 
             if (upgradeWrapper.hideSettingsTab()) continue;
             this.tabContainer.getChild(tabCount)
