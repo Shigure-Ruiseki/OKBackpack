@@ -261,6 +261,7 @@ public class StoragePanel extends ModularPanel {
             // Search
             .child(
                 new TextFieldWidget().background(OKBGuiTextures.VANILLA_SEARCH_BACKGROUND)
+                    .autoUpdateOnChange(true)
                     .leftRel(0f)
                     .value(this.searchValue)
                     .onUpdateListener(widget -> {

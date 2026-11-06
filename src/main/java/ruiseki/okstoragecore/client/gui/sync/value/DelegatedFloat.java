@@ -1,25 +1,34 @@
 package ruiseki.okstoragecore.client.gui.sync.value;
 
+import com.cleanroommc.modularui.utils.FloatConsumer;
 import com.cleanroommc.modularui.utils.FloatSupplier;
 
-public class DelegatedFloat implements FloatSupplier {
+public class DelegatedFloat implements FloatSupplier, FloatConsumer {
 
-    private FloatSupplier delegated;
+    private FloatSupplier getter;
+    private FloatConsumer setter;
 
-    public DelegatedFloat(FloatSupplier delegated) {
-        this.delegated = delegated;
+    public DelegatedFloat(FloatSupplier getter, FloatConsumer setter) {
+        this.getter = getter;
+        this.setter = setter;
     }
 
-    public void setDelegated(FloatSupplier delegated) {
-        this.delegated = delegated;
+    public void setDelegated(FloatSupplier getter, FloatConsumer setter) {
+        this.getter = getter;
+        this.setter = setter;
+    }
+
+    public FloatSupplier get() {
+        return getter;
     }
 
     @Override
     public float getAsFloat() {
-        return get().getAsFloat();
+        return getter.getAsFloat();
     }
 
-    public FloatSupplier get() {
-        return delegated;
+    @Override
+    public void accept(float value) {
+        setter.accept(value);
     }
 }

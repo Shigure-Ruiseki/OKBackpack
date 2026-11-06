@@ -7,13 +7,15 @@ import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
-import com.cleanroommc.modularui.value.StringValue;
+import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.widget.Widget;
+import com.cleanroommc.modularui.widgets.TextWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
@@ -22,6 +24,7 @@ import ruiseki.backpack.client.gui.sync.OBUpgradeSlotSHRegistries;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
+import ruiseki.okstoragecore.client.gui.sync.value.DelegatedStringSH;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
 
@@ -29,15 +32,13 @@ public class AnvilUpgradeTab extends ExpandedUpgradeTab<AnvilUpgradeWrapper> {
 
     protected static final List<CyclicVariantButtonWidget.Variant> SHIFT_CLICK_INTO_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.sophisticatedstorage.upgrades.buttons.shift_click_into_inventory"),
+            IKey.lang("gui.okstoragecore.upgrades.buttons.shift_click_into_inventory"),
             OSCTextures.SHIFT_CLICK_INTO_INVENTORY),
         new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.sophisticatedstorage.upgrades.buttons.shift_click_into_storage"),
+            IKey.lang("gui.okstoragecore.upgrades.buttons.shift_click_into_storage"),
             OSCTextures.SHIFT_CLICK_INTO_STORAGE));
 
     protected TextFieldWidget nameField;
-    protected StringValue nameStringValue;
-    protected boolean editable = false;
 
     public AnvilUpgradeTab(int slotIndex, AnvilUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
         super(slotIndex, wrapper, stack, storagePanel, "gui.okbackpack.upgrades.anvil");
@@ -75,32 +76,70 @@ public class AnvilUpgradeTab extends ExpandedUpgradeTab<AnvilUpgradeWrapper> {
         return Flow.column()
             .coverChildren()
             .childPadding(2)
-            .child(this.addTextField())
-            .child(this.addSlotsRow());
+            .collapseDisabledChild()
+            .child(this.addNameField())
+            .child(this.addSlotsRow())
+            .child(this.addRequiredField());
     }
 
-    protected TextFieldWidget addTextField() {
-
-        this.nameStringValue = new StringValue(wrapper.getItemName());
+    protected TextFieldWidget addNameField() {
         this.nameField = new TextFieldWidget() {
+
+            private boolean lastHasInput;
+
+            @Override
+            public void onInit() {
+                super.onInit();
+                this.lastHasInput = hasInput();
+                this.updateBackground();
+            }
+
+            private void updateBackground() {
+                boolean hasInput = hasInput();
+                if (this.lastHasInput != hasInput) {
+                    this.lastHasInput = hasInput;
+                    background(hasInput ? OSCTextures.ANVIL_TEXT_FIELD_ENABLED : OSCTextures.ANVIL_TEXT_FIELD_DISABLED);
+                }
+            }
+
+            @Override
+            public void onUpdate() {
+                super.onUpdate();
+                this.updateBackground();
+            }
 
             @NotNull
             @Override
             public Interactable.Result onMousePressed(int button) {
-                if (!editable) return Interactable.Result.IGNORE;
+                if (!hasInput()) {
+                    return Interactable.Result.IGNORE;
+                }
                 return super.onMousePressed(button);
             }
 
             @NotNull
             @Override
             public Interactable.Result onKeyPressed(char character, int keyCode) {
-                if (!editable) return Interactable.Result.IGNORE;
+                if (!hasInput()) {
+                    return Interactable.Result.IGNORE;
+                }
                 return super.onKeyPressed(character, keyCode);
             }
-        }.value(this.nameStringValue)
+
+            @Override
+            public void onFocus(ModularGuiContext context) {
+                if (!hasInput()) {
+                    context.removeFocus();
+                    return;
+                }
+                super.onFocus(context);
+            }
+        }.syncHandler("anvil_name_field_" + this.slotIndex)
+            .autoUpdateOnChange(true)
             .setMaxLength(256)
             .background(this.hasInput() ? OSCTextures.ANVIL_TEXT_FIELD_ENABLED : OSCTextures.ANVIL_TEXT_FIELD_DISABLED)
             .size(100, 16);
+
         return this.nameField;
     }
 
@@ -162,5 +201,16 @@ public class AnvilUpgradeTab extends ExpandedUpgradeTab<AnvilUpgradeWrapper> {
     protected ItemSlot addOutputSlot() {
         return new ItemSlot().syncHandler("anvil_result_" + slotIndex, 0)
             .name("anvil_result_" + slotIndex);
+    }
+
+    protected TextWidget<?> addRequiredField() {
+        DelegatedStringSH requiredField = this.getSyncManager()
+            .findSyncHandler("anvil_required_field_" + slotIndex, DelegatedStringSH.class);
+        return new TextWidget<>(IKey.dynamic(requiredField::getStringValue)).background((IDrawable) null)
+            .height(16)
+            .setEnabledIf(
+                field -> !requiredField.getStringValue()
+                    .isEmpty())
+            .textAlign(Alignment.Center);
     }
 }

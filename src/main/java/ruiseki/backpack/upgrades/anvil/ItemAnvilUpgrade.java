@@ -6,10 +6,10 @@ import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
 
-import ruiseki.backpack.client.gui.slot.AnvilResultSlot;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSH;
+import ruiseki.okstoragecore.client.gui.sync.value.DelegatedStringSH;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
@@ -38,9 +38,13 @@ public class ItemAnvilUpgrade extends ItemUpgradeBase<AnvilUpgradeWrapper> {
                 group.getPlayer(),
                 group.getUpgradeIndex(),
                 handler.getItemHandler());
-            AnvilResultSlot resultSlot = group.get("anvil_result_slot");
-            resultSlot.setAnvilContainer(container);
             group.setUpgradeContainer(container);
+
+            DelegatedStringSH nameField = group.get("anvil_name_field");
+            nameField.setDelegated(wrapper::getItemName, s -> {
+                wrapper.setItemName(s);
+                container.updateRepairOutput();
+            });
         }
 
         @Override

@@ -40,10 +40,10 @@ public class ItemBatteryUpgrade extends ItemUpgradeBase<BatteryUpgradeWrapper> {
                 batteryHandler.setItemHandler(wrapper::getStorage);
 
                 DelegatedIntSH energyStoredHandler = group.get("battery_energy_stored");
-                energyStoredHandler.setDelegatedSupplier(wrapper::getEnergyStored);
+                energyStoredHandler.setDelegated(wrapper::getEnergyStored);
 
                 DelegatedIntSH maxEnergyHandler = group.get("battery_max_energy");
-                maxEnergyHandler.setDelegatedSupplier(wrapper::getMaxEnergyStored);
+                maxEnergyHandler.setDelegated(wrapper::getMaxEnergyStored);
             }
 
             @Override

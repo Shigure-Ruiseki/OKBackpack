@@ -1,25 +1,38 @@
 package ruiseki.okstoragecore.client.gui.sync.value;
 
+import java.util.function.BooleanSupplier;
+
 import net.minecraft.network.PacketBuffer;
 
 import com.cleanroommc.modularui.api.value.sync.IBoolSyncValue;
 import com.cleanroommc.modularui.api.value.sync.IStringSyncValue;
+import com.cleanroommc.modularui.utils.BooleanConsumer;
 
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 
 public class DelegatedBooleanSH extends DelegatedValueSH<Boolean, DelegatedBooleanSH>
     implements IBoolSyncValue<Boolean>, IStringSyncValue<Boolean> {
 
-    public DelegatedBoolean delegatedSupplier;
+    public DelegatedBoolean delegatedBoolean;
+    public boolean self = false;
 
     public DelegatedBooleanSH(StoragePanel panel, int slotIndex) {
         super(panel, slotIndex);
-        this.delegatedSupplier = new DelegatedBoolean(() -> false);
+        this.delegatedBoolean = new DelegatedBoolean(() -> this.self, value -> this.self = value);
         this.cache = false;
     }
 
-    public void setDelegatedSupplier(DelegatedBoolean delegated) {
-        delegatedSupplier.setDelegated(delegated);
+    public void setDelegated(BooleanSupplier getter) {
+        this.setDelegated(getter, value -> {});
+    }
+
+    public void setDelegated(BooleanSupplier getter, BooleanConsumer setter) {
+        this.delegatedBoolean.setDelegated(getter, setter);
+    }
+
+    public void removeDelegated() {
+        this.setDelegated(() -> this.self, value -> this.self = value);
+        this.setValue(false);
     }
 
     @Override
@@ -29,30 +42,37 @@ public class DelegatedBooleanSH extends DelegatedValueSH<Boolean, DelegatedBoole
 
     @Override
     public boolean updateCacheFromSource(boolean isFirstSync) {
-        if (isFirstSync || this.delegatedSupplier.getAsBoolean() != this.cache) {
-            setBoolValue(this.delegatedSupplier.getAsBoolean(), false, false);
+        boolean value = this.delegatedBoolean.getAsBoolean();
+
+        if (isFirstSync || value != cache) {
+            setBoolValue(value, false, false);
             return true;
         }
+
         return false;
     }
 
     @Override
     public void notifyUpdate() {
-        setBoolValue(this.delegatedSupplier.getAsBoolean(), false, true);
+        setBoolValue(this.delegatedBoolean.getAsBoolean(), false, true);
     }
 
     @Override
     public void write(PacketBuffer buffer) {
-        buffer.writeBoolean(this.delegatedSupplier.getAsBoolean());
+        buffer.writeBoolean(getBoolValue());
     }
 
     @Override
     public void read(PacketBuffer buffer) {
-        setBoolValue(buffer.readBoolean(), buffer.readBoolean(), false);
+        setBoolValue(buffer.readBoolean(), true, false);
     }
 
     @Override
     public void setBoolValue(boolean value, boolean setSource, boolean sync) {
+        if (setSource) {
+            delegatedBoolean.accept(value);
+        }
+
         setValueInternal(value, sync);
     }
 
@@ -68,7 +88,7 @@ public class DelegatedBooleanSH extends DelegatedValueSH<Boolean, DelegatedBoole
 
     @Override
     public void setStringValue(String value, boolean setSource, boolean sync) {
-        setBoolValue(Boolean.getBoolean(value), setSource, sync);
+        setBoolValue(Boolean.parseBoolean(value), setSource, sync);
     }
 
     @Override

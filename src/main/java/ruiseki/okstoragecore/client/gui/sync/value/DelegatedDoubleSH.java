@@ -1,5 +1,8 @@
 package ruiseki.okstoragecore.client.gui.sync.value;
 
+import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
+
 import net.minecraft.network.PacketBuffer;
 
 import com.cleanroommc.modularui.api.value.sync.IDoubleSyncValue;
@@ -11,16 +14,26 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 public class DelegatedDoubleSH extends DelegatedValueSH<Double, DelegatedDoubleSH>
     implements IFloatSyncValue<Double>, IDoubleSyncValue<Double>, IStringSyncValue<Double> {
 
-    public DelegatedDouble delegatedSupplier;
+    public DelegatedDouble delegatedDouble;
+    public double self = 0d;
 
     public DelegatedDoubleSH(StoragePanel panel, int slotIndex) {
         super(panel, slotIndex);
-        this.delegatedSupplier = new DelegatedDouble(() -> 0);
+        this.delegatedDouble = new DelegatedDouble(() -> this.self, value -> this.self = value);
         this.cache = 0d;
     }
 
-    public void setDelegatedSupplier(DelegatedDouble delegated) {
-        delegatedSupplier.setDelegated(delegated);
+    public void setDelegated(DoubleSupplier getter) {
+        this.setDelegated(getter, value -> {});
+    }
+
+    public void setDelegated(DoubleSupplier getter, DoubleConsumer setter) {
+        this.delegatedDouble.setDelegated(getter, setter);
+    }
+
+    public void removeDelegated() {
+        this.setDelegated(() -> this.self, value -> this.self = value);
+        this.setValue(0d);
     }
 
     @Override
@@ -30,21 +43,24 @@ public class DelegatedDoubleSH extends DelegatedValueSH<Double, DelegatedDoubleS
 
     @Override
     public boolean updateCacheFromSource(boolean isFirstSync) {
-        if (isFirstSync || this.delegatedSupplier.getAsDouble() != this.cache) {
-            setDoubleValue(this.delegatedSupplier.getAsDouble(), false, false);
+        double value = this.delegatedDouble.getAsDouble();
+
+        if (isFirstSync || Double.compare(value, cache) != 0) {
+            setDoubleValue(value, false, false);
             return true;
         }
+
         return false;
     }
 
     @Override
     public void notifyUpdate() {
-        setDoubleValue(this.delegatedSupplier.getAsDouble(), false, true);
+        setDoubleValue(this.delegatedDouble.getAsDouble(), false, true);
     }
 
     @Override
     public void write(PacketBuffer buffer) {
-        buffer.writeDouble(getFloatValue());
+        buffer.writeDouble(getDoubleValue());
     }
 
     @Override
@@ -54,12 +70,12 @@ public class DelegatedDoubleSH extends DelegatedValueSH<Double, DelegatedDoubleS
 
     @Override
     public void setStringValue(String value, boolean setSource, boolean sync) {
-        setDoubleValue(Float.parseFloat(value), setSource, sync);
+        setDoubleValue(Double.parseDouble(value), setSource, sync);
     }
 
     @Override
     public String getStringValue() {
-        return String.valueOf(this.cache);
+        return String.valueOf(cache);
     }
 
     @Override
@@ -69,6 +85,10 @@ public class DelegatedDoubleSH extends DelegatedValueSH<Double, DelegatedDoubleS
 
     @Override
     public void setDoubleValue(double value, boolean setSource, boolean sync) {
+        if (setSource) {
+            delegatedDouble.accept(value);
+        }
+
         setValueInternal(value, sync);
     }
 

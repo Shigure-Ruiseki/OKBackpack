@@ -1,6 +1,8 @@
 package ruiseki.okstoragecore.client.gui.sync.value;
 
 import java.io.IOException;
+import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.network.PacketBuffer;
@@ -11,22 +13,32 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 
 public class DelegatedStringSH extends DelegatedValueSH<String, DelegatedStringSH> implements IStringSyncValue<String> {
 
-    public DelegatedString delegatedSupplier;
+    public DelegatedString delegatedString;
+    public String self = "";
 
     public DelegatedStringSH(StoragePanel panel, int slotIndex) {
         super(panel, slotIndex);
-        this.delegatedSupplier = new DelegatedString(() -> "");
+        this.delegatedString = new DelegatedString(() -> this.self, value -> this.self = value);
         this.cache = "";
     }
 
-    public void setDelegatedSupplier(Supplier<String> delegated) {
-        delegatedSupplier.setDelegated(delegated);
+    public void setDelegated(Supplier<String> getter) {
+        this.setDelegated(getter, s -> {});
+    }
+
+    public void setDelegated(Supplier<String> getter, Consumer<String> setter) {
+        this.delegatedString.setDelegated(getter, setter);
+    }
+
+    public void removeDelegated() {
+        this.setDelegated(() -> this.self, value -> this.self = value);
+        this.setValue("");
     }
 
     @Override
     public boolean updateCacheFromSource(boolean isFirstSync) {
-        if (isFirstSync || this.delegatedSupplier.get() != this.cache) {
-            setStringValue(this.delegatedSupplier.get(), false, false);
+        if (isFirstSync || !Objects.equals(this.delegatedString.get(), this.cache)) {
+            setStringValue(this.delegatedString.get(), false, false);
             return true;
         }
         return false;
@@ -34,7 +46,7 @@ public class DelegatedStringSH extends DelegatedValueSH<String, DelegatedStringS
 
     @Override
     public void notifyUpdate() {
-        setStringValue(this.delegatedSupplier.get(), false, true);
+        setStringValue(this.delegatedString.get(), false, true);
     }
 
     @Override
@@ -49,6 +61,9 @@ public class DelegatedStringSH extends DelegatedValueSH<String, DelegatedStringS
 
     @Override
     public void setValue(String value, boolean setSource, boolean sync) {
+        if (setSource) {
+            this.delegatedString.set(value);
+        }
         setValueInternal(value, sync);
     }
 
@@ -59,7 +74,7 @@ public class DelegatedStringSH extends DelegatedValueSH<String, DelegatedStringS
 
     @Override
     public void setStringValue(String value, boolean setSource, boolean sync) {
-        setValueInternal(value, sync);
+        this.setValue(value, setSource, sync);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.client.gui.sync.value;
 
+import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
 
 import net.minecraft.network.PacketBuffer;
@@ -13,16 +14,26 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 public class DelegatedLongSH extends DelegatedValueSH<Long, DelegatedLongSH>
     implements ILongSyncValue<Long>, IIntSyncValue<Long>, IStringSyncValue<Long> {
 
-    public DelegatedLong delegatedSupplier;
+    public DelegatedLong delegatedLong;
+    public long self = 0L;
 
     public DelegatedLongSH(StoragePanel panel, int slotIndex) {
         super(panel, slotIndex);
-        this.delegatedSupplier = new DelegatedLong(() -> 0);
+        this.delegatedLong = new DelegatedLong(() -> this.self, l -> this.self = l);
         this.cache = 0L;
     }
 
-    public void setDelegatedSupplier(LongSupplier delegated) {
-        delegatedSupplier.setDelegated(delegated);
+    public void setDelegated(LongSupplier getter) {
+        this.setDelegated(getter, l -> {});
+    }
+
+    public void setDelegated(LongSupplier getter, LongConsumer setter) {
+        this.delegatedLong.setDelegated(getter, setter);
+    }
+
+    public void removeDelegated() {
+        this.setDelegated(() -> this.self, value -> this.self = value);
+        this.setValue(0L);
     }
 
     @Override
@@ -32,8 +43,9 @@ public class DelegatedLongSH extends DelegatedValueSH<Long, DelegatedLongSH>
 
     @Override
     public boolean updateCacheFromSource(boolean isFirstSync) {
-        if (isFirstSync || this.delegatedSupplier.getAsLong() != this.cache) {
-            setLongValue(this.delegatedSupplier.getAsLong(), false, false);
+        long value = this.delegatedLong.getAsLong();
+        if (isFirstSync || value != cache) {
+            setLongValue(value, false, false);
             return true;
         }
         return false;
@@ -41,27 +53,27 @@ public class DelegatedLongSH extends DelegatedValueSH<Long, DelegatedLongSH>
 
     @Override
     public void notifyUpdate() {
-        setLongValue(this.delegatedSupplier.getAsLong(), false, true);
+        setLongValue(this.delegatedLong.getAsLong(), false, true);
     }
 
     @Override
     public void write(PacketBuffer buffer) {
-        buffer.writeFloat(getIntValue());
+        buffer.writeLong(getLongValue());
     }
 
     @Override
     public void read(PacketBuffer buffer) {
-        setLongValue(buffer.readInt(), true, false);
+        setLongValue(buffer.readLong(), true, false);
     }
 
     @Override
     public void setStringValue(String value, boolean setSource, boolean sync) {
-        setLongValue(Integer.parseInt(value), setSource, sync);
+        setLongValue(Long.parseLong(value), setSource, sync);
     }
 
     @Override
     public String getStringValue() {
-        return String.valueOf(this.cache);
+        return String.valueOf(cache);
     }
 
     @Override
@@ -75,17 +87,21 @@ public class DelegatedLongSH extends DelegatedValueSH<Long, DelegatedLongSH>
     }
 
     @Override
-    public void setIntValue(int value, boolean setSource, boolean sync) {
-        setLongValue(value, sync);
-    }
-
-    @Override
     public int getIntValue() {
         return Math.toIntExact(cache);
     }
 
     @Override
+    public void setIntValue(int value, boolean setSource, boolean sync) {
+        setLongValue(value, setSource, sync);
+    }
+
+    @Override
     public void setLongValue(long value, boolean setSource, boolean sync) {
+        if (setSource) {
+            this.delegatedLong.accept(value);
+        }
+
         setValueInternal(value, sync);
     }
 

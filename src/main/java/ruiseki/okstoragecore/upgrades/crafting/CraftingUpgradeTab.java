@@ -22,15 +22,15 @@ import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
 
 public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrapper> {
 
-    private static final List<CyclicVariantButtonWidget.Variant> SHIFT_CLICK_INTO_VARIANTS = Arrays.asList(
+    protected static final List<CyclicVariantButtonWidget.Variant> SHIFT_CLICK_INTO_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.sophisticatedstorage.upgrades.buttons.shift_click_into_inventory"),
+            IKey.lang("gui.okstoragecore.upgrades.buttons.shift_click_into_inventory"),
             OSCTextures.SHIFT_CLICK_INTO_INVENTORY),
         new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.sophisticatedstorage.upgrades.buttons.shift_click_into_storage"),
+            IKey.lang("gui.okstoragecore.upgrades.buttons.shift_click_into_storage"),
             OSCTextures.SHIFT_CLICK_INTO_STORAGE));
 
-    private static final List<CyclicVariantButtonWidget.Variant> FILL_CRAFTING_VARIANTS = Arrays.asList(
+    protected static final List<CyclicVariantButtonWidget.Variant> FILL_CRAFTING_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.upgrades.buttons.refill_crafting_grid"),
             OSCTextures.FILL_CRAFTING),

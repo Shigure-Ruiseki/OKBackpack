@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.client.gui.sync.value;
 
+import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
 import net.minecraft.network.PacketBuffer;
@@ -13,16 +14,26 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 public class DelegatedIntSH extends DelegatedValueSH<Integer, DelegatedIntSH>
     implements IIntSyncValue<Integer>, IDoubleSyncValue<Integer>, IStringSyncValue<Integer> {
 
-    public DelegatedInt delegatedSupplier;
+    public DelegatedInt delegatedInt;
+    public int self = 0;
 
     public DelegatedIntSH(StoragePanel panel, int slotIndex) {
         super(panel, slotIndex);
-        this.delegatedSupplier = new DelegatedInt(() -> 0);
+        this.delegatedInt = new DelegatedInt(() -> this.self, i -> this.self = i);
         this.cache = 0;
     }
 
-    public void setDelegatedSupplier(IntSupplier delegated) {
-        delegatedSupplier.setDelegated(delegated);
+    public void setDelegated(IntSupplier getter) {
+        this.setDelegated(getter, i -> {});
+    }
+
+    public void setDelegated(IntSupplier getter, IntConsumer setter) {
+        this.delegatedInt.setDelegated(getter, setter);
+    }
+
+    public void removeDelegated() {
+        this.setDelegated(() -> this.self, value -> this.self = value);
+        this.setValue(0);
     }
 
     @Override
@@ -32,16 +43,19 @@ public class DelegatedIntSH extends DelegatedValueSH<Integer, DelegatedIntSH>
 
     @Override
     public boolean updateCacheFromSource(boolean isFirstSync) {
-        if (isFirstSync || this.delegatedSupplier.getAsInt() != this.cache) {
-            setIntValue(this.delegatedSupplier.getAsInt(), false, false);
+        int value = this.delegatedInt.getAsInt();
+
+        if (isFirstSync || value != cache) {
+            setIntValue(value, false, false);
             return true;
         }
+
         return false;
     }
 
     @Override
     public void notifyUpdate() {
-        setIntValue(this.delegatedSupplier.getAsInt(), false, true);
+        setIntValue(this.delegatedInt.getAsInt(), false, true);
     }
 
     @Override
@@ -61,7 +75,7 @@ public class DelegatedIntSH extends DelegatedValueSH<Integer, DelegatedIntSH>
 
     @Override
     public String getStringValue() {
-        return String.valueOf(this.cache);
+        return String.valueOf(cache);
     }
 
     @Override
@@ -86,6 +100,10 @@ public class DelegatedIntSH extends DelegatedValueSH<Integer, DelegatedIntSH>
 
     @Override
     public void setIntValue(int value, boolean setSource, boolean sync) {
+        if (setSource) {
+            this.delegatedInt.accept(value);
+        }
+
         setValueInternal(value, sync);
     }
 

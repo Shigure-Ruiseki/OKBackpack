@@ -58,6 +58,8 @@ gui.okstoragecore.settings.buttons.change_color_detail=Choose Color
 gui.okstoragecore.upgrades.crafting=Craft
 gui.okstoragecore.upgrades.buttons.refill_crafting_grid=Refill Crafting Grid
 gui.okstoragecore.upgrades.buttons.do_not_refill_crafting_grid=Do Not Refill Crafting Grid
+gui.okstoragecore.upgrades.buttons.shift_click_into_storage=Shift Click Result Into\nStorage
+gui.okstoragecore.upgrades.buttons.shift_click_into_inventory=Shift Click Result Into\nPlayer's Inventory
 
 gui.okstoragecore.upgrades.feeding=Feeding
 gui.okstoragecore.upgrades.advanced_feeding=Adv. Feeding

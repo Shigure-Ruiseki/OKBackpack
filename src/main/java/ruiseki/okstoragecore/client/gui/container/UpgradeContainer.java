@@ -3,10 +3,12 @@ package ruiseki.okstoragecore.client.gui.container;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
+import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 
 public class UpgradeContainer extends Container {
 
@@ -52,6 +54,10 @@ public class UpgradeContainer extends Container {
 
     }
 
+    public void onTakeResult(EntityPlayer player, ItemStack stack) {
+
+    }
+
     @Override
     public void onCraftMatrixChanged(IInventory inventory) {
 
@@ -65,5 +71,11 @@ public class UpgradeContainer extends Container {
     @Override
     public void onContainerClosed(EntityPlayer player) {
 
+    }
+
+    public IUpgradeWrapper getUpgradeWrapper() {
+        return this.getStorageWrapper()
+            .getUpgradeHandler()
+            .getSlotWrapper(this.getSlotIndex());
     }
 }

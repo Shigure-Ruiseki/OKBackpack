@@ -5,6 +5,7 @@ import net.minecraft.network.PacketBuffer;
 import com.cleanroommc.modularui.api.value.sync.IDoubleSyncValue;
 import com.cleanroommc.modularui.api.value.sync.IFloatSyncValue;
 import com.cleanroommc.modularui.api.value.sync.IStringSyncValue;
+import com.cleanroommc.modularui.utils.FloatConsumer;
 import com.cleanroommc.modularui.utils.FloatSupplier;
 
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
@@ -12,16 +13,26 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 public class DelegatedFloatSH extends DelegatedValueSH<Float, DelegatedFloatSH>
     implements IFloatSyncValue<Float>, IDoubleSyncValue<Float>, IStringSyncValue<Float> {
 
-    public DelegatedFloat delegatedSupplier;
+    public DelegatedFloat delegatedFloat;
+    public float self = 0f;
 
     public DelegatedFloatSH(StoragePanel panel, int slotIndex) {
         super(panel, slotIndex);
-        this.delegatedSupplier = new DelegatedFloat(() -> 0f);
+        this.delegatedFloat = new DelegatedFloat(() -> this.self, value -> this.self = value);
         this.cache = 0f;
     }
 
-    public void setDelegatedSupplier(FloatSupplier delegated) {
-        delegatedSupplier.setDelegated(delegated);
+    public void setDelegated(FloatSupplier getter) {
+        this.setDelegated(getter, value -> {});
+    }
+
+    public void setDelegated(FloatSupplier getter, FloatConsumer setter) {
+        this.delegatedFloat.setDelegated(getter, setter);
+    }
+
+    public void removeDelegated() {
+        this.setDelegated(() -> this.self, value -> this.self = value);
+        this.setValue(0f);
     }
 
     @Override
@@ -31,16 +42,19 @@ public class DelegatedFloatSH extends DelegatedValueSH<Float, DelegatedFloatSH>
 
     @Override
     public boolean updateCacheFromSource(boolean isFirstSync) {
-        if (isFirstSync || this.delegatedSupplier.getAsFloat() != this.cache) {
-            setFloatValue(this.delegatedSupplier.getAsFloat(), false, false);
+        float value = this.delegatedFloat.getAsFloat();
+
+        if (isFirstSync || Float.compare(value, cache) != 0) {
+            setFloatValue(value, false, false);
             return true;
         }
+
         return false;
     }
 
     @Override
     public void notifyUpdate() {
-        setFloatValue(this.delegatedSupplier.getAsFloat(), false, true);
+        setFloatValue(this.delegatedFloat.getAsFloat(), false, true);
     }
 
     @Override
@@ -60,7 +74,7 @@ public class DelegatedFloatSH extends DelegatedValueSH<Float, DelegatedFloatSH>
 
     @Override
     public String getStringValue() {
-        return String.valueOf(this.cache);
+        return String.valueOf(cache);
     }
 
     @Override
@@ -90,6 +104,10 @@ public class DelegatedFloatSH extends DelegatedValueSH<Float, DelegatedFloatSH>
 
     @Override
     public void setFloatValue(float value, boolean setSource, boolean sync) {
+        if (setSource) {
+            delegatedFloat.accept(value);
+        }
+
         setValueInternal(value, sync);
     }
 }

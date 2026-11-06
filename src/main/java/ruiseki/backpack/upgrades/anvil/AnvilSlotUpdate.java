@@ -3,9 +3,11 @@ package ruiseki.backpack.upgrades.anvil;
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
-import ruiseki.backpack.client.gui.slot.AnvilResultSlot;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
+import ruiseki.okstoragecore.client.gui.slot.ModularResultSlot;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSH;
+import ruiseki.okstoragecore.client.gui.sync.value.DelegatedStringSH;
 import ruiseki.okstoragecore.client.gui.widget.update.IUpgradeSlotUpdateFactory;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 
@@ -17,6 +19,16 @@ public class AnvilSlotUpdate implements IUpgradeSlotUpdateFactory {
 
         String inputGroupName = "anvil_slot_" + slotIndex;
         String resultGroupName = "anvil_result_" + slotIndex;
+
+        DelegatedStringSH nameField = new DelegatedStringSH(group.getPanel(), slotIndex);
+        group.getSyncManager()
+            .syncValue("anvil_name_field_" + slotIndex, nameField);
+        group.put("anvil_name_field", nameField);
+
+        DelegatedStringSH requiredField = new DelegatedStringSH(group.getPanel(), slotIndex);
+        group.getSyncManager()
+            .syncValue("anvil_required_field_" + slotIndex, requiredField);
+        group.put("anvil_required_field", requiredField);
 
         DelegatedItemHandlerSH anvilHandler = new DelegatedItemHandlerSH(
             group.getPanel(),
@@ -42,6 +54,16 @@ public class AnvilSlotUpdate implements IUpgradeSlotUpdateFactory {
                 group.getPanel(),
                 slotIndex);
 
+            slot.changeListener((newItem, onlyAmountChanged, client, init) -> {
+                if (slot.getSlotIndex() == 0) {
+                    if (ItemHelpers.isEmpty(newItem)) {
+                        nameField.setValue("");
+                    } else {
+                        nameField.setValue(newItem.getDisplayName());
+                    }
+                }
+            });
+
             slot.slotGroup(inputGroupName);
 
             group.getSyncManager()
@@ -50,7 +72,7 @@ public class AnvilSlotUpdate implements IUpgradeSlotUpdateFactory {
             group.put("anvil_slot_" + i, slot);
         }
 
-        AnvilResultSlot resultSlot = new AnvilResultSlot(group.getPanel(), slotIndex);
+        ModularResultSlot resultSlot = new ModularResultSlot(group.getPanel(), slotIndex);
 
         resultSlot.slotGroup(resultGroupName);
 

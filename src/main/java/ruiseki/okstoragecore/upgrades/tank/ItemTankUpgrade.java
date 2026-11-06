@@ -41,10 +41,10 @@ public class ItemTankUpgrade extends ItemUpgradeBase<TankUpgradeWrapper> {
             tankHandler.setItemHandler(wrapper::getStorage);
 
             DelegatedFluidStackSH fluidStackHandler = group.get("tank_fluid");
-            fluidStackHandler.setDelegatedSupplier(wrapper::getContents);
+            fluidStackHandler.setDelegated(wrapper::getContents);
 
             DelegatedIntSH tankCapacityHandler = group.get("tank_capacity");
-            tankCapacityHandler.setDelegatedSupplier(wrapper::getTankCapacity);
+            tankCapacityHandler.setDelegated(wrapper::getTankCapacity);
         }
 
         @Override

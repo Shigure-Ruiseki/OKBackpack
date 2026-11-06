@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.api.value.ISyncOrValue;
 import com.cleanroommc.modularui.drawable.ItemDrawable;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okstoragecore.api.IStorageWrapper;
@@ -78,6 +79,11 @@ public class ExpandedUpgradeTab<U extends IUpgradeWrapper> extends ExpandedTab {
     public IStorageWrapper getStorageWrapper() {
         return this.getStoragePanel()
             .getWrapper();
+    }
+
+    public PanelSyncManager getSyncManager() {
+        return this.getStoragePanel()
+            .getSyncManager();
     }
 
     public int getSlotIndex() {

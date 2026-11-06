@@ -2,24 +2,34 @@ package ruiseki.okstoragecore.client.gui.sync.value;
 
 import java.util.function.BooleanSupplier;
 
-public class DelegatedBoolean implements BooleanSupplier {
+import com.cleanroommc.modularui.utils.BooleanConsumer;
 
-    private BooleanSupplier delegated;
+public class DelegatedBoolean implements BooleanSupplier, BooleanConsumer {
 
-    public DelegatedBoolean(BooleanSupplier delegated) {
-        this.delegated = delegated;
+    private BooleanSupplier getter;
+    private BooleanConsumer setter;
+
+    public DelegatedBoolean(BooleanSupplier getter, BooleanConsumer setter) {
+        this.getter = getter;
+        this.setter = setter;
     }
 
-    public void setDelegated(BooleanSupplier delegated) {
-        this.delegated = delegated;
+    public void setDelegated(BooleanSupplier getter, BooleanConsumer setter) {
+        this.getter = getter;
+        this.setter = setter;
     }
 
     public BooleanSupplier get() {
-        return delegated;
+        return getter;
     }
 
     @Override
     public boolean getAsBoolean() {
-        return get().getAsBoolean();
+        return getter.getAsBoolean();
+    }
+
+    @Override
+    public void accept(boolean value) {
+        setter.accept(value);
     }
 }

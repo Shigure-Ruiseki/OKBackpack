@@ -1,21 +1,30 @@
 package ruiseki.okstoragecore.client.gui.sync.value;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class DelegatedEnum<T> implements Supplier<T> {
+public class DelegatedEnum<T> implements Supplier<T>, Consumer<T> {
 
-    private Supplier<T> delegated;
+    private Supplier<T> getter;
+    private Consumer<T> setter;
 
-    public DelegatedEnum(Supplier<T> delegated) {
-        this.delegated = delegated;
+    public DelegatedEnum(Supplier<T> getter, Consumer<T> setter) {
+        this.getter = getter;
+        this.setter = setter;
     }
 
-    public void setDelegated(Supplier<T> delegated) {
-        this.delegated = delegated;
+    public void setDelegated(Supplier<T> getter, Consumer<T> setter) {
+        this.getter = getter;
+        this.setter = setter;
     }
 
     @Override
     public T get() {
-        return delegated.get();
+        return getter.get();
+    }
+
+    @Override
+    public void accept(T value) {
+        setter.accept(value);
     }
 }

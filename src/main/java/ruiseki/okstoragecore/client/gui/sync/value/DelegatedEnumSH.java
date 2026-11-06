@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.client.gui.sync.value;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.network.PacketBuffer;
@@ -14,35 +15,54 @@ public class DelegatedEnumSH<T extends Enum<T>> extends DelegatedValueSH<T, Dele
     implements IEnumValue<T>, IIntSyncValue<T> {
 
     protected final Class<T> enumClass;
-    public DelegatedEnum<T> delegatedSupplier;
+    public DelegatedEnum<T> delegatedEnum;
+    public T self;
 
     public DelegatedEnumSH(StoragePanel panel, int slotIndex, Class<T> enumClass) {
         super(panel, slotIndex);
         this.enumClass = enumClass;
-        this.delegatedSupplier = new DelegatedEnum<T>(() -> null);
+        this.self = enumClass.getEnumConstants()[0];
+        this.cache = this.self;
+        this.delegatedEnum = new DelegatedEnum<>(() -> this.self, value -> this.self = value);
     }
 
-    public void setDelegatedSupplier(Supplier<T> delegated) {
-        delegatedSupplier.setDelegated(delegated);
+    public void setDelegated(Supplier<T> getter) {
+        this.setDelegated(getter, value -> {});
+    }
+
+    public void setDelegated(Supplier<T> getter, Consumer<T> setter) {
+        this.delegatedEnum.setDelegated(getter, setter);
+    }
+
+    public void removeDelegated() {
+        this.setDelegated(() -> this.self, value -> this.self = value);
+        this.setValue(this.enumClass.getEnumConstants()[0]);
     }
 
     @Override
     public void setValue(T value, boolean setSource, boolean sync) {
+        if (setSource) {
+            this.delegatedEnum.accept(value);
+        }
+
         setValueInternal(value, sync);
     }
 
     @Override
     public boolean updateCacheFromSource(boolean isFirstSync) {
-        if (isFirstSync || this.delegatedSupplier.get() != this.cache) {
-            setValue(this.delegatedSupplier.get(), false, false);
+        T value = this.delegatedEnum.get();
+
+        if (isFirstSync || value != cache) {
+            setValue(value, false, false);
             return true;
         }
+
         return false;
     }
 
     @Override
     public void notifyUpdate() {
-        setValue(this.delegatedSupplier.get(), false, true);
+        setValue(this.delegatedEnum.get(), false, true);
     }
 
     @Override
@@ -62,7 +82,13 @@ public class DelegatedEnumSH<T extends Enum<T>> extends DelegatedValueSH<T, Dele
 
     @Override
     public void setIntValue(int value, boolean setSource, boolean sync) {
-        setValue(this.enumClass.getEnumConstants()[value], setSource, sync);
+        T[] constants = this.enumClass.getEnumConstants();
+
+        if (value < 0 || value >= constants.length) {
+            throw new IllegalArgumentException("Invalid enum ordinal: " + value);
+        }
+
+        setValue(constants[value], setSource, sync);
     }
 
     @Override

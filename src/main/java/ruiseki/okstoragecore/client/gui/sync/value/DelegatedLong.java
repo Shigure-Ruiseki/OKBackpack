@@ -1,25 +1,34 @@
 package ruiseki.okstoragecore.client.gui.sync.value;
 
+import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
 
-public class DelegatedLong implements LongSupplier {
+public class DelegatedLong implements LongSupplier, LongConsumer {
 
-    private LongSupplier delegated;
+    private LongSupplier getter;
+    private LongConsumer setter;
 
-    public DelegatedLong(LongSupplier delegated) {
-        this.delegated = delegated;
+    public DelegatedLong(LongSupplier getter, LongConsumer setter) {
+        this.getter = getter;
+        this.setter = setter;
     }
 
-    public void setDelegated(LongSupplier delegated) {
-        this.delegated = delegated;
+    public void setDelegated(LongSupplier getter, LongConsumer setter) {
+        this.getter = getter;
+        this.setter = setter;
     }
 
     public LongSupplier get() {
-        return delegated;
+        return getter;
     }
 
     @Override
     public long getAsLong() {
-        return get().getAsLong();
+        return getter.getAsLong();
+    }
+
+    @Override
+    public void accept(long value) {
+        setter.accept(value);
     }
 }
