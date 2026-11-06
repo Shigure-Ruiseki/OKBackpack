@@ -32,12 +32,16 @@ public class RecipeHelpers {
 
     private static final Map<CompactedItem, CompactingResult> COMPACTING_RESULTS = new HashMap<>();
     private static final Map<ItemStackKey, UncompactingResult> UNCOMPACTING_RESULTS = new HashMap<>();
+    private static final Map<ItemStackKey, List<ItemStack>> UNCOMPACT_RESULT_ITEMS = new HashMap<>();
     private static final Map<ItemStackKey, Set<CompactingShape>> ITEM_COMPACTING_SHAPES = new HashMap<>();
 
     private RecipeHelpers() {}
 
     public static void setWorld(World newWorld) {
-        if (getWorld() != newWorld) clearCache();
+        if (getWorld() != newWorld) {
+            clearCache();
+        }
+
         world = new WeakReference<>(newWorld);
     }
 
@@ -48,12 +52,18 @@ public class RecipeHelpers {
     public static void clearCache() {
         COMPACTING_RESULTS.clear();
         UNCOMPACTING_RESULTS.clear();
+        UNCOMPACT_RESULT_ITEMS.clear();
         ITEM_COMPACTING_SHAPES.clear();
+
         ItemStackKey.clearCache();
     }
 
+    // Compacting shapes
+
     public static Set<CompactingShape> getItemCompactingShapes(ItemStack stack) {
-        if (ItemHelpers.isEmpty(stack) || getWorld() == null) {
+        World w = getWorld();
+
+        if (w == null || ItemHelpers.isEmpty(stack)) {
             return Collections.emptySet();
         }
 
@@ -67,15 +77,13 @@ public class RecipeHelpers {
             return cached;
         }
 
-        Set<CompactingShape> result = Collections.unmodifiableSet(getCompactingShapes(stack));
+        Set<CompactingShape> result = Collections.unmodifiableSet(getCompactingShapes(stack, w));
         ITEM_COMPACTING_SHAPES.put(key, result);
 
         return result;
     }
 
-    private static Set<CompactingShape> getCompactingShapes(ItemStack stack) {
-        World w = getWorld();
-
+    private static Set<CompactingShape> getCompactingShapes(ItemStack stack, World w) {
         if (w == null || ItemHelpers.isEmpty(stack)) {
             return Collections.emptySet();
         }
@@ -133,6 +141,8 @@ public class RecipeHelpers {
 
         return shape;
     }
+
+    // Compacting loop detection
 
     private static boolean isPartOfCompactingLoop(ItemStack firstCompacted, ItemStack firstCompactResult, World w) {
 
@@ -194,6 +204,8 @@ public class RecipeHelpers {
 
         return false;
     }
+
+    // Uncompacting checks
 
     private static boolean uncompactMatchesItem(ItemStack compactedStack, World w, ItemStack expectedStack,
         int expectedCount) {
@@ -286,13 +298,34 @@ public class RecipeHelpers {
         return UncompactingResult.EMPTY;
     }
 
+    /**
+     * Returns all crafting results for a 1x1 inventory.
+     *
+     * Results are cached by ItemStackKey because the same input can be
+     * checked multiple times during compacting and uncompacting detection.
+     */
     private static List<ItemStack> getUncompactResultItems(World w, ItemStack itemToUncompact) {
         if (w == null || ItemHelpers.isEmpty(itemToUncompact)) {
             return Collections.emptyList();
         }
 
+        ItemStackKey key = ItemStackKey.of(itemToUncompact);
+        if (key == null) {
+            return Collections.emptyList();
+        }
+
+        List<ItemStack> cached = UNCOMPACT_RESULT_ITEMS.get(key);
+        if (cached != null) {
+            return cached;
+        }
+
         InventoryCrafting inventory = getFilledCraftingInventory(itemToUncompact, 1, 1);
         List<IRecipe> recipes = getMatchingRecipes(inventory, w);
+
+        if (recipes.isEmpty()) {
+            UNCOMPACT_RESULT_ITEMS.put(key, Collections.<ItemStack>emptyList());
+            return Collections.emptyList();
+        }
 
         List<ItemStack> results = new ArrayList<>();
 
@@ -300,12 +333,17 @@ public class RecipeHelpers {
             ItemStack result = getRecipeResult(recipe, inventory);
 
             if (!ItemHelpers.isEmpty(result)) {
-                results.add(result.copy());
+                results.add(result);
             }
         }
 
-        return results;
+        List<ItemStack> immutableResults = Collections.unmodifiableList(results);
+        UNCOMPACT_RESULT_ITEMS.put(key, immutableResults);
+
+        return immutableResults;
     }
+
+    // Compacting results
 
     public static CompactingResult getCompactingResult(Item item, CompactingShape shape) {
         return item == null ? CompactingResult.EMPTY : getCompactingResult(new ItemStack(item), shape);
@@ -390,6 +428,8 @@ public class RecipeHelpers {
         return (width == 2 && height == 2) || (width == 3 && height == 3);
     }
 
+    // Recipe matching
+
     private static List<IRecipe> getMatchingRecipes(InventoryCrafting inventory, World w) {
         List<IRecipe> matches = new ArrayList<>();
 
@@ -436,6 +476,8 @@ public class RecipeHelpers {
 
         return inventory;
     }
+
+    // Types
 
     public enum CompactingShape {
 
@@ -487,8 +529,7 @@ public class RecipeHelpers {
                 return Collections.emptyList();
             }
 
-            List<ItemStack> copies = new ArrayList<>();
-
+            List<ItemStack> copies = new ArrayList<>(stacks.size());
             for (ItemStack stack : stacks) {
                 copies.add(stack == null ? null : stack.copy());
             }
