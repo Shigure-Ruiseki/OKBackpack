@@ -5,7 +5,10 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
 
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.item.handler.ItemStackHandler;
 
 public class BaseItemStackHandler extends ItemStackHandler {
@@ -125,7 +128,28 @@ public class BaseItemStackHandler extends ItemStackHandler {
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        super.deserializeNBT(nbt);
+        // ItemStack.loadItemStackFromNBT reads "Count" as a signed byte, and ItemHelpers.isEmpty is
+        // checked before the int "Count" tag is restored. Stacks of 128..255, 256, 384..512, ...
+        // therefore look empty and are dropped. Restore the int count first so the real stack size
+        // is authoritative before deciding whether the slot is empty.
+        setSize(nbt.hasKey("Size", Constants.NBT.TAG_INT) ? nbt.getInteger("Size") : stacks.size());
+
+        NBTTagList items = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < items.tagCount(); i++) {
+            NBTTagCompound itemTag = items.getCompoundTagAt(i);
+            int slot = itemTag.hasKey("Slot", Constants.NBT.TAG_INT) ? itemTag.getInteger("Slot")
+                : itemTag.getByte("Slot") & 255;
+            if (slot < 0 || slot >= stacks.size()) continue;
+
+            ItemStack loaded = ItemStack.loadItemStackFromNBT(itemTag);
+            if (loaded != null && itemTag.hasKey("Count", Constants.NBT.TAG_INT)) {
+                loaded.stackSize = itemTag.getInteger("Count");
+            }
+            stacks.set(slot, ItemHelpers.isEmpty(loaded) ? ItemHelpers.EMPTY : loaded);
+        }
+
+        onLoad();
+
         if (nbt.hasKey("VisualSize")) {
             setVisualSize(nbt.getInteger("VisualSize"));
         } else {
