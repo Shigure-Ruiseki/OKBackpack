@@ -14,6 +14,7 @@ import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.inventory.BackpackWrapperInventoryAdapter;
 import ruiseki.okbackpack.compat.Mods;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.init.IInitListener;
 
 public class StructureLibCompat implements IInitListener {
@@ -40,11 +41,11 @@ public class StructureLibCompat implements IInitListener {
 
         @Override
         public IInventory apply(ItemStack stack) {
-            if (!BackpackEntityHelpers.isBackpackStack(stack, false)) {
-                return null;
-            }
-            BackpackWrapper wrapper = new BackpackWrapper(stack, (BlockBackpack.ItemBackpack) stack.getItem());
-            return new BackpackWrapperInventoryAdapter(wrapper);
+            if (!BackpackEntityHelpers.isBackpackStack(stack, false)) return null;
+            return ItemHelpers.getItem(stack, BlockBackpack.ItemBackpack.class)
+                .map(item -> new BackpackWrapper(stack, item))
+                .map(BackpackWrapperInventoryAdapter::new)
+                .orElse(null);
         }
     }
 }

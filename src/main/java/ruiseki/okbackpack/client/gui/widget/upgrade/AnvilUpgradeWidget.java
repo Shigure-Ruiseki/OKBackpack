@@ -149,7 +149,7 @@ public class AnvilUpgradeWidget extends ExpandedUpgradeTabWidget<AnvilUpgradeWra
                 int color;
 
                 if (tooExpensive) {
-                    costText = "\u00a7c" + LangHelpers.localize("container.repair.expensive");
+                    costText = "§c" + LangHelpers.localize("container.repair.expensive");
                     color = 0xFF6060;
                 } else {
                     costText = LangHelpers.localize("container.repair.cost", cost);

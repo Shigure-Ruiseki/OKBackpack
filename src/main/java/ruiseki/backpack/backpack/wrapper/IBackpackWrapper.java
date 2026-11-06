@@ -1,0 +1,64 @@
+package ruiseki.backpack.backpack.wrapper;
+
+import java.util.UUID;
+import java.util.function.IntConsumer;
+
+import net.minecraft.item.ItemStack;
+
+import ruiseki.backpack.backpack.BlockBackpackTestConfig;
+import ruiseki.okstoragecore.api.IStorageWrapper;
+
+public interface IBackpackWrapper extends IStorageWrapper {
+
+    ItemStack getBackpack();
+
+    void setSlotNumbers(int numberOfInventorySlots, int numberOfUpgradeSlots);
+
+    void setContentsUuid(UUID storageUuid);
+
+    default void removeContentsUuid() {
+        // noop by default
+    }
+
+    default void removeContentsUUIDTag() {
+        // noop
+    }
+
+    default void registerOnSlotsChangeListener(IntConsumer onSlotsChange) {
+        // noop
+    }
+
+    default void unregisterOnSlotsChangeListener() {
+        // noop
+    }
+
+    default void registerOnInventoryHandlerRefreshListener(Runnable onInventoryHandlerRefresh) {
+        // noop
+    }
+
+    default void unregisterOnInventoryHandlerRefreshListener() {
+        // noop
+    }
+
+    class NoopBackpackWrapper extends NoopStorageWrapper implements IBackpackWrapper {
+
+        public static final NoopBackpackWrapper INSTANCE = new NoopBackpackWrapper();
+
+        private final ItemStack backpack = new ItemStack(BlockBackpackTestConfig._instance.getItemInstance());
+
+        @Override
+        public ItemStack getBackpack() {
+            return backpack;
+        }
+
+        @Override
+        public void setSlotNumbers(int numberOfInventorySlots, int numberOfUpgradeSlots) {
+            // noop
+        }
+
+        @Override
+        public void setContentsUuid(UUID storageUuid) {
+            // noop
+        }
+    }
+}

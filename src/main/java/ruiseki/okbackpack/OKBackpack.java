@@ -20,6 +20,9 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import ruiseki.backpack.backpack.BackpackStorage;
+import ruiseki.backpack.client.gui.sync.BackpackSHRegistries;
+import ruiseki.backpack.client.gui.sync.OBUpgradeSlotSHRegistries;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
@@ -44,6 +47,7 @@ import ruiseki.okcore.helper.MinecraftHelpers;
 import ruiseki.okcore.init.ItemCreativeTab;
 import ruiseki.okcore.init.ModBaseVersionable;
 import ruiseki.okcore.proxy.ICommonProxy;
+import ruiseki.okstoragecore.helper.RecipeHelpers;
 
 @Mod(
     modid = Reference.MOD_ID,
@@ -61,6 +65,8 @@ public class OKBackpack extends ModBaseVersionable {
 
     public OKBackpack() {
         super(Reference.MOD_ID, Reference.MOD_NAME, Reference.MOD_VERSION);
+
+        registerWorldStorage(BackpackStorage.getInstance(this));
 
         ConfigCondition.registerConfig(
             new ResourceLocation(Reference.MOD_ID, "enableTravelersUpgrades"),
@@ -83,6 +89,10 @@ public class OKBackpack extends ModBaseVersionable {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+
+        BackpackSHRegistries.load();
+        OBUpgradeSlotSHRegistries.load();
+
         if (MinecraftHelpers.isClientSide()) {
             ModelRegistry.registerModid(Reference.MOD_ID);
             RenderingRegistry.registerBlockHandler(JsonModelISBRH.INSTANCE);
@@ -126,6 +136,9 @@ public class OKBackpack extends ModBaseVersionable {
             .initialize(
                 MinecraftServer.getServer()
                     .getEntityWorld());
+        RecipeHelpers.setWorld(
+            MinecraftServer.getServer()
+                .getEntityWorld());
     }
 
     @Override
@@ -140,6 +153,7 @@ public class OKBackpack extends ModBaseVersionable {
         super.onServerStopped(event);
         CompactingRecipeCache.getInstance()
             .invalidate();
+        RecipeHelpers.clearCache();
     }
 
     @Override

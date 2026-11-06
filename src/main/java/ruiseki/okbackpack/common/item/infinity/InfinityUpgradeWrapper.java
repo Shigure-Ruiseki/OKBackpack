@@ -18,6 +18,7 @@ import ruiseki.okbackpack.api.wrapper.IInventoryModifiable;
 import ruiseki.okbackpack.api.wrapper.ISlotModifiable;
 import ruiseki.okbackpack.common.entity.EntityBackpack;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
 public class InfinityUpgradeWrapper extends UpgradeWrapperBase
@@ -101,13 +102,9 @@ public class InfinityUpgradeWrapper extends UpgradeWrapperBase
 
     @Override
     public boolean canAddUpgrade(int slot, ItemStack stack) {
-        // Allow swapping between infinity upgrade variants
-        if (stack != null && (stack.getItem() instanceof ItemInfinityUpgrade
-            || stack.getItem() instanceof ItemSurvivalInfinityUpgrade)) {
-            return true;
-        }
-        // No other upgrades can be added when infinity upgrade is installed
-        return false;
+        return ItemHelpers.getItemOptional(stack)
+            .map(item -> item instanceof ItemInfinityUpgrade || item instanceof ItemSurvivalInfinityUpgrade)
+            .orElse(false);
     }
 
     @Override

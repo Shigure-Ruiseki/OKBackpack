@@ -48,12 +48,10 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.EARLY)),
 
     INVENTORY_INTERACTION(new MixinBuilder("Backpack inventory interaction")
-        .addCommonMixins("minecraft.MixinNetHandlerPlayServerBackpackInteraction")
         .addSidedMixins(
             Side.CLIENT,
             "modularui2.MixinItemSlotBackpackInteraction",
-            "minecraft.MixinGuiContainerBackpackInteraction",
-            "minecraft.MixinPlayerControllerMPBackpackInteraction")
+            "minecraft.MixinGuiContainerBackpackInteraction")
         .setApplyIf(() -> GeneralConfig.enableBackpackInventoryInteraction)
         .setPhase(Phase.EARLY)),
 

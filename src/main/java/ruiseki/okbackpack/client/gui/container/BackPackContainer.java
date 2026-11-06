@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -701,7 +700,7 @@ public class BackPackContainer extends ModularContainer
                 .filter(slot -> slot instanceof ModularSlot)
                 .map(slot -> (ModularSlot) slot)
                 .filter(slotFilter)
-                .collect(Collectors.toList());
+                .toList();
 
             for (ModularSlot toSlot : targets) {
                 if (fromStack.stackSize <= 0) break;
@@ -849,7 +848,6 @@ public class BackPackContainer extends ModularContainer
 
         // merge stack
         if (fromStack.stackSize > 0 && !fromSlot.isPhantom()
-            && toStack != null
             && ItemHandlerHelpers.canItemStacksStack(fromStack, toStack)) {
 
             int j = toStack.stackSize + fromStack.stackSize;

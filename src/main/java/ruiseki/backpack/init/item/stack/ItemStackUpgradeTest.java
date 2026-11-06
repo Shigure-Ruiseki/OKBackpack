@@ -1,0 +1,20 @@
+package ruiseki.backpack.init.item.stack;
+
+import ruiseki.okbackpack.GeneralConfig;
+import ruiseki.okbackpack.OKBackpack;
+import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okstoragecore.upgrades.stack.ItemStackUpgrade;
+
+public class ItemStackUpgradeTest extends ItemConfig {
+
+    public static ItemStackUpgradeTest _instance;
+
+    public ItemStackUpgradeTest() {
+        super(
+            OKBackpack._instance,
+            true,
+            "stack_upgrade_test",
+            null,
+            config -> new ItemStackUpgrade(2, GeneralConfig.maxUpgradesPerStorageConfig));
+    }
+}

@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 
 import com.cleanroommc.modularui.network.NetworkUtils;
 
-import ruiseki.okbackpack.api.SortType;
+import ruiseki.okbackpack.api.SortBy;
 import ruiseki.okbackpack.api.upgrade.BackpackSHRegistry;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.common.block.TEBackpack;
@@ -41,8 +41,8 @@ public class BackpackSHRegisters implements IInitListener {
         if (step == Step.POSTINIT) {
 
             BackpackSHRegistry.registerServer(UPDATE_SET_SORT_TYPE, (handler, buf) -> {
-                SortType sortType = NetworkUtils.readEnumValue(buf, SortType.class);
-                handler.wrapper.setSortType(sortType);
+                SortBy sortBy = NetworkUtils.readEnumValue(buf, SortBy.class);
+                handler.wrapper.setSortType(sortBy);
             });
 
             BackpackSHRegistry.registerServer(UPDATE_SORT_INV, (handler, buf) -> {

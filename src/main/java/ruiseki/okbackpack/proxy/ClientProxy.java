@@ -5,6 +5,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 
+import ruiseki.backpack.event.ClientEventHandler;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.client.audio.BackpackJukeboxSoundManager;
 import ruiseki.okbackpack.client.key.OpenBackpackHandler;
@@ -80,5 +81,6 @@ public class ClientProxy extends ClientProxyComponent {
         if (Mods.InventoryBogoSorter.isModLoaded()) {
             MinecraftForge.EVENT_BUS.register(new BackpackBogoSorterClientCompat());
         }
+        MinecraftForge.EVENT_BUS.register(ClientEventHandler.INSTANCE);
     }
 }

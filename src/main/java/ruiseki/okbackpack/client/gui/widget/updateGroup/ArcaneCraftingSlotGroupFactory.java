@@ -27,7 +27,7 @@ import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 import ruiseki.okcore.item.handler.EmptyHandler;
-import ruiseki.okcore.item.handler.IItemHandler;
+import ruiseki.okcore.item.handler.IItemHandlerModifiable;
 import thaumcraft.api.crafting.IArcaneRecipe;
 
 public class ArcaneCraftingSlotGroupFactory implements IUpgradeSlotGroupFactory {
@@ -43,7 +43,7 @@ public class ArcaneCraftingSlotGroupFactory implements IUpgradeSlotGroupFactory 
             11) {
 
             @Override
-            public void setDelegatedStackHandler(Supplier<IItemHandler> delegated) {
+            public void setDelegatedStackHandler(Supplier<IItemHandlerModifiable> delegated) {
                 super.setDelegatedStackHandler(delegated);
                 updateInventoryCrafting(this, panel);
             }

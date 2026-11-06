@@ -144,13 +144,13 @@ public class BackpackInventoryHelpers {
             if (b == null || b.stackSize <= 0) return -1;
 
             switch (wrapper.getSortType()) {
-                case BY_NAME:
+                case NAME:
                     return reverse ? a.getDisplayName()
                         .compareTo(b.getDisplayName())
                         : b.getDisplayName()
                             .compareTo(a.getDisplayName());
 
-                case BY_MOD_ID:
+                case MOD_ID:
                     String aItem = Item.itemRegistry.getNameForObject(a.getItem());
                     String bItem = Item.itemRegistry.getNameForObject(b.getItem());
 
@@ -159,11 +159,11 @@ public class BackpackInventoryHelpers {
 
                     return reverse ? aDomain.compareTo(bDomain) : bDomain.compareTo(aDomain);
 
-                case BY_COUNT:
+                case COUNT:
                     return reverse ? Integer.compare(a.stackSize, b.stackSize)
                         : Integer.compare(b.stackSize, a.stackSize);
 
-                case BY_ORE_DICT:
+                case ORE_DICT:
                     List<String> ore1 = oreNames(a);
                     List<String> ore2 = oreNames(b);
 

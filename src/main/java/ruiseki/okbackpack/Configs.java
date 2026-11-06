@@ -1,5 +1,22 @@
 package ruiseki.okbackpack;
 
+import ruiseki.backpack.backpack.BlockBackpackTestConfig;
+import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
+import ruiseki.backpack.init.item.anvil.ItemAnvilUpgradeTest;
+import ruiseki.backpack.init.item.battery.ItemBatteryUpgradeTest;
+import ruiseki.backpack.init.item.compacting.ItemAdvCompactingUpgradeTest;
+import ruiseki.backpack.init.item.crafting.ItemCraftingUpgradeTest;
+import ruiseki.backpack.init.item.deposit.ItemAdvDepositUpgradeTest;
+import ruiseki.backpack.init.item.everlasting.ItemEverlastingUpgradeTest;
+import ruiseki.backpack.init.item.feeding.ItemAdvFeedingUpgradeTest;
+import ruiseki.backpack.init.item.filter.ItemAdvFilterUpgradeTest;
+import ruiseki.backpack.init.item.inception.ItemInceptionUpgradeTest;
+import ruiseki.backpack.init.item.magnet.ItemAdvMagnetUpgradeTest;
+import ruiseki.backpack.init.item.pickup.ItemAdvPickupUpgradeTest;
+import ruiseki.backpack.init.item.restock.ItemAdvRestockUpgradeTest;
+import ruiseki.backpack.init.item.stack.ItemStackUpgradeTest;
+import ruiseki.backpack.init.item.tank.ItemTankUpgradeTest;
+import ruiseki.backpack.init.item.voiding.ItemAdvVoidUpgradeTest;
 import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockIronBackpackConfig;
@@ -165,5 +182,24 @@ public class Configs {
             }
             configHandler.add(new ItemEnergizedNodeUpgradeConfig());
         }
+
+        configHandler.add(new CapabilityBackpackWrapperConfig());
+
+        configHandler.add(new BlockBackpackTestConfig());
+        configHandler.add(new ItemStackUpgradeTest());
+        configHandler.add(new ItemCraftingUpgradeTest());
+        configHandler.add(new ItemAdvFeedingUpgradeTest());
+        configHandler.add(new ItemBatteryUpgradeTest());
+        configHandler.add(new ItemTankUpgradeTest());
+        configHandler.add(new ItemAdvPickupUpgradeTest());
+        configHandler.add(new ItemAdvMagnetUpgradeTest());
+        configHandler.add(new ItemAdvFilterUpgradeTest());
+        configHandler.add(new ItemInceptionUpgradeTest());
+        configHandler.add(new ItemEverlastingUpgradeTest());
+        configHandler.add(new ItemAdvVoidUpgradeTest());
+        configHandler.add(new ItemAdvRestockUpgradeTest());
+        configHandler.add(new ItemAdvDepositUpgradeTest());
+        configHandler.add(new ItemAnvilUpgradeTest());
+        configHandler.add(new ItemAdvCompactingUpgradeTest());
     }
 }
