@@ -51,6 +51,9 @@ public class OSCTextures {
     public static final IDrawable ITEM_MAGNET = icon("exp_magnet", 128, 48);
     public static final IDrawable IGNORE_ITEM_MAGNET = icon("ignore_exp_magnet", 144, 48);
 
+    public static final UITexture COMPACT_ONLY_UNCRAFTABLE = icon("compact_only_uncraftable", 80, 48);
+    public static final UITexture COMPACT_ANY = icon("compact_anything", 80, 32);
+
     public static final UITexture MAIN_FIRST = icon("main_first", 48, 32);
     public static final UITexture INCEPTION_FIRST = icon("inception_first", 64, 32);
 

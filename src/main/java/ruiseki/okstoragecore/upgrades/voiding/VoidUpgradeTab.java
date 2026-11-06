@@ -60,7 +60,7 @@ public class VoidUpgradeTab extends ExpandedUpgradeTab<VoidUpgradeWrapper> {
                 this.getWrapper()
                     .setShouldWorkInGUI(index == 0);
                 this.getSyncHandler()
-                    .syncToServer(UpgradeSlotSHRegistries.WORK_IN_GUI, buffer -> buffer.writeBoolean(index == 0));
+                    .syncToServer(UpgradeSlotSHRegistries.VOID_WORK_IN_GUI, buffer -> buffer.writeBoolean(index == 0));
             }).size(20, 20);
     }
 

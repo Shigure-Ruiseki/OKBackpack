@@ -9,6 +9,7 @@ import ruiseki.okstoragecore.upgrades.IContentsFilteredUpgrade;
 import ruiseki.okstoragecore.upgrades.IFilteredUpgrade;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.PrimaryMatch;
+import ruiseki.okstoragecore.upgrades.compacting.CompactingUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.crafting.CraftingUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.feeding.FeedingUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.feeding.HungerLevel;
@@ -68,12 +69,18 @@ public class UpgradeSlotSHRegistries {
     public static final ResourceLocation VOID_OVERFLOW = new ResourceLocation(
         Reference.MOD_ID,
         "storage_void_overflow");
-    public static final ResourceLocation WORK_IN_GUI = new ResourceLocation(Reference.MOD_ID, "storage_work_in_gui");
+    public static final ResourceLocation VOID_WORK_IN_GUI = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_void_work_in_gui");
 
     public static final ResourceLocation PICKUP_XP = new ResourceLocation(Reference.MOD_ID, "storage_pickup_xp");
     public static final ResourceLocation PICKUP_ITEMS = new ResourceLocation(Reference.MOD_ID, "storage_pickup_item");
 
     public static final ResourceLocation DIRECTION = new ResourceLocation(Reference.MOD_ID, "storage_direction");
+
+    public static final ResourceLocation COMPACT_UNCRAFTABLE = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_compact_only_uncraftable");
 
     public static void load() {
 
@@ -199,10 +206,16 @@ public class UpgradeSlotSHRegistries {
             if (!(wrapper instanceof VoidUpgradeWrapper upgradeWrapper)) return;
             upgradeWrapper.setShouldVoidOverflow(buf.readBoolean());
         });
-        REGISTRY.registerServer(WORK_IN_GUI, (slot, buf) -> {
+        REGISTRY.registerServer(VOID_WORK_IN_GUI, (slot, buf) -> {
             IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
             if (!(wrapper instanceof VoidUpgradeWrapper upgradeWrapper)) return;
             upgradeWrapper.setShouldWorkInGUI(buf.readBoolean());
+        });
+
+        REGISTRY.registerServer(COMPACT_UNCRAFTABLE, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof CompactingUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setCompactNonUncraftable(buf.readBoolean());
         });
     }
 }

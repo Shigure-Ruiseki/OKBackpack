@@ -4,6 +4,7 @@ import ruiseki.backpack.backpack.BlockBackpackTestConfig;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.backpack.init.item.anvil.ItemAnvilUpgradeTest;
 import ruiseki.backpack.init.item.battery.ItemBatteryUpgradeTest;
+import ruiseki.backpack.init.item.compacting.ItemAdvCompactingUpgradeTest;
 import ruiseki.backpack.init.item.crafting.ItemCraftingUpgradeTest;
 import ruiseki.backpack.init.item.deposit.ItemAdvDepositUpgradeTest;
 import ruiseki.backpack.init.item.everlasting.ItemEverlastingUpgradeTest;
@@ -199,5 +200,6 @@ public class Configs {
         configHandler.add(new ItemAdvRestockUpgradeTest());
         configHandler.add(new ItemAdvDepositUpgradeTest());
         configHandler.add(new ItemAnvilUpgradeTest());
+        configHandler.add(new ItemAdvCompactingUpgradeTest());
     }
 }

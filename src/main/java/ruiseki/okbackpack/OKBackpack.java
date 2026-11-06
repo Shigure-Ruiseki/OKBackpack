@@ -47,6 +47,7 @@ import ruiseki.okcore.helper.MinecraftHelpers;
 import ruiseki.okcore.init.ItemCreativeTab;
 import ruiseki.okcore.init.ModBaseVersionable;
 import ruiseki.okcore.proxy.ICommonProxy;
+import ruiseki.okstoragecore.helper.RecipeHelpers;
 
 @Mod(
     modid = Reference.MOD_ID,
@@ -135,6 +136,9 @@ public class OKBackpack extends ModBaseVersionable {
             .initialize(
                 MinecraftServer.getServer()
                     .getEntityWorld());
+        RecipeHelpers.setWorld(
+            MinecraftServer.getServer()
+                .getEntityWorld());
     }
 
     @Override
@@ -149,6 +153,7 @@ public class OKBackpack extends ModBaseVersionable {
         super.onServerStopped(event);
         CompactingRecipeCache.getInstance()
             .invalidate();
+        RecipeHelpers.clearCache();
     }
 
     @Override

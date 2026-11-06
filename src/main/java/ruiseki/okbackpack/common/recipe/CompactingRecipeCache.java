@@ -164,7 +164,7 @@ public class CompactingRecipeCache {
                 // Find the first valid item stack in the list
                 ItemStack validCandidate = null;
                 for (ItemStack stack : list) {
-                    if (ItemHelpers.isEmpty(stack)) {
+                    if (!ItemHelpers.isEmpty(stack)) {
                         validCandidate = stack;
                         break;
                     }

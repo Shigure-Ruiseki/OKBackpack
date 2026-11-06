@@ -360,7 +360,7 @@ public abstract class InventoryHandler extends ItemStackHandler
         return ret;
     }
 
-    private void runOnAfterInsert(int slot, boolean simulate, IItemHandlerSimpleInserter handler,
+    public void runOnAfterInsert(int slot, boolean simulate, IItemHandlerSimpleInserter handler,
         IStorageWrapper storageWrapper) {
         if (!simulate) {
             storageWrapper.getUpgradeHandler()
@@ -369,7 +369,7 @@ public abstract class InventoryHandler extends ItemStackHandler
         }
     }
 
-    private ItemStack runOnBeforeInsert(int slot, ItemStack stack, boolean simulate, IItemHandlerSimpleInserter handler,
+    public ItemStack runOnBeforeInsert(int slot, ItemStack stack, boolean simulate, IItemHandlerSimpleInserter handler,
         IStorageWrapper storageWrapper) {
         List<IInsertResponseUpgrade> wrappers = storageWrapper.getUpgradeHandler()
             .getWrappersThatImplementFromMainStorage(IInsertResponseUpgrade.class);

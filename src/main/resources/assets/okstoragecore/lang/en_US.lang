@@ -55,6 +55,9 @@ gui.okstoragecore.settings.buttons.change_color=Toggle Color
 gui.okstoragecore.settings.buttons.change_color_detail=Choose Color
 
 #Upgrade
+gui.okstoragecore.upgrades.buttons.works_in_gui=Works in GUI as well
+gui.okstoragecore.upgrades.buttons.only_automatic=Only works with other upgrades/automation
+
 gui.okstoragecore.upgrades.crafting=Craft
 gui.okstoragecore.upgrades.buttons.refill_crafting_grid=Refill Crafting Grid
 gui.okstoragecore.upgrades.buttons.do_not_refill_crafting_grid=Do Not Refill Crafting Grid
@@ -103,8 +106,11 @@ gui.okstoragecore.upgrades.advanced_void=Adv. Void
 gui.okstoragecore.upgrades.buttons.void_overflow=Void Overflow
 gui.okstoragecore.upgrades.buttons.void_overflow.detail=Allows single slot to be filled with the item\nand voids anything that overflows
 gui.okstoragecore.upgrades.buttons.void_any=Void Any
-gui.okstoragecore.upgrades.buttons.works_in_gui=Works in GUI as well
-gui.okstoragecore.upgrades.buttons.only_automatic=Only works with other upgrades/automation
+
+gui.okstoragecore.upgrades.compacting=Compa...
+gui.okstoragecore.upgrades.advanced_compacting=Adv. Comp...
+gui.okstoragecore.upgrades.buttons.compact_only_uncraftable=Compact Only Uncraftable
+gui.okstoragecore.upgrades.buttons.compact_anything=Compact Anything
 
 gui.okstoragecore.upgrades.buttons.allow=Allow
 gui.okstoragecore.upgrades.buttons.block=Block

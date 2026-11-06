@@ -1,9 +1,10 @@
 package ruiseki.backpack.backpack;
 
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -28,18 +29,25 @@ import ruiseki.okcore.fluid.capability.EmptyFluidHandler;
 import ruiseki.okcore.fluid.handler.IFluidHandler;
 import ruiseki.okcore.helper.CapabilityHelpers;
 import ruiseki.okcore.inventory.component.IInventoryExclusion;
-import ruiseki.okcore.inventory.component.InventoryComponent;
+import ruiseki.okcore.inventory.component.SidedInventoryComponent;
 import ruiseki.okcore.item.IItemSharedTag;
 import ruiseki.okcore.item.capability.CapabilityItemHandler;
 import ruiseki.okcore.tileentity.TileTicking;
 import ruiseki.okstoragecore.upgrades.ITickableUpgrade;
 
-public class TileBackpack extends TileTicking implements IGuiHolder<PosGuiData>, IInventory {
+public class TileBackpack extends TileTicking implements IGuiHolder<PosGuiData>, ISidedInventory {
 
     private IBackpackWrapper backpackWrapper = IBackpackWrapper.NoopBackpackWrapper.INSTANCE;
 
     @Delegate(excludes = IInventoryExclusion.class)
-    private final InventoryComponent inventory = new InventoryComponent(this);
+    private final SidedInventoryComponent inventory = new SidedInventoryComponent(this) {
+
+        @Override
+        public int[] getAccessibleSlotsFromSide(int side) {
+            return IntStream.range(0, getSizeInventory())
+                .toArray();
+        }
+    };
 
     public TileBackpack() {
         this.capabilityCache.addCapabilityResolver(
