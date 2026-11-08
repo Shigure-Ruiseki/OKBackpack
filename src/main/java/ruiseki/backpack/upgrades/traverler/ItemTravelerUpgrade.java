@@ -30,7 +30,7 @@ public abstract class ItemTravelerUpgrade<T extends IUpgradeWrapper> extends Ite
         storageWrapper.getUpgradeHandler()
             .getSlotWrappers()
             .forEach((slot, wrapper) -> {
-                if (wrapper instanceof ITraverlerUpgrade) {
+                if (wrapper instanceof ITravelersUpgrade) {
                     errorUpgradeSlots.add(slot);
                 }
             });

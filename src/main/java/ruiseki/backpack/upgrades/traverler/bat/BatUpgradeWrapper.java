@@ -6,12 +6,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
-import ruiseki.backpack.upgrades.traverler.ITraverlerUpgrade;
+import ruiseki.backpack.upgrades.traverler.ITravelersUpgrade;
 import ruiseki.backpack.upgrades.traverler.PotionEffectUpgradeWrapper;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 
 public class BatUpgradeWrapper extends PotionEffectUpgradeWrapper<BatUpgradeWrapper, ItemBatUpgrade>
-    implements ITraverlerUpgrade {
+    implements ITravelersUpgrade {
 
     private static final int EFFECT_DURATION = 220;
 

@@ -10,11 +10,12 @@ import net.minecraft.util.DamageSource;
 
 import ruiseki.backpack.api.ILivingFallUpgrade;
 import ruiseki.backpack.api.ILivingHurtUpgrade;
+import ruiseki.backpack.upgrades.traverler.ITravelersUpgrade;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 
 public class BlazeUpgradeWrapper extends UpgradeWrapperBase<BlazeUpgradeWrapper, ItemBlazeUpgrade>
-    implements ILivingHurtUpgrade, ILivingFallUpgrade {
+    implements ILivingHurtUpgrade, ILivingFallUpgrade, ITravelersUpgrade {
 
     public BlazeUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
         Consumer<ItemStack> upgradeSaveHandler) {

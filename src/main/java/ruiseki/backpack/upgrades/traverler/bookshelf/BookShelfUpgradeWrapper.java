@@ -4,12 +4,13 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.backpack.upgrades.traverler.ITravelersUpgrade;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.upgrades.IBookshelfUpgrade;
 import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 
 public class BookShelfUpgradeWrapper extends UpgradeWrapperBase<BookShelfUpgradeWrapper, ItemBookShelfUpgrade>
-    implements IBookshelfUpgrade {
+    implements IBookshelfUpgrade, ITravelersUpgrade {
 
     public BookShelfUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
         Consumer<ItemStack> upgradeSaveHandler) {

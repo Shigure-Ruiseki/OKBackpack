@@ -20,6 +20,9 @@ import ruiseki.backpack.init.item.tank.ItemTankUpgradeTest;
 import ruiseki.backpack.init.item.traverler.ItemBatUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemBlazeUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemBookShelfUpgradeConfig;
+import ruiseki.backpack.init.item.traverler.ItemCactusUpgradeConfig;
+import ruiseki.backpack.init.item.traverler.ItemCakeUpgradeConfig;
+import ruiseki.backpack.init.item.traverler.ItemChickenUpgradeConfig;
 import ruiseki.backpack.init.item.voiding.ItemAdvVoidUpgradeTest;
 import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
@@ -68,9 +71,6 @@ import ruiseki.okbackpack.common.item.stack.ItemStackUpgradeConfig;
 import ruiseki.okbackpack.common.item.tank.ItemTankUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgradeConfig;
-import ruiseki.okbackpack.common.item.travelers.cactus.ItemCactusUpgradeConfig;
-import ruiseki.okbackpack.common.item.travelers.cake.ItemCakeUpgradeConfig;
-import ruiseki.okbackpack.common.item.travelers.chicken.ItemChickenUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.cow.ItemCowUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.creeper.ItemCreeperUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.dragon.ItemDragonUpgradeConfig;
@@ -151,9 +151,6 @@ public class Configs {
 
         if (GeneralConfig.enableTravelersUpgrades) {
             configHandler.add(new ItemCowUpgradeConfig());
-            configHandler.add(new ItemCactusUpgradeConfig());
-            configHandler.add(new ItemCakeUpgradeConfig());
-            configHandler.add(new ItemChickenUpgradeConfig());
             configHandler.add(new ItemCreeperUpgradeConfig());
             configHandler.add(new ItemDragonUpgradeConfig());
             configHandler.add(new ItemGhastUpgradeConfig());
@@ -204,5 +201,8 @@ public class Configs {
         configHandler.add(new ItemBatUpgradeConfig());
         configHandler.add(new ItemBlazeUpgradeConfig());
         configHandler.add(new ItemBookShelfUpgradeConfig());
+        configHandler.add(new ItemCactusUpgradeConfig());
+        configHandler.add(new ItemCakeUpgradeConfig());
+        configHandler.add(new ItemChickenUpgradeConfig());
     }
 }
