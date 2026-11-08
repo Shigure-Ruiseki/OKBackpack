@@ -14,7 +14,7 @@ public abstract class ItemUpgradeBase<T extends IUpgradeWrapper> extends ItemBas
 
     private final IUpgradeCountLimitConfig upgradeTypeLimitConfig;
 
-    protected ItemUpgradeBase(IUpgradeCountLimitConfig upgradeTypeLimitConfig) {
+    public ItemUpgradeBase(IUpgradeCountLimitConfig upgradeTypeLimitConfig) {
         this.upgradeTypeLimitConfig = upgradeTypeLimitConfig;
     }
 

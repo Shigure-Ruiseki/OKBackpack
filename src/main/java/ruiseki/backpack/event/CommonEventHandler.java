@@ -8,12 +8,15 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
@@ -21,6 +24,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import ruiseki.backpack.api.IAttackEntityResponseUpgrade;
 import ruiseki.backpack.api.IBlockClickResponseUpgrade;
+import ruiseki.backpack.api.ILivingFallUpgrade;
+import ruiseki.backpack.api.ILivingHurtUpgrade;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.backpack.helpers.InteractionHelpers;
@@ -135,9 +140,7 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onAttackEntity(AttackEntityEvent event) {
         EntityPlayer player = event.entityPlayer;
-        if (player.worldObj.isRemote) {
-            return;
-        }
+        if (player.worldObj.isRemote) return;
         PlayerInventoryProvider.get()
             .runOnBackpacks(
                 player,
@@ -153,6 +156,48 @@ public class CommonEventHandler {
                         return false;
                     })
                     .orElse(false));
+    }
+
+    @SubscribeEvent
+    public void onLivingHurt(LivingHurtEvent event) {
+        EntityLivingBase entity = event.entityLiving;
+        if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
+        AtomicReference<Float> amount = new AtomicReference<>(event.ammount);
+        PlayerInventoryProvider.get()
+            .runOnBackpacks(
+                player,
+                (backpack, handlerName, identifier, slot) -> CapabilityHelpers
+                    .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
+                    .map(wrapper -> {
+                        for (ILivingHurtUpgrade upgrade : wrapper.getUpgradeHandler()
+                            .getWrappersThatImplement(ILivingHurtUpgrade.class)) {
+                            amount.set(upgrade.onLivingHurt(entity, event.source, amount.get()));
+                        }
+                        return false;
+                    })
+                    .orElse(false));
+        event.ammount = Math.max(0, amount.get());
+    }
+
+    @SubscribeEvent
+    public void onLivingFall(LivingFallEvent event) {
+        EntityLivingBase entity = event.entityLiving;
+        if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
+        AtomicReference<Float> distance = new AtomicReference<>(event.distance);
+        PlayerInventoryProvider.get()
+            .runOnBackpacks(
+                player,
+                (backpack, handlerName, identifier, slot) -> CapabilityHelpers
+                    .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
+                    .map(wrapper -> {
+                        for (ILivingFallUpgrade upgrade : wrapper.getUpgradeHandler()
+                            .getWrappersThatImplement(ILivingFallUpgrade.class)) {
+                            distance.set(upgrade.onLivingFall(entity, distance.get()));
+                        }
+                        return false;
+                    })
+                    .orElse(false));
+        event.distance = Math.max(0, distance.get());
     }
 
     @SubscribeEvent

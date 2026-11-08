@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
+import ruiseki.okbackpack.api.wrapper.IBookshelfUpgrade;
 import ruiseki.okbackpack.common.block.property.TierProperty;
 import ruiseki.okcore.block.BlockTile;
 import ruiseki.okcore.block.property.BlockProperty;
@@ -103,5 +104,19 @@ public class BlockBackpack extends BlockTile {
                             .getTagCompound());
                 });
         return stack;
+    }
+
+    @Override
+    public float getEnchantPowerBonus(World world, int x, int y, int z) {
+        return TileHelpers.get(world, x, y, z, TileBackpack.class)
+            .map(
+                te -> te.getBackpackWrapper()
+                    .getUpgradeHandler()
+                    .getListOfWrappersThatImplement(IBookshelfUpgrade.class)
+                    .stream()
+                    .mapToDouble(IBookshelfUpgrade::getEnchantPowerBonus)
+                    .sum())
+            .orElse(0.0)
+            .floatValue();
     }
 }

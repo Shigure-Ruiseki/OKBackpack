@@ -58,7 +58,6 @@ import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BaublesHelpers;
-import ruiseki.okbackpack.common.item.travelers.blaze.BlazeUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.creeper.CreeperUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.ghast.GhastUpgradeHelpers;
 import ruiseki.okbackpack.common.item.travelers.hay.HayUpgradeWrapper;
@@ -203,11 +202,6 @@ public class BackpackEventHandler {
             player.velocityChanged = true;
             return;
         }
-
-        if (hasTravelersUpgrade(player, BlazeUpgradeWrapper.class)) {
-            player.fallDistance = 0F;
-            event.setCanceled(true);
-        }
     }
 
     @SubscribeEvent
@@ -221,11 +215,6 @@ public class BackpackEventHandler {
 
         if (!(event.entityLiving instanceof EntityPlayer player)) return;
         if (player.worldObj.isRemote) return;
-
-        if (isBlazeFireballDamage(event) && hasTravelersUpgrade(player, BlazeUpgradeWrapper.class)) {
-            event.setCanceled(true);
-            return;
-        }
 
         if (event.source == DamageSource.wither && hasEnabledWitherUpgrade(player)) {
             event.setCanceled(true);

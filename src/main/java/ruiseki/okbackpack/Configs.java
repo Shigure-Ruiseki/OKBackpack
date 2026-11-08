@@ -17,6 +17,9 @@ import ruiseki.backpack.init.item.pump.ItemAdvPumpUpgradeTest;
 import ruiseki.backpack.init.item.restock.ItemAdvRestockUpgradeTest;
 import ruiseki.backpack.init.item.stack.ItemStackUpgradeTest;
 import ruiseki.backpack.init.item.tank.ItemTankUpgradeTest;
+import ruiseki.backpack.init.item.traverler.ItemBatUpgradeConfig;
+import ruiseki.backpack.init.item.traverler.ItemBlazeUpgradeConfig;
+import ruiseki.backpack.init.item.traverler.ItemBookShelfUpgradeConfig;
 import ruiseki.backpack.init.item.voiding.ItemAdvVoidUpgradeTest;
 import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
@@ -65,9 +68,6 @@ import ruiseki.okbackpack.common.item.stack.ItemStackUpgradeConfig;
 import ruiseki.okbackpack.common.item.tank.ItemTankUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgradeConfig;
-import ruiseki.okbackpack.common.item.travelers.bat.ItemBatUpgradeConfig;
-import ruiseki.okbackpack.common.item.travelers.blaze.ItemBlazeUpgradeConfig;
-import ruiseki.okbackpack.common.item.travelers.bookshelf.ItemBookshelfUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.cactus.ItemCactusUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.cake.ItemCakeUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.chicken.ItemChickenUpgradeConfig;
@@ -150,9 +150,6 @@ public class Configs {
         configHandler.add(new ItemAdvancedVoidUpgradeConfig());
 
         if (GeneralConfig.enableTravelersUpgrades) {
-            configHandler.add(new ItemBatUpgradeConfig());
-            configHandler.add(new ItemBlazeUpgradeConfig());
-            configHandler.add(new ItemBookshelfUpgradeConfig());
             configHandler.add(new ItemCowUpgradeConfig());
             configHandler.add(new ItemCactusUpgradeConfig());
             configHandler.add(new ItemCakeUpgradeConfig());
@@ -203,5 +200,9 @@ public class Configs {
         configHandler.add(new ItemAnvilUpgradeTest());
         configHandler.add(new ItemAdvCompactingUpgradeTest());
         configHandler.add(new ItemAdvPumpUpgradeTest());
+
+        configHandler.add(new ItemBatUpgradeConfig());
+        configHandler.add(new ItemBlazeUpgradeConfig());
+        configHandler.add(new ItemBookShelfUpgradeConfig());
     }
 }
