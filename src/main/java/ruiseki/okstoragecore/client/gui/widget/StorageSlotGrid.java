@@ -9,13 +9,14 @@ import java.util.function.IntFunction;
 
 import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.widget.ParentWidget;
+import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 
-public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlotGrid<T>> {
+public class StorageSlotGrid<T extends Widget<T>> extends ParentWidget<StorageSlotGrid<T>> {
 
     private int slotSize = 18;
 
@@ -32,7 +33,7 @@ public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlo
 
     public StorageSlotGrid() {}
 
-    public static <T extends ItemSlot> Builder<T> builder() {
+    public static <T extends Widget<T>> Builder<T> builder() {
         return new Builder<>();
     }
 
@@ -178,7 +179,7 @@ public class StorageSlotGrid<T extends ItemSlot> extends ParentWidget<StorageSlo
         }
     }
 
-    public static class Builder<T extends ItemSlot> {
+    public static class Builder<T extends Widget<T>> {
 
         private final List<String> matrix = new ArrayList<>();
 

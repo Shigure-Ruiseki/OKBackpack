@@ -14,6 +14,7 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
+import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
@@ -66,7 +67,7 @@ public class BackpackPanel extends StoragePanel {
         int columns = this.getWrapper()
             .getNumberOfSlotColumns();
         int rows = (int) Math.ceil((double) inventorySlots / columns);
-        this.storageSlotGrid = StorageSlotGrid.builder()
+        this.storageSlotGrid = StorageSlotGrid.<ItemSlot>builder()
             .matrix(columns, rows, 'I')
             .maxSlots(inventorySlots)
             .key(

@@ -54,6 +54,15 @@ public class OSCTextures {
     public static final UITexture COMPACT_ONLY_UNCRAFTABLE = icon("compact_only_uncraftable", 80, 48);
     public static final UITexture COMPACT_ANY = icon("compact_anything", 80, 32);
 
+    public static final UITexture PUMP_INPUT = icon("pump_input", 144, 0);
+    public static final UITexture PUMP_OUTPUT = icon("pump_output", 160, 0);
+    public static final UITexture PUMP_INTERACT_TANKS = icon("pump_interact_tanks", 0, 112);
+    public static final UITexture PUMP_NO_INTERACT_TANKS = icon("pump_no_interact_tanks", 16, 112);
+    public static final UITexture PUMP_INTERACT_WORLD = icon("pump_interact_world", 176, 0);
+    public static final UITexture PUMP_NO_INTERACT_WORLD = icon("pump_no_interact_world", 192, 0);
+    public static final UITexture PUMP_INTERACT_HAND = icon("pump_interact_hand", 208, 0);
+    public static final UITexture PUMP_NO_INTERACT_HAND = icon("pump_no_interact_hand", 224, 0);
+
     public static final UITexture MAIN_FIRST = icon("main_first", 48, 32);
     public static final UITexture INCEPTION_FIRST = icon("inception_first", 64, 32);
 

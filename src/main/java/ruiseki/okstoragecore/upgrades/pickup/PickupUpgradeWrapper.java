@@ -24,7 +24,7 @@ public class PickupUpgradeWrapper extends UpgradeWrapperBase<PickupUpgradeWrappe
         this.slotCount = this.upgradeItem.getFilterSlotCount();
         this.filterLogic = new ContentsFilterLogic(
             upgrade,
-            stack -> save(),
+            upgradeSaveHandler,
             this.upgradeItem.getFilterSlotCount(),
             storageWrapper::getInventoryHandler,
             storageWrapper.getSettingsHandler()

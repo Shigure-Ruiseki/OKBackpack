@@ -358,7 +358,7 @@ public class StoragePanel extends ModularPanel {
         int columns = this.getWrapper()
             .getNumberOfSlotColumns();
         int rows = (int) Math.ceil((double) inventorySlots / columns);
-        this.storageSlotGrid = StorageSlotGrid.builder()
+        this.storageSlotGrid = StorageSlotGrid.<ItemSlot>builder()
             .matrix(columns, rows, 'I')
             .maxSlots(inventorySlots)
             .key(

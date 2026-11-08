@@ -31,7 +31,7 @@ public class DelegatedItemHandlerSH extends SyncHandlerBase<DelegatedItemHandler
         this.itemHandler.setDelegated(supplier);
     }
 
-    public IItemHandlerModifiable getItemHandler() {
+    public DelegatedItemHandler getItemHandler() {
         return this.itemHandler;
     }
 

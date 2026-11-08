@@ -100,7 +100,7 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
 
     protected StorageSlotGrid<ItemSlot> addCraftingGrid() {
         int slotIndex = this.getSlotIndex();
-        StorageSlotGrid<ItemSlot> craftingGrid = new StorageSlotGrid<>().name("crafting_matrix")
+        StorageSlotGrid<ItemSlot> craftingGrid = new StorageSlotGrid<ItemSlot>().name("crafting_matrix")
             .coverChildren();
         for (int i = 0; i < 9; i++) {
             craftingGrid.child(

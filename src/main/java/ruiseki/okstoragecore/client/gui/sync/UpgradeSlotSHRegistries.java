@@ -7,6 +7,7 @@ import ruiseki.okstoragecore.helper.StorageInventoryHelpers;
 import ruiseki.okstoragecore.upgrades.ContentsFilterType;
 import ruiseki.okstoragecore.upgrades.IContentsFilteredUpgrade;
 import ruiseki.okstoragecore.upgrades.IFilteredUpgrade;
+import ruiseki.okstoragecore.upgrades.IFluidFilteredUpgrade;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.PrimaryMatch;
 import ruiseki.okstoragecore.upgrades.compacting.CompactingUpgradeWrapper;
@@ -16,6 +17,7 @@ import ruiseki.okstoragecore.upgrades.feeding.HungerLevel;
 import ruiseki.okstoragecore.upgrades.filter.Direction;
 import ruiseki.okstoragecore.upgrades.filter.FilterUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.magnet.MagnetUpgradeWrapper;
+import ruiseki.okstoragecore.upgrades.pump.PumpUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.voiding.VoidUpgradeWrapper;
 
 public class UpgradeSlotSHRegistries {
@@ -82,6 +84,17 @@ public class UpgradeSlotSHRegistries {
         Reference.MOD_ID,
         "storage_compact_only_uncraftable");
 
+    public static final ResourceLocation ALLOW_LIST_FLUID = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_allow_list_fluid");
+    public static final ResourceLocation PUMP_INPUT = new ResourceLocation(Reference.MOD_ID, "storage_pump_input");
+    public static final ResourceLocation INTERACTION_WITH_HAND = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_interact_with_hand");
+    public static final ResourceLocation INTERACTION_WITH_WORLD = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_interact_with_world");
+
     public static void load() {
 
         REGISTRY.registerServer(ENABLE, (slot, buf) -> {
@@ -136,6 +149,13 @@ public class UpgradeSlotSHRegistries {
             if (!(wrapper instanceof IContentsFilteredUpgrade upgradeWrapper)) return;
             upgradeWrapper.getFilterLogic()
                 .setDepositFilterType(ContentsFilterType.fromOrdinal(buf.readInt()));
+        });
+
+        REGISTRY.registerServer(ALLOW_LIST_FLUID, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof IFluidFilteredUpgrade upgradeWrapper)) return;
+            upgradeWrapper.getFilterLogic()
+                .setAllowList(buf.readBoolean());
         });
 
         REGISTRY.registerServer(FILL_CRAFTING, (slot, buf) -> {
@@ -216,6 +236,22 @@ public class UpgradeSlotSHRegistries {
             IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
             if (!(wrapper instanceof CompactingUpgradeWrapper upgradeWrapper)) return;
             upgradeWrapper.setCompactNonUncraftable(buf.readBoolean());
+        });
+
+        REGISTRY.registerServer(PUMP_INPUT, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof PumpUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setIsInput(buf.readBoolean());
+        });
+        REGISTRY.registerServer(INTERACTION_WITH_HAND, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof PumpUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setInteractWithHand(buf.readBoolean());
+        });
+        REGISTRY.registerServer(INTERACTION_WITH_WORLD, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof PumpUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setInteractWithWorld(buf.readBoolean());
         });
     }
 }

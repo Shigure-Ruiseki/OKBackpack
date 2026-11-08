@@ -80,10 +80,10 @@ public class TileBackpack extends TileTicking implements IGuiHolder<PosGuiData>,
     @Override
     protected void updateTileEntity() {
         super.updateTileEntity();
-        if (backpackWrapper != null && !worldObj.isRemote) {
-            backpackWrapper.getUpgradeHandler()
+        if (this.backpackWrapper != null && !this.getWorldObj().isRemote) {
+            this.backpackWrapper.getUpgradeHandler()
                 .getWrappersThatImplement(ITickableUpgrade.class)
-                .forEach(upgrade -> upgrade.tick(null, worldObj, pos));
+                .forEach(upgrade -> upgrade.tick(null, this.getWorldObj(), this.getPos()));
         }
     }
 

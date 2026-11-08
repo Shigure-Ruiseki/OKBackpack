@@ -80,10 +80,6 @@ gui.okstoragecore.upgrades.tank=Tank
 gui.okstoragecore.upgrades.tank.tooltip=Tank
 gui.okstoragecore.upgrades.tank.contents_tooltip=%s mB out of %s mB
 
-gui.okstoragecore.upgrades.pump=Pump
-gui.okstoragecore.upgrades.pump.tooltip=Pump
-gui.okstoragecore.upgrades.tank.xp_contents_tooltip=%s out of %s xp levels
-
 gui.okstoragecore.upgrades.pickup=Pickup
 gui.okstoragecore.upgrades.advanced_pickup=Adv. Pickup
 
@@ -111,6 +107,19 @@ gui.okstoragecore.upgrades.compacting=Compa...
 gui.okstoragecore.upgrades.advanced_compacting=Adv. Comp...
 gui.okstoragecore.upgrades.buttons.compact_only_uncraftable=Compact Only Uncraftable
 gui.okstoragecore.upgrades.buttons.compact_anything=Compact Anything
+
+gui.okstoragecore.upgrades.pump=Pump
+gui.okstoragecore.upgrades.advanced_pump=Adv. Pump
+gui.okstoragecore.upgrades.xp_pump=Exp. Pump
+gui.okstoragecore.upgrades.buttons.pump_input=Input
+gui.okstoragecore.upgrades.buttons.pump_output=Output
+gui.okstoragecore.upgrades.buttons.interact_with_world=Interact With World
+gui.okstoragecore.upgrades.buttons.do_not_interact_with_world=Do Not Interact With World
+gui.okstoragecore.upgrades.buttons.interact_with_hand=Interact With\nFluid Container in Hand
+gui.okstoragecore.upgrades.buttons.do_not_interact_with_hand=Do Not Interact With\nFluid Container in Hand
+gui.okstoragecore.upgrades.buttons.xp_pump_input=Pump Experience From Player
+gui.okstoragecore.upgrades.buttons.xp_pump_output=Pump Experience To Player
+gui.okstoragecore.upgrades.buttons.xp_pump_off=Pump Off
 
 gui.okstoragecore.upgrades.buttons.allow=Allow
 gui.okstoragecore.upgrades.buttons.block=Block
