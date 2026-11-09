@@ -4,10 +4,10 @@ import net.minecraft.item.ItemStack;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+import ruiseki.backpack.init.item.crafting.ItemCraftingUpgradeConfig;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.client.gui.container.BackpackGuiContainer;
 import ruiseki.okbackpack.common.item.arcane.ItemArcaneCraftingUpgradeConfig;
-import ruiseki.okbackpack.common.item.crafting.ItemCraftingUpgradeConfig;
 import ruiseki.okbackpack.compat.Mods;
 
 public class NEIConfig implements IConfigureNEI {

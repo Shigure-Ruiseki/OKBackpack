@@ -27,7 +27,6 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -58,7 +57,6 @@ import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BaublesHelpers;
-import ruiseki.okbackpack.common.item.travelers.creeper.CreeperUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.ghast.GhastUpgradeHelpers;
 import ruiseki.okbackpack.common.item.travelers.hay.HayUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.lapis.LapisUpgradeWrapper;
@@ -220,10 +218,6 @@ public class BackpackEventHandler {
             event.setCanceled(true);
             return;
         }
-
-        if (wouldBeFatal(player, event) && event.source != DamageSource.outOfWorld && triggerCreeperRescue(player)) {
-            event.setCanceled(true);
-        }
     }
 
     @SubscribeEvent
@@ -345,40 +339,6 @@ public class BackpackEventHandler {
 
     public boolean wouldBeFatal(EntityPlayer player, LivingHurtEvent event) {
         return player.getHealth() - event.ammount <= 0.0F;
-    }
-
-    public boolean triggerCreeperRescue(EntityPlayer player) {
-        long worldTime = player.worldObj.getTotalWorldTime();
-        return visitTravelersUpgrades(player, CreeperUpgradeWrapper.class, ctx -> {
-            if (!ctx.upgrade.isReady(worldTime)) return false;
-
-            ctx.upgrade.trigger(worldTime);
-            player.setHealth(1.0F);
-            player.extinguish();
-            player.hurtResistantTime = 20;
-            player.addPotionEffect(new PotionEffect(Potion.field_76444_x.id, 2400, 0, true));
-            player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 100, 1, true));
-            player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 2400, 0, true));
-            playRescueExplosion(player);
-            BackpackEntityHelpers.persistBackpack(ctx.backpack);
-            return true;
-        });
-    }
-
-    public void playRescueExplosion(EntityPlayer player) {
-        player.worldObj.playSoundAtEntity(player, "random.explode", 1.0F, 1.0F);
-        if (player.worldObj instanceof WorldServer worldServer) {
-            worldServer.func_147487_a(
-                "hugeexplosion",
-                player.posX,
-                player.posY + player.height * 0.5D,
-                player.posZ,
-                1,
-                0.0D,
-                0.0D,
-                0.0D,
-                0.0D);
-        }
     }
 
     public void neutralizeNearbyGhasts(EntityPlayer player) {

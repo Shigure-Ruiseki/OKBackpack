@@ -92,7 +92,7 @@ public class StoragePanel extends ModularPanel {
             OKBGuiTextures.SMALL_1_ICON),
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.sort_by_ore_dict"),
-            OKBGuiTextures.SMALL_O_ICON),
+            OKBGuiTextures.SMALL_T_ICON),
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.okstoragecore.sort_by_tag"), OKBGuiTextures.SMALL_T_ICON));
 
     protected final EntityPlayer player;

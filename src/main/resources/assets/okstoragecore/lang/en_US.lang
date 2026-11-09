@@ -148,3 +148,10 @@ gui.okstoragecore.upgrades.buttons.match_all_ore_dict=Match All Ore Dicts
 gui.okstoragecore.upgrades.buttons.ore_dict_input_help=You can input ore dictionary here, regex is supported
 gui.okstoragecore.upgrades.buttons.match_any_tag=Match Any Tag
 gui.okstoragecore.upgrades.buttons.match_all_tags=Match All Tags
+
+gui.okstoragecore.sort_by_mod_id=Sort By Mod ID
+gui.okstoragecore.sort_by_name=Sort By Name
+gui.okstoragecore.sort_by_count=Sort By Count
+gui.okstoragecore.sort_by_ore_dict=Sort By OreDict
+gui.okstoragecore.sort_by_tag=Sort By Tag
+gui.okstoragecore.sort=Sort
