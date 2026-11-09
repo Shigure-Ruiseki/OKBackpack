@@ -51,6 +51,7 @@ import ruiseki.backpack.init.item.traverler.ItemOcelotUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemQuartzUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemRainbowUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemRedstoneUpgradeConfig;
+import ruiseki.backpack.init.item.traverler.ItemSpiderUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemSquidUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemWitherUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemWolfUpgradeConfig;
@@ -81,7 +82,6 @@ import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgrade
 import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.quiver.ItemQuiverUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.slime.ItemSlimeUpgradeConfig;
-import ruiseki.okbackpack.common.item.travelers.spider.ItemSpiderUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.sponge.ItemSpongeUpgradeConfig;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.config.ConfigHandler;
@@ -113,22 +113,6 @@ public class Configs {
         configHandler.add(new ItemAutoSmokingUpgradeConfig());
         configHandler.add(new ItemToolSwapperUpgradeConfig());
         configHandler.add(new ItemAdvancedToolSwapperUpgradeConfig());
-
-        if (GeneralConfig.enableTravelersUpgrades) {
-            configHandler.add(new ItemGhastUpgradeConfig());
-            configHandler.add(new ItemMagmaCubeUpgradeConfig());
-            configHandler.add(new ItemOcelotUpgradeConfig());
-            configHandler.add(new ItemQuartzUpgradeConfig());
-            configHandler.add(new ItemQuiverUpgradeConfig());
-            configHandler.add(new ItemRainbowUpgradeConfig());
-            configHandler.add(new ItemRedstoneUpgradeConfig());
-            configHandler.add(new ItemSlimeUpgradeConfig());
-            configHandler.add(new ItemSpiderUpgradeConfig());
-            configHandler.add(new ItemSpongeUpgradeConfig());
-            configHandler.add(new ItemSquidUpgradeConfig());
-            configHandler.add(new ItemWitherUpgradeConfig());
-            configHandler.add(new ItemWolfUpgradeConfig());
-        }
 
         if (Mods.Thaumcraft.isModLoaded()) {
             if (GeneralConfig.enableArcaneCraftingUpgrade) {
@@ -202,5 +186,18 @@ public class Configs {
         configHandler.add(new ItemGlowstoneUpgradeConfig());
         configHandler.add(new ItemHayUpgradeConfig());
         configHandler.add(new ItemLapisUpgradeConfig());
+        configHandler.add(new ItemGhastUpgradeConfig());
+        configHandler.add(new ItemMagmaCubeUpgradeConfig());
+        configHandler.add(new ItemOcelotUpgradeConfig());
+        configHandler.add(new ItemQuartzUpgradeConfig());
+        configHandler.add(new ItemQuiverUpgradeConfig());
+        configHandler.add(new ItemRainbowUpgradeConfig());
+        configHandler.add(new ItemRedstoneUpgradeConfig());
+        configHandler.add(new ItemSlimeUpgradeConfig());
+        configHandler.add(new ItemSpiderUpgradeConfig());
+        configHandler.add(new ItemSpongeUpgradeConfig());
+        configHandler.add(new ItemSquidUpgradeConfig());
+        configHandler.add(new ItemWitherUpgradeConfig());
+        configHandler.add(new ItemWolfUpgradeConfig());
     }
 }

@@ -26,7 +26,9 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import ruiseki.backpack.api.IAttackEntityResponseUpgrade;
 import ruiseki.backpack.api.IBlockClickResponseUpgrade;
+import ruiseki.backpack.api.IGhastTargetResponseUpgrade;
 import ruiseki.backpack.api.IHarvestDropResponseUpgrade;
+import ruiseki.backpack.api.ILivingClimbingResponseUpgrade;
 import ruiseki.backpack.api.ILivingFallResponseUpgrade;
 import ruiseki.backpack.api.ILivingHurtResponseUpgrade;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
@@ -35,6 +37,8 @@ import ruiseki.backpack.helpers.InteractionHelpers;
 import ruiseki.backpack.helpers.PlayerInventoryProvider;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okcore.datastructure.BlockPos;
+import ruiseki.okcore.event.entity.GhastTargetEvent;
+import ruiseki.okcore.event.entity.LivingClimbEvent;
 import ruiseki.okcore.event.gui.SlotClickEvent;
 import ruiseki.okcore.event.interaction.PlayerInteractEvent;
 import ruiseki.okcore.helper.CapabilityHelpers;
@@ -217,6 +221,48 @@ public class CommonEventHandler {
                         for (IHarvestDropResponseUpgrade upgrade : wrapper.getUpgradeHandler()
                             .getWrappersThatImplement(IHarvestDropResponseUpgrade.class)) {
                             if (upgrade.onHarvestDrops(event)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    })
+                    .orElse(false));
+    }
+
+    @SubscribeEvent
+    public void onLivingClimb(LivingClimbEvent event) {
+        EntityLivingBase entity = event.entityLiving;
+        if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
+        PlayerInventoryProvider.get()
+            .runOnBackpacks(
+                player,
+                (backpack, handlerName, identifier, slot) -> CapabilityHelpers
+                    .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
+                    .map(wrapper -> {
+                        for (ILivingClimbingResponseUpgrade upgrade : wrapper.getUpgradeHandler()
+                            .getWrappersThatImplement(ILivingClimbingResponseUpgrade.class)) {
+                            if (upgrade.onLivingClimb(event)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    })
+                    .orElse(false));
+    }
+
+    @SubscribeEvent
+    public void onGhastTarget(GhastTargetEvent event) {
+        EntityLivingBase entity = event.entityLiving;
+        if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
+        PlayerInventoryProvider.get()
+            .runOnBackpacks(
+                player,
+                (backpack, handlerName, identifier, slot) -> CapabilityHelpers
+                    .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
+                    .map(wrapper -> {
+                        for (IGhastTargetResponseUpgrade upgrade : wrapper.getUpgradeHandler()
+                            .getWrappersThatImplement(IGhastTargetResponseUpgrade.class)) {
+                            if (upgrade.onGhastTarget(event)) {
                                 return true;
                             }
                         }

@@ -14,16 +14,19 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import org.jetbrains.annotations.Nullable;
 
 import ruiseki.backpack.api.IAttackEntityResponseUpgrade;
+import ruiseki.backpack.api.IGhastTargetResponseUpgrade;
 import ruiseki.backpack.api.ILivingHurtResponseUpgrade;
 import ruiseki.backpack.upgrades.traverler.ITravelersUpgrade;
 import ruiseki.okcore.datastructure.BlockPos;
+import ruiseki.okcore.event.entity.GhastTargetEvent;
 import ruiseki.okcore.helper.EntityHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.upgrades.ITickableUpgrade;
 import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 
 public class GhastUpgradeWrapper extends UpgradeWrapperBase<GhastUpgradeWrapper, ItemGhastUpgrade>
-    implements ITravelersUpgrade, ILivingHurtResponseUpgrade, IAttackEntityResponseUpgrade, ITickableUpgrade {
+    implements ITravelersUpgrade, ILivingHurtResponseUpgrade, IAttackEntityResponseUpgrade, ITickableUpgrade,
+    IGhastTargetResponseUpgrade {
 
     private static final double GHAST_RANGE = 32.0D;
 
@@ -77,5 +80,13 @@ public class GhastUpgradeWrapper extends UpgradeWrapperBase<GhastUpgradeWrapper,
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onGhastTarget(GhastTargetEvent event) {
+        if (!(event.entityLiving instanceof EntityGhast ghast)) return false;
+        EntityPlayer target = GhastUpgradeHelpers.findClosestValidTarget(ghast, event.getMaxDistance());
+        event.setTarget(target);
+        return false;
     }
 }

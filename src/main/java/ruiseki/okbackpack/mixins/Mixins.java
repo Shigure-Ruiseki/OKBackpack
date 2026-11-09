@@ -11,14 +11,6 @@ import ruiseki.okbackpack.compat.Mods;
 @RequiredArgsConstructor
 public enum Mixins implements IMixins {
 
-    SPIDER_CLIMB(new MixinBuilder("Spider climb mixin").addCommonMixins("minecraft.MixinEntityLivingBase")
-        .setApplyIf(() -> GeneralConfig.enableTravelersUpgrades)
-        .setPhase(Phase.EARLY)),
-
-    GHAST_NEUTRAL(new MixinBuilder("Ghast neutral mixin").addCommonMixins("minecraft.MixinEntityGhast")
-        .setApplyIf(() -> GeneralConfig.enableTravelersUpgrades)
-        .setPhase(Phase.EARLY)),
-
     THAUMCRAFT(new MixinBuilder("Thaumcraft Mixin")
         .addCommonMixins("thaumcraft.MixinTileMagicWorkbench", "thaumcraft.MixinTileMagicWorkbenchCharger")
         .setPhase(Phase.LATE)
