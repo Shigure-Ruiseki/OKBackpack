@@ -23,6 +23,7 @@ import ruiseki.backpack.init.item.traverler.ItemBookShelfUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemCactusUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemCakeUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemChickenUpgradeConfig;
+import ruiseki.backpack.init.item.traverler.ItemCowUpgradeConfig;
 import ruiseki.backpack.init.item.voiding.ItemAdvVoidUpgradeTest;
 import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
@@ -71,7 +72,6 @@ import ruiseki.okbackpack.common.item.stack.ItemStackUpgradeConfig;
 import ruiseki.okbackpack.common.item.tank.ItemTankUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgradeConfig;
-import ruiseki.okbackpack.common.item.travelers.cow.ItemCowUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.creeper.ItemCreeperUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.dragon.ItemDragonUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.ghast.ItemGhastUpgradeConfig;
@@ -150,7 +150,6 @@ public class Configs {
         configHandler.add(new ItemAdvancedVoidUpgradeConfig());
 
         if (GeneralConfig.enableTravelersUpgrades) {
-            configHandler.add(new ItemCowUpgradeConfig());
             configHandler.add(new ItemCreeperUpgradeConfig());
             configHandler.add(new ItemDragonUpgradeConfig());
             configHandler.add(new ItemGhastUpgradeConfig());
@@ -204,5 +203,6 @@ public class Configs {
         configHandler.add(new ItemCactusUpgradeConfig());
         configHandler.add(new ItemCakeUpgradeConfig());
         configHandler.add(new ItemChickenUpgradeConfig());
+        configHandler.add(new ItemCowUpgradeConfig());
     }
 }

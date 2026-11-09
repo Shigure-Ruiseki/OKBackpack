@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import ruiseki.backpack.upgrades.traverler.ITravelersUpgrade;
 import ruiseki.okcore.datastructure.BlockPos;
-import ruiseki.okcore.helper.NBTHelpers;
+import ruiseki.okcore.helper.FluidHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.upgrades.ITickableUpgrade;
 import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
@@ -22,9 +22,7 @@ import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 public class CactusUpgradeWrapper extends UpgradeWrapperBase<CactusUpgradeWrapper, ItemCactusUpgrade>
     implements ITickableUpgrade, ITravelersUpgrade {
 
-    private static final String TICK_COUNTER_TAG = "CactusTickCounter";
-    private static final int COLLECTION_INTERVAL = 600;
-    private static final int WATER_AMOUNT = 1000;
+    private static final int INTERVAL = 600;
 
     public CactusUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
         Consumer<ItemStack> upgradeSaveHandler) {
@@ -33,33 +31,24 @@ public class CactusUpgradeWrapper extends UpgradeWrapperBase<CactusUpgradeWrappe
 
     @Override
     public void tick(@Nullable EntityLivingBase entity, World world, BlockPos pos) {
+        if (this.isInCooldown(world)) return;
         if (entity == null) {
-            if (!isRainingAt(world, pos.getX(), pos.getY() + 1, pos.getZ())) return;
+            if (!this.isRainingAt(world, pos.getX(), pos.getY() + 1, pos.getZ())) return;
         } else {
             int x = MathHelper.floor_double(entity.posX);
             int y = MathHelper.floor_double(entity.posY);
             int z = MathHelper.floor_double(entity.posZ);
 
-            boolean inRain = isRainingAt(world, x, y + 1, z);
+            boolean inRain = this.isRainingAt(world, x, y + 1, z);
             boolean inWater = entity.isInWater();
 
             if (!inRain && !inWater) return;
         }
 
-        tryCollectWater();
-    }
-
-    private void tryCollectWater() {
-        int counter = NBTHelpers.getInteger(upgrade, TICK_COUNTER_TAG)
-            .orElse(0) + 1;
-        if (counter >= COLLECTION_INTERVAL) {
-            counter = 0;
-            FluidStack water = new FluidStack(FluidRegistry.WATER, WATER_AMOUNT);
-            storageWrapper.getFluidHandler()
-                .ifPresent(handler -> handler.fill(water, true));
-        }
-        NBTHelpers.setInteger(upgrade, TICK_COUNTER_TAG, counter);
-        save();
+        FluidStack water = new FluidStack(FluidRegistry.WATER, FluidHelpers.BUCKET_VOLUME);
+        this.storageWrapper.getFluidHandler()
+            .ifPresent(handler -> handler.fill(water, true));
+        this.setCooldown(world, INTERVAL);
     }
 
     private boolean isRainingAt(World world, int x, int y, int z) {

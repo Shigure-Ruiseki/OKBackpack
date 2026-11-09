@@ -18,7 +18,7 @@ import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 public class ChickenUpgradeWrapper extends UpgradeWrapperBase<ChickenUpgradeWrapper, ItemChickenUpgrade>
     implements ITickableUpgrade, ITravelersUpgrade {
 
-    private static final int INTERVAL_TICKS = 6000;
+    private static final int INTERVAL = 6000;
 
     public ChickenUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
         Consumer<ItemStack> upgradeSaveHandler) {
@@ -30,6 +30,6 @@ public class ChickenUpgradeWrapper extends UpgradeWrapperBase<ChickenUpgradeWrap
         if (isInCooldown(world)) return;
         storageWrapper.getInventoryHandler()
             .insertItem(new ItemStack(Items.egg), false);
-        setCooldown(world, INTERVAL_TICKS);
+        setCooldown(world, INTERVAL);
     }
 }

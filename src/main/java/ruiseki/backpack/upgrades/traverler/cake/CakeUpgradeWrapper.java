@@ -20,7 +20,7 @@ import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 public class CakeUpgradeWrapper extends UpgradeWrapperBase<CakeUpgradeWrapper, ItemCakeUpgrade>
     implements ITickableUpgrade, ITravelersUpgrade {
 
-    private static final int INTERVAL_TICKS = 6000;
+    private static final int INTERVAL = 6000;
 
     public CakeUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
         Consumer<ItemStack> upgradeSaveHandler) {
@@ -33,6 +33,6 @@ public class CakeUpgradeWrapper extends UpgradeWrapperBase<CakeUpgradeWrapper, I
         player.getFoodStats()
             .addStats(3, 1.0f);
         player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 200, 0, true));
-        setCooldown(world, INTERVAL_TICKS);
+        setCooldown(world, INTERVAL);
     }
 }
