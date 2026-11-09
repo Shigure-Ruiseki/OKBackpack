@@ -13,7 +13,6 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
@@ -37,7 +36,6 @@ import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BaublesHelpers;
 import ruiseki.okbackpack.common.item.travelers.quiver.QuiverUpgradeWrapper;
-import ruiseki.okbackpack.common.item.travelers.slime.SlimeUpgradeWrapper;
 
 public class BackpackEventHandler {
 
@@ -142,28 +140,6 @@ public class BackpackEventHandler {
                 }
                 return false;
             });
-    }
-
-    @SubscribeEvent
-    public void onPlayerFall(LivingFallEvent event) {
-        if (!(event.entity instanceof EntityPlayer player)) return;
-        if (player.worldObj.isRemote) return;
-
-        if (hasTravelersUpgrade(player, SlimeUpgradeWrapper.class)) {
-            player.fallDistance = 0F;
-            event.setCanceled(true);
-            if (player.isSneaking()) return;
-
-            double bounceVelocity = SlimeUpgradeWrapper.calculateBounceVelocity(event.distance);
-            if (bounceVelocity <= 0D) return;
-
-            double deltaY = bounceVelocity - player.motionY;
-            player.addVelocity(0D, deltaY, 0D);
-            player.onGround = false;
-            player.isAirBorne = true;
-            player.velocityChanged = true;
-            return;
-        }
     }
 
     @SubscribeEvent
