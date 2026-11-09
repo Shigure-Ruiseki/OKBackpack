@@ -21,6 +21,7 @@ import ruiseki.okbackpack.common.block.property.TierProperty;
 import ruiseki.okcore.block.BlockTile;
 import ruiseki.okcore.block.property.BlockProperty;
 import ruiseki.okcore.helper.TileHelpers;
+import ruiseki.okstoragecore.upgrades.ILightUpgrade;
 
 public class BlockBackpack extends BlockTile {
 
@@ -118,5 +119,18 @@ public class BlockBackpack extends BlockTile {
                     .sum())
             .orElse(0.0)
             .floatValue();
+    }
+
+    @Override
+    public int getLightValue(IBlockAccess world, int x, int y, int z) {
+        return TileHelpers.get(world, x, y, z, TileBackpack.class)
+            .map(
+                te -> te.getBackpackWrapper()
+                    .getUpgradeHandler()
+                    .getListOfWrappersThatImplement(ILightUpgrade.class)
+                    .stream()
+                    .mapToInt(ILightUpgrade::getLightLevel)
+                    .sum())
+            .orElse(super.getLightValue(world, x, y, z));
     }
 }

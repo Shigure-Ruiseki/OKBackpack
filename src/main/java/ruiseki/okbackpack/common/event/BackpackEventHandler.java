@@ -1,24 +1,17 @@
 package ruiseki.okbackpack.common.event;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockCrops;
-import net.minecraft.block.BlockNetherWart;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
-import net.minecraft.entity.projectile.EntitySmallFireball;
 import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -35,9 +28,7 @@ import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
-import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 
 import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
@@ -58,8 +49,6 @@ import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BaublesHelpers;
 import ruiseki.okbackpack.common.item.travelers.ghast.GhastUpgradeHelpers;
-import ruiseki.okbackpack.common.item.travelers.hay.HayUpgradeWrapper;
-import ruiseki.okbackpack.common.item.travelers.lapis.LapisUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.quiver.QuiverUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.rainbow.RainbowUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.slime.SlimeUpgradeWrapper;
@@ -69,9 +58,6 @@ public class BackpackEventHandler {
     public static final BackpackEventHandler INSTANCE = new BackpackEventHandler();
 
     private static final ItemStack SINGLE_ARROW = new ItemStack(Items.arrow);
-    private static final float LUCKY_LAPIS_CHANCE = 0.15F;
-    private static final float HAY_DOUBLE_CROP_CHANCE = 0.40F;
-    private static final float HAY_GRASS_DROP_CHANCE = 0.15F;
     private static final double GHAST_RANGE = 32.0D;
 
     public BackpackEventHandler() {}
@@ -265,53 +251,6 @@ public class BackpackEventHandler {
         shootArrowFromQuiver(player, event.bow, event.charge, quiverSource);
     }
 
-    @SubscribeEvent
-    public void onPlayerPickupXp(PlayerPickupXpEvent event) {
-        if (event.entityPlayer == null || event.entityPlayer.worldObj.isRemote) return;
-        if (!hasTravelersUpgrade(event.entityPlayer, LapisUpgradeWrapper.class)) return;
-        if (event.entityPlayer.getRNG()
-            .nextFloat() < LUCKY_LAPIS_CHANCE) {
-            event.orb.xpValue *= 2;
-        }
-    }
-
-    @SubscribeEvent
-    public void onHarvestDrops(HarvestDropsEvent event) {
-        if (event.harvester == null || event.world.isRemote) return;
-        if (!hasTravelersUpgrade(event.harvester, HayUpgradeWrapper.class)) return;
-
-        if (isCropBlock(event.block) && event.world.rand.nextFloat() < HAY_DOUBLE_CROP_CHANCE) {
-            List<ItemStack> extraDrops = new ArrayList<>();
-            for (ItemStack drop : event.drops) {
-                if (drop != null) {
-                    extraDrops.add(drop.copy());
-                }
-            }
-            event.drops.addAll(extraDrops);
-        }
-
-        if (event.block == Blocks.tallgrass && event.world.rand.nextFloat() < HAY_GRASS_DROP_CHANCE) {
-            event.drops.add(getRandomGrassCrop(event.world));
-        }
-    }
-
-    public boolean isCropBlock(Block block) {
-        return block instanceof BlockCrops || block instanceof BlockNetherWart
-            || block == Blocks.carrots
-            || block == Blocks.potatoes;
-    }
-
-    public ItemStack getRandomGrassCrop(World world) {
-        ItemStack[] candidates = new ItemStack[] { new ItemStack(Items.carrot), new ItemStack(Items.potato),
-            new ItemStack(Items.wheat) };
-        return candidates[world.rand.nextInt(candidates.length)].copy();
-    }
-
-    public boolean isBlazeFireballDamage(LivingHurtEvent event) {
-        return event.source.getSourceOfDamage() instanceof EntitySmallFireball
-            && event.source.getEntity() instanceof EntityBlaze;
-    }
-
     public EntityPlayer getAttackingPlayer(DamageSource source) {
         if (source == null) return null;
 
@@ -335,10 +274,6 @@ public class BackpackEventHandler {
         }
 
         return null;
-    }
-
-    public boolean wouldBeFatal(EntityPlayer player, LivingHurtEvent event) {
-        return player.getHealth() - event.ammount <= 0.0F;
     }
 
     public void neutralizeNearbyGhasts(EntityPlayer player) {

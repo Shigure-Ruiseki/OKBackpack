@@ -2,13 +2,14 @@ package ruiseki.backpack.upgrades.traverler.creeper;
 
 import java.util.function.Consumer;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import ruiseki.backpack.api.ILivingHurtUpgrade;
 import ruiseki.backpack.upgrades.traverler.ITravelersUpgrade;
@@ -26,11 +27,12 @@ public class CreeperUpgradeWrapper extends UpgradeWrapperBase<CreeperUpgradeWrap
     }
 
     @Override
-    public float onLivingHurt(EntityLivingBase entity, DamageSource source, float amount) {
-        if (this.isInCooldown(entity.worldObj)) return amount;
-        if (!(entity instanceof EntityPlayer player)) return amount;
-        if (source == DamageSource.outOfWorld) return amount;
-        if (amount < player.getHealth()) return amount;
+    public void onLivingHurt(LivingHurtEvent event) {
+        Entity entity = event.entity;
+        if (this.isInCooldown(entity.worldObj)) return;
+        if (!(entity instanceof EntityPlayer player)) return;
+        if (event.source == DamageSource.outOfWorld) return;
+        if (event.ammount < player.getHealth()) return;
 
         player.setHealth(1.0F);
         player.extinguish();
@@ -42,8 +44,10 @@ public class CreeperUpgradeWrapper extends UpgradeWrapperBase<CreeperUpgradeWrap
 
         this.playRescueExplosion(player);
 
+        event.ammount = 0;
+        event.setCanceled(true);
+
         this.setCooldown(entity.worldObj, INTERVAL);
-        return 0;
     }
 
     private void playRescueExplosion(EntityPlayer player) {

@@ -2,11 +2,12 @@ package ruiseki.backpack.upgrades.traverler.blaze;
 
 import java.util.function.Consumer;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.projectile.EntitySmallFireball;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import ruiseki.backpack.api.ILivingFallUpgrade;
 import ruiseki.backpack.api.ILivingHurtUpgrade;
@@ -23,8 +24,10 @@ public class BlazeUpgradeWrapper extends UpgradeWrapperBase<BlazeUpgradeWrapper,
     }
 
     @Override
-    public float onLivingHurt(EntityLivingBase entity, DamageSource source, float amount) {
-        return isBlazeFireballDamage(source) ? 0 : amount;
+    public void onLivingHurt(LivingHurtEvent event) {
+        if (!isBlazeFireballDamage(event.source)) return;
+        event.ammount = 0;
+        event.setCanceled(true);
     }
 
     public boolean isBlazeFireballDamage(DamageSource source) {
@@ -32,7 +35,8 @@ public class BlazeUpgradeWrapper extends UpgradeWrapperBase<BlazeUpgradeWrapper,
     }
 
     @Override
-    public float onLivingFall(EntityLivingBase entity, float distance) {
-        return 0;
+    public void onLivingFall(LivingFallEvent event) {
+        event.distance = 0;
+        event.setCanceled(true);
     }
 }

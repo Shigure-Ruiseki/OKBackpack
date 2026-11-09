@@ -1,18 +1,16 @@
 package ruiseki.backpack.api;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 
 /**
- * Handles fall damage modifications for a living entity.
+ * Handles fall distance modifications for a living entity.
  */
 public interface ILivingFallUpgrade {
 
     /**
-     * Modifies the fall damage dealt to an entity.
+     * Modifies the fall distance of an entity before fall damage is calculated.
      *
-     * @param entity   the entity taking fall damage
-     * @param distance the fall distance
-     * @return the modified damage multiplier
+     * @param event the living fall event
      */
-    float onLivingFall(EntityLivingBase entity, float distance);
+    void onLivingFall(LivingFallEvent event);
 }

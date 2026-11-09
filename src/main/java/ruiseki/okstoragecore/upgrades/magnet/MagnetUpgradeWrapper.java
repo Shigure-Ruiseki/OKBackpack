@@ -15,6 +15,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +27,6 @@ import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.NBTHelpers;
 import ruiseki.okcore.item.handler.IItemHandlerSimpleInserter;
 import ruiseki.okstoragecore.api.IStorageWrapper;
-import ruiseki.okstoragecore.helper.StorageInventoryHelpers;
 import ruiseki.okstoragecore.helper.XpHelpers;
 import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
 import ruiseki.okstoragecore.upgrades.ContentsFilterLogic;
@@ -105,8 +107,18 @@ public class MagnetUpgradeWrapper extends UpgradeWrapperBase<MagnetUpgradeWrappe
         List<EntityXPOrb> xpEntities = world.getEntitiesWithinAABB(EntityXPOrb.class, area);
         if (xpEntities.isEmpty()) return COOLDOWN_TICKS;
         int cooldown = COOLDOWN_TICKS;
+        EntityPlayer player = entity instanceof EntityPlayer ? (EntityPlayer) entity : null;
         for (EntityXPOrb xpOrb : xpEntities) {
-            if (!xpOrb.isDead && !canNotPickup(xpOrb, entity) && !tryToFillTank(xpOrb, entity, world)) {
+            if (xpOrb.isDead || xpOrb.xpValue <= 0 || canNotPickup(xpOrb, entity)) continue;
+            if (player != null) {
+                boolean canceled = MinecraftForge.EVENT_BUS.post(new PlayerPickupXpEvent(player, xpOrb));
+                if (xpOrb.isDead || xpOrb.xpValue <= 0) continue;
+                if (canceled) {
+                    cooldown = FULL_COOLDOWN_TICKS;
+                    continue;
+                }
+            }
+            if (!tryToFillTank(xpOrb, entity, world)) {
                 cooldown = FULL_COOLDOWN_TICKS;
                 break;
             }
@@ -157,21 +169,27 @@ public class MagnetUpgradeWrapper extends UpgradeWrapperBase<MagnetUpgradeWrappe
         if (itemEntities.isEmpty()) return COOLDOWN_TICKS;
 
         int cooldown = COOLDOWN_TICKS;
-
         EntityPlayer player = entity instanceof EntityPlayer ? (EntityPlayer) entity : null;
 
         for (EntityItem itemEntity : itemEntities) {
             ItemStack stack = itemEntity.getEntityItem();
+
             if (itemEntity.isDead || ItemHelpers.isEmpty(stack)
                 || !filterLogic.matchesFilter(stack)
                 || canNotPickup(itemEntity, entity)) {
                 continue;
             }
-            if (tryToInsertItem(itemEntity)) {
-                if (player != null) {
-                    StorageInventoryHelpers.playPickupSound(world, player);
+
+            if (player != null) {
+                boolean canceled = MinecraftForge.EVENT_BUS.post(new EntityItemPickupEvent(player, itemEntity));
+                if (itemEntity.isDead || ItemHelpers.isEmpty(itemEntity.getEntityItem())) continue;
+                if (canceled) {
+                    cooldown = FULL_COOLDOWN_TICKS;
+                    continue;
                 }
-            } else {
+            }
+
+            if (!tryToInsertItem(itemEntity)) {
                 cooldown = FULL_COOLDOWN_TICKS;
             }
         }

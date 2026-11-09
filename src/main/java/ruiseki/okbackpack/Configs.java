@@ -41,6 +41,10 @@ import ruiseki.backpack.init.item.traverler.ItemCakeUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemChickenUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemCowUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemCreeperUpgradeConfig;
+import ruiseki.backpack.init.item.traverler.ItemDragonUpgradeConfig;
+import ruiseki.backpack.init.item.traverler.ItemGlowstoneUpgradeConfig;
+import ruiseki.backpack.init.item.traverler.ItemHayUpgradeConfig;
+import ruiseki.backpack.init.item.traverler.ItemLapisUpgradeConfig;
 import ruiseki.backpack.init.item.voiding.ItemAdvVoidUpgradeConfig;
 import ruiseki.backpack.init.item.voiding.ItemVoidUpgradeConfig;
 import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
@@ -66,11 +70,7 @@ import ruiseki.okbackpack.common.item.smelter.ItemSmeltingUpgradeConfig;
 import ruiseki.okbackpack.common.item.smelter.ItemSmokingUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgradeConfig;
-import ruiseki.okbackpack.common.item.travelers.dragon.ItemDragonUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.ghast.ItemGhastUpgradeConfig;
-import ruiseki.okbackpack.common.item.travelers.glowstone.ItemGlowstoneUpgradeConfig;
-import ruiseki.okbackpack.common.item.travelers.hay.ItemHayUpgradeConfig;
-import ruiseki.okbackpack.common.item.travelers.lapis.ItemLapisUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.magma.ItemMagmaCubeUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.ocelot.ItemOcelotUpgradeConfig;
 import ruiseki.okbackpack.common.item.travelers.quartz.ItemQuartzUpgradeConfig;
@@ -115,11 +115,7 @@ public class Configs {
         configHandler.add(new ItemAdvancedToolSwapperUpgradeConfig());
 
         if (GeneralConfig.enableTravelersUpgrades) {
-            configHandler.add(new ItemDragonUpgradeConfig());
             configHandler.add(new ItemGhastUpgradeConfig());
-            configHandler.add(new ItemGlowstoneUpgradeConfig());
-            configHandler.add(new ItemHayUpgradeConfig());
-            configHandler.add(new ItemLapisUpgradeConfig());
             configHandler.add(new ItemMagmaCubeUpgradeConfig());
             configHandler.add(new ItemOcelotUpgradeConfig());
             configHandler.add(new ItemQuartzUpgradeConfig());
@@ -202,5 +198,9 @@ public class Configs {
         configHandler.add(new ItemChickenUpgradeConfig());
         configHandler.add(new ItemCowUpgradeConfig());
         configHandler.add(new ItemCreeperUpgradeConfig());
+        configHandler.add(new ItemDragonUpgradeConfig());
+        configHandler.add(new ItemGlowstoneUpgradeConfig());
+        configHandler.add(new ItemHayUpgradeConfig());
+        configHandler.add(new ItemLapisUpgradeConfig());
     }
 }

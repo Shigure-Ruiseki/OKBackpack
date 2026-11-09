@@ -247,6 +247,11 @@ gui.okbackpack.status.nothing_to_restock=Nothing to restock
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.
 messages.cant.sleep.here=Ancient forces do not welcome sleep here.
 
+#Error
+gui.okbackpack.error.add.inception_exists=There's already Inception Upgrade in another upgrade slot
+gui.okbackpack.error.add.traveler_exists=There's already Traveler Upgrade in another upgrade slot
+gui.okbackpack.error.remove.inception_sub_backpack=There's one or more backpacks in the backpack
+
 #Settings
 gui.okbackpack.settings.backpack=Backpack
 gui.okbackpack.settings.backpack.tooltip=Backpack Settings

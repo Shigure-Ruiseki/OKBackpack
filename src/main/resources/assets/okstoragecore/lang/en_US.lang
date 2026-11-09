@@ -12,7 +12,6 @@ gui.okstoragecore.error.add.any_upgrade_exists=All upgrade slots need to be empt
 gui.okstoragecore.error.add.no_upgrade_can_be_added=No upgrade can be added
 gui.okstoragecore.error.remove.infinity_upgrade_only_admin=Only admins can remove Infinity Upgrade
 gui.okstoragecore.error.remove.banned_item=This item must be removed before the upgrade can be
-gui.okstoragecore.error.remove.inception_sub_backpack=There's one or more backpacks in the backpack
 gui.okstoragecore.error.remove.stack_low_multiplier=There's at least one slot or upgrade that requires stack limit higher than %s
 
 gui.okstoragecore.tooltip.stack_count=Count: %s

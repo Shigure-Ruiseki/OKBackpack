@@ -19,11 +19,14 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
+import net.minecraftforge.event.world.BlockEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import ruiseki.backpack.api.IAttackEntityResponseUpgrade;
 import ruiseki.backpack.api.IBlockClickResponseUpgrade;
+import ruiseki.backpack.api.IHarvestDropUpgrade;
 import ruiseki.backpack.api.ILivingFallUpgrade;
 import ruiseki.backpack.api.ILivingHurtUpgrade;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
@@ -37,6 +40,7 @@ import ruiseki.okcore.event.interaction.PlayerInteractEvent;
 import ruiseki.okcore.helper.CapabilityHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okstoragecore.helper.StorageInventoryHelpers;
+import ruiseki.okstoragecore.upgrades.IPickupXpUpgrade;
 import ruiseki.okstoragecore.upgrades.ITickableUpgrade;
 
 public class CommonEventHandler {
@@ -162,7 +166,6 @@ public class CommonEventHandler {
     public void onLivingHurt(LivingHurtEvent event) {
         EntityLivingBase entity = event.entityLiving;
         if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
-        AtomicReference<Float> amount = new AtomicReference<>(event.ammount);
         PlayerInventoryProvider.get()
             .runOnBackpacks(
                 player,
@@ -171,19 +174,17 @@ public class CommonEventHandler {
                     .map(wrapper -> {
                         for (ILivingHurtUpgrade upgrade : wrapper.getUpgradeHandler()
                             .getWrappersThatImplement(ILivingHurtUpgrade.class)) {
-                            amount.set(upgrade.onLivingHurt(entity, event.source, amount.get()));
+                            upgrade.onLivingHurt(event);
                         }
                         return false;
                     })
                     .orElse(false));
-        event.ammount = Math.max(0, amount.get());
     }
 
     @SubscribeEvent
     public void onLivingFall(LivingFallEvent event) {
         EntityLivingBase entity = event.entityLiving;
         if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
-        AtomicReference<Float> distance = new AtomicReference<>(event.distance);
         PlayerInventoryProvider.get()
             .runOnBackpacks(
                 player,
@@ -192,12 +193,49 @@ public class CommonEventHandler {
                     .map(wrapper -> {
                         for (ILivingFallUpgrade upgrade : wrapper.getUpgradeHandler()
                             .getWrappersThatImplement(ILivingFallUpgrade.class)) {
-                            distance.set(upgrade.onLivingFall(entity, distance.get()));
+                            upgrade.onLivingFall(event);
                         }
                         return false;
                     })
                     .orElse(false));
-        event.distance = Math.max(0, distance.get());
+    }
+
+    @SubscribeEvent
+    public void onLivingHurt(BlockEvent.HarvestDropsEvent event) {
+        EntityPlayer player = event.harvester;
+        if (player.worldObj.isRemote) return;
+        PlayerInventoryProvider.get()
+            .runOnBackpacks(
+                player,
+                (backpack, handlerName, identifier, slot) -> CapabilityHelpers
+                    .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
+                    .map(wrapper -> {
+                        for (IHarvestDropUpgrade upgrade : wrapper.getUpgradeHandler()
+                            .getWrappersThatImplement(IHarvestDropUpgrade.class)) {
+                            upgrade.onHarvestDrops(event);
+                        }
+                        return false;
+                    })
+                    .orElse(false));
+    }
+
+    @SubscribeEvent
+    public void onPickupXp(PlayerPickupXpEvent event) {
+        EntityPlayer player = event.entityPlayer;
+        if (player.worldObj.isRemote) return;
+        PlayerInventoryProvider.get()
+            .runOnBackpacks(
+                player,
+                (backpack, handlerName, identifier, slot) -> CapabilityHelpers
+                    .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
+                    .map(wrapper -> {
+                        for (IPickupXpUpgrade upgrade : wrapper.getUpgradeHandler()
+                            .getWrappersThatImplement(IPickupXpUpgrade.class)) {
+                            upgrade.onPickupXp(event);
+                        }
+                        return false;
+                    })
+                    .orElse(false));
     }
 
     @SubscribeEvent

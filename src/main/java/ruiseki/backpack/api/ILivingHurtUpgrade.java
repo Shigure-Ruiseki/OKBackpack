@@ -1,7 +1,6 @@
 package ruiseki.backpack.api;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.DamageSource;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 /**
  * Implement this interface to allow an upgrade to respond to {@link
@@ -10,12 +9,9 @@ import net.minecraft.util.DamageSource;
 public interface ILivingHurtUpgrade {
 
     /**
-     * Modifies the damage dealt to a living entity.
+     * Modifies the damage amount dealt to an entity.
      *
-     * @param entity the entity being hurt
-     * @param source the source of the damage
-     * @param amount the current damage amount
-     * @return the modified damage amount
+     * @param event the living hurt event
      */
-    float onLivingHurt(EntityLivingBase entity, DamageSource source, float amount);
+    void onLivingHurt(LivingHurtEvent event);
 }

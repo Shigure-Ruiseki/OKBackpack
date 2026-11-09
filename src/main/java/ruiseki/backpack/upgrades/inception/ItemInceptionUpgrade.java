@@ -12,10 +12,10 @@ import org.jetbrains.annotations.NotNull;
 import ruiseki.backpack.backpack.ItemBackpack;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okcore.helper.InventoryHelpers;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
-import ruiseki.okstoragecore.helper.TranslateHelpers;
 import ruiseki.okstoragecore.upgrades.ItemUpgradeBase;
 import ruiseki.okstoragecore.upgrades.UpgradeSlotChangeResult;
 import ruiseki.okstoragecore.upgrades.UpgradeType;
@@ -65,7 +65,7 @@ public class ItemInceptionUpgrade extends ItemUpgradeBase<InceptionUpgradeWrappe
 
         if (!errorUpgradeSlots.isEmpty()) {
             return new UpgradeSlotChangeResult.Fail(
-                TranslateHelpers.error("add.inception_exists"),
+                LangHelpers.localize("gui.okbackpack.error.add.inception_exists"),
                 errorUpgradeSlots,
                 Collections.emptySet(),
                 Collections.emptySet());
@@ -80,7 +80,7 @@ public class ItemInceptionUpgrade extends ItemUpgradeBase<InceptionUpgradeWrappe
             .getItemSlots(storageWrapper.getInventoryHandler(), stack -> stack.getItem() instanceof ItemBackpack);
         if (!slots.isEmpty()) {
             return new UpgradeSlotChangeResult.Fail(
-                TranslateHelpers.error("remove.inception_sub_backpack"),
+                LangHelpers.localize("gui.okbackpack.error.remove.inception_sub_backpack"),
                 Collections.emptySet(),
                 slots,
                 Collections.emptySet());
