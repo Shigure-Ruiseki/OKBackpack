@@ -24,4 +24,14 @@ public class BatUpgradeWrapper extends PotionEffectUpgradeWrapper<BatUpgradeWrap
     protected PotionEffect[] getEffects() {
         return new PotionEffect[] { new PotionEffect(Potion.nightVision.id, EFFECT_DURATION, 0, true), };
     }
+
+    @Override
+    public boolean canBeDisabled() {
+        return false;
+    }
+
+    @Override
+    public boolean hideSettingsTab() {
+        return true;
+    }
 }

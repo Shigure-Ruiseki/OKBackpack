@@ -35,4 +35,14 @@ public class CakeUpgradeWrapper extends UpgradeWrapperBase<CakeUpgradeWrapper, I
         player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 200, 0, true));
         setCooldown(world, INTERVAL);
     }
+
+    @Override
+    public boolean canBeDisabled() {
+        return false;
+    }
+
+    @Override
+    public boolean hideSettingsTab() {
+        return true;
+    }
 }

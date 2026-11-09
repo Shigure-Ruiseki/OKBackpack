@@ -9,14 +9,14 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
-import ruiseki.backpack.api.ILivingFallUpgrade;
-import ruiseki.backpack.api.ILivingHurtUpgrade;
+import ruiseki.backpack.api.ILivingFallResponseUpgrade;
+import ruiseki.backpack.api.ILivingHurtResponseUpgrade;
 import ruiseki.backpack.upgrades.traverler.ITravelersUpgrade;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 
 public class BlazeUpgradeWrapper extends UpgradeWrapperBase<BlazeUpgradeWrapper, ItemBlazeUpgrade>
-    implements ILivingHurtUpgrade, ILivingFallUpgrade, ITravelersUpgrade {
+    implements ILivingHurtResponseUpgrade, ILivingFallResponseUpgrade, ITravelersUpgrade {
 
     public BlazeUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
         Consumer<ItemStack> upgradeSaveHandler) {
@@ -24,10 +24,11 @@ public class BlazeUpgradeWrapper extends UpgradeWrapperBase<BlazeUpgradeWrapper,
     }
 
     @Override
-    public void onLivingHurt(LivingHurtEvent event) {
-        if (!isBlazeFireballDamage(event.source)) return;
+    public boolean onLivingHurt(LivingHurtEvent event) {
+        if (!isBlazeFireballDamage(event.source)) return false;
         event.ammount = 0;
         event.setCanceled(true);
+        return false;
     }
 
     public boolean isBlazeFireballDamage(DamageSource source) {
@@ -35,8 +36,19 @@ public class BlazeUpgradeWrapper extends UpgradeWrapperBase<BlazeUpgradeWrapper,
     }
 
     @Override
-    public void onLivingFall(LivingFallEvent event) {
+    public boolean onLivingFall(LivingFallEvent event) {
         event.distance = 0;
         event.setCanceled(true);
+        return false;
+    }
+
+    @Override
+    public boolean canBeDisabled() {
+        return false;
+    }
+
+    @Override
+    public boolean hideSettingsTab() {
+        return true;
     }
 }

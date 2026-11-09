@@ -22,6 +22,7 @@ import ruiseki.okcore.block.BlockTile;
 import ruiseki.okcore.block.property.BlockProperty;
 import ruiseki.okcore.helper.TileHelpers;
 import ruiseki.okstoragecore.upgrades.ILightUpgrade;
+import ruiseki.okstoragecore.upgrades.IRedstoneUpgrade;
 
 public class BlockBackpack extends BlockTile {
 
@@ -132,5 +133,23 @@ public class BlockBackpack extends BlockTile {
                     .mapToInt(ILightUpgrade::getLightLevel)
                     .sum())
             .orElse(super.getLightValue(world, x, y, z));
+    }
+
+    @Override
+    public boolean canProvidePower() {
+        return true;
+    }
+
+    @Override
+    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side) {
+        return TileHelpers.get(world, x, y, z, TileBackpack.class)
+            .map(
+                te -> te.getBackpackWrapper()
+                    .getUpgradeHandler()
+                    .getListOfWrappersThatImplement(IRedstoneUpgrade.class)
+                    .stream()
+                    .mapToInt(IRedstoneUpgrade::getRedstonePower)
+                    .sum())
+            .orElse(super.isProvidingWeakPower(world, x, y, z, side));
     }
 }

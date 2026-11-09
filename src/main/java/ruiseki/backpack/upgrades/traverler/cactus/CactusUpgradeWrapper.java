@@ -58,4 +58,14 @@ public class CactusUpgradeWrapper extends UpgradeWrapperBase<CactusUpgradeWrappe
         BiomeGenBase biome = world.getBiomeGenForCoords(x, z);
         return biome.canSpawnLightningBolt() || biome.getEnableSnow();
     }
+
+    @Override
+    public boolean canBeDisabled() {
+        return false;
+    }
+
+    @Override
+    public boolean hideSettingsTab() {
+        return true;
+    }
 }

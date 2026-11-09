@@ -11,13 +11,13 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
-import ruiseki.backpack.api.ILivingHurtUpgrade;
+import ruiseki.backpack.api.ILivingHurtResponseUpgrade;
 import ruiseki.backpack.upgrades.traverler.ITravelersUpgrade;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 
 public class CreeperUpgradeWrapper extends UpgradeWrapperBase<CreeperUpgradeWrapper, ItemCreeperUpgrade>
-    implements ILivingHurtUpgrade, ITravelersUpgrade {
+    implements ILivingHurtResponseUpgrade, ITravelersUpgrade {
 
     public static final int INTERVAL = 20 * 60 * 15;
 
@@ -27,12 +27,12 @@ public class CreeperUpgradeWrapper extends UpgradeWrapperBase<CreeperUpgradeWrap
     }
 
     @Override
-    public void onLivingHurt(LivingHurtEvent event) {
+    public boolean onLivingHurt(LivingHurtEvent event) {
         Entity entity = event.entity;
-        if (this.isInCooldown(entity.worldObj)) return;
-        if (!(entity instanceof EntityPlayer player)) return;
-        if (event.source == DamageSource.outOfWorld) return;
-        if (event.ammount < player.getHealth()) return;
+        if (this.isInCooldown(entity.worldObj)) return false;
+        if (!(entity instanceof EntityPlayer player)) return false;
+        if (event.source == DamageSource.outOfWorld) return false;
+        if (event.ammount < player.getHealth()) return false;
 
         player.setHealth(1.0F);
         player.extinguish();
@@ -48,6 +48,7 @@ public class CreeperUpgradeWrapper extends UpgradeWrapperBase<CreeperUpgradeWrap
         event.setCanceled(true);
 
         this.setCooldown(entity.worldObj, INTERVAL);
+        return false;
     }
 
     private void playRescueExplosion(EntityPlayer player) {
@@ -65,5 +66,15 @@ public class CreeperUpgradeWrapper extends UpgradeWrapperBase<CreeperUpgradeWrap
                 0.0D,
                 0.0D);
         }
+    }
+
+    @Override
+    public boolean canBeDisabled() {
+        return false;
+    }
+
+    @Override
+    public boolean hideSettingsTab() {
+        return true;
     }
 }

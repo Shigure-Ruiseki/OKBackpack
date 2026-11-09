@@ -21,4 +21,14 @@ public class GlowstoneUpgradeWrapper extends UpgradeWrapperBase<GlowstoneUpgrade
     public int getLightLevel() {
         return 15;
     }
+
+    @Override
+    public boolean canBeDisabled() {
+        return false;
+    }
+
+    @Override
+    public boolean hideSettingsTab() {
+        return true;
+    }
 }

@@ -15,8 +15,6 @@ import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -40,7 +38,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
-import ruiseki.okbackpack.api.wrapper.IWitherUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
@@ -50,7 +47,6 @@ import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BaublesHelpers;
 import ruiseki.okbackpack.common.item.travelers.ghast.GhastUpgradeHelpers;
 import ruiseki.okbackpack.common.item.travelers.quiver.QuiverUpgradeWrapper;
-import ruiseki.okbackpack.common.item.travelers.rainbow.RainbowUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.slime.SlimeUpgradeWrapper;
 
 public class BackpackEventHandler {
@@ -165,12 +161,6 @@ public class BackpackEventHandler {
         if (!(event.entity instanceof EntityPlayer player)) return;
         if (player.worldObj.isRemote) return;
 
-        if (hasTravelersUpgrade(player, RainbowUpgradeWrapper.class)) {
-            player.fallDistance = 0F;
-            event.setCanceled(true);
-            return;
-        }
-
         if (hasTravelersUpgrade(player, SlimeUpgradeWrapper.class)) {
             player.fallDistance = 0F;
             event.setCanceled(true);
@@ -196,14 +186,6 @@ public class BackpackEventHandler {
                 GhastUpgradeHelpers.markGhastRetaliation(ghast, attacker);
             }
         }
-
-        if (!(event.entityLiving instanceof EntityPlayer player)) return;
-        if (player.worldObj.isRemote) return;
-
-        if (event.source == DamageSource.wither && hasEnabledWitherUpgrade(player)) {
-            event.setCanceled(true);
-            return;
-        }
     }
 
     @SubscribeEvent
@@ -214,10 +196,6 @@ public class BackpackEventHandler {
 
         if (livingTarget instanceof EntityGhast ghast && GhastUpgradeHelpers.hasGhastUpgrade(player)) {
             GhastUpgradeHelpers.markGhastRetaliation(ghast, player);
-        }
-
-        if (hasEnabledWitherUpgrade(player)) {
-            livingTarget.addPotionEffect(new PotionEffect(Potion.wither.id, 60, 1, true));
         }
     }
 
@@ -366,10 +344,6 @@ public class BackpackEventHandler {
 
     public boolean hasTravelersUpgrade(EntityPlayer player, Class<?> upgradeClass) {
         return visitTravelersUpgrades(player, upgradeClass, ctx -> true);
-    }
-
-    public boolean hasEnabledWitherUpgrade(EntityPlayer player) {
-        return visitTravelersUpgrades(player, IWitherUpgrade.class, ctx -> ctx.upgrade.isEnabled());
     }
 
     public <T> boolean visitUpgrades(EntityPlayer player, Class<T> upgradeClass, UpgradeContextVisitor<T> visitor) {

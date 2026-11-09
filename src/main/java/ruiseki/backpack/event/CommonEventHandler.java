@@ -26,9 +26,9 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import ruiseki.backpack.api.IAttackEntityResponseUpgrade;
 import ruiseki.backpack.api.IBlockClickResponseUpgrade;
-import ruiseki.backpack.api.IHarvestDropUpgrade;
-import ruiseki.backpack.api.ILivingFallUpgrade;
-import ruiseki.backpack.api.ILivingHurtUpgrade;
+import ruiseki.backpack.api.IHarvestDropResponseUpgrade;
+import ruiseki.backpack.api.ILivingFallResponseUpgrade;
+import ruiseki.backpack.api.ILivingHurtResponseUpgrade;
 import ruiseki.backpack.backpack.wrapper.IBackpackWrapper;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.backpack.helpers.InteractionHelpers;
@@ -153,7 +153,7 @@ public class CommonEventHandler {
                     .map(wrapper -> {
                         for (IAttackEntityResponseUpgrade upgrade : wrapper.getUpgradeHandler()
                             .getWrappersThatImplement(IAttackEntityResponseUpgrade.class)) {
-                            if (upgrade.onAttackEntity(player)) {
+                            if (upgrade.onAttackEntity(event)) {
                                 return true;
                             }
                         }
@@ -172,9 +172,11 @@ public class CommonEventHandler {
                 (backpack, handlerName, identifier, slot) -> CapabilityHelpers
                     .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
                     .map(wrapper -> {
-                        for (ILivingHurtUpgrade upgrade : wrapper.getUpgradeHandler()
-                            .getWrappersThatImplement(ILivingHurtUpgrade.class)) {
-                            upgrade.onLivingHurt(event);
+                        for (ILivingHurtResponseUpgrade upgrade : wrapper.getUpgradeHandler()
+                            .getWrappersThatImplement(ILivingHurtResponseUpgrade.class)) {
+                            if (upgrade.onLivingHurt(event)) {
+                                return true;
+                            }
                         }
                         return false;
                     })
@@ -191,9 +193,11 @@ public class CommonEventHandler {
                 (backpack, handlerName, identifier, slot) -> CapabilityHelpers
                     .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
                     .map(wrapper -> {
-                        for (ILivingFallUpgrade upgrade : wrapper.getUpgradeHandler()
-                            .getWrappersThatImplement(ILivingFallUpgrade.class)) {
-                            upgrade.onLivingFall(event);
+                        for (ILivingFallResponseUpgrade upgrade : wrapper.getUpgradeHandler()
+                            .getWrappersThatImplement(ILivingFallResponseUpgrade.class)) {
+                            if (upgrade.onLivingFall(event)) {
+                                return true;
+                            }
                         }
                         return false;
                     })
@@ -210,9 +214,11 @@ public class CommonEventHandler {
                 (backpack, handlerName, identifier, slot) -> CapabilityHelpers
                     .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
                     .map(wrapper -> {
-                        for (IHarvestDropUpgrade upgrade : wrapper.getUpgradeHandler()
-                            .getWrappersThatImplement(IHarvestDropUpgrade.class)) {
-                            upgrade.onHarvestDrops(event);
+                        for (IHarvestDropResponseUpgrade upgrade : wrapper.getUpgradeHandler()
+                            .getWrappersThatImplement(IHarvestDropResponseUpgrade.class)) {
+                            if (upgrade.onHarvestDrops(event)) {
+                                return true;
+                            }
                         }
                         return false;
                     })
@@ -231,7 +237,9 @@ public class CommonEventHandler {
                     .map(wrapper -> {
                         for (IPickupXpUpgrade upgrade : wrapper.getUpgradeHandler()
                             .getWrappersThatImplement(IPickupXpUpgrade.class)) {
-                            upgrade.onPickupXp(event);
+                            if (upgrade.onPickupXp(event)) {
+                                return true;
+                            }
                         }
                         return false;
                     })

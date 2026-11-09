@@ -32,4 +32,14 @@ public class ChickenUpgradeWrapper extends UpgradeWrapperBase<ChickenUpgradeWrap
             .insertItem(new ItemStack(Items.egg), false);
         setCooldown(world, INTERVAL);
     }
+
+    @Override
+    public boolean canBeDisabled() {
+        return false;
+    }
+
+    @Override
+    public boolean hideSettingsTab() {
+        return true;
+    }
 }

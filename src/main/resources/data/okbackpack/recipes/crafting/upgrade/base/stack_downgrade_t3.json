@@ -11,8 +11,7 @@
     "U": { "item": "okbackpack:upgrade_base" }
   },
   "result": {
-    "item": "okbackpack:stack_upgrade",
-    "meta": 8,
+    "item": "okbackpack:stack_downgrade_tier_3",
     "count": 1
   }
 }

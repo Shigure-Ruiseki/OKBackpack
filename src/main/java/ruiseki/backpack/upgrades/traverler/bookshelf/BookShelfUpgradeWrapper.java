@@ -21,4 +21,14 @@ public class BookShelfUpgradeWrapper extends UpgradeWrapperBase<BookShelfUpgrade
     public float getEnchantPowerBonus() {
         return 10.0f;
     }
+
+    @Override
+    public boolean canBeDisabled() {
+        return false;
+    }
+
+    @Override
+    public boolean hideSettingsTab() {
+        return true;
+    }
 }

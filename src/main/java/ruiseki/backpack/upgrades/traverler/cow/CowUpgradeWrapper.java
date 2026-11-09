@@ -40,4 +40,14 @@ public class CowUpgradeWrapper extends UpgradeWrapperBase<CowUpgradeWrapper, Ite
         }
         this.setCooldown(world, INTERVAL);
     }
+
+    @Override
+    public boolean canBeDisabled() {
+        return false;
+    }
+
+    @Override
+    public boolean hideSettingsTab() {
+        return true;
+    }
 }

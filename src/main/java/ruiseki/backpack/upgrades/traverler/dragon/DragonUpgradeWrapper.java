@@ -27,4 +27,14 @@ public class DragonUpgradeWrapper extends PotionEffectUpgradeWrapper<DragonUpgra
             new PotionEffect(Potion.waterBreathing.id, EFFECT_DURATION, 0, true),
             new PotionEffect(Potion.regeneration.id, EFFECT_DURATION, 0, true) };
     }
+
+    @Override
+    public boolean canBeDisabled() {
+        return false;
+    }
+
+    @Override
+    public boolean hideSettingsTab() {
+        return true;
+    }
 }

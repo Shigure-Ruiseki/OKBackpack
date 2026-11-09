@@ -21,10 +21,21 @@ public class LapisUpgradeWrapper extends UpgradeWrapperBase<LapisUpgradeWrapper,
     }
 
     @Override
-    public void onPickupXp(PlayerPickupXpEvent event) {
+    public boolean onPickupXp(PlayerPickupXpEvent event) {
         if (event.entityPlayer.getRNG()
             .nextFloat() < LUCKY_LAPIS_CHANCE) {
             event.orb.xpValue *= 2;
         }
+        return false;
+    }
+
+    @Override
+    public boolean canBeDisabled() {
+        return false;
+    }
+
+    @Override
+    public boolean hideSettingsTab() {
+        return true;
     }
 }
