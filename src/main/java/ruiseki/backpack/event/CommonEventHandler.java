@@ -205,9 +205,9 @@ public class CommonEventHandler {
     }
 
     @SubscribeEvent
-    public void onLivingHurt(BlockEvent.HarvestDropsEvent event) {
+    public void onHarvestDrops(BlockEvent.HarvestDropsEvent event) {
         EntityPlayer player = event.harvester;
-        if (player.worldObj.isRemote) return;
+        if (player == null || player.worldObj.isRemote) return;
         PlayerInventoryProvider.get()
             .runOnBackpacks(
                 player,

@@ -1,12 +1,15 @@
-package ruiseki.okbackpack.common.item.travelers.ghast;
+package ruiseki.backpack.upgrades.traverler.ghast;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
-import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
+import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
+import ruiseki.backpack.helpers.PlayerInventoryProvider;
+import ruiseki.okcore.helper.CapabilityHelpers;
 
 public final class GhastUpgradeHelpers {
 
@@ -15,14 +18,6 @@ public final class GhastUpgradeHelpers {
     private static final String GHAST_ANGER_UNTIL_TAG = "OKBGhastAngerUntil";
 
     private GhastUpgradeHelpers() {}
-
-    public static boolean hasGhastUpgrade(EntityPlayer player) {
-        return BackpackEntityHelpers.visitWornBackpacks(
-            player,
-            context -> !context.wrapper()
-                .gatherCapabilityUpgrades(GhastUpgradeWrapper.class)
-                .isEmpty());
-    }
 
     public static void markGhastRetaliation(EntityGhast ghast, EntityPlayer player) {
         ghast.getEntityData()
@@ -63,7 +58,7 @@ public final class GhastUpgradeHelpers {
             double distanceSq = player.getDistanceSqToEntity(ghast);
             if (distanceSq > bestDistanceSq) continue;
 
-            if (hasGhastUpgrade(player) && !isGhastAggressiveToPlayer(ghast, player, worldTime)) {
+            if (hasUpgrade(player) && !isGhastAggressiveToPlayer(ghast, player, worldTime)) {
                 continue;
             }
 
@@ -72,5 +67,25 @@ public final class GhastUpgradeHelpers {
         }
 
         return bestTarget;
+    }
+
+    public static boolean hasUpgrade(EntityPlayer player) {
+        if (player == null || player.worldObj == null) return false;
+
+        AtomicBoolean found = new AtomicBoolean(false);
+        PlayerInventoryProvider.get()
+            .runOnBackpacks(player, (backpack, handlerName, identifier, slot) -> {
+                boolean hasUpgrade = CapabilityHelpers
+                    .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
+                    .map(
+                        wrapper -> wrapper.getUpgradeHandler()
+                            .hasUpgrade(ItemGhastUpgrade.TYPE))
+                    .orElse(false);
+                if (hasUpgrade) {
+                    found.set(true);
+                }
+                return hasUpgrade;
+            });
+        return found.get();
     }
 }

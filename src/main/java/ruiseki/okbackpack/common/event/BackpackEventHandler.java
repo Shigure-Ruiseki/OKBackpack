@@ -1,30 +1,21 @@
 package ruiseki.okbackpack.common.event;
 
-import java.util.List;
 import java.util.Map;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.entity.projectile.EntityFireball;
-import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 
@@ -45,7 +36,6 @@ import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BaublesHelpers;
-import ruiseki.okbackpack.common.item.travelers.ghast.GhastUpgradeHelpers;
 import ruiseki.okbackpack.common.item.travelers.quiver.QuiverUpgradeWrapper;
 import ruiseki.okbackpack.common.item.travelers.slime.SlimeUpgradeWrapper;
 
@@ -54,7 +44,6 @@ public class BackpackEventHandler {
     public static final BackpackEventHandler INSTANCE = new BackpackEventHandler();
 
     private static final ItemStack SINGLE_ARROW = new ItemStack(Items.arrow);
-    private static final double GHAST_RANGE = 32.0D;
 
     public BackpackEventHandler() {}
 
@@ -128,7 +117,6 @@ public class BackpackEventHandler {
         if (player.worldObj.isRemote || player.isDead) return;
 
         tickBackpacks(player);
-        neutralizeNearbyGhasts(player);
     }
 
     private void tickBackpacks(EntityPlayer player) {
@@ -179,27 +167,6 @@ public class BackpackEventHandler {
     }
 
     @SubscribeEvent
-    public void onLivingHurt(LivingHurtEvent event) {
-        if (event.entityLiving instanceof EntityGhast ghast && !ghast.worldObj.isRemote) {
-            EntityPlayer attacker = getAttackingPlayer(event.source);
-            if (GhastUpgradeHelpers.hasGhastUpgrade(attacker)) {
-                GhastUpgradeHelpers.markGhastRetaliation(ghast, attacker);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onAttackEntity(AttackEntityEvent event) {
-        EntityPlayer player = event.entityPlayer;
-        if (player == null || player.worldObj.isRemote) return;
-        if (!(event.target instanceof EntityLivingBase livingTarget)) return;
-
-        if (livingTarget instanceof EntityGhast ghast && GhastUpgradeHelpers.hasGhastUpgrade(player)) {
-            GhastUpgradeHelpers.markGhastRetaliation(ghast, player);
-        }
-    }
-
-    @SubscribeEvent
     public void onArrowNock(ArrowNockEvent event) {
         EntityPlayer player = event.entityPlayer;
         if (player == null) return;
@@ -227,49 +194,6 @@ public class BackpackEventHandler {
         if (player.worldObj.isRemote) return;
 
         shootArrowFromQuiver(player, event.bow, event.charge, quiverSource);
-    }
-
-    public EntityPlayer getAttackingPlayer(DamageSource source) {
-        if (source == null) return null;
-
-        Entity attacker = source.getEntity();
-        if (attacker instanceof EntityPlayer player) {
-            return player;
-        }
-
-        Entity directDamage = source.getSourceOfDamage();
-        if (directDamage instanceof EntityArrow arrow && arrow.shootingEntity instanceof EntityPlayer player) {
-            return player;
-        }
-
-        if (directDamage instanceof EntityThrowable throwable
-            && throwable.getThrower() instanceof EntityPlayer player) {
-            return player;
-        }
-
-        if (directDamage instanceof EntityFireball fireball && fireball.shootingEntity instanceof EntityPlayer player) {
-            return player;
-        }
-
-        return null;
-    }
-
-    public void neutralizeNearbyGhasts(EntityPlayer player) {
-        if (!GhastUpgradeHelpers.hasGhastUpgrade(player)) return;
-
-        long worldTime = player.worldObj.getTotalWorldTime();
-        List<EntityGhast> ghasts = player.worldObj
-            .getEntitiesWithinAABB(EntityGhast.class, player.boundingBox.expand(GHAST_RANGE, 32.0D, GHAST_RANGE));
-        for (EntityGhast ghast : ghasts) {
-            if (!GhastUpgradeHelpers.isGhastAggressiveToPlayer(ghast, player, worldTime)) {
-                if (ghast.targetedEntity == player) {
-                    ghast.targetedEntity = null;
-                }
-                if (ghast.getAITarget() == player) {
-                    ghast.setRevengeTarget(null);
-                }
-            }
-        }
     }
 
     public BackpackEntityHelpers.BackpackContext findQuiverSource(EntityPlayer player) {
@@ -336,10 +260,6 @@ public class BackpackEventHandler {
             velocity = 1.0F;
         }
         return velocity;
-    }
-
-    public boolean hasUpgrade(EntityPlayer player, Class<?> upgradeClass) {
-        return visitUpgrades(player, upgradeClass, ctx -> true);
     }
 
     public boolean hasTravelersUpgrade(EntityPlayer player, Class<?> upgradeClass) {
