@@ -28,6 +28,7 @@ import ruiseki.okcore.fluid.capability.CapabilityFluidHandler;
 import ruiseki.okcore.fluid.capability.EmptyFluidHandler;
 import ruiseki.okcore.fluid.handler.IFluidHandler;
 import ruiseki.okcore.helper.CapabilityHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.component.IInventoryExclusion;
 import ruiseki.okcore.inventory.component.SidedInventoryComponent;
 import ruiseki.okcore.item.IItemSharedTag;
@@ -94,7 +95,7 @@ public class TileBackpack extends TileTicking implements IGuiHolder<PosGuiData>,
     }
 
     private void setBackpackFromNbt(NBTTagCompound nbt) {
-        setBackpack(ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("backpackData")));
+        setBackpack(ItemHelpers.readFromNBT(nbt.getCompoundTag("backpackData")));
     }
 
     @Override
@@ -108,7 +109,7 @@ public class TileBackpack extends TileTicking implements IGuiHolder<PosGuiData>,
             .copy();
         backpackCopy.setTagCompound(
             ((IItemSharedTag) Objects.requireNonNull(backpackCopy.getItem())).getNBTShareTag(backpackCopy));
-        ret.setTag("backpackData", backpackCopy.writeToNBT(new NBTTagCompound()));
+        ret.setTag("backpackData", ItemHelpers.writeToNBT(backpackCopy, new NBTTagCompound()));
     }
 
     @Override

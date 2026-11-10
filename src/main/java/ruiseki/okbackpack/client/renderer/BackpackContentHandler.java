@@ -36,6 +36,7 @@ import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
+import ruiseki.okcore.helper.ItemHelpers;
 
 @SideOnly(Side.CLIENT)
 public class BackpackContentHandler {
@@ -261,7 +262,7 @@ public class BackpackContentHandler {
             ItemStack stack = handler.getStackInSlot(i);
             if (stack == null) continue;
 
-            String key = stack.getItem()
+            String key = ItemHelpers.getItem(stack)
                 .getUnlocalizedName() + ":"
                 + stack.getItemDamage();
             if (merged.containsKey(key)) {

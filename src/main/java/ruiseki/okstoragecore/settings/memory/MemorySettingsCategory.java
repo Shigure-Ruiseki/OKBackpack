@@ -65,7 +65,7 @@ public class MemorySettingsCategory implements ISettingsCategory<MemorySettingsC
                 categoryNbt,
                 SLOT_FILTER_STACKS_TAG,
                 Integer::valueOf,
-                (k, v) -> v instanceof NBTTagCompound tag ? Optional.ofNullable(ItemStack.loadItemStackFromNBT(tag))
+                (k, v) -> v instanceof NBTTagCompound tag ? Optional.ofNullable(ItemHelpers.readFromNBT(tag))
                     : Optional.empty())
             .ifPresent(map -> map.forEach(this::addSlotStack));
         ignoreNbt = NBTHelpers.getBoolean(categoryNbt, IGNORE_NBT_TAG)
@@ -270,8 +270,7 @@ public class MemorySettingsCategory implements ISettingsCategory<MemorySettingsC
             SLOT_FILTER_STACKS_TAG,
             slotFilterStacks,
             String::valueOf,
-            isk -> isk.getStack()
-                .writeToNBT(new NBTTagCompound()));
+            isk -> ItemHelpers.writeToNBT(isk.getStack(), new NBTTagCompound()));
         saveNbt.accept(categoryNbt);
     }
 
@@ -343,8 +342,8 @@ public class MemorySettingsCategory implements ISettingsCategory<MemorySettingsC
     }
 
     public boolean matchesFilter(ItemStack stack) {
-        return filterItemSlots.containsKey(stack.getItem())
-            || (!filterStackSlots.isEmpty() && filterStackSlots.containsKey(ItemStackKey.getHashCode(stack)));
+        return filterItemSlots.containsKey(ItemHelpers.getItem(stack))
+            || (!filterStackSlots.isEmpty() && filterStackSlots.containsKey(ItemHelpers.getHashCode(stack)));
     }
 
     public void registerListeners(Consumer<ItemMeta> onItemAdded, Consumer<ItemMeta> onItemRemoved,

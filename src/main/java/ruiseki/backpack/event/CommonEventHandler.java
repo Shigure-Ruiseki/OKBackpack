@@ -17,6 +17,8 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.ArrowLooseEvent;
+import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
@@ -24,6 +26,7 @@ import net.minecraftforge.event.world.BlockEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import ruiseki.backpack.api.IArrowResponseUpgrade;
 import ruiseki.backpack.api.IAttackEntityResponseUpgrade;
 import ruiseki.backpack.api.IBlockClickResponseUpgrade;
 import ruiseki.backpack.api.IGhastTargetResponseUpgrade;
@@ -242,6 +245,48 @@ public class CommonEventHandler {
                         for (ILivingClimbingResponseUpgrade upgrade : wrapper.getUpgradeHandler()
                             .getWrappersThatImplement(ILivingClimbingResponseUpgrade.class)) {
                             if (upgrade.onLivingClimb(event)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    })
+                    .orElse(false));
+    }
+
+    @SubscribeEvent
+    public void onArrowNock(ArrowNockEvent event) {
+        EntityLivingBase entity = event.entityLiving;
+        if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
+        PlayerInventoryProvider.get()
+            .runOnBackpacks(
+                player,
+                (backpack, handlerName, identifier, slot) -> CapabilityHelpers
+                    .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
+                    .map(wrapper -> {
+                        for (IArrowResponseUpgrade upgrade : wrapper.getUpgradeHandler()
+                            .getWrappersThatImplement(IArrowResponseUpgrade.class)) {
+                            if (upgrade.onArrowNock(event)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    })
+                    .orElse(false));
+    }
+
+    @SubscribeEvent
+    public void onArrowLoose(ArrowLooseEvent event) {
+        EntityLivingBase entity = event.entityLiving;
+        if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
+        PlayerInventoryProvider.get()
+            .runOnBackpacks(
+                player,
+                (backpack, handlerName, identifier, slot) -> CapabilityHelpers
+                    .getCapability(backpack, CapabilityBackpackWrapperConfig.CAPABILITY)
+                    .map(wrapper -> {
+                        for (IArrowResponseUpgrade upgrade : wrapper.getUpgradeHandler()
+                            .getWrappersThatImplement(IArrowResponseUpgrade.class)) {
+                            if (upgrade.onArrowLoose(event)) {
                                 return true;
                             }
                         }

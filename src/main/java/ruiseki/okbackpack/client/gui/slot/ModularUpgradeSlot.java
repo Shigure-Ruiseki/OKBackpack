@@ -16,6 +16,7 @@ import ruiseki.okbackpack.common.item.infinity.InfinityUpgradeWrapper;
 import ruiseki.okbackpack.common.item.infinity.ItemInfinityUpgrade;
 import ruiseki.okbackpack.common.item.infinity.ItemSurvivalInfinityUpgrade;
 import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
+import ruiseki.okcore.helper.ItemHelpers;
 
 public class ModularUpgradeSlot extends ModularItemSlot {
 
@@ -42,11 +43,11 @@ public class ModularUpgradeSlot extends ModularItemSlot {
         if (current == null) return null;
 
         // Admin infinity upgrade: only admins can remove/replace.
-        if (current.getItem() instanceof ItemInfinityUpgrade) {
+        if (ItemHelpers.getItem(current) instanceof ItemInfinityUpgrade) {
             if (!InfinityUpgradeWrapper.isAdmin(player)) {
                 ItemStack cursor = player.inventory.getItemStack();
-                if (cursor == null || !(cursor.getItem() instanceof ItemInfinityUpgrade
-                    || cursor.getItem() instanceof ItemSurvivalInfinityUpgrade)) {
+                if (ItemHelpers.isEmpty(cursor) || !(ItemHelpers.getItem(cursor) instanceof ItemInfinityUpgrade
+                    || ItemHelpers.getItem(cursor) instanceof ItemSurvivalInfinityUpgrade)) {
                     return null;
                 }
             }
@@ -73,7 +74,7 @@ public class ModularUpgradeSlot extends ModularItemSlot {
     public boolean isItemValid(@Nullable ItemStack stack) {
         if (stack == null) return false;
 
-        Item item = stack.getItem();
+        Item item = ItemHelpers.getItem(stack);
         int slot = getSlotIndex();
 
         if (!(item instanceof IUpgradeItem<?>upgradeItem)) {
@@ -101,7 +102,7 @@ public class ModularUpgradeSlot extends ModularItemSlot {
     public UpgradeSlotChangeResult getBlockedInsertResult(@Nullable ItemStack stack) {
         if (stack == null) return null;
 
-        Item item = stack.getItem();
+        Item item = ItemHelpers.getItem(stack);
         int slot = getSlotIndex();
 
         if (!(item instanceof IUpgradeItem<?>upgradeItem)) {

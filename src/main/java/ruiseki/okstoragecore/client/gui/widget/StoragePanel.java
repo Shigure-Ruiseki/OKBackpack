@@ -176,7 +176,7 @@ public class StoragePanel extends ModularPanel {
         this.getSettings()
             .customContainer(() -> new StorageContainer(this.getPanel()));
         this.getSettings()
-            .customGui(() -> StorageGuiContainer::new);
+            .customGui(() -> (container, screen) -> new StorageGuiContainer((StorageContainer) container, screen));
     }
 
     @Override
@@ -567,7 +567,7 @@ public class StoragePanel extends ModularPanel {
 
             if (ItemHelpers.isEmpty(stack)) continue;
 
-            Item item = stack.getItem();
+            Item item = ItemHelpers.getItem(stack);
             if (!(item instanceof IUpgradeItem upgrade)) continue;
             if (upgradeWrapper == null) continue;
 
@@ -618,7 +618,7 @@ public class StoragePanel extends ModularPanel {
 
             ItemStack stack = handler.getStackInSlot(slotIndex);
             if (ItemHelpers.isEmpty(stack)) continue;
-            if (!(stack.getItem() instanceof IUpgradeItem upgrade)) continue;
+            if (!(ItemHelpers.getItem(stack) instanceof IUpgradeItem upgrade)) continue;
 
             IUpgradeWrapper upgradeWrapper = handler.getSlotWrapper(slotIndex);
             if (upgradeWrapper == null) continue;

@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import com.gtnewhorizon.gtnhlib.util.data.ItemMeta;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import ruiseki.okcore.helper.ItemHelpers;
 
 public class StackUpgradeConfig {
 
@@ -85,13 +86,11 @@ public class StackUpgradeConfig {
     }
 
     public boolean canStackItem(ItemStack stack) {
-        if (stack == null || stack.getItem() == null) {
-            return false;
-        }
+        if (ItemHelpers.isEmpty(stack)) return false;
 
         updateCache();
 
-        Item item = stack.getItem();
+        Item item = ItemHelpers.getItem(stack);
 
         if (allMetadataItems.contains(item)) {
             return false;

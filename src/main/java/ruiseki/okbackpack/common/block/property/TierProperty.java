@@ -17,6 +17,7 @@ import ruiseki.okbackpack.common.block.BlockBackpack;
 import ruiseki.okcore.block.property.IProperty;
 import ruiseki.okcore.block.property.PropertyGetter;
 import ruiseki.okcore.block.property.PropertySetter;
+import ruiseki.okcore.helper.ItemHelpers;
 
 public interface TierProperty extends IProperty<String> {
 
@@ -62,7 +63,7 @@ public interface TierProperty extends IProperty<String> {
         return new AbstractTierProperty(name, defaultValue) {
 
             public String getValue(ItemStack stack) {
-                return stack.getItem() instanceof BlockBackpack.ItemBackpack backpack ? backpack.getTierId()
+                return ItemHelpers.getItem(stack) instanceof BlockBackpack.ItemBackpack backpack ? backpack.getTierId()
                     : this.getDefaultValue();
             }
 

@@ -22,7 +22,7 @@ public class CraftingResultHandler implements IItemHandlerModifiable {
     }
 
     public void setResult(ItemStack stack) {
-        this.result = ItemHelpers.isEmpty(stack) ? ItemHelpers.EMPTY : stack.copy();
+        this.result = ItemHelpers.isEmpty(stack) ? ItemHelpers.EMPTY : ItemHelpers.copy(stack);
     }
 
     @Override

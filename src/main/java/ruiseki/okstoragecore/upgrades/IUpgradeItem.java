@@ -6,6 +6,7 @@ import java.util.Set;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okcore.helper.InventoryHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.helper.TranslateHelpers;
@@ -47,7 +48,7 @@ public interface IUpgradeItem<W extends IUpgradeWrapper> {
 
         Set<Integer> slotsWithUpgrade = new HashSet<>();
         InventoryHelpers.iterate(storageWrapper.getUpgradeHandler(), (slot, stack) -> {
-            if (stack.getItem() == this) {
+            if (!ItemHelpers.isEmpty(stack) && stack.getItem() == this) {
                 slotsWithUpgrade.add(slot);
             }
         });
@@ -67,7 +68,7 @@ public interface IUpgradeItem<W extends IUpgradeWrapper> {
 
         Set<Integer> slotsWithUgradeGroup = new HashSet<>();
         InventoryHelpers.iterate(storageWrapper.getUpgradeHandler(), (slot, stack) -> {
-            if (stack.getItem() instanceof IUpgradeItem<?>upgradeItem
+            if (ItemHelpers.getItem(stack) instanceof IUpgradeItem<?>upgradeItem
                 && upgradeItem.getUpgradeGroup() == getUpgradeGroup()) {
                 slotsWithUgradeGroup.add(slot);
             }
@@ -121,10 +122,7 @@ public interface IUpgradeItem<W extends IUpgradeWrapper> {
 
         for (int slot = newAvailable; slot < end; slot++) {
             ItemStack stack = inventory.getStackInSlot(slot);
-
-            if (stack != null && stack.stackSize > 0) {
-                occupiedSlots.add(slot);
-            }
+            if (!ItemHelpers.isEmpty(stack)) occupiedSlots.add(slot);
         }
 
         if (!occupiedSlots.isEmpty()) {

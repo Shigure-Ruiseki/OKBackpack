@@ -49,6 +49,7 @@ import ruiseki.backpack.init.item.traverler.ItemLapisUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemMagmaCubeUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemOcelotUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemQuartzUpgradeConfig;
+import ruiseki.backpack.init.item.traverler.ItemQuiverUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemRainbowUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemRedstoneUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemSlimeUpgradeConfig;
@@ -82,7 +83,6 @@ import ruiseki.okbackpack.common.item.smelter.ItemSmeltingUpgradeConfig;
 import ruiseki.okbackpack.common.item.smelter.ItemSmokingUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgradeConfig;
-import ruiseki.okbackpack.common.item.travelers.quiver.ItemQuiverUpgradeConfig;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.config.ConfigHandler;
 

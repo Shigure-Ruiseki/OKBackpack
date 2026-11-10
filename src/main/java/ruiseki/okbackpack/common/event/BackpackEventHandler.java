@@ -1,11 +1,6 @@
 package ruiseki.okbackpack.common.event;
 
-import java.util.Map;
-
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -13,8 +8,6 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.entity.player.ArrowLooseEvent;
-import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 
@@ -35,7 +28,6 @@ import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BaublesHelpers;
-import ruiseki.okbackpack.common.item.travelers.quiver.QuiverUpgradeWrapper;
 
 public class BackpackEventHandler {
 
@@ -140,134 +132,6 @@ public class BackpackEventHandler {
                 }
                 return false;
             });
-    }
-
-    @SubscribeEvent
-    public void onArrowNock(ArrowNockEvent event) {
-        EntityPlayer player = event.entityPlayer;
-        if (player == null) return;
-        if (player.capabilities.isCreativeMode) return;
-        if (player.inventory.hasItem(Items.arrow)) return;
-        if (!hasTravelersUpgrade(player, QuiverUpgradeWrapper.class)) return;
-        if (findQuiverSource(player) == null) return;
-
-        player.setItemInUse(event.result, event.result.getMaxItemUseDuration());
-        event.setCanceled(true);
-    }
-
-    @SubscribeEvent
-    public void onArrowLoose(ArrowLooseEvent event) {
-        EntityPlayer player = event.entityPlayer;
-        if (player == null) return;
-        if (!hasTravelersUpgrade(player, QuiverUpgradeWrapper.class)) return;
-        if (player.capabilities.isCreativeMode) return;
-        if (EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, event.bow) > 0) return;
-
-        BackpackEntityHelpers.BackpackContext quiverSource = findQuiverSource(player);
-        if (quiverSource == null) return;
-
-        event.setCanceled(true);
-        if (player.worldObj.isRemote) return;
-
-        shootArrowFromQuiver(player, event.bow, event.charge, quiverSource);
-    }
-
-    public BackpackEntityHelpers.BackpackContext findQuiverSource(EntityPlayer player) {
-        final BackpackEntityHelpers.BackpackContext[] result = new BackpackEntityHelpers.BackpackContext[1];
-        BackpackEntityHelpers.visitWornBackpacks(player, context -> {
-            if (context.getWrapper()
-                .gatherCapabilityUpgrades(QuiverUpgradeWrapper.class)
-                .isEmpty()) {
-                return false;
-            }
-
-            ItemStack extracted = context.getWrapper()
-                .extractItem(SINGLE_ARROW, 1, true);
-            if (extracted == null || extracted.stackSize <= 0) return false;
-
-            result[0] = context;
-            return true;
-        });
-        return result[0];
-    }
-
-    public void shootArrowFromQuiver(EntityPlayer player, ItemStack bow, int charge,
-        BackpackEntityHelpers.BackpackContext source) {
-        float velocity = getArrowVelocity(charge);
-        if ((double) velocity < 0.1D) return;
-
-        EntityArrow arrow = new EntityArrow(player.worldObj, player, velocity * 2.0F);
-        if (velocity == 1.0F) {
-            arrow.setIsCritical(true);
-        }
-
-        int power = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, bow);
-        if (power > 0) {
-            arrow.setDamage(arrow.getDamage() + power * 0.5D + 0.5D);
-        }
-
-        int punch = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, bow);
-        if (punch > 0) {
-            arrow.setKnockbackStrength(punch);
-        }
-
-        if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, bow) > 0) {
-            arrow.setFire(100);
-        }
-
-        bow.damageItem(1, player);
-        source.getWrapper()
-            .extractItem(SINGLE_ARROW, 1, false);
-        BackpackEntityHelpers.persistBackpack(source);
-
-        player.worldObj.playSoundAtEntity(
-            player,
-            "random.bow",
-            1.0F,
-            1.0F / (player.getRNG()
-                .nextFloat() * 0.4F + 1.2F) + velocity * 0.5F);
-        player.worldObj.spawnEntityInWorld(arrow);
-    }
-
-    public float getArrowVelocity(int charge) {
-        float velocity = charge / 20.0F;
-        velocity = (velocity * velocity + velocity * 2.0F) / 3.0F;
-        if (velocity > 1.0F) {
-            velocity = 1.0F;
-        }
-        return velocity;
-    }
-
-    public boolean hasTravelersUpgrade(EntityPlayer player, Class<?> upgradeClass) {
-        return visitTravelersUpgrades(player, upgradeClass, ctx -> true);
-    }
-
-    public <T> boolean visitUpgrades(EntityPlayer player, Class<T> upgradeClass, UpgradeContextVisitor<T> visitor) {
-        return BackpackEntityHelpers
-            .visitPlayerBackpacks(player, BackpackEntityHelpers.SearchOrder.PLAYER_THEN_BAUBLES, backpack -> {
-                Map<Integer, T> upgrades = backpack.getWrapper()
-                    .gatherCapabilityUpgrades(upgradeClass);
-                for (Map.Entry<Integer, T> entry : upgrades.entrySet()) {
-                    if (visitor.visit(new PlayerUpgradeContext<>(backpack, entry.getKey(), entry.getValue()))) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-    }
-
-    public <T> boolean visitTravelersUpgrades(EntityPlayer player, Class<T> upgradeClass,
-        UpgradeContextVisitor<T> visitor) {
-        return BackpackEntityHelpers.visitWornBackpacks(player, backpack -> {
-            Map<Integer, T> upgrades = backpack.getWrapper()
-                .gatherCapabilityUpgrades(upgradeClass);
-            for (Map.Entry<Integer, T> entry : upgrades.entrySet()) {
-                if (visitor.visit(new PlayerUpgradeContext<>(backpack, entry.getKey(), entry.getValue()))) {
-                    return true;
-                }
-            }
-            return false;
-        });
     }
 
     @SubscribeEvent

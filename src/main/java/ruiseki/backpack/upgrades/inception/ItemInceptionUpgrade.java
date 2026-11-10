@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import ruiseki.backpack.backpack.ItemBackpack;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okcore.helper.InventoryHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
@@ -76,8 +77,9 @@ public class ItemInceptionUpgrade extends ItemUpgradeBase<InceptionUpgradeWrappe
 
     @Override
     public UpgradeSlotChangeResult canRemoveUpgradeFrom(IStorageWrapper storageWrapper) {
-        Set<Integer> slots = InventoryHelpers
-            .getItemSlots(storageWrapper.getInventoryHandler(), stack -> stack.getItem() instanceof ItemBackpack);
+        Set<Integer> slots = InventoryHelpers.getItemSlots(
+            storageWrapper.getInventoryHandler(),
+            stack -> ItemHelpers.getItem(stack) instanceof ItemBackpack);
         if (!slots.isEmpty()) {
             return new UpgradeSlotChangeResult.Fail(
                 LangHelpers.localize("gui.okbackpack.error.remove.inception_sub_backpack"),

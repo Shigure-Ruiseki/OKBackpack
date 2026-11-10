@@ -46,12 +46,12 @@ public class ModularUpgradeSlot extends ModularItemSlot {
         }
         UpgradeSlotChangeResult result;
         if (ItemHelpers.isEmpty(this.getStack())) {
-            result = ((IUpgradeItem<?>) stack.getItem()).canAddUpgradeTo(this.getWrapper(), stack);
+            result = ((IUpgradeItem<?>) ItemHelpers.getItem(stack)).canAddUpgradeTo(this.getWrapper(), stack);
         } else if (ItemHelpers.getCount(stack) > 1) {
             return false;
         } else {
-            result = ((IUpgradeItem<?>) this.getStack()
-                .getItem()).canSwapUpgradeFor(stack, this.getWrapper());
+            result = ((IUpgradeItem<?>) ItemHelpers.getItem(this.getStack()))
+                .canSwapUpgradeFor(stack, this.getWrapper());
         }
 
         this.getPanel()
@@ -66,7 +66,7 @@ public class ModularUpgradeSlot extends ModularItemSlot {
         }
 
         ItemStack stack = this.getStack();
-        if (ItemHelpers.isEmpty(stack) || !(stack.getItem() instanceof IUpgradeItem<?>upgradeItem)) {
+        if (ItemHelpers.isEmpty(stack) || !(ItemHelpers.getItem(stack) instanceof IUpgradeItem<?>upgradeItem)) {
             return false;
         }
 
@@ -82,8 +82,8 @@ public class ModularUpgradeSlot extends ModularItemSlot {
         if (!ret || ItemHelpers.getCount(stackToPut) > 1) {
             return false;
         }
-        UpgradeSlotChangeResult result = ((IUpgradeItem<?>) this.getStack()
-            .getItem()).canSwapUpgradeFor(stackToPut, this.getWrapper());
+        UpgradeSlotChangeResult result = ((IUpgradeItem<?>) ItemHelpers.getItem(this.getStack()))
+            .canSwapUpgradeFor(stackToPut, this.getWrapper());
         this.getPanel()
             .updateSlotChangeError(result);
         return result.isSuccessful();
@@ -107,7 +107,7 @@ public class ModularUpgradeSlot extends ModularItemSlot {
     private int getColumnsTaken(@Nullable ItemStack stack) {
         if (ItemHelpers.isEmpty(stack)) return 0;
 
-        if (stack.getItem() instanceof IUpgradeItem<?>upgrade) {
+        if (ItemHelpers.getItem(stack) instanceof IUpgradeItem<?>upgrade) {
             return Math.max(0, upgrade.getInventoryColumnsTaken());
         }
 

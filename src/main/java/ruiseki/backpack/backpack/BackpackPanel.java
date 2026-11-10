@@ -51,7 +51,7 @@ public class BackpackPanel extends StoragePanel {
         this.getSettings()
             .customContainer(() -> new BackpackContainer(this.getPanel()));
         this.getSettings()
-            .customGui(() -> BackpackGuiContainer::new);
+            .customGui(() -> (container, screen) -> new BackpackGuiContainer((BackpackContainer) container, screen));
     }
 
     @Override

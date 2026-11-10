@@ -83,7 +83,7 @@ public class ItemStackUpgrade extends ItemUpgradeBase<ItemStackUpgrade.Wrapper> 
 
     @Override
     public UpgradeSlotChangeResult canSwapUpgradeFor(ItemStack upgradeStackToPut, IStorageWrapper storageWrapper) {
-        if (!(upgradeStackToPut.getItem() instanceof ItemStackUpgrade otherUpgrade)) {
+        if (!(ItemHelpers.getItem(upgradeStackToPut) instanceof ItemStackUpgrade otherUpgrade)) {
             return canRemoveUpgradeFrom(storageWrapper);
         }
 
@@ -117,7 +117,8 @@ public class ItemStackUpgrade extends ItemUpgradeBase<ItemStackUpgrade.Wrapper> 
             ItemStack stack = storageWrapper.getInventoryHandler()
                 .getSlotStack(slot);
             if (ItemHelpers.isEmpty(stack)) continue;
-            double stackMultiplierNeeded = (double) ItemHelpers.getCount(stack) / stack.getMaxStackSize();
+            int maxStackSize = stack.getMaxStackSize();
+            double stackMultiplierNeeded = (double) ItemHelpers.getCount(stack) / maxStackSize;
             if (stackMultiplierNeeded > multiplier) {
                 slotsOverMultiplier.add(slot);
             }

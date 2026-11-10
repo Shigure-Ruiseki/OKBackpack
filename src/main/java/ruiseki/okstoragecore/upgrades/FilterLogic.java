@@ -150,7 +150,7 @@ public class FilterLogic extends FilterLogicBase {
                 int slot = itemTags.getInteger("Slot");
 
                 if (slot >= 0 && slot < stacks.size()) {
-                    ItemStack stack = ItemStack.loadItemStackFromNBT(itemTags);
+                    ItemStack stack = ItemHelpers.readFromNBT(itemTags);
                     stacks.set(slot, stack);
                 }
             }

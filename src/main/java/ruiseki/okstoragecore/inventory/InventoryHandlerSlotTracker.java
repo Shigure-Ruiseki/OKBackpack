@@ -418,7 +418,7 @@ public class InventoryHandlerSlotTracker implements ISlotTracker {
 
         Map<Integer, Set<Integer>> memoryFilterStackSlots = this.memorySettings.getFilterStackSlots();
         if (!memoryFilterStackSlots.isEmpty()) {
-            int stackHash = ItemStackKey.getHashCode(remainingStack);
+            int stackHash = ItemHelpers.getHashCode(remainingStack);
             if (memoryFilterStackSlots.containsKey(stackHash)) {
                 for (int memorySlot : memoryFilterStackSlots.get(stackHash)) {
                     if (this.emptySlots.contains(memorySlot)) {

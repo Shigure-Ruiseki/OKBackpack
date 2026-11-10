@@ -13,6 +13,7 @@ import ruiseki.okbackpack.api.wrapper.ICraftingUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackPackContainer;
 import ruiseki.okbackpack.client.gui.handler.InventoryCraftingWrapper;
 import ruiseki.okcore.client.mui.gui.component.slot.ItemHandlerAdapter;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.item.handler.IItemHandler;
 
 public class IndexedModularCraftingSlot extends ModularCraftingSlot {
@@ -40,7 +41,7 @@ public class IndexedModularCraftingSlot extends ModularCraftingSlot {
             container.detectAndSendChanges();
         }
 
-        if (stack != null && stack.getItem() != null) {
+        if (!ItemHelpers.isEmpty(stack)) {
             FMLCommonHandler.instance()
                 .firePlayerCraftingEvent(player, stack, craftMatrix);
             onCrafting(stack);
@@ -69,10 +70,8 @@ public class IndexedModularCraftingSlot extends ModularCraftingSlot {
                 craftMatrix.setInventorySlotContents(i, slotStack);
             }
 
-            if (original.getItem()
-                .hasContainerItem(original)) {
-                ItemStack cont = original.getItem()
-                    .getContainerItem(original);
+            if (ItemHelpers.hasContainerItem(original)) {
+                ItemStack cont = ItemHelpers.getContainerItem(original);
                 if (cont != null && cont.isItemStackDamageable() && cont.getItemDamage() > cont.getMaxDamage()) {
                     MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, cont));
                 } else if (cont != null) {
