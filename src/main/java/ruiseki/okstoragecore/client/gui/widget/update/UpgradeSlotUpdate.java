@@ -10,6 +10,7 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.container.StorageContainer;
 import ruiseki.okstoragecore.client.gui.container.UpgradeContainer;
+import ruiseki.okstoragecore.client.gui.slot.CraftingSlotInfo;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 
 public class UpgradeSlotUpdate {
@@ -19,6 +20,7 @@ public class UpgradeSlotUpdate {
     private final PanelSyncManager syncManager;
 
     private UpgradeContainer upgradeContainer;
+    private CraftingSlotInfo craftingInfo;
 
     final Map<String, Object> components = new HashMap<>();
 
@@ -26,6 +28,7 @@ public class UpgradeSlotUpdate {
         this.panel = panel;
         this.slotIndex = slotIndex;
         this.syncManager = panel.getSyncManager();
+        this.components.put("upgrade_handler", panel.getUpgradeSlotSH(slotIndex));
         for (IUpgradeSlotUpdateFactory factory : UpgradeSlotUpdateRegistry.getFactories()) {
             factory.build(this);
         }
@@ -77,6 +80,14 @@ public class UpgradeSlotUpdate {
 
     public int getUpgradeIndex() {
         return this.slotIndex;
+    }
+
+    public CraftingSlotInfo getCraftingInfo() {
+        return craftingInfo;
+    }
+
+    public void setCraftingInfo(CraftingSlotInfo craftingInfo) {
+        this.craftingInfo = craftingInfo;
     }
 
     public PanelSyncManager getSyncManager() {

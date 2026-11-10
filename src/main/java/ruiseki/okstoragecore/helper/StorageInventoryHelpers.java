@@ -79,7 +79,7 @@ public class StorageInventoryHelpers {
         ItemStack[] old = new ItemStack[9];
         for (int i = 0; i < 9; i++) {
             ItemStack stack = stackHandler.getStackInSlot(i);
-            old[i] = stack == null ? null : stack.copy();
+            old[i] = ItemHelpers.isEmpty(stack) ? ItemHelpers.EMPTY : ItemHelpers.copy(stack);
         }
         // Source index for each destination slot.
         final int[] clockwiseMap = { 6, 3, 0, 7, 4, 1, 8, 5, 2 };
@@ -87,7 +87,7 @@ public class StorageInventoryHelpers {
         int[] map = clockwise ? clockwiseMap : counterClockwiseMap;
         for (int i = 0; i < 9; i++) {
             ItemStack stack = old[map[i]];
-            stackHandler.setStackInSlot(i, stack == null ? null : stack.copy());
+            stackHandler.setStackInSlot(i, ItemHelpers.isEmpty(stack) ? ItemHelpers.EMPTY : ItemHelpers.copy(stack));
         }
     }
 
@@ -110,8 +110,8 @@ public class StorageInventoryHelpers {
             }
 
             if (!found) {
-                ItemStack key = s.copy();
-                key.stackSize = 1;
+                ItemStack key = ItemHelpers.copy(s);
+                ItemHelpers.setCount(key, 1);
                 List<Integer> list = new ArrayList<>();
                 list.add(i);
                 groups.put(key, list);
@@ -128,7 +128,9 @@ public class StorageInventoryHelpers {
 
             int total = 0;
             for (int slot : slots) {
-                total += handler.getStackInSlot(slot).stackSize;
+                ItemStack stack = handler.getStackInSlot(slot);
+                if (ItemHelpers.isEmpty(stack)) continue;
+                total += ItemHelpers.getCount(stack);
             }
 
             int base = total / slotCount;
@@ -137,12 +139,13 @@ public class StorageInventoryHelpers {
             for (int i = 0; i < slotCount; i++) {
                 int slot = slots.get(i);
                 ItemStack old = handler.getStackInSlot(slot);
+                if (ItemHelpers.isEmpty(old)) continue;
 
                 int want = base + (i < remain ? 1 : 0);
-                int give = Math.min(want, old.getMaxStackSize());
+                int give = Math.min(want, ItemHelpers.getMaxStackSize(old));
 
-                ItemStack out = target.copy();
-                out.stackSize = give;
+                ItemStack out = ItemHelpers.copy(target);
+                ItemHelpers.setCount(old, give);
                 handler.setStackInSlot(slot, out);
             }
         }
@@ -153,7 +156,7 @@ public class StorageInventoryHelpers {
         ItemStack source = null;
         for (int i = 0; i < 9; i++) {
             ItemStack s = handler.getStackInSlot(i);
-            if (s != null && s.stackSize > 0) {
+            if (s != null && ItemHelpers.getCount(s) > 0) {
                 source = s;
                 break;
             }
@@ -168,7 +171,7 @@ public class StorageInventoryHelpers {
                 slots.add(i);
             } else if (ItemHandlerHelpers.canItemStacksStack(s, source)) {
                 slots.add(i);
-                totalCount += s.stackSize;
+                totalCount += ItemHelpers.getCount(s);
             }
         }
         if (slots.isEmpty()) return;
@@ -180,10 +183,10 @@ public class StorageInventoryHelpers {
         for (int i = 0; i < slotCount; i++) {
             int slot = slots.get(i);
             int give = base + (i < remain ? 1 : 0);
-            give = Math.min(give, source.getMaxStackSize());
+            give = Math.min(give, ItemHelpers.getMaxStackSize(source));
 
-            ItemStack out = source.copy();
-            out.stackSize = give;
+            ItemStack out = ItemHelpers.copy(source);
+            ItemHelpers.setCount(out, give);
             handler.setStackInSlot(slot, out);
         }
     }
@@ -195,10 +198,10 @@ public class StorageInventoryHelpers {
             for (int i = 0; i < stackHandler.getSlots() - 1; i++) {
                 if (i == 9) continue;
                 ItemStack original = stackHandler.getStackInSlot(i);
-                if (original == null || original.stackSize <= 0) continue;
-                ItemStack moving = original.copy();
+                if (ItemHelpers.isEmpty(original)) continue;
+                ItemStack moving = ItemHelpers.copy(original);
                 for (int j = 9; j < playerInv.getSlots(); j++) {
-                    if (moving == null || moving.stackSize <= 0) break;
+                    if (ItemHelpers.isEmpty(moving)) break;
                     moving = playerInv.insertItem(j, moving, false);
                 }
                 stackHandler.setStackInSlot(i, moving);
@@ -207,9 +210,9 @@ public class StorageInventoryHelpers {
             for (int i = 0; i < stackHandler.getSlots() - 1; i++) {
                 if (i == 9) continue;
                 ItemStack original = stackHandler.getStackInSlot(i);
-                if (original == null || original.stackSize <= 0) continue;
+                if (ItemHelpers.isEmpty(original)) continue;
                 ItemStack remaining = wrapper.getInventoryHandler()
-                    .insertItem(original.copy(), false);
+                    .insertItem(ItemHelpers.copy(original), false);
                 stackHandler.setStackInSlot(i, remaining);
             }
         }
@@ -223,7 +226,7 @@ public class StorageInventoryHelpers {
 
     public static ItemStack runPickupOnPickupResponseUpgrades(World level, @Nullable EntityPlayer player,
         UpgradeHandler upgradeHandler, ItemStack remainingStack, boolean simulate) {
-        if (ItemHelpers.isEmpty(remainingStack) || remainingStack.getMaxStackSize() <= 0) {
+        if (ItemHelpers.isEmpty(remainingStack) || ItemHelpers.getMaxStackSize(remainingStack) <= 0) {
             return remainingStack;
         }
 

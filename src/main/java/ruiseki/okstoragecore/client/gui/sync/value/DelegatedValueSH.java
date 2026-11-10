@@ -11,6 +11,7 @@ import com.cleanroommc.modularui.value.sync.ValueSyncHandler;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegistry;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
+import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 
 public abstract class DelegatedValueSH<T, S extends DelegatedValueSH<T, S>> extends ValueSyncHandler<T, S> {
@@ -38,6 +39,11 @@ public abstract class DelegatedValueSH<T, S extends DelegatedValueSH<T, S>> exte
         return this.getWrapper()
             .getUpgradeHandler()
             .getSlotWrapper(this.getSlotIndex());
+    }
+
+    public UpgradeSlotUpdate getUpgradeUpdate() {
+        return this.getPanel()
+            .getUpgradeSlotUpdates()[this.getSlotIndex()];
     }
 
     public int getSlotIndex() {

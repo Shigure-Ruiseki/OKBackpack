@@ -8,7 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.sync.CommonSHRegistries;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSH;
+import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedStringSH;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
@@ -27,24 +29,28 @@ public class ItemAnvilUpgrade extends ItemUpgradeBase<AnvilUpgradeWrapper> {
         }
 
         @Override
-        public void updateTabDelegates(AnvilUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
-            DelegatedItemHandlerSH handler = group.get("anvil_handler");
+        public void updateTabDelegates(AnvilUpgradeWrapper wrapper, UpgradeSlotUpdate slotUpdate) {
+            DelegatedItemHandlerSH handler = slotUpdate.get("anvil_handler");
             handler.setItemHandler(wrapper::getStorage);
+            handler.syncToServer(CommonSHRegistries.STORAGE);
 
+            UpgradeSlotSH slotSH = slotUpdate.get("upgrade_handler");
             AnvilContainer container = new AnvilContainer(
-                group.getWrapper(),
-                group.getPanel(),
+                slotUpdate.getWrapper(),
+                slotUpdate.getPanel(),
                 handler.getContainerSupplier(),
-                group.getPlayer(),
-                group.getUpgradeIndex(),
+                slotUpdate.getPlayer(),
+                slotUpdate.getUpgradeIndex(),
                 handler.getItemHandler());
-            group.setUpgradeContainer(container);
+            slotUpdate.setUpgradeContainer(container);
+            slotSH.syncToServer(CommonSHRegistries.ANVIL_CONTAINER);
 
-            DelegatedStringSH nameField = group.get("anvil_name_field");
+            DelegatedStringSH nameField = slotUpdate.get("anvil_name_field");
             nameField.setDelegated(wrapper::getItemName, s -> {
                 wrapper.setItemName(s);
                 container.updateRepairOutput();
             });
+            handler.syncToServer(CommonSHRegistries.ANVIL_NAME);
         }
 
         @Override

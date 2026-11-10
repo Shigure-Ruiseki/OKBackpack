@@ -103,7 +103,8 @@ public class StorageSlot extends ResizableItemSlot {
     private void buildItemTooltip(ItemStack stack, ItemStack displayStack, RichTooltip tooltip) {
         super.buildTooltip(displayStack, tooltip);
         if (!ItemHelpers.isEmpty(stack)) {
-            tooltip.addLine(IKey.lang("gui.okstoragecore.tooltip.stack_count", formatTooltipValue(stack.stackSize)));
+            tooltip.addLine(
+                IKey.lang("gui.okstoragecore.tooltip.stack_count", formatTooltipValue(ItemHelpers.getCount(stack))));
         }
     }
 

@@ -94,7 +94,7 @@ public class MemorySettingsCategory implements ISettingsCategory<MemorySettingsC
         if (slotFilterStacks.containsKey(slotNumber)) {
             ItemStack filterStack = slotFilterStacks.get(slotNumber)
                 .getStack();
-            return Optional.of(copy ? filterStack.copy() : filterStack);
+            return Optional.of(copy ? ItemHelpers.copy(filterStack) : filterStack);
         }
 
         return Optional.empty();

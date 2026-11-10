@@ -254,7 +254,7 @@ public class StorageContentHandler {
             return 0;
         }
 
-        int countWidth = font.getStringWidth(abbreviateCount(stack.stackSize)) + COUNT_PADDING;
+        int countWidth = font.getStringWidth(abbreviateCount(ItemHelpers.getCount(stack))) + COUNT_PADDING;
 
         return Math.max(countWidth, DEFAULT_STACK_WIDTH);
     }
@@ -388,7 +388,7 @@ public class StorageContentHandler {
                     break;
                 }
 
-                String countText = abbreviateCount(stack.stackSize);
+                String countText = abbreviateCount(ItemHelpers.getCount(stack));
 
                 int renderX = drawX + stackWidth - DEFAULT_STACK_WIDTH;
 
@@ -436,19 +436,19 @@ public class StorageContentHandler {
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack stack = handler.getStackInSlot(i);
             if (ItemHelpers.isEmpty(stack)) continue;
-            String key = stack.getItem()
+            String key = ItemHelpers.getItem(stack)
                 .getUnlocalizedName() + ":"
                 + stack.getItemDamage();
             if (merged.containsKey(key)) {
-                merged.get(key).stackSize += stack.stackSize;
+                ItemHelpers.grow(merged.get(key), ItemHelpers.getCount(stack));
             } else {
-                merged.put(key, stack.copy());
+                merged.put(key, ItemHelpers.copy(stack));
             }
         }
 
         List<ItemStack> result = new ArrayList<>(merged.values());
         result.sort(
-            Comparator.comparingInt((ItemStack s) -> s.stackSize)
+            Comparator.comparingInt(ItemHelpers::getCount)
                 .reversed());
         return result;
     }

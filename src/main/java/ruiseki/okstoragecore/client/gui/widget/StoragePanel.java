@@ -514,21 +514,23 @@ public class StoragePanel extends ModularPanel {
         this.slotWidgets = new Flow[slotCount];
         for (int i = 0; i < handler.getSlots(); i++) {
             final int slotIndex = i;
-            this.upgradeSlotUpdates[slotIndex] = new UpgradeSlotUpdate(this.getPanel(), slotIndex);
             ModularUpgradeSlot slot = new ModularUpgradeSlot(slotIndex, this.getPanel());
             UpgradeSlotSH syncHandler = new UpgradeSlotSH(slot, this.getPanel());
+            this.upgradeSlotSHs[slotIndex] = syncHandler;
+            this.syncManager.syncValue("upgrades", slotIndex, syncHandler);
+            this.upgradeSlotUpdates[slotIndex] = new UpgradeSlotUpdate(this.getPanel(), slotIndex);
             slot.slotGroup("upgrade_inventory")
                 .changeListener((stack, onlyAmountChanged, client, init) -> {
+                    if (!client) return;
                     ItemStack last = this.lastUpgradeStacks[slotIndex];
                     boolean itemChanged = !ItemHelpers.areItemsEqual(last, stack, true);
                     if (!itemChanged) return;
-                    this.lastUpgradeStacks[slotIndex] = stack == null ? null : stack.copy();
+                    this.lastUpgradeStacks[slotIndex] = ItemHelpers.isEmpty(stack) ? ItemHelpers.EMPTY
+                        : ItemHelpers.copy(stack);
 
                     this.updateUpgradeTabs();
                     this.updateInventoryGrid();
                 });
-            this.syncManager.syncValue("upgrades", slotIndex, syncHandler);
-            this.upgradeSlotSHs[slotIndex] = syncHandler;
         }
         this.syncManager.registerSlotGroup(new SlotGroup("upgrade_inventory", 1, 99, true));
     }
@@ -869,6 +871,19 @@ public class StoragePanel extends ModularPanel {
 
     public IndexedChildWidget<Tab> getTabContainer() {
         return this.tabContainer;
+    }
+
+    public Optional<IUpgradeWrapper> getActiveUpgradeWrapper() {
+        return this.getWrapper()
+            .getOpenTabId()
+            .filter(
+                index -> index >= 0 && index < this.getWrapper()
+                    .getUpgradeHandler()
+                    .getSlots())
+            .map(
+                index -> this.getWrapper()
+                    .getUpgradeHandler()
+                    .getSlotWrapper(index));
     }
 
     public Optional<UpgradeSlotUpdate> getActiveUpgradeSlotUpdate() {

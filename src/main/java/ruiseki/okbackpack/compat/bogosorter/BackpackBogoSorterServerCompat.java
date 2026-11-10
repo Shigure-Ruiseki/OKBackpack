@@ -34,6 +34,7 @@ import ruiseki.okbackpack.client.gui.handler.BackpackItemStackHandler;
 import ruiseki.okbackpack.client.gui.slot.ModularBackpackSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 
 public class BackpackBogoSorterServerCompat {
 
@@ -223,7 +224,7 @@ public class BackpackBogoSorterServerCompat {
 
     @Optional.Method(modid = "bogosorter")
     public static int getStackLimit(IStorageWrapper wrapper, ItemStack stack) {
-        double rawLimit = stack.getMaxStackSize() * wrapper.applyStackLimitModifiers();
+        double rawLimit = ItemHelpers.getMaxStackSize(stack) * wrapper.applyStackLimitModifiers();
         if (rawLimit >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
         return (int) Math.ceil(rawLimit);
     }

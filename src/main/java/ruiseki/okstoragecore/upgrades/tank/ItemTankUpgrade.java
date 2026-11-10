@@ -13,6 +13,7 @@ import com.cleanroommc.modularui.widget.Widget;
 
 import ruiseki.okcore.helper.FluidHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.sync.CommonSHRegistries;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedFluidStackSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedIntSH;
@@ -39,12 +40,15 @@ public class ItemTankUpgrade extends ItemUpgradeBase<TankUpgradeWrapper> {
         public void updateTabDelegates(TankUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
             DelegatedItemHandlerSH tankHandler = group.get("tank_handler");
             tankHandler.setItemHandler(wrapper::getStorage);
+            tankHandler.syncToServer(CommonSHRegistries.STORAGE);
 
             DelegatedFluidStackSH fluidStackHandler = group.get("tank_fluid");
             fluidStackHandler.setDelegated(wrapper::getContents);
+            fluidStackHandler.syncToServer(CommonSHRegistries.TANK_FLUID);
 
             DelegatedIntSH tankCapacityHandler = group.get("tank_capacity");
             tankCapacityHandler.setDelegated(wrapper::getTankCapacity);
+            tankCapacityHandler.syncToServer(CommonSHRegistries.TANK_CAPACITY);
         }
 
         @Override

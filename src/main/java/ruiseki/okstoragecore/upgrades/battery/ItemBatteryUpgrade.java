@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import com.cleanroommc.modularui.widget.Widget;
 
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.sync.CommonSHRegistries;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedIntSH;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
@@ -38,12 +39,15 @@ public class ItemBatteryUpgrade extends ItemUpgradeBase<BatteryUpgradeWrapper> {
             public void updateTabDelegates(BatteryUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
                 DelegatedItemHandlerSH batteryHandler = group.get("battery_handler");
                 batteryHandler.setItemHandler(wrapper::getStorage);
+                batteryHandler.syncToServer(CommonSHRegistries.STORAGE);
 
                 DelegatedIntSH energyStoredHandler = group.get("battery_energy_stored");
                 energyStoredHandler.setDelegated(wrapper::getEnergyStored);
+                batteryHandler.syncToServer(CommonSHRegistries.BATTERY_ENERGY);
 
                 DelegatedIntSH maxEnergyHandler = group.get("battery_max_energy");
                 maxEnergyHandler.setDelegated(wrapper::getMaxEnergyStored);
+                batteryHandler.syncToServer(CommonSHRegistries.BATTERY_CAPACITY);
             }
 
             @Override

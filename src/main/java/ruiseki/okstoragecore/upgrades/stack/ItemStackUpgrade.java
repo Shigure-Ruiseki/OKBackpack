@@ -117,8 +117,7 @@ public class ItemStackUpgrade extends ItemUpgradeBase<ItemStackUpgrade.Wrapper> 
             ItemStack stack = storageWrapper.getInventoryHandler()
                 .getSlotStack(slot);
             if (ItemHelpers.isEmpty(stack)) continue;
-            int maxStackSize = stack.getMaxStackSize();
-            double stackMultiplierNeeded = (double) ItemHelpers.getCount(stack) / maxStackSize;
+            double stackMultiplierNeeded = (double) ItemHelpers.getCount(stack) / ItemHelpers.getMaxStackSize(stack);
             if (stackMultiplierNeeded > multiplier) {
                 slotsOverMultiplier.add(slot);
             }

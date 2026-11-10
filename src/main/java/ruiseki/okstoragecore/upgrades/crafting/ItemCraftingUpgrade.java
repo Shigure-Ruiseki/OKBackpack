@@ -7,7 +7,12 @@ import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.slot.CraftingSlotInfo;
+import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
+import ruiseki.okstoragecore.client.gui.slot.ModularCraftingSlot;
+import ruiseki.okstoragecore.client.gui.sync.CommonSHRegistries;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSH;
+import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
@@ -27,20 +32,39 @@ public class ItemCraftingUpgrade extends ItemUpgradeBase<CraftingUpgradeWrapper>
             }
 
             @Override
-            public void updateTabDelegates(CraftingUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
-                DelegatedItemHandlerSH handler = group.get("crafting_handler");
+            public void updateTabDelegates(CraftingUpgradeWrapper wrapper, UpgradeSlotUpdate slotUpdate) {
+                DelegatedItemHandlerSH handler = slotUpdate.get("crafting_handler");
                 handler.setItemHandler(wrapper::getStorage);
+                handler.syncToServer(CommonSHRegistries.STORAGE);
 
+                UpgradeSlotSH slotSH = slotUpdate.get("upgrade_handler");
                 CraftingContainer container = new CraftingContainer(
-                    group.getWrapper(),
-                    group.getPanel(),
+                    slotUpdate.getWrapper(),
+                    slotUpdate.getPanel(),
                     handler.getContainerSupplier(),
-                    group.getPlayer(),
-                    group.getUpgradeIndex(),
+                    slotUpdate.getPlayer(),
+                    slotUpdate.getUpgradeIndex(),
                     3,
                     3,
                     handler.getItemHandler());
-                group.setUpgradeContainer(container);
+                slotUpdate.setUpgradeContainer(container);
+                slotSH.syncToServer(CommonSHRegistries.CRAFTING_CONTAINER);
+
+                // Client Only
+                IndexedModularSlot[] matrix = slotUpdate.get("crafting_matrix_slots");
+                ModularCraftingSlot result = slotUpdate.get("crafting_result_slot");
+                CraftingSlotInfo slotInfo = new CraftingSlotInfo(
+                    slotUpdate.getUpgradeIndex(),
+                    matrix,
+                    result,
+                    3,
+                    3,
+                    25,
+                    6,
+                    18,
+                    18);
+                slotUpdate.setCraftingInfo(slotInfo);
+                slotSH.syncToServer(CommonSHRegistries.CRAFTING_INFO);
             }
 
             @Override

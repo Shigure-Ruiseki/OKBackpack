@@ -28,6 +28,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.okbackpack.mixins.early.modularui2.ItemSlotInvoker;
 import ruiseki.okcore.event.gui.SlotRenderEvent;
+import ruiseki.okcore.helper.ItemHelpers;
 
 public class ResizableItemSlot extends ItemSlot implements SlotRenderEvent.ISlotRenderPosition {
 
@@ -89,20 +90,20 @@ public class ResizableItemSlot extends ItemSlot implements SlotRenderEvent.ISlot
         RenderItem renderItem = GuiScreenAccessor.getItemRender();
         ItemStack itemstack = slotIn.getStack();
         boolean isDragPreview = false;
-        boolean doDrawItem = slotIn == acc.getClickedSlot() && acc.getDraggedStack() != null
+        boolean doDrawItem = slotIn == acc.getClickedSlot() && !ItemHelpers.isEmpty(acc.getDraggedStack())
             && !acc.getIsRightMouseClick();
         ItemStack itemstack1 = guiScreen.mc.thePlayer.inventory.getItemStack();
         int amount = -1;
         String format = null;
 
         if (!getSyncHandler().isPhantom()) {
-            if (slotIn == acc.getClickedSlot() && acc.getDraggedStack() != null
+            if (slotIn == acc.getClickedSlot() && !ItemHelpers.isEmpty(acc.getDraggedStack())
                 && acc.getIsRightMouseClick()
-                && itemstack != null) {
-                itemstack = itemstack.copy();
+                && !ItemHelpers.isEmpty(itemstack)) {
+                itemstack = ItemHelpers.copy(itemstack);
                 itemstack.stackSize /= 2;
             } else if (acc.getDragSplitting() && acc.getDragSplittingSlots()
-                .contains(slotIn) && itemstack1 != null) {
+                .contains(slotIn) && !ItemHelpers.isEmpty(itemstack1)) {
                     if (acc.getDragSplittingSlots()
                         .size() == 1) {
                         return;
@@ -111,7 +112,7 @@ public class ResizableItemSlot extends ItemSlot implements SlotRenderEvent.ISlot
                     // canAddItemToSlot
                     if (Container.func_94527_a(slotIn, itemstack1, true) && getScreen().getContainer()
                         .canDragIntoSlot(slotIn)) {
-                        itemstack = itemstack1.copy();
+                        itemstack = ItemHelpers.copy(itemstack1);
                         isDragPreview = true;
                         // computeStackSize
                         Container.func_94525_a(

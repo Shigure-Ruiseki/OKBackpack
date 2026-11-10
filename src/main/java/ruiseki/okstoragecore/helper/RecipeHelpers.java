@@ -149,7 +149,7 @@ public class RecipeHelpers {
         Set<ItemStackKey> visited = new HashSet<>();
         Queue<ItemStack> queue = new LinkedList<>();
 
-        queue.add(firstCompactResult.copy());
+        queue.add(ItemHelpers.copy(firstCompactResult));
 
         int iterations = 0;
 
@@ -403,11 +403,11 @@ public class RecipeHelpers {
             }
 
             if (selectedOutput == null) {
-                selectedOutput = output.copy();
+                selectedOutput = ItemHelpers.copy(output);
             }
 
             if (uncompactMatchesItem(output, w, stack, width * height)) {
-                selectedOutput = output.copy();
+                selectedOutput = ItemHelpers.copy(output);
                 break;
             }
         }
@@ -458,7 +458,7 @@ public class RecipeHelpers {
     private static ItemStack getRecipeResult(IRecipe recipe, InventoryCrafting inventory) {
         try {
             ItemStack result = recipe.getCraftingResult(inventory);
-            return ItemHelpers.isEmpty(result) ? null : result.copy();
+            return ItemHelpers.isEmpty(result) ? ItemHelpers.EMPTY : ItemHelpers.copy(result);
         } catch (Throwable ignored) {
             return null;
         }
@@ -469,7 +469,7 @@ public class RecipeHelpers {
         InventoryCrafting inventory = new InventoryCrafting(new DummyContainer(), width, height);
 
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            ItemStack copy = stack.copy();
+            ItemStack copy = ItemHelpers.copy(stack);
             ItemHelpers.setCount(copy, 1);
             inventory.setInventorySlotContents(i, copy);
         }
@@ -512,12 +512,12 @@ public class RecipeHelpers {
         private final List<ItemStack> remainingItems;
 
         public CompactingResult(ItemStack result, List<ItemStack> remainingItems) {
-            this.result = result == null ? null : result.copy();
+            this.result = ItemHelpers.isEmpty(result) ? ItemHelpers.EMPTY : ItemHelpers.copy(result);
             this.remainingItems = copyStacks(remainingItems);
         }
 
         public ItemStack getResult() {
-            return result == null ? null : result.copy();
+            return ItemHelpers.isEmpty(result) ? ItemHelpers.EMPTY : ItemHelpers.copy(result);
         }
 
         public List<ItemStack> getRemainingItems() {
@@ -531,7 +531,7 @@ public class RecipeHelpers {
 
             List<ItemStack> copies = new ArrayList<>(stacks.size());
             for (ItemStack stack : stacks) {
-                copies.add(stack == null ? null : stack.copy());
+                copies.add(ItemHelpers.isEmpty(stack) ? ItemHelpers.EMPTY : ItemHelpers.copy(stack));
             }
 
             return Collections.unmodifiableList(copies);
@@ -540,13 +540,13 @@ public class RecipeHelpers {
 
     public static class UncompactingResult {
 
-        public static final UncompactingResult EMPTY = new UncompactingResult(null, CompactingShape.NONE);
+        public static final UncompactingResult EMPTY = new UncompactingResult(ItemHelpers.EMPTY, CompactingShape.NONE);
 
         private final ItemStack result;
         private final CompactingShape compactUsingShape;
 
         public UncompactingResult(ItemStack result, CompactingShape compactUsingShape) {
-            this.result = result == null ? null : result.copy();
+            this.result = ItemHelpers.isEmpty(result) ? ItemHelpers.EMPTY : ItemHelpers.copy(result);
             this.compactUsingShape = compactUsingShape;
         }
 
@@ -554,14 +554,14 @@ public class RecipeHelpers {
          * Compatibility getter. Returns only the Item, without metadata or NBT.
          */
         public Item getResult() {
-            return result == null ? null : result.getItem();
+            return ItemHelpers.getItem(result);
         }
 
         /**
          * Returns the complete result stack, including metadata and NBT.
          */
         public ItemStack getResultStack() {
-            return result == null ? null : result.copy();
+            return ItemHelpers.isEmpty(result) ? ItemHelpers.EMPTY : ItemHelpers.copy(result);
         }
 
         public CompactingShape getCompactUsingShape() {

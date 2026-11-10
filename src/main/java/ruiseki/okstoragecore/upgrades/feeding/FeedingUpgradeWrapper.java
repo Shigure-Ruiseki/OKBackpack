@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.InventoryHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.NBTHelpers;
 import ruiseki.okcore.item.handler.IItemHandlerModifiable;
 import ruiseki.okstoragecore.api.IStorageWrapper;
@@ -106,11 +107,11 @@ public class FeedingUpgradeWrapper extends UpgradeWrapperBase<FeedingUpgradeWrap
                 return false;
             }
 
-            ItemFood food = (ItemFood) stack.getItem();
+            ItemFood food = (ItemFood) ItemHelpers.getItem(stack);
 
             // Keep the stored stack untouched until consumption has been processed.
-            ItemStack foodStack = stack.copy();
-            ItemStack beforeEating = foodStack.copy();
+            ItemStack foodStack = ItemHelpers.copy(stack);
+            ItemStack beforeEating = ItemHelpers.copy(foodStack);
 
             // Consume the food and obtain the resulting stack.
             ItemStack result = food.onEaten(foodStack, world, player);

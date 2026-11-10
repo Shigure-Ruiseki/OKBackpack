@@ -62,6 +62,7 @@ public class CraftingContainer extends UpgradeContainer {
         }
         this.craftingSlot = slot;
         slot.setContainer(this);
+        this.inventory.notifyContainer();
     }
 
     @Override
@@ -108,7 +109,7 @@ public class CraftingContainer extends UpgradeContainer {
                 this.inventory.setSlot(i, containerItem, false);
             } else if (ItemHandlerHelpers.canItemStacksStack(current, containerItem)
                 && ItemHelpers.getCount(current) + ItemHelpers.getCount(containerItem)
-                    <= ItemHelpers.getItemStackSize(current)) {
+                    <= ItemHelpers.getMaxStackSize(current)) {
 
                         ItemHelpers.grow(current, ItemHelpers.getCount(containerItem));
                         this.inventory.setSlot(i, current, false);

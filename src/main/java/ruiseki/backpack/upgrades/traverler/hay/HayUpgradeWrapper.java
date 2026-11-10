@@ -15,6 +15,7 @@ import net.minecraftforge.event.world.BlockEvent;
 
 import ruiseki.backpack.api.IHarvestDropResponseUpgrade;
 import ruiseki.backpack.upgrades.traverler.ITravelersUpgrade;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 
@@ -35,7 +36,7 @@ public class HayUpgradeWrapper extends UpgradeWrapperBase<HayUpgradeWrapper, Ite
             List<ItemStack> extraDrops = new ArrayList<>();
             for (ItemStack drop : event.drops) {
                 if (drop != null) {
-                    extraDrops.add(drop.copy());
+                    extraDrops.add(ItemHelpers.copy(drop));
                 }
             }
             event.drops.addAll(extraDrops);

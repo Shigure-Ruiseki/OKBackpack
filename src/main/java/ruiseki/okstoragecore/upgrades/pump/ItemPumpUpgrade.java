@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.sync.CommonSHRegistries;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedFluidFilterLogicSH;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
@@ -32,6 +33,7 @@ public class ItemPumpUpgrade extends ItemUpgradeBase<PumpUpgradeWrapper> {
                 ? group.get("basic_fluid_filter_logic")
                 : group.get("adv_fluid_filter_logic");
             filterLogic.setFilterLogic(wrapper::getFilterLogic);
+            filterLogic.syncToServer(CommonSHRegistries.FLUID_FILTER);
         }
 
         @Override

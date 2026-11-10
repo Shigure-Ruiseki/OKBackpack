@@ -187,10 +187,10 @@ public abstract class InventoryHandler extends ItemStackHandler
         // return stack.getMaxStackSize();
         // }
 
-        int limit = MathHelpers.intMaxCappedMultiply(stack.getMaxStackSize(), (this.baseSlotLimit / 64));
+        int limit = MathHelpers.intMaxCappedMultiply(ItemHelpers.getMaxStackSize(stack), (this.baseSlotLimit / 64));
         int remainder = this.baseSlotLimit % 64;
         if (remainder > 0) {
-            limit = MathHelpers.intMaxCappedAddition(limit, remainder * stack.getMaxStackSize() / 64);
+            limit = MathHelpers.intMaxCappedAddition(limit, remainder * ItemHelpers.getMaxStackSize(stack) / 64);
         }
         return limit;
     }
@@ -249,7 +249,7 @@ public abstract class InventoryHandler extends ItemStackHandler
             return ItemHelpers.EMPTY;
         }
 
-        int toExtract = Math.min(amount, existing.getMaxStackSize());
+        int toExtract = Math.min(amount, ItemHelpers.getMaxStackSize(existing));
 
         if (ItemHelpers.getCount(existing) <= toExtract) {
             if (!simulate) {

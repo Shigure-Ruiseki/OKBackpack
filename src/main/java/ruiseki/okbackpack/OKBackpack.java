@@ -34,7 +34,6 @@ import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
 import ruiseki.okbackpack.common.command.CommandBackpack;
 import ruiseki.okbackpack.common.init.ModOreDicts;
 import ruiseki.okbackpack.common.init.TierRegistries;
-import ruiseki.okbackpack.common.recipe.CompactingRecipeCache;
 import ruiseki.okbackpack.common.recipe.ModRecipes;
 import ruiseki.okbackpack.compat.bauble.BaubleCompat;
 import ruiseki.okbackpack.compat.findit.FindItCompat;
@@ -132,10 +131,6 @@ public class OKBackpack extends ModBaseVersionable {
     @Mod.EventHandler
     public void onServerStarted(FMLServerStartedEvent event) {
         super.onServerStarted(event);
-        CompactingRecipeCache.getInstance()
-            .initialize(
-                MinecraftServer.getServer()
-                    .getEntityWorld());
         RecipeHelpers.setWorld(
             MinecraftServer.getServer()
                 .getEntityWorld());
@@ -151,8 +146,6 @@ public class OKBackpack extends ModBaseVersionable {
     @Mod.EventHandler
     public void onServerStopped(FMLServerStoppedEvent event) {
         super.onServerStopped(event);
-        CompactingRecipeCache.getInstance()
-            .invalidate();
         RecipeHelpers.clearCache();
     }
 

@@ -11,12 +11,14 @@ import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.NBTHelpers;
 import ruiseki.okcore.item.handler.ItemStackHandler;
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.upgrades.ICraftingUpgrade;
 import ruiseki.okstoragecore.upgrades.ISlotClickUpgrade;
 import ruiseki.okstoragecore.upgrades.IStorageUpgrade;
+import ruiseki.okstoragecore.upgrades.RecipeTransferContext;
 import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 
 public class CraftingUpgradeWrapper extends UpgradeWrapperBase<CraftingUpgradeWrapper, ItemCraftingUpgrade>
-    implements IStorageUpgrade, ISlotClickUpgrade {
+    implements IStorageUpgrade, ISlotClickUpgrade, ICraftingUpgrade {
 
     private final ItemStackHandler inventory;
 
@@ -94,5 +96,10 @@ public class CraftingUpgradeWrapper extends UpgradeWrapperBase<CraftingUpgradeWr
         if (ItemHelpers.isEmpty(stack) || !this.shouldShiftClickIntoStorage()) return stack;
         stack = InventoryHelpers.insertIntoInventory(stack, storageWrapper.getInventoryHandler(), false);
         return stack;
+    }
+
+    @Override
+    public int transferRecipe(RecipeTransferContext context, int multiplier) {
+        return 0;
     }
 }

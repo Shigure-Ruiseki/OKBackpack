@@ -17,8 +17,8 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigHandler;
 import ruiseki.okcore.init.ModBaseVersionable;
 import ruiseki.okcore.proxy.ICommonProxy;
+import ruiseki.okstoragecore.client.gui.sync.CommonSHRegistries;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
-import ruiseki.okstoragecore.client.gui.sync.StorageSlotSHRegistries;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdateRegistries;
 
@@ -46,7 +46,7 @@ public class OKStorageCore extends ModBaseVersionable {
         super.preInit(event);
 
         StorageSHRegisters.load();
-        StorageSlotSHRegistries.load();
+        CommonSHRegistries.load();
         UpgradeSlotSHRegistries.load();
         UpgradeSlotUpdateRegistries.load();
     }

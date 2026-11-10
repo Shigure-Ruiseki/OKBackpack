@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.sync.CommonSHRegistries;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedFilterLogicSH;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
@@ -31,6 +32,7 @@ public class ItemPickupUpgrade extends ItemUpgradeBase<PickupUpgradeWrapper> {
             DelegatedFilterLogicSH filterLogic = wrapper.getSlotCount() == 9 ? group.get("basic_filter_logic")
                 : group.get("adv_filter_logic");
             filterLogic.setFilterLogic(wrapper::getFilterLogic);
+            filterLogic.syncToServer(CommonSHRegistries.FILTER);
         }
 
         @Override
