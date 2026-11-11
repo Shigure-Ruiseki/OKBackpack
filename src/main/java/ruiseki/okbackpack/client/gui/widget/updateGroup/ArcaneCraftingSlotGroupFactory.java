@@ -12,6 +12,7 @@ import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
+import ruiseki.backpack.modcompat.thaumcraft.helper.ThaumcraftHelpers;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.widget.IUpgradeSlotGroupFactory;
 import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
@@ -24,7 +25,6 @@ import ruiseki.okbackpack.client.gui.slot.ModularUpgradeWidgetSlot;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSH;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
 import ruiseki.okbackpack.compat.Mods;
-import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 import ruiseki.okcore.item.handler.EmptyHandler;
 import ruiseki.okcore.item.handler.IItemHandlerModifiable;
@@ -86,7 +86,7 @@ public class ArcaneCraftingSlotGroupFactory implements IUpgradeSlotGroupFactory 
         ModularUpgradeWidgetSlot wandSlot = new ModularUpgradeWidgetSlot(
             group.slotIndex,
             arcaneStackHandler.delegatedStackHandler,
-            IArcaneCraftingUpgrade.WAND_SLOT_INDEX) {
+            9) {
 
             @Override
             public boolean canShiftClickInsert(ItemStack stack) {
@@ -152,7 +152,7 @@ public class ArcaneCraftingSlotGroupFactory implements IUpgradeSlotGroupFactory 
         int resultSlot = inventoryCrafting.getSizeInventory() - 1;
 
         ItemStack wandStack = handler.delegatedStackHandler.get()
-            .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
+            .getStackInSlot(9);
         boolean hasWand = Mods.Thaumcraft.isModLoaded() && ThaumcraftHelpers.isWand(wandStack);
 
         if (hasWand && Mods.Thaumcraft.isModLoaded()) {

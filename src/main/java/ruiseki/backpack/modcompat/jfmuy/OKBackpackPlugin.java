@@ -13,6 +13,8 @@ public class OKBackpackPlugin implements IModPlugin {
 
     @Override
     public void register(IModRegistry registry) {
+        if (!JFMUYModCompat.canBeUsed) return;
+
         registry.addRecipeCatalyst(
             new ItemStack(ItemCraftingUpgradeConfig._instance.getInstance()),
             VanillaRecipeCategoryUid.CRAFTING);

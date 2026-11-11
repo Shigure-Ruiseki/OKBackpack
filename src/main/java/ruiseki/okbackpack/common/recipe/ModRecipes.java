@@ -7,6 +7,8 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
+import ruiseki.backpack.modcompat.thaumcraft.item.ItemArcaneCraftingUpgradeConfig;
+import ruiseki.backpack.modcompat.thaumcraft.upgrades.energizednode.ItemEnergizedNodeUpgradeConfig;
 import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockIronBackpackConfig;
@@ -14,8 +16,6 @@ import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockObsidianBackpackConfig;
 import ruiseki.okbackpack.common.helpers.UpgradeFeatureHelper;
 import ruiseki.okbackpack.common.item.ItemUpgradeConfig;
-import ruiseki.okbackpack.common.item.arcane.ItemArcaneCraftingUpgradeConfig;
-import ruiseki.okbackpack.common.item.energizednode.ItemEnergizedNodeUpgradeConfig;
 import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.init.IInitListener;
 import thaumcraft.api.ThaumcraftApi;

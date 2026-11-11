@@ -28,6 +28,8 @@ import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 
 public class StorageOverlay extends DefaultOverlayHandler {
 
+    public static final StorageOverlay INSTANCE = new StorageOverlay();
+
     public StorageOverlay() {
         super(0, 0);
     }

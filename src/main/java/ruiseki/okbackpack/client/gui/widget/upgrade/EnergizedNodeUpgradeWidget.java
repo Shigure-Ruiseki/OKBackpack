@@ -2,8 +2,8 @@ package ruiseki.okbackpack.client.gui.widget.upgrade;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.backpack.modcompat.thaumcraft.upgrades.energizednode.EnergizedNodeUpgradeWrapper;
 import ruiseki.okbackpack.api.IStoragePanel;
-import ruiseki.okbackpack.common.item.energizednode.EnergizedNodeUpgradeWrapper;
 
 public class EnergizedNodeUpgradeWidget extends ExpandedUpgradeTabWidget<EnergizedNodeUpgradeWrapper> {
 

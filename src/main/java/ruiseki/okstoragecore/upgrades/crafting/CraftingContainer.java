@@ -4,12 +4,16 @@ import java.util.function.Supplier;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.world.World;
 
 import org.jetbrains.annotations.NotNull;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import ruiseki.okbackpack.compat.Mods;
+import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.item.handler.IItemHandlerModifiable;
@@ -68,9 +72,7 @@ public class CraftingContainer extends UpgradeContainer {
     @Override
     public void onCraftMatrixChanged(@NotNull IInventory inventoryIn) {
         if (!this.getPlayer().worldObj.isRemote) {
-            this.craftingSlot.updateResult(
-                CraftingManager.getInstance()
-                    .findMatchingRecipe(this.inventory, this.getPlayer().worldObj));
+            this.craftingSlot.updateResult(findCraftingResult(this.inventory, this.getPlayer().worldObj));
         }
     }
 
@@ -84,7 +86,7 @@ public class CraftingContainer extends UpgradeContainer {
 
         this.craftingSlot.onCrafting(stack);
 
-        for (int i = 0; i < this.inventory.getSizeInventory() - 1; i++) {
+        for (int i = 0; i < this.inventory.getSizeInventory(); i++) {
             ItemStack ingredient = this.inventory.getStackInSlot(i);
             if (ItemHelpers.isEmpty(ingredient)) continue;
 
@@ -120,6 +122,15 @@ public class CraftingContainer extends UpgradeContainer {
         }
 
         this.inventory.notifyContainer();
+    }
+
+    public static ItemStack findCraftingResult(InventoryCrafting inventoryCrafting, World world) {
+        if (Mods.TConstruct.isModLoaded()) {
+            return TinkersHelpers.getTinkersRecipe(inventoryCrafting);
+        } else {
+            return CraftingManager.getInstance()
+                .findMatchingRecipe(inventoryCrafting, world);
+        }
     }
 
     public CraftingUpgradeWrapper getUpgradeWrapper() {

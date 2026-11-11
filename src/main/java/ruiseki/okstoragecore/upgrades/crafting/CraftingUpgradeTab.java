@@ -95,7 +95,7 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
             .coverChildren()
             .childPadding(2)
             .child(this.addCraftingGrid())
-            .child(this.addCraftingTweakColumn());
+            .child(this.addCraftingTweak());
     }
 
     protected StorageSlotGrid<ItemSlot> addCraftingGrid() {
@@ -115,7 +115,7 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
         return craftingGrid;
     }
 
-    protected Flow addCraftingTweakColumn() {
+    protected Flow addCraftingTweak() {
         return Flow.column()
             .coverChildren()
             .childPadding(2)

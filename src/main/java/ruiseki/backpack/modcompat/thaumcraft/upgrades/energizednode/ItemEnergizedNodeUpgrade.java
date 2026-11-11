@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.energizednode;
+package ruiseki.backpack.modcompat.thaumcraft.upgrades.energizednode;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
+import ruiseki.backpack.modcompat.thaumcraft.helper.ThaumcraftHelpers;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
@@ -20,7 +21,6 @@ import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
 import ruiseki.okbackpack.client.gui.widget.upgrade.EnergizedNodeUpgradeWidget;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 import ruiseki.okbackpack.common.item.ItemUpgrade;
-import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.common.tiles.TileNodeEnergized;

@@ -27,6 +27,7 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import cpw.mods.fml.common.Optional;
+import ruiseki.backpack.modcompat.thaumcraft.helper.ThaumcraftHelpers;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.IStorageContainer;
@@ -47,7 +48,6 @@ import ruiseki.okbackpack.client.gui.slot.ModularUpgradeWidgetSlot;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.compat.Mods;
-import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.item.handler.IItemHandlerModifiable;
@@ -209,7 +209,7 @@ public class BackPackContainer extends ModularContainer
         var arcane = arcaneUpgrades.get(upgradeSlotIndex);
         if (arcane != null) {
             ItemStack wandStack = arcane.getStorage()
-                .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
+                .getStackInSlot(9);
             if (ThaumcraftHelpers.isWand(wandStack)) {
                 var recipe = ThaumcraftHelpers.findArcaneRecipeIgnoringResearch(inventoryCrafting, player);
                 if (recipe != null) {

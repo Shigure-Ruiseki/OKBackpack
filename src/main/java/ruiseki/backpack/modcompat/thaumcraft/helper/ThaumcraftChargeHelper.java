@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.compat.thaumcraft;
+package ruiseki.backpack.modcompat.thaumcraft.helper;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.compat.thaumcraft;
+package ruiseki.backpack.modcompat.thaumcraft.helper;
 
 import static ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters.UPDATE_ARCANE_CRAFTING;
 
@@ -339,7 +339,7 @@ public class ThaumcraftHelpers {
         Map<Integer, IArcaneCraftingUpgrade> upgrades = wrapper.gatherCapabilityUpgrades(IArcaneCraftingUpgrade.class);
         for (IArcaneCraftingUpgrade upgrade : upgrades.values()) {
             ItemStack wand = upgrade.getStorage()
-                .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
+                .getStackInSlot(9);
             ItemHelpers.getItem(wand, ItemWandCasting.class)
                 .ifPresent(wandItem -> {
                     for (Aspect aspect : Aspect.getPrimalAspects()) {
@@ -358,7 +358,7 @@ public class ThaumcraftHelpers {
         Map<Integer, IArcaneCraftingUpgrade> upgrades = wrapper.gatherCapabilityUpgrades(IArcaneCraftingUpgrade.class);
         for (IArcaneCraftingUpgrade upgrade : upgrades.values()) {
             ItemStack wand = upgrade.getStorage()
-                .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
+                .getStackInSlot(9);
             if (isWand(wand) && ItemHelpers.getItem(wand, ItemWandCasting.class)
                 .map(item -> item.getVis(wand, aspect) < item.getMaxVis(wand))
                 .orElse(false)) {
@@ -374,7 +374,7 @@ public class ThaumcraftHelpers {
         Map<Integer, IArcaneCraftingUpgrade> upgrades = wrapper.gatherCapabilityUpgrades(IArcaneCraftingUpgrade.class);
         for (IArcaneCraftingUpgrade upgrade : upgrades.values()) {
             ItemStack wand = upgrade.getStorage()
-                .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
+                .getStackInSlot(9);
             final int available = remaining;
             int added = ItemHelpers.getItem(wand, ItemWandCasting.class)
                 .map(item -> item.addRealVis(wand, aspect, available, true))
@@ -391,7 +391,7 @@ public class ThaumcraftHelpers {
         Map<Integer, IArcaneCraftingUpgrade> upgrades = wrapper.gatherCapabilityUpgrades(IArcaneCraftingUpgrade.class);
         for (IArcaneCraftingUpgrade upgrade : upgrades.values()) {
             ItemStack wand = upgrade.getStorage()
-                .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
+                .getStackInSlot(9);
             total += ItemHelpers.getItem(wand, ItemWandCasting.class)
                 .map(item -> item.getVis(wand, aspect))
                 .orElse(0);
@@ -409,7 +409,7 @@ public class ThaumcraftHelpers {
         int resultSlot = inventoryCrafting.getSizeInventory() - 1;
 
         ItemStack wandStack = handler.delegatedStackHandler.get()
-            .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
+            .getStackInSlot(9);
 
         boolean hasWand = ThaumcraftHelpers.isWand(wandStack);
 

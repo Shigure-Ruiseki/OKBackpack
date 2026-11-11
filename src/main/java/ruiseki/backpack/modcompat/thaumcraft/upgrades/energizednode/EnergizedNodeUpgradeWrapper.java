@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.energizednode;
+package ruiseki.backpack.modcompat.thaumcraft.upgrades.energizednode;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -9,12 +9,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import ruiseki.backpack.modcompat.thaumcraft.helper.ThaumcraftChargeHelper;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IEnergizedNodeUpgrade;
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
-import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftChargeHelper;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import thaumcraft.api.aspects.Aspect;

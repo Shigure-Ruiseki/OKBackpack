@@ -5,8 +5,8 @@ import net.minecraft.tileentity.TileEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
+import ruiseki.backpack.modcompat.thaumcraft.helper.ThaumcraftChargeHelper;
 import ruiseki.okbackpack.compat.thaumcraft.IVisChargeTarget;
-import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftChargeHelper;
 import thaumcraft.common.tiles.TileMagicWorkbenchCharger;
 import thaumcraft.common.tiles.TileVisRelay;
 

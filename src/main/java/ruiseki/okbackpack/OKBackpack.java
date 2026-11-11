@@ -23,6 +23,9 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import ruiseki.backpack.backpack.BackpackStorage;
 import ruiseki.backpack.client.gui.sync.BackpackSHRegistries;
 import ruiseki.backpack.client.gui.sync.OBUpgradeSlotSHRegistries;
+import ruiseki.backpack.modcompat.jfmuy.JFMUYModCompat;
+import ruiseki.backpack.modcompat.nei.NEIModCompat;
+import ruiseki.backpack.modcompat.thaumcraft.ThaumcraftModCompat;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
@@ -45,6 +48,7 @@ import ruiseki.okcore.data.condition.ConfigCondition;
 import ruiseki.okcore.helper.MinecraftHelpers;
 import ruiseki.okcore.init.ItemCreativeTab;
 import ruiseki.okcore.init.ModBaseVersionable;
+import ruiseki.okcore.modcompat.ModCompatLoader;
 import ruiseki.okcore.proxy.ICommonProxy;
 import ruiseki.okstoragecore.helper.RecipeHelpers;
 
@@ -103,6 +107,14 @@ public class OKBackpack extends ModBaseVersionable {
         LiteralArgumentBuilder<ICommandSender> builder = super.constructBaseCommand(server);
         builder.then(new CommandBackpack(this, server).make());
         return builder;
+    }
+
+    @Override
+    protected void loadModCompats(ModCompatLoader modCompatLoader) {
+        super.loadModCompats(modCompatLoader);
+        modCompatLoader.addModCompat(new ThaumcraftModCompat());
+        modCompatLoader.addModCompat(new NEIModCompat());
+        modCompatLoader.addModCompat(new JFMUYModCompat());
     }
 
     @Override

@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.item.energizednode;
+package ruiseki.backpack.modcompat.thaumcraft.upgrades.energizednode;
 
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;

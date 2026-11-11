@@ -7,6 +7,8 @@ import codechicken.nei.api.IStackPositioner;
 
 public class StoragePositioner implements IStackPositioner {
 
+    public static final StoragePositioner INSTANCE = new StoragePositioner();
+
     @Override
     public ArrayList<PositionedStack> positionStacks(ArrayList<PositionedStack> ai) {
         return ai;

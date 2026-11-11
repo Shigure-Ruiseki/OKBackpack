@@ -67,8 +67,6 @@ import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockObsidianBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
 import ruiseki.okbackpack.common.item.ItemUpgradeConfig;
-import ruiseki.okbackpack.common.item.arcane.ItemArcaneCraftingUpgradeConfig;
-import ruiseki.okbackpack.common.item.energizednode.ItemEnergizedNodeUpgradeConfig;
 import ruiseki.okbackpack.common.item.infinity.ItemInfinityUpgradeConfig;
 import ruiseki.okbackpack.common.item.infinity.ItemSurvivalInfinityUpgradeConfig;
 import ruiseki.okbackpack.common.item.jukebox.ItemAdvancedJukeBoxUpgradeConfig;
@@ -83,7 +81,6 @@ import ruiseki.okbackpack.common.item.smelter.ItemSmeltingUpgradeConfig;
 import ruiseki.okbackpack.common.item.smelter.ItemSmokingUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgradeConfig;
-import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okcore.config.ConfigHandler;
 
 public class Configs {
@@ -113,13 +110,6 @@ public class Configs {
         configHandler.add(new ItemAutoSmokingUpgradeConfig());
         configHandler.add(new ItemToolSwapperUpgradeConfig());
         configHandler.add(new ItemAdvancedToolSwapperUpgradeConfig());
-
-        if (Mods.Thaumcraft.isModLoaded()) {
-            if (GeneralConfig.enableArcaneCraftingUpgrade) {
-                configHandler.add(new ItemArcaneCraftingUpgradeConfig());
-            }
-            configHandler.add(new ItemEnergizedNodeUpgradeConfig());
-        }
 
         configHandler.add(new CapabilityBackpackWrapperConfig());
 
