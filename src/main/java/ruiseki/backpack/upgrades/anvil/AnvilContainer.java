@@ -44,7 +44,7 @@ public class AnvilContainer extends UpgradeContainer {
 
     @Override
     public void detectAndSendChanges() {
-        inventory.detectChanges();
+        this.inventory.detectChanges();
         this.updateCostText();
     }
 
@@ -56,6 +56,7 @@ public class AnvilContainer extends UpgradeContainer {
         }
         this.resultSlot = slot;
         slot.setContainer(this);
+        this.inventory.notifyContainer();
 
         this.nameField = update.get("anvil_name_field");
         this.requiredField = update.get("anvil_required_field");
@@ -69,36 +70,36 @@ public class AnvilContainer extends UpgradeContainer {
     }
 
     public void updateRepairOutput() {
-        ItemStack left = inventory.getStackInSlot(0);
+        ItemStack left = this.inventory.getStackInSlot(0);
 
-        maximumCost = 1;
-        stackSizeToBeUsedInRepair = 0;
+        this.maximumCost = 1;
+        this.stackSizeToBeUsedInRepair = 0;
 
         if (ItemHelpers.isEmpty(left)) {
-            clearResult();
+            this.clearResult();
             return;
         }
 
         ItemStack result = ItemHelpers.copy(left);
-        ItemStack right = inventory.getStackInSlot(1);
+        ItemStack right = this.inventory.getStackInSlot(1);
 
-        int cost = left.getRepairCost() + (right == null ? 0 : right.getRepairCost());
+        int cost = left.getRepairCost() + (ItemHelpers.isEmpty(right) ? 0 : right.getRepairCost());
         int enchantmentCost = 0;
 
         Map<Integer, Integer> enchantments = EnchantmentHelper.getEnchantments(result);
 
-        boolean enchantedBook = right != null && right.getItem() == Items.enchanted_book
+        boolean enchantedBook = !ItemHelpers.isEmpty(right) && ItemHelpers.getItem(right) == Items.enchanted_book
             && Items.enchanted_book.func_92110_g(right)
                 .tagCount() > 0;
 
         if (!ItemHelpers.isEmpty(right)) {
-            if (left.isItemStackDamageable() && left.getItem()
+            if (left.isItemStackDamageable() && ItemHelpers.getItem(left)
                 .getIsRepairable(left, right)) {
 
-                int repairAmount = Math.min(result.getItemDamage(), result.getMaxDamage() / 4);
+                int repairAmount = Math.min(ItemHelpers.getStackMeta(result), result.getMaxDamage() / 4);
 
                 if (repairAmount <= 0) {
-                    clearResult();
+                    this.clearResult();
                     return;
                 }
 
@@ -112,12 +113,12 @@ public class AnvilContainer extends UpgradeContainer {
                     repairAmount = Math.min(result.getItemDamage(), result.getMaxDamage() / 4);
                 }
 
-                stackSizeToBeUsedInRepair = used;
+                this.stackSizeToBeUsedInRepair = used;
 
             } else {
                 if (!enchantedBook && (result.getItem() != right.getItem() || !result.isItemStackDamageable()
                     || result.getHasSubtypes())) {
-                    clearResult();
+                    this.clearResult();
                     return;
                 }
 
@@ -154,8 +155,7 @@ public class AnvilContainer extends UpgradeContainer {
 
                     boolean canApply = enchantment.canApply(left);
 
-                    if (getPlayer().capabilities.isCreativeMode
-                        || left.getItem() == net.minecraft.init.Items.enchanted_book) {
+                    if (this.getPlayer().capabilities.isCreativeMode || left.getItem() == Items.enchanted_book) {
                         canApply = true;
                     }
 
@@ -215,25 +215,25 @@ public class AnvilContainer extends UpgradeContainer {
         boolean wasRenamed = false;
 
         if (!ItemHelpers.isEmpty(result)) {
-            if (StringUtils.isBlank(nameField.getValue())) {
+            if (StringUtils.isBlank(this.nameField.getValue())) {
                 if (left.hasDisplayName()) {
                     result.func_135074_t();
                 }
-            } else if (!nameField.getStringValue()
+            } else if (!this.nameField.getStringValue()
                 .equals(left.getDisplayName())) {
-                    result.setStackDisplayName(nameField.getValue());
+                    result.setStackDisplayName(this.nameField.getValue());
                     enchantmentCost++;
                     wasRenamed = true;
                 }
         }
 
-        maximumCost = wasRenamed && !wasRepaired ? 1 : cost + enchantmentCost;
+        this.maximumCost = wasRenamed && !wasRepaired ? 1 : cost + enchantmentCost;
 
         if (enchantmentCost <= 0) {
             result = ItemHelpers.EMPTY;
         }
 
-        if (maximumCost >= 40 && !getPlayer().capabilities.isCreativeMode) {
+        if (this.maximumCost >= 40 && !this.getPlayer().capabilities.isCreativeMode) {
             result = ItemHelpers.EMPTY;
         }
 
@@ -256,35 +256,35 @@ public class AnvilContainer extends UpgradeContainer {
     private void updateCostText() {
         String costText = "";
 
-        if (maximumCost > 0 && !ItemHelpers.isEmpty(resultSlot.getStack())) {
-            boolean creative = getPlayer().capabilities.isCreativeMode;
+        if (this.maximumCost > 0 && !ItemHelpers.isEmpty(this.resultSlot.getStack())) {
+            boolean creative = this.getPlayer().capabilities.isCreativeMode;
 
-            if (maximumCost >= 40 && !creative) {
+            if (this.maximumCost >= 40 && !creative) {
                 costText = "§c" + StatCollector.translateToLocal("container.repair.expensive");
             } else {
-                String text = StatCollector.translateToLocalFormatted("container.repair.cost", maximumCost);
+                String text = StatCollector.translateToLocalFormatted("container.repair.cost", this.maximumCost);
 
-                boolean canAfford = creative || getPlayer().experienceLevel >= maximumCost;
+                boolean canAfford = creative || this.getPlayer().experienceLevel >= this.maximumCost;
                 costText = (canAfford ? "§a" : "§c") + text;
             }
         }
 
-        if (!costText.equals(requiredField.getStringValue())) {
-            requiredField.setValue(costText);
+        if (!costText.equals(this.requiredField.getStringValue())) {
+            this.requiredField.setValue(costText);
         }
     }
 
     private void clearResult() {
-        maximumCost = 0;
-        stackSizeToBeUsedInRepair = 0;
-        resultSlot.updateResult(ItemHelpers.EMPTY);
+        this.maximumCost = 0;
+        this.stackSizeToBeUsedInRepair = 0;
+        this.resultSlot.updateResult(ItemHelpers.EMPTY);
     }
 
     @Override
     public void onTakeResult(EntityPlayer player, ItemStack stack) {
-        int cost = maximumCost;
+        int cost = this.maximumCost;
 
-        if (!player.capabilities.isCreativeMode) {
+        if (!this.getPlayer().capabilities.isCreativeMode) {
             player.addExperienceLevel(-cost);
         }
 
@@ -295,7 +295,7 @@ public class AnvilContainer extends UpgradeContainer {
         ItemStack right = this.inventory.getStackInSlot(1);
 
         if (!ItemHelpers.isEmpty(right)) {
-            int consume = Math.max(1, stackSizeToBeUsedInRepair);
+            int consume = Math.max(1, this.stackSizeToBeUsedInRepair);
 
             ItemStack remaining = ItemHelpers.copy(right);
             ItemHelpers.shrink(remaining, consume);

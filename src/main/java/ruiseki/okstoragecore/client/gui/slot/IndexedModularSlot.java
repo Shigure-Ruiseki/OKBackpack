@@ -1,5 +1,7 @@
 package ruiseki.okstoragecore.client.gui.slot;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
 import ruiseki.okcore.item.handler.IItemHandler;
 import ruiseki.okstoragecore.api.IStorageWrapper;
@@ -34,5 +36,13 @@ public class IndexedModularSlot extends ModularItemSlot {
         return this.getStorageWrapper()
             .getUpgradeHandler()
             .getSlotWrapper(this.getUpgradeIndex());
+    }
+
+    @Override
+    public boolean canTakeStack(EntityPlayer playerIn) {
+        if (this.getUpgradeIndex() != this.getStorageWrapper()
+            .getOpenTabId()
+            .orElse(-1)) return false;
+        return super.canTakeStack(playerIn);
     }
 }

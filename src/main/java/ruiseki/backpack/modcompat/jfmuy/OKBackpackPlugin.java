@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.compat.jfmuy;
+package ruiseki.backpack.modcompat.jfmuy;
 
 import net.minecraft.item.ItemStack;
 
@@ -17,6 +17,6 @@ public class OKBackpackPlugin implements IModPlugin {
             new ItemStack(ItemCraftingUpgradeConfig._instance.getInstance()),
             VanillaRecipeCategoryUid.CRAFTING);
         registry.getRecipeTransferRegistry()
-            .addRecipeTransferHandler(new BackpackCraftingTransferInfo());
+            .addRecipeTransferHandler(new StorageCraftingTransferInfo());
     }
 }

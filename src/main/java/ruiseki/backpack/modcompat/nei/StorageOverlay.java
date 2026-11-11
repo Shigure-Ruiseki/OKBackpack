@@ -1,4 +1,4 @@
-package ruiseki.okstoragecore.modcompat.nei;
+package ruiseki.backpack.modcompat.nei;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +20,6 @@ import codechicken.nei.recipe.IRecipeHandler;
 import ruiseki.okcore.item.handler.IItemHandlerModifiable;
 import ruiseki.okstoragecore.client.gui.container.StorageContainer;
 import ruiseki.okstoragecore.client.gui.slot.CraftingSlotInfo;
-import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
 import ruiseki.okstoragecore.client.gui.slot.ModularStorageSlot;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
@@ -36,11 +35,6 @@ public class StorageOverlay extends DefaultOverlayHandler {
     @Override
     public boolean canMoveFrom(Slot slot, GuiContainer gui) {
         if (!(slot instanceof ModularSlot modularSlot)) return false;
-        if (slot instanceof IndexedModularSlot upgradeSlot) {
-            CraftingSlotInfo info = this.getCraftingInfo(gui);
-            if (info == null) return false;
-            return upgradeSlot.getUpgradeIndex() == info.getSlotIndex();
-        }
         if (slot instanceof ModularStorageSlot) return true;
         if (StorageContainer.PLAYER_INV.equals(modularSlot.getSlotGroupName())) return true;
         return false;

@@ -45,7 +45,7 @@ public class ModularResultSlot extends IndexedModularSlot {
 
     @Override
     public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
-        if (this.container == null || ItemHelpers.isEmpty(stack) || player == null) return;
+        if (this.container == null || ItemHelpers.isEmpty(stack, false) || player == null) return;
         this.container.onTakeResult(player, stack);
     }
 

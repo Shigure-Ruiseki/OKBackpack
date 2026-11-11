@@ -119,7 +119,7 @@ public class CraftingContainer extends UpgradeContainer {
                 }
         }
 
-        inventory.notifyContainer();
+        this.inventory.notifyContainer();
     }
 
     public CraftingUpgradeWrapper getUpgradeWrapper() {

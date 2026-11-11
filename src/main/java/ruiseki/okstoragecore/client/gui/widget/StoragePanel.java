@@ -873,19 +873,6 @@ public class StoragePanel extends ModularPanel {
         return this.tabContainer;
     }
 
-    public Optional<IUpgradeWrapper> getActiveUpgradeWrapper() {
-        return this.getWrapper()
-            .getOpenTabId()
-            .filter(
-                index -> index >= 0 && index < this.getWrapper()
-                    .getUpgradeHandler()
-                    .getSlots())
-            .map(
-                index -> this.getWrapper()
-                    .getUpgradeHandler()
-                    .getSlotWrapper(index));
-    }
-
     public Optional<UpgradeSlotUpdate> getActiveUpgradeSlotUpdate() {
         return this.getWrapper()
             .getOpenTabId()

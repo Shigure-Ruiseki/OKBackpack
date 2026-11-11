@@ -22,57 +22,55 @@ import ruiseki.okstoragecore.upgrades.UpgradeType;
 
 public class ItemCraftingUpgrade extends ItemUpgradeBase<CraftingUpgradeWrapper> {
 
-    public static final UpgradeType<CraftingUpgradeWrapper> TYPE = new UpgradeType<>(
-        new UpgradeType.IFactory<CraftingUpgradeWrapper>() {
+    public static final UpgradeType<CraftingUpgradeWrapper> TYPE = new UpgradeType<>(new UpgradeType.IFactory<>() {
 
-            @Override
-            public CraftingUpgradeWrapper create(IStorageWrapper storageWrapper, ItemStack upgrade,
-                Consumer<ItemStack> upgradeSaveHandler) {
-                return new CraftingUpgradeWrapper(storageWrapper, upgrade, upgradeSaveHandler);
-            }
+        @Override
+        public CraftingUpgradeWrapper create(IStorageWrapper storageWrapper, ItemStack upgrade,
+            Consumer<ItemStack> upgradeSaveHandler) {
+            return new CraftingUpgradeWrapper(storageWrapper, upgrade, upgradeSaveHandler);
+        }
 
-            @Override
-            public void updateTabDelegates(CraftingUpgradeWrapper wrapper, UpgradeSlotUpdate slotUpdate) {
-                DelegatedItemHandlerSH handler = slotUpdate.get("crafting_handler");
-                handler.setItemHandler(wrapper::getStorage);
-                handler.syncToServer(CommonSHRegistries.STORAGE);
+        @Override
+        public void updateTabDelegates(CraftingUpgradeWrapper wrapper, UpgradeSlotUpdate slotUpdate) {
+            DelegatedItemHandlerSH handler = slotUpdate.get("crafting_handler");
+            handler.setItemHandler(wrapper::getStorage);
+            handler.syncToServer(CommonSHRegistries.STORAGE);
 
-                UpgradeSlotSH slotSH = slotUpdate.get("upgrade_handler");
-                CraftingContainer container = new CraftingContainer(
-                    slotUpdate.getWrapper(),
-                    slotUpdate.getPanel(),
-                    handler.getContainerSupplier(),
-                    slotUpdate.getPlayer(),
-                    slotUpdate.getUpgradeIndex(),
-                    3,
-                    3,
-                    handler.getItemHandler());
-                slotUpdate.setUpgradeContainer(container);
-                slotSH.syncToServer(CommonSHRegistries.CRAFTING_CONTAINER);
+            UpgradeSlotSH slotSH = slotUpdate.get("upgrade_handler");
+            CraftingContainer container = new CraftingContainer(
+                slotUpdate.getWrapper(),
+                slotUpdate.getPanel(),
+                handler.getContainerSupplier(),
+                slotUpdate.getPlayer(),
+                slotUpdate.getUpgradeIndex(),
+                3,
+                3,
+                handler.getItemHandler());
+            slotUpdate.setUpgradeContainer(container);
+            slotSH.syncToServer(CommonSHRegistries.CRAFTING_CONTAINER);
 
-                // Client Only
-                IndexedModularSlot[] matrix = slotUpdate.get("crafting_matrix_slots");
-                ModularCraftingSlot result = slotUpdate.get("crafting_result_slot");
-                CraftingSlotInfo slotInfo = new CraftingSlotInfo(
-                    slotUpdate.getUpgradeIndex(),
-                    matrix,
-                    result,
-                    3,
-                    3,
-                    25,
-                    6,
-                    18,
-                    18);
-                slotUpdate.setCraftingInfo(slotInfo);
-                slotSH.syncToServer(CommonSHRegistries.CRAFTING_INFO);
-            }
+            IndexedModularSlot[] matrix = slotUpdate.get("crafting_matrix_slots");
+            ModularCraftingSlot result = slotUpdate.get("crafting_result_slot");
+            CraftingSlotInfo slotInfo = new CraftingSlotInfo(
+                slotUpdate.getUpgradeIndex(),
+                matrix,
+                result,
+                3,
+                3,
+                25,
+                6,
+                18,
+                18);
+            slotUpdate.setCraftingInfo(slotInfo);
+            slotSH.syncToServer(CommonSHRegistries.CRAFTING_INFO);
+        }
 
-            @Override
-            public @NotNull ExpandedUpgradeTab<CraftingUpgradeWrapper> createExpandedTab(int slotIndex,
-                CraftingUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
-                return new CraftingUpgradeTab(slotIndex, wrapper, stack, storagePanel);
-            }
-        });
+        @Override
+        public @NotNull ExpandedUpgradeTab<CraftingUpgradeWrapper> createExpandedTab(int slotIndex,
+            CraftingUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
+            return new CraftingUpgradeTab(slotIndex, wrapper, stack, storagePanel);
+        }
+    });
 
     public ItemCraftingUpgrade(IUpgradeCountLimitConfig upgradeTypeLimitConfig) {
         super(upgradeTypeLimitConfig);
