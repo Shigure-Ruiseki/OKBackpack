@@ -5,7 +5,7 @@ import java.util.function.IntConsumer;
 
 import net.minecraft.item.ItemStack;
 
-import ruiseki.backpack.backpack.BlockBackpackTestConfig;
+import ruiseki.backpack.init.block.BlockLeatherBackpackConfig;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 
 public interface IBackpackWrapper extends IStorageWrapper {
@@ -44,7 +44,7 @@ public interface IBackpackWrapper extends IStorageWrapper {
 
         public static final NoopBackpackWrapper INSTANCE = new NoopBackpackWrapper();
 
-        private final ItemStack backpack = new ItemStack(BlockBackpackTestConfig._instance.getItemInstance());
+        private final ItemStack backpack = new ItemStack(BlockLeatherBackpackConfig._instance.getItemInstance());
 
         @Override
         public ItemStack getBackpack() {

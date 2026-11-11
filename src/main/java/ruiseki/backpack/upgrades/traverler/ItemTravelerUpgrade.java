@@ -27,13 +27,7 @@ public abstract class ItemTravelerUpgrade<T extends IUpgradeWrapper> extends Ite
         }
 
         Set<Integer> errorUpgradeSlots = new HashSet<>();
-        storageWrapper.getUpgradeHandler()
-            .getSlotWrappers()
-            .forEach((slot, wrapper) -> {
-                if (wrapper instanceof ITravelersUpgrade) {
-                    errorUpgradeSlots.add(slot);
-                }
-            });
+        this.findUpgrades(errorUpgradeSlots, storageWrapper, upgrade -> upgrade instanceof ITravelersUpgrade);
 
         if (!errorUpgradeSlots.isEmpty()) {
             return new UpgradeSlotChangeResult.Fail(

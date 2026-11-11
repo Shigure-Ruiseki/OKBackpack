@@ -1,9 +1,11 @@
-package ruiseki.okbackpack.common.block;
+package ruiseki.backpack.init.block;
 
 import static ruiseki.okbackpack.common.init.TierRegistries.DIAMOND;
 
 import net.minecraft.item.Item;
 
+import ruiseki.backpack.backpack.BlockBackpack;
+import ruiseki.backpack.backpack.ItemBackpack;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.BlockContainerConfig;
@@ -29,6 +31,6 @@ public class BlockDiamondBackpackConfig extends BlockContainerConfig {
 
     @Override
     public Class<? extends Item> getItemBlockClass() {
-        return BlockBackpack.ItemBackpack.class;
+        return ItemBackpack.class;
     }
 }

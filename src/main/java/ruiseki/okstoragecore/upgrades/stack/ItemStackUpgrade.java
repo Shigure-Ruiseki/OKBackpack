@@ -20,6 +20,7 @@ import ruiseki.okstoragecore.upgrades.UpgradeGroup;
 import ruiseki.okstoragecore.upgrades.UpgradeSlotChangeResult;
 import ruiseki.okstoragecore.upgrades.UpgradeType;
 import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
+import ruiseki.okstoragecore.upgrades.tank.TankUpgradeWrapper;
 
 public class ItemStackUpgrade extends ItemUpgradeBase<ItemStackUpgrade.Wrapper> {
 
@@ -124,15 +125,12 @@ public class ItemStackUpgrade extends ItemUpgradeBase<ItemStackUpgrade.Wrapper> 
         }
 
         Set<Integer> errorInventoryParts = new HashSet<>();
-
-        storageWrapper.getUpgradeHandler()
-            .getSlotWrappers()
-            .forEach((slot, wrapper) -> {
-                if (wrapper instanceof IStackableContentsUpgrade stackableContentsUpgrade
-                    && stackableContentsUpgrade.getMinimumMultiplierRequired() > multiplier) {
-                    errorInventoryParts.add(slot);
-                }
-            });
+        this.findUpgrades(
+            errorInventoryParts,
+            storageWrapper,
+            upgrade -> upgrade instanceof TankUpgradeWrapper
+                || (upgrade instanceof IStackableContentsUpgrade stackableContentsUpgrade
+                    && stackableContentsUpgrade.getMinimumMultiplierRequired() > multiplier));
 
         if (!slotsOverMultiplier.isEmpty() || !errorInventoryParts.isEmpty()) {
             return new UpgradeSlotChangeResult.Fail(

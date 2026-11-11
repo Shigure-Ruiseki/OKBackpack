@@ -2,6 +2,8 @@ package ruiseki.backpack.backpack;
 
 import static ruiseki.okbackpack.common.init.TierRegistries.LEATHER;
 
+import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -51,7 +53,7 @@ public class BlockBackpack extends BlockTile {
      * @return the tier id, never {@code null}
      */
     public String getTierId() {
-        return tierId;
+        return this.tierId;
     }
 
     /**
@@ -84,28 +86,24 @@ public class BlockBackpack extends BlockTile {
     }
 
     @Override
-    public boolean isDropBlockItem(IBlockAccess world, int x, int y, int z, int fortune) {
-        return false;
-    }
-
-    @Override
-    public boolean isKeepNBTOnDrop() {
-        return false;
-    }
-
-    @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z,
         @Nullable EntityPlayer player) {
-        ItemStack stack = new ItemStack(this);
+        return TileHelpers.get(world, x, y, z, TileBackpack.class)
+            .map(
+                tile -> tile.getBackpackWrapper()
+                    .getBackpack())
+            .orElse(null);
+    }
+
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int meta, int fortune) {
+        ArrayList<ItemStack> list = new ArrayList<>();
         TileHelpers.get(world, x, y, z, TileBackpack.class)
             .ifPresent(
-                tile -> {
-                    stack.setTagCompound(
-                        tile.getBackpackWrapper()
-                            .getBackpack()
-                            .getTagCompound());
-                });
-        return stack;
+                tile -> list.add(
+                    tile.getBackpackWrapper()
+                        .getBackpack()));
+        return list;
     }
 
     @Override

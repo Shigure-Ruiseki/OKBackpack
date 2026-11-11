@@ -21,7 +21,6 @@ import ruiseki.backpack.api.IFluidHandlerWrapperUpgrade;
 import ruiseki.backpack.backpack.BackpackStorage;
 import ruiseki.backpack.backpack.ItemBackpack;
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okcore.helper.Helpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.NBTHelpers;
@@ -55,7 +54,6 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Nullable
     private ItemStack backpack;
-    private String tierId;
     private Runnable backpackSaveHandler = () -> {};
     private Runnable inventorySlotChangeHandler = () -> {};
 
@@ -82,9 +80,8 @@ public class BackpackWrapper implements IBackpackWrapper {
     private Runnable onInventoryHandlerRefresh = () -> {};
     private Runnable upgradeCachesInvalidatedHandler = () -> {};
 
-    public BackpackWrapper(@Nullable ItemStack backpack, String tierId) {
+    public BackpackWrapper(@Nullable ItemStack backpack) {
         this.backpack = backpack;
-        this.tierId = tierId;
     }
 
     @Override
@@ -515,11 +512,6 @@ public class BackpackWrapper implements IBackpackWrapper {
 
     @Override
     public String getDisplayName() {
-        return getTierInventoryName();
-    }
-
-    public String getTierInventoryName() {
-        if (tierId == null) return null;
-        return TierRegistry.getDisplayName(tierId);
+        return ItemHelpers.isEmpty(backpack) ? "" : backpack.getDisplayName();
     }
 }

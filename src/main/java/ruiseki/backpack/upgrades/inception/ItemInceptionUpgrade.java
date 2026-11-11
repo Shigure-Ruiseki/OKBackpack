@@ -56,13 +56,7 @@ public class ItemInceptionUpgrade extends ItemUpgradeBase<InceptionUpgradeWrappe
         }
 
         Set<Integer> errorUpgradeSlots = new HashSet<>();
-        storageWrapper.getUpgradeHandler()
-            .getSlotWrappers()
-            .forEach((slot, wrapper) -> {
-                if (wrapper instanceof InceptionUpgradeWrapper) {
-                    errorUpgradeSlots.add(slot);
-                }
-            });
+        this.findUpgrades(errorUpgradeSlots, storageWrapper, upgrade -> upgrade instanceof InceptionUpgradeWrapper);
 
         if (!errorUpgradeSlots.isEmpty()) {
             return new UpgradeSlotChangeResult.Fail(

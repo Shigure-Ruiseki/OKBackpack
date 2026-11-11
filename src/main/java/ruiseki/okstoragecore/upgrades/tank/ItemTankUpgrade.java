@@ -103,13 +103,7 @@ public class ItemTankUpgrade extends ItemUpgradeBase<TankUpgradeWrapper> {
         }
 
         Set<Integer> errorUpgradeSlots = new HashSet<>();
-        storageWrapper.getUpgradeHandler()
-            .getSlotWrappers()
-            .forEach((slot, wrapper) -> {
-                if (wrapper instanceof TankUpgradeWrapper) {
-                    errorUpgradeSlots.add(slot);
-                }
-            });
+        this.findUpgrades(errorUpgradeSlots, storageWrapper, upgrade -> upgrade instanceof TankUpgradeWrapper);
 
         if (errorUpgradeSlots.size() >= 2) {
             return new UpgradeSlotChangeResult.Fail(

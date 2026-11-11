@@ -1,6 +1,5 @@
 package ruiseki.okbackpack;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -8,7 +7,6 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
@@ -23,6 +21,7 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import ruiseki.backpack.backpack.BackpackStorage;
 import ruiseki.backpack.client.gui.sync.BackpackSHRegistries;
 import ruiseki.backpack.client.gui.sync.OBUpgradeSlotSHRegistries;
+import ruiseki.backpack.init.block.BlockLeatherBackpackConfig;
 import ruiseki.backpack.modcompat.jfmuy.JFMUYModCompat;
 import ruiseki.backpack.modcompat.nei.NEIModCompat;
 import ruiseki.backpack.modcompat.thaumcraft.ThaumcraftModCompat;
@@ -33,8 +32,6 @@ import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedValueSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotGroupRegisters;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
-import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
-import ruiseki.okbackpack.common.command.CommandBackpack;
 import ruiseki.okbackpack.common.init.ModOreDicts;
 import ruiseki.okbackpack.common.init.TierRegistries;
 import ruiseki.okbackpack.common.recipe.ModRecipes;
@@ -100,13 +97,6 @@ public class OKBackpack extends ModBaseVersionable {
             ModelRegistry.registerModid(Reference.MOD_ID);
             RenderingRegistry.registerBlockHandler(JsonModelISBRH.INSTANCE);
         }
-    }
-
-    @Override
-    protected LiteralArgumentBuilder<ICommandSender> constructBaseCommand(MinecraftServer server) {
-        LiteralArgumentBuilder<ICommandSender> builder = super.constructBaseCommand(server);
-        builder.then(new CommandBackpack(this, server).make());
-        return builder;
     }
 
     @Override

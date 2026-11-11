@@ -2,6 +2,7 @@ package ruiseki.okstoragecore.upgrades;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import net.minecraft.item.ItemStack;
 
@@ -172,6 +173,18 @@ public interface IUpgradeItem<W extends IUpgradeWrapper> {
             storageWrapper,
             getInventoryColumnsTaken(),
             upgradeToPut.getInventoryColumnsTaken());
+    }
+
+    default void findUpgrades(Set<Integer> slots, IStorageWrapper storageWrapper,
+        Predicate<IUpgradeWrapper> condition) {
+        storageWrapper.getUpgradeHandler()
+            .getSlotWrappers()
+            .forEach((slot, wrapper) -> {
+                if (condition.test(wrapper)) {
+                    slots.add(slot);
+                }
+            });
+
     }
 
     default int getInventoryColumnsTaken() {

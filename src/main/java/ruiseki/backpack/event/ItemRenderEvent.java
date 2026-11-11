@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.common.event;
+package ruiseki.backpack.event;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

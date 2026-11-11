@@ -38,11 +38,6 @@ public class ItemEnergizedNodeUpgrade extends ItemUpgrade<EnergizedNodeUpgradeWr
     }
 
     @Override
-    public boolean hasSlotWidget() {
-        return false;
-    }
-
-    @Override
     public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
         list.add(LangHelpers.localize("tooltip.backpack.energized_node_upgrade"));
 
@@ -58,8 +53,7 @@ public class ItemEnergizedNodeUpgrade extends ItemUpgrade<EnergizedNodeUpgradeWr
                 Aspect aspect = entry.getKey();
                 if (aspect == null) continue;
 
-                list.add(
-                    " \u00a7" + aspect.getChatcolor() + aspect.getName() + "\u00a7r x " + entry.getValue() + " cv/t");
+                list.add(" §" + aspect.getChatcolor() + aspect.getName() + "§r x " + entry.getValue() + " cv/t");
             }
             return;
         }

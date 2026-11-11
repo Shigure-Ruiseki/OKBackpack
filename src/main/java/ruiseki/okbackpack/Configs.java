@@ -1,7 +1,11 @@
 package ruiseki.okbackpack;
 
-import ruiseki.backpack.backpack.BlockBackpackTestConfig;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
+import ruiseki.backpack.init.block.BlockDiamondBackpackConfig;
+import ruiseki.backpack.init.block.BlockGoldBackpackConfig;
+import ruiseki.backpack.init.block.BlockIronBackpackConfig;
+import ruiseki.backpack.init.block.BlockLeatherBackpackConfig;
+import ruiseki.backpack.init.block.BlockObsidianBackpackConfig;
 import ruiseki.backpack.init.item.anvil.ItemAnvilUpgradeConfig;
 import ruiseki.backpack.init.item.battery.ItemBatteryUpgradeConfig;
 import ruiseki.backpack.init.item.compacting.ItemAdvCompactingUpgradeConfig;
@@ -60,11 +64,6 @@ import ruiseki.backpack.init.item.traverler.ItemWitherUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemWolfUpgradeConfig;
 import ruiseki.backpack.init.item.voiding.ItemAdvVoidUpgradeConfig;
 import ruiseki.backpack.init.item.voiding.ItemVoidUpgradeConfig;
-import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
-import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
-import ruiseki.okbackpack.common.block.BlockIronBackpackConfig;
-import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
-import ruiseki.okbackpack.common.block.BlockObsidianBackpackConfig;
 import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
 import ruiseki.okbackpack.common.item.ItemUpgradeConfig;
 import ruiseki.okbackpack.common.item.infinity.ItemInfinityUpgradeConfig;
@@ -86,13 +85,6 @@ import ruiseki.okcore.config.ConfigHandler;
 public class Configs {
 
     public static void registerBlocks(ConfigHandler configHandler) {
-        // Blocks
-        configHandler.add(new BlockLeatherBackpackConfig());
-        configHandler.add(new BlockIronBackpackConfig());
-        configHandler.add(new BlockGoldBackpackConfig());
-        configHandler.add(new BlockDiamondBackpackConfig());
-        configHandler.add(new BlockObsidianBackpackConfig());
-        configHandler.add(new BlockSleepingBagConfig());
 
         // Items
         configHandler.add(new ItemUpgradeConfig());
@@ -111,10 +103,18 @@ public class Configs {
         configHandler.add(new ItemToolSwapperUpgradeConfig());
         configHandler.add(new ItemAdvancedToolSwapperUpgradeConfig());
 
+        // Capabilities
         configHandler.add(new CapabilityBackpackWrapperConfig());
 
-        configHandler.add(new BlockBackpackTestConfig());
+        // Blocks
+        configHandler.add(new BlockLeatherBackpackConfig());
+        configHandler.add(new BlockIronBackpackConfig());
+        configHandler.add(new BlockGoldBackpackConfig());
+        configHandler.add(new BlockDiamondBackpackConfig());
+        configHandler.add(new BlockObsidianBackpackConfig());
+        configHandler.add(new BlockSleepingBagConfig());
 
+        // Items
         configHandler.add(new ItemStackUpgradeStarterConfig());
         configHandler.add(new ItemStackUpgradeTier1Config());
         configHandler.add(new ItemStackUpgradeTier2Config());
