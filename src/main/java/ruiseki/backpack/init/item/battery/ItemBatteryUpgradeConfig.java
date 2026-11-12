@@ -41,6 +41,7 @@ public class ItemBatteryUpgradeConfig extends ItemConfig {
                     () -> batteryEnergyPerSlotRow,
                     () -> batteryStackMultiplierRatio,
                     () -> batteryMaxInputOutput),
-                GeneralConfig.maxUpgradesPerStorageConfig));
+                GeneralConfig.maxUpgradesPerStorageConfig)
+                    .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.battery_upgrade.tooltip")));
     }
 }

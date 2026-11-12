@@ -26,6 +26,7 @@ public class ItemVoidUpgradeConfig extends ItemConfig {
             config -> new ItemVoidUpgrade(
                 () -> basicVoidAnythingEnabled,
                 () -> 9,
-                GeneralConfig.maxUpgradesPerStorageConfig));
+                GeneralConfig.maxUpgradesPerStorageConfig)
+                    .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.void_upgrade.tooltip")));
     }
 }

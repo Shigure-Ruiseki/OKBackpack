@@ -23,6 +23,8 @@ public class ItemStackUpgradeTier2Config extends ItemConfig {
             true,
             "stack_upgrade_tier_2",
             null,
-            config -> new ItemStackUpgrade(() -> stackUpgradeTier2Mul, GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemStackUpgrade(() -> stackUpgradeTier2Mul, GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(
+                    builder -> builder.addLine("item.items.okbackpack.stack_upgrade.tooltip", stackUpgradeTier2Mul)));
     }
 }

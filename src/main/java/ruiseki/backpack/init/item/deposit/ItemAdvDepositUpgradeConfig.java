@@ -15,6 +15,8 @@ public class ItemAdvDepositUpgradeConfig extends ItemConfig {
             true,
             "advanced_deposit_upgrade",
             null,
-            config -> new ItemDepositUpgrade(() -> 16, GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemDepositUpgrade(() -> 16, GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.addLine("item.items.okbackpack.advanced_deposit_upgrade.tooltip")
+                    .addLine("item.items.okbackpack.advanced_deposit_upgrade.tooltip.1")));
     }
 }

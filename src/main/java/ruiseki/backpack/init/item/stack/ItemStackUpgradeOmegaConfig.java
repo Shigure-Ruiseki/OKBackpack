@@ -23,6 +23,8 @@ public class ItemStackUpgradeOmegaConfig extends ItemConfig {
             true,
             "stack_upgrade_omega",
             null,
-            config -> new ItemStackUpgrade(() -> stackUpgradeOmegaMul, GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemStackUpgrade(() -> stackUpgradeOmegaMul, GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(
+                    builder -> builder.addLine("item.items.okbackpack.stack_upgrade.tooltip", stackUpgradeOmegaMul)));
     }
 }

@@ -49,6 +49,7 @@ public class ItemTankUpgradeConfig extends ItemConfig {
                     () -> tankStackMultiplierRatio,
                     () -> tankAutoFillDrainContainerCooldown,
                     () -> tankMaxInputOutput),
-                GeneralConfig.maxUpgradesPerStorageConfig));
+                GeneralConfig.maxUpgradesPerStorageConfig)
+                    .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.tank_upgrade.tooltip")));
     }
 }

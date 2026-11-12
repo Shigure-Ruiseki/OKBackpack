@@ -15,6 +15,7 @@ public class ItemFilterUpgradeConfig extends ItemConfig {
             true,
             "filter_upgrade",
             null,
-            config -> new ItemFilterUpgrade(() -> 9, GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemFilterUpgrade(() -> 9, GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.filter_upgrade.tooltip")));
     }
 }

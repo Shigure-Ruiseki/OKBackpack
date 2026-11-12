@@ -15,6 +15,8 @@ public class ItemAdvPickupUpgradeConfig extends ItemConfig {
             true,
             "advanced_pickup_upgrade",
             null,
-            config -> new ItemPickupUpgrade(() -> 16, GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemPickupUpgrade(() -> 16, GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.addLine("item.items.okbackpack.advanced_pickup_upgrade.tooltip")
+                    .addLine("item.items.okbackpack.advanced_pickup_upgrade.tooltip.1")));
     }
 }

@@ -1,3 +1,4 @@
+
 #Error
 gui.okstoragecore.error.add.upgrade_high=Backpack can't support %1$s. Upgrade backpack or add stack multiplier to at least %2$s
 gui.okstoragecore.error.add.needs_occupied_inventory_slots=There's an item in at least one of the last %s slots needed for %s

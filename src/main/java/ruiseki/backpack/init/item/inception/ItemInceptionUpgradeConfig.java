@@ -9,6 +9,12 @@ public class ItemInceptionUpgradeConfig extends ItemConfig {
     public static ItemInceptionUpgradeConfig _instance;
 
     public ItemInceptionUpgradeConfig() {
-        super(OKBackpack._instance, true, "inception_upgrade", null, config -> new ItemInceptionUpgrade());
+        super(
+            OKBackpack._instance,
+            true,
+            "inception_upgrade",
+            null,
+            config -> new ItemInceptionUpgrade()
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.inception_upgrade.tooltip")));
     }
 }

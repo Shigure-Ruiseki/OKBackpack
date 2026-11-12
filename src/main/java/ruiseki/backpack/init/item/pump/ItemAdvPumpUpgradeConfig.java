@@ -46,6 +46,9 @@ public class ItemAdvPumpUpgradeConfig extends ItemConfig {
                 new PumpUpgradeConfig(() -> advMaxInputOutput, () -> advStackMultiplierRatio, () -> 16),
                 () -> advInteractWithHandDefault,
                 () -> advInteractWithWorldDefault,
-                GeneralConfig.maxUpgradesPerStorageConfig));
+                GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                    builder -> builder.addLine("item.items.okbackpack.advanced_pump_upgrade.tooltip")
+                        .addLine("item.items.okbackpack.advanced_pump_upgrade.tooltip.1")
+                        .addLine("item.items.okbackpack.advanced_pump_upgrade.tooltip.2")));
     }
 }

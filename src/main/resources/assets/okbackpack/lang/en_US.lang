@@ -44,42 +44,97 @@ item.items.okbackpack.stack_upgrade_tier_3.name=Stack Upgrade Tier 3
 item.items.okbackpack.stack_upgrade_tier_4.name=Stack Upgrade Tier 4
 item.items.okbackpack.stack_upgrade_omega.name=Stack Upgrade Omega Tier
 item.items.okbackpack.stack_upgrade_starter.name=Stack Upgrade Starter Tier
+item.items.okbackpack.stack_upgrade.tooltip=Multiplies the number of stacks that can fit in a slot by %s
 item.items.okbackpack.stack_downgrade_tier_1.name=Stack Downgrade Tier 1
 item.items.okbackpack.stack_downgrade_tier_2.name=Stack Downgrade Tier 2
 item.items.okbackpack.stack_downgrade_tier_3.name=Stack Downgrade Tier 3
+item.items.okbackpack.stack_downgrade.tooltip=Divides the per-slot stack limit by %s
+
 item.items.okbackpack.crafting_upgrade.name=Crafting Upgrade
+item.items.okbackpack.crafting_upgrade.tooltip=Crafting table in an upgrade tab
+
 item.items.okbackpack.everlasting_upgrade.name=Everlasting Upgrade
+item.items.okbackpack.everlasting_upgrade.tooltip=Backpack becomes indestructible
+item.items.okbackpack.everlasting_upgrade.tooltip.1=Can't despawn or fall into void
+
 item.items.okbackpack.magnet_upgrade.name=Magnet Upgrade
+item.items.okbackpack.magnet_upgrade.tooltip=Magnets items into backpack at range
+
 item.items.okbackpack.advanced_magnet_upgrade.name=Advanced Magnet Upgrade
+item.items.okbackpack.advanced_magnet_upgrade.tooltip=Magnets items into backpack at a greater range
+item.items.okbackpack.advanced_magnet_upgrade.tooltip.1=Has more filtering options
+
 item.items.okbackpack.pickup_upgrade.name=Pickup Upgrade
+item.items.okbackpack.pickup_upgrade.tooltip=Makes backpack pickup items
 item.items.okbackpack.advanced_pickup_upgrade.name=Advanced Pickup Upgrade
+item.items.okbackpack.advanced_pickup_upgrade.tooltip=Makes backpack pickup items
+item.items.okbackpack.advanced_pickup_upgrade.tooltip.1=Has more filtering options
+
 item.items.okbackpack.feeding_upgrade.name=Feeding Upgrade
+item.items.okbackpack.feeding_upgrade.tooltip=Feeds player with food from backpack's inventory
+
 item.items.okbackpack.advanced_feeding_upgrade.name=Advanced Feeding Upgrade
+item.items.okbackpack..advanced_feeding_upgrade.tooltip=Feeds player with food from backpack's inventory
+item.items.okbackpack..advanced_feeding_upgrade.tooltip.1=More options for when food gets fed to player
+
 item.items.okbackpack.filter_upgrade.name=Filter Upgrade
+item.items.okbackpack.filter_upgrade.tooltip=Filters items piped in and/or out of backpack
+
 item.items.okbackpack.advanced_filter_upgrade.name=Advanced Filter Upgrade
+item.items.okbackpack.advanced_filter_upgrade.tooltip=Filters items piped in and/or out of backpack
+item.items.okbackpack.advanced_filter_upgrade.tooltip.1=Has more filtering options
+
 item.items.okbackpack.compacting_upgrade.name=Compacting Upgrade
+item.items.okbackpack.compacting_upgrade.tooltip=Compacts items into their compressed variants
+item.items.okbackpack.compacting_upgrade.tooltip.1=Only 2x2 recipes
+
 item.items.okbackpack.advanced_compacting_upgrade.name=Advanced Compacting Upgrade
+item.items.okbackpack.advanced_compacting_upgrade.tooltip=Compacts items into their compressed variants
+item.items.okbackpack.advanced_compacting_upgrade.tooltip.1=Both 2x2 and 3x3 recipes with more filtering options
+
 item.items.okbackpack.smelting_upgrade.name=Smelting Upgrade
 item.items.okbackpack.auto_smelting_upgrade.name=Auto-smelting Upgrade
 item.items.okbackpack.smoking_upgrade.name=Smoking Upgrade
 item.items.okbackpack.auto_smoking_upgrade.name=Auto-smoking Upgrade
 item.items.okbackpack.blasting_upgrade.name=Blasting Upgrade
 item.items.okbackpack.auto_blasting_upgrade.name=Auto-blasting Upgrade
+
 item.items.okbackpack.inception_upgrade.name=Inception Upgrade
+item.items.okbackpack.inception_upgrade.tooltip=Makes it possible to put backpacks into the backpack
+
 item.items.okbackpack.void_upgrade.name=Void Upgrade
+item.items.okbackpack.void_upgrade.tooltip=Voids items selected in filter
 item.items.okbackpack.advanced_void_upgrade.name=Advanced Void Upgrade
+item.items.okbackpack.advanced_void_upgrade.tooltip=Voids items selected in filter
+item.items.okbackpack.advanced_void_upgrade.tooltip.1=Has more filtering options
+
 item.items.okbackpack.jukebox_upgrade.name=Jukebox Upgrade
 item.items.okbackpack.advanced_jukebox_upgrade.name=Advanced Jukebox Upgrade
 item.items.okbackpack.tool_swapper_upgrade.name=Tool Swapper Upgrade
 item.items.okbackpack.advanced_tool_swapper_upgrade.name=Advanced Tool Swapper Upgrade
 item.items.okbackpack.infinity_upgrade.name=Infinity Upgrade (Admin)
 item.items.okbackpack.survival_infinity_upgrade.name=Survival Infinity Upgrade
+
 item.items.okbackpack.anvil_upgrade.name=Anvil Upgrade
+item.items.okbackpack.anvil_upgrade.tooltip=Anvil in an upgrade tab
+
 item.items.okbackpack.battery_upgrade.name=Battery Upgrade
+item.items.okbackpack.battery_upgrade.tooltip=Replaces some backpack inventory space with energy storage
+
 item.items.okbackpack.tank_upgrade.name=Tank Upgrade
+item.items.okbackpack.tank_upgrade.tooltip=Replaces some backpack inventory space with fluid storage
+
 item.items.okbackpack.pump_upgrade.name=Pump Upgrade
+item.items.okbackpack.pump_upgrade.tooltip=Pumps fluids between Tank upgrade and adjacent blocks
+
 item.items.okbackpack.advanced_pump_upgrade.name=Advanced Pump Upgrade
+item.items.okbackpack.advanced_pump_upgrade.tooltip=Pumps Fluids between Tank upgrade and adjacent blocks
+item.items.okbackpack.advanced_pump_upgrade.tooltip.1=Works with fluid containers in hand and fluid blocks in world
+item.items.okbackpack.advanced_pump_upgrade.tooltip.2=Allows to filter which fluids are pumped
+
 item.items.okbackpack.xp_pump_upgrade.name=Experience Pump Upgrade
+item.items.okbackpack.xp_pump_upgrade.tooltip=Pumps experience between Tank upgrade and player
+
 item.items.okbackpack.refill_upgrade.name=Refill Upgrade
 item.items.okbackpack.advanced_refill_upgrade.name=Advanced Refill Upgrade
 
@@ -115,10 +170,19 @@ item.items.okbackpack.spider_upgrade.name=Spider Upgrade
 item.items.okbackpack.lapis_upgrade.name=Lapis Upgrade
 item.items.okbackpack.quartz_upgrade.name=Quartz Upgrade
 item.items.okbackpack.hay_upgrade.name=Hay Upgrade
+
 item.items.okbackpack.deposit_upgrade.name=Deposit Upgrade
+item.items.okbackpack.deposit_upgrade.tooltip=Sneak right-click a container while holding a backpack to deposit items
+
 item.items.okbackpack.advanced_deposit_upgrade.name=Advanced Deposit Upgrade
+item.items.okbackpack.advanced_deposit_upgrade.tooltip=Sneak right-click a container while holding a backpack to deposit items
+item.items.okbackpack.advanced_deposit_upgrade.tooltip.1=More filter options
+
 item.items.okbackpack.restock_upgrade.name=Restock Upgrade
+item.items.okbackpack.restock_upgrade.tooltip=Sneak right-click a container while holding a backpack to restock items
 item.items.okbackpack.advanced_restock_upgrade.name=Advanced Restock Upgrade
+item.items.okbackpack.advanced_restock_upgrade.tooltip=Sneak right-click a container while holding a backpack to restock items
+item.items.okbackpack.advanced_restock_upgrade.tooltip.1=More filter options
 
 # Tooltips
 tooltip.backpack.inventory_size=Inventory size: %d
@@ -136,28 +200,7 @@ tooltip.backpack.contents.upgrades=Upgrades
 tooltip.backpack.contents.inventory=Inventory
 tooltip.backpack.contents.empty=No Upgrades or Inventory Contents
 
-tooltip.backpack.magnet_upgrade=Magnets items into backpack at range
-tooltip.backpack.advanced_magnet_upgrade=Magnets items into backpack at a greater range
-tooltip.backpack.advanced_magnet_upgrade.1=Has more filtering options
-tooltip.backpack.everlasting_upgrade=Backpack becomes indestructible
-tooltip.backpack.everlasting_upgrade.1=Can't despawn or fall into void
 tooltip.backpack.upgrade_base=It does nothing! Feel free to put it in your upgrade slots!
-tooltip.backpack.stack_upgrade=Multiplies the number of stacks that can fit in a slot by %s
-tooltip.backpack.stack_downgrade=Divides the per-slot stack limit by %s
-tooltip.backpack.crafting_upgrade=Crafting table in an upgrade tab
-tooltip.backpack.inception_upgrade=Makes it possible to put backpacks into the backpack
-tooltip.backpack.pickup_upgrade=Makes backpack pickup items
-tooltip.backpack.advanced_pickup_upgrade=Makes backpack pickup items
-tooltip.backpack.advanced_pickup_upgrade.1=Has more filtering options
-tooltip.backpack.feeding_upgrade=Feeds player with food from backpack's inventory
-tooltip.backpack.advanced_feeding_upgrade=Feeds player with food from backpack's inventory
-tooltip.backpack.advanced_feeding_upgrade.1=More options for when food gets fed to player
-tooltip.backpack.filter_upgrade=Filters items piped in and/or out of backpack
-tooltip.backpack.advanced_filter_upgrade=Filters items piped in and/or out of backpack
-tooltip.backpack.advanced_filter_upgrade.1=Has more filtering options
-tooltip.backpack.void_upgrade=Voids items selected in filter
-tooltip.backpack.advanced_void_upgrade=Voids items selected in filter
-tooltip.backpack.advanced_void_upgrade.1=Has more filtering options
 tooltip.backpack.jukebox_upgrade=Portable Jukebox
 tooltip.backpack.advanced_jukebox_upgrade=Portable Jukebox with support for more music discs
 tooltip.backpack.advanced_jukebox_upgrade.1=Also more playback options
@@ -165,10 +208,6 @@ tooltip.backpack.infinity_upgrade=Makes all items in backpack infinite
 tooltip.backpack.infinity_upgrade.1=Only admins can set infinite items and break or pickup backpack
 tooltip.backpack.survival_infinity_upgrade=Makes all items in backpack infinite
 tooltip.backpack.survival_infinity_upgrade.1=All players can set infinite items and break or pickup backpack
-tooltip.backpack.compacting_upgrade=Compacts items into their compressed variants
-tooltip.backpack.compacting_upgrade.1=Only 2x2 recipes
-tooltip.backpack.advanced_compacting_upgrade=Compacts items into their compressed variants
-tooltip.backpack.advanced_compacting_upgrade.1=Both 2x2 and 3x3 recipes with more filtering options
 tooltip.backpack.smelting_upgrade=Smelting in an upgrade tab
 tooltip.backpack.auto_smelting_upgrade=Smelting in an upgrade tab
 tooltip.backpack.auto_smelting_upgrade.1=Automatically pulls/pushes items
@@ -181,16 +220,8 @@ tooltip.backpack.auto_blasting_upgrade.1=Automatically pulls/pushes items
 tooltip.backpack.tool_swapper_upgrade=Automatically swaps item in player's hand for the one effective on the block/entity when these are left clicked.
 tooltip.backpack.advanced_tool_swapper_upgrade=Automatically swaps item in player's hand for the one effective on the block/entity when these are left clicked.
 tooltip.backpack.advanced_tool_swapper_upgrade.1=Has filter options and enables swapping wrench like tools for block/entity player is looking at with %s
-tooltip.backpack.anvil_upgrade=Anvil in an upgrade tab
-tooltip.backpack.battery_upgrade=Replaces some backpack inventory space with energy storage
 tooltip.backpack.battery_contents=%s RF / %s RF
-tooltip.backpack.tank_upgrade=Replaces some backpack inventory space with fluid storage
 tooltip.backpack.tank_contents=%s mB / %s mB
-tooltip.backpack.pump_upgrade=Pumps fluids between Tank upgrade and adjacent blocks
-tooltip.backpack.advanced_pump_upgrade=Pumps Fluids between Tank upgrade and adjacent blocks
-tooltip.backpack.advanced_pump_upgrade.1=Works with fluid containers in hand and fluid blocks in world
-tooltip.backpack.advanced_pump_upgrade.2=Allows to filter which fluids are pumped
-tooltip.backpack.xp_pump_upgrade=Pumps experience between Tank upgrade and player
 tooltip.backpack.refill_upgrade=Keeps refilling stack of selected items in player's inventory
 tooltip.backpack.advanced_refill_upgrade=Keeps refilling stack of selected items in player's inventory
 tooltip.backpack.advanced_refill_upgrade.1=Allows for more precise target slot selection
@@ -225,12 +256,6 @@ tooltip.backpack.lapis_upgrade=Has a chance to double experience gained
 tooltip.backpack.quartz_upgrade=Grants Haste
 tooltip.backpack.hay_upgrade=Has a chance to double crop drops
 tooltip.backpack.hay_upgrade.1=Has a chance to obtain edible crops from grass
-tooltip.backpack.deposit_upgrade=Sneak right-click a container while holding a backpack to deposit items
-tooltip.backpack.advanced_deposit_upgrade=Sneak right-click a container while holding a backpack to deposit items
-tooltip.backpack.advanced_deposit_upgrade.1=More filter options
-tooltip.backpack.restock_upgrade=Sneak right-click a container while holding a backpack to restock items
-tooltip.backpack.advanced_restock_upgrade=Sneak right-click a container while holding a backpack to restock items
-tooltip.backpack.advanced_restock_upgrade.1=More filter options
 gui.backpack.deposit_settings=Deposit
 gui.backpack.advanced_deposit_settings=Advanced Deposit
 gui.backpack.restock_settings=Restock

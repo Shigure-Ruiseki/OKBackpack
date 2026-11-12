@@ -26,6 +26,8 @@ public class ItemAdvCompactingUpgradeConfig extends ItemConfig {
             config -> new ItemCompactingUpgrade(
                 () -> AdvShouldCompactThreeByThree,
                 () -> 16,
-                GeneralConfig.maxUpgradesPerStorageConfig));
+                GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                    builder -> builder.addLine("item.items.okbackpack.advanced_compacting_upgrade.tooltip")
+                        .addLine("item.items.okbackpack.advanced_compacting_upgrade.tooltip.1")));
     }
 }

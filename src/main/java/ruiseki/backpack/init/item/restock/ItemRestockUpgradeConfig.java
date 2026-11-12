@@ -15,6 +15,7 @@ public class ItemRestockUpgradeConfig extends ItemConfig {
             true,
             "restock_upgrade",
             null,
-            config -> new ItemRestockUpgrade(() -> 9, GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemRestockUpgrade(() -> 9, GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.restock_upgrade.tooltip")));
     }
 }

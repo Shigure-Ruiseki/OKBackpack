@@ -9,6 +9,13 @@ public class ItemEverlastingUpgradeConfig extends ItemConfig {
     public static ItemEverlastingUpgradeConfig _instance;
 
     public ItemEverlastingUpgradeConfig() {
-        super(OKBackpack._instance, true, "everlasting_upgrade", null, config -> new ItemEverlastingUpgrade());
+        super(
+            OKBackpack._instance,
+            true,
+            "everlasting_upgrade",
+            null,
+            config -> new ItemEverlastingUpgrade().tooltipBuilder(
+                builder -> builder.addLine("item.items.okbackpack.everlasting_upgrade.tooltip")
+                    .addLine("item.items.okbackpack.everlasting_upgrade.tooltip.1")));
     }
 }

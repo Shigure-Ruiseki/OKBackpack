@@ -20,9 +20,7 @@ public class ItemMagnetUpgradeConfig extends ItemConfig {
             true,
             "magnet_upgrade",
             null,
-            config -> new ItemMagnetUpgrade(
-                () -> basicMagnetRange,
-                () -> 16,
-                GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemMagnetUpgrade(() -> basicMagnetRange, () -> 16, GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.magnet_upgrade.tooltip")));
     }
 }

@@ -2,8 +2,6 @@ package ruiseki.okstoragecore.client.gui.sync;
 
 import net.minecraft.util.ResourceLocation;
 
-import ruiseki.backpack.upgrades.anvil.AnvilContainer;
-import ruiseki.backpack.upgrades.anvil.AnvilUpgradeWrapper;
 import ruiseki.okstoragecore.Reference;
 import ruiseki.okstoragecore.client.gui.slot.CraftingSlotInfo;
 import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
@@ -17,6 +15,8 @@ import ruiseki.okstoragecore.upgrades.IFilteredUpgrade;
 import ruiseki.okstoragecore.upgrades.IFluidFilteredUpgrade;
 import ruiseki.okstoragecore.upgrades.IStorageUpgrade;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
+import ruiseki.okstoragecore.upgrades.anvil.AnvilContainer;
+import ruiseki.okstoragecore.upgrades.anvil.AnvilUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.battery.BatteryUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.crafting.CraftingContainer;
 import ruiseki.okstoragecore.upgrades.tank.TankUpgradeWrapper;

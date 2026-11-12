@@ -15,6 +15,7 @@ public class ItemCraftingUpgradeConfig extends ItemConfig {
             true,
             "crafting_upgrade",
             null,
-            config -> new ItemCraftingUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemCraftingUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.crafting_upgrade.tooltip")));
     }
 }

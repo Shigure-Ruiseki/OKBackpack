@@ -15,6 +15,8 @@ public class ItemAdvFeedingUpgradeConfig extends ItemConfig {
             true,
             "advanced_feeding_upgrade",
             null,
-            config -> new ItemFeedingUpgrade(() -> 16, GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemFeedingUpgrade(() -> 16, GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.addLine("item.items.okbackpack.advanced_feeding_upgrade.tooltip")
+                    .addLine("item.items.okbackpack.advanced_feeding_upgrade.tooltip.1")));
     }
 }
