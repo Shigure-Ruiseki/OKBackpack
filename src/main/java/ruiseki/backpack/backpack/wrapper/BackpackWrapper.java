@@ -13,8 +13,8 @@ import java.util.function.IntConsumer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
 import net.minecraft.world.World;
+
 import org.jetbrains.annotations.Nullable;
 
 import cofh.api.energy.IEnergyStorage;
@@ -521,7 +521,8 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     private boolean isSBDeployed() {
-        return NBTHelpers.getBoolean(backpack, "SBDEPLOYED").orElse(false);
+        return NBTHelpers.getBoolean(backpack, "SBDEPLOYED")
+            .orElse(false);
     }
 
     private void setSBDeployed(boolean deployed) {
@@ -529,7 +530,8 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     private BlockPos getSBPos() {
-        return NBTHelpers.getBlockPos(backpack, "SBPos").orElse(new BlockPos());
+        return NBTHelpers.getBlockPos(backpack, "SBPos")
+            .orElse(new BlockPos());
     }
 
     private void setSBPos(BlockPos sbPos) {
@@ -557,8 +559,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     private void destroySleepingBagIfLoaded(EntityPlayer player) {
         BlockPos sbPos = this.getSBPos();
         if (!sbPos.isLoaded(player.worldObj)) return;
-        if (sbPos.getBlock(player.worldObj)
-            == BlockSleepingBagConfig._instance.getInstance()) {
+        if (sbPos.getBlock(player.worldObj) == BlockSleepingBagConfig._instance.getInstance()) {
             player.worldObj.func_147480_a(sbPos.getX(), sbPos.getY(), sbPos.getZ(), false);
         }
     }
