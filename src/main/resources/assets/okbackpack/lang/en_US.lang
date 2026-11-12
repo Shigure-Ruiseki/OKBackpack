@@ -82,8 +82,14 @@ item.items.okbackpack.advanced_pump_upgrade.name=Advanced Pump Upgrade
 item.items.okbackpack.xp_pump_upgrade.name=Experience Pump Upgrade
 item.items.okbackpack.refill_upgrade.name=Refill Upgrade
 item.items.okbackpack.advanced_refill_upgrade.name=Advanced Refill Upgrade
+
 item.items.okbackpack.arcane_crafting_upgrade.name=Arcane Crafting Upgrade
+item.items.okbackpack.arcane_crafting_upgrade.tooltip=Arcane workbench in an upgrade tab
+
 item.items.okbackpack.energized_node_upgrade.name=Energized Node Upgrade
+item.items.okbackpack.energized_node_upgrade.tooltip=Slowly charges wands in the backpack
+item.items.okbackpack.energized_node_upgrade.empty=Empty
+
 item.items.okbackpack.redstone_upgrade.name=Redstone Upgrade
 item.items.okbackpack.glowstone_upgrade.name=Glowstone Upgrade
 item.items.okbackpack.rainbow_upgrade.name=Rainbow Upgrade
@@ -189,9 +195,6 @@ tooltip.backpack.refill_upgrade=Keeps refilling stack of selected items in playe
 tooltip.backpack.advanced_refill_upgrade=Keeps refilling stack of selected items in player's inventory
 tooltip.backpack.advanced_refill_upgrade.1=Allows for more precise target slot selection
 tooltip.backpack.advanced_refill_upgrade.2=Also allows middle click picking blocks from backpack
-tooltip.backpack.arcane_crafting_upgrade=Arcane workbench in an upgrade tab
-tooltip.backpack.energized_node_upgrade=Slowly charges wands in the backpack
-tooltip.backpack.energized_node_upgrade.empty=Empty
 tooltip.backpack.redstone_upgrade=Emits redstone signal to surroundings
 tooltip.backpack.glowstone_upgrade=Emits light to surroundings
 tooltip.backpack.rainbow_upgrade=Grants Jump Boost and Speed effects

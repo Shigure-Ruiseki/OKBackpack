@@ -1,4 +1,4 @@
-package ruiseki.okbackpack.compat.thaumcraft;
+package ruiseki.backpack.modcompat.thaumcraft;
 
 import net.minecraft.item.ItemStack;
 

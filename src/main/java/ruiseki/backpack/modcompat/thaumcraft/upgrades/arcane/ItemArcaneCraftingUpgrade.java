@@ -90,6 +90,7 @@ public class ItemArcaneCraftingUpgrade extends ItemUpgradeBase<ArcaneCraftingUpg
 
     public ItemArcaneCraftingUpgrade(IUpgradeCountLimitConfig upgradeTypeLimitConfig) {
         super(upgradeTypeLimitConfig);
+        this.tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.arcane_crafting_upgrade.tooltip"));
     }
 
     @Override

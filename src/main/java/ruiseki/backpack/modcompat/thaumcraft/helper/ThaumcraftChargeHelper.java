@@ -86,7 +86,7 @@ public final class ThaumcraftChargeHelper {
 
     public static final class AspectBudget {
 
-        public final Map<Aspect, Integer> remainingByAspect = new LinkedHashMap<>();
+        private final Map<Aspect, Integer> remainingByAspect = new LinkedHashMap<>();
 
         public AspectBudget(int amountPerAspect) {
             int normalized = Math.max(0, amountPerAspect);

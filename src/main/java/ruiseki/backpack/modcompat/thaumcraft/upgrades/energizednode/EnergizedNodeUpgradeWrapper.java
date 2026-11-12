@@ -1,125 +1,84 @@
 package ruiseki.backpack.modcompat.thaumcraft.upgrades.energizednode;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
+import org.jetbrains.annotations.Nullable;
+
 import ruiseki.backpack.modcompat.thaumcraft.helper.ThaumcraftChargeHelper;
-import ruiseki.okbackpack.api.IStorageWrapper;
-import ruiseki.okbackpack.api.wrapper.IEnergizedNodeUpgrade;
-import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
-import ruiseki.okbackpack.common.block.BackpackWrapper;
-import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
+import ruiseki.backpack.modcompat.thaumcraft.helper.ThaumcraftChargeHelper.AspectBudget;
+import ruiseki.backpack.modcompat.thaumcraft.upgrades.IVisChargeUpgrade;
 import ruiseki.okcore.datastructure.BlockPos;
-import ruiseki.okcore.helper.ItemNBTHelpers;
+import ruiseki.okcore.helper.NBTHelpers;
+import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.upgrades.ITickableUpgrade;
+import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 import thaumcraft.api.aspects.Aspect;
 
-public class EnergizedNodeUpgradeWrapper extends UpgradeWrapperBase implements IEnergizedNodeUpgrade {
+public class EnergizedNodeUpgradeWrapper
+    extends UpgradeWrapperBase<EnergizedNodeUpgradeWrapper, ItemEnergizedNodeUpgrade> implements ITickableUpgrade {
 
-    public static final String NODE_CV_TAG = "NodeCv";
+    public static final String ASPECTS_TAG = "aspects_inventory";
 
-    private final BaseItemStackHandler storageHandler;
-    private int cachedUpgradeSlotIndex = -1;
-
-    public EnergizedNodeUpgradeWrapper(ItemStack upgrade, IStorageWrapper storage,
-        Consumer<ItemStack> upgradeConsumer) {
-        super(upgrade, storage, upgradeConsumer);
-        this.storageHandler = new BaseItemStackHandler(0);
-        this.storageHandler.setVisualSize(0);
+    protected EnergizedNodeUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
+        Consumer<ItemStack> upgradeSaveHandler) {
+        super(storageWrapper, upgrade, upgradeSaveHandler);
     }
 
     @Override
-    public String getSettingLangKey() {
-        return "gui.backpack.energized_node_settings";
+    public void tick(@Nullable EntityLivingBase entity, World world, BlockPos pos) {
+        if (!hasAspect(upgrade)) return;
+        AspectBudget budget = ThaumcraftChargeHelper.createBudget(getStoredAspectRates(upgrade));
+        if (budget.isExhausted()) return;
+        ThaumcraftChargeHelper.chargeStacks(this.getVisChargeableStacks(), budget);
     }
 
-    @Override
-    public BaseItemStackHandler getStorage() {
-        return storageHandler;
-    }
-
-    @Override
-    public boolean tick(EntityPlayer player) {
-        if (player.worldObj.isRemote) return false;
-        return doTick();
-    }
-
-    @Override
-    public boolean tick(World world, BlockPos pos) {
-        if (world.isRemote) return false;
-        return doTick();
-    }
-
-    public boolean doTick() {
-        if (!isConfigured(upgrade)) return false;
-
-        if (!(storage instanceof BackpackWrapper backpackWrapper)) {
-            return false;
-        }
-
-        ThaumcraftChargeHelper.AspectBudget budget = ThaumcraftChargeHelper.createBudget(getStoredAspectRates(upgrade));
-        if (budget.isExhausted()) return false;
-
-        return ThaumcraftChargeHelper
-            .chargeStacks(backpackWrapper.getVisChargeableStacksExcluding(getUpgradeSlotIndex()), budget);
-    }
-
-    @Override
-    public Iterable<ItemStack> getVisChargeableStacks() {
-        return Collections.emptyList();
-    }
-
-    public static boolean isConfigured(ItemStack stack) {
-        return stack != null && ItemNBTHelpers.getNBT(stack)
-            .hasKey(NODE_CV_TAG, 10);
+    public static boolean hasAspect(ItemStack stack) {
+        return stack != null && NBTHelpers.getCompoundTag(stack, ASPECTS_TAG)
+            .isPresent();
     }
 
     public static LinkedHashMap<Aspect, Integer> getStoredAspectRates(ItemStack stack) {
         LinkedHashMap<Aspect, Integer> result = new LinkedHashMap<>();
-        var tag = ItemNBTHelpers.getCompound(stack, NODE_CV_TAG, false);
-
-        for (Aspect aspect : Aspect.getPrimalAspects()) {
-            if (aspect != null) {
-                result.put(aspect, tag == null ? 0 : Math.max(0, tag.getInteger(aspect.getTag())));
-            }
-        }
-
+        NBTHelpers.getCompoundTag(stack, ASPECTS_TAG)
+            .ifPresent(tag -> {
+                for (Aspect aspect : Aspect.getPrimalAspects()) {
+                    if (aspect != null) {
+                        result.put(aspect, Math.max(0, tag.getInteger(aspect.getTag())));
+                    }
+                }
+            });
         return result;
     }
 
     public static void setStoredAspectRates(ItemStack stack, Map<Aspect, Integer> aspectRates) {
-        var root = ItemNBTHelpers.getNBT(stack);
-        var nodeTag = new net.minecraft.nbt.NBTTagCompound();
-
+        NBTTagCompound nodeTag = new NBTTagCompound();
         for (Aspect aspect : Aspect.getPrimalAspects()) {
             if (aspect != null) {
                 int amount = aspectRates == null ? 0 : Math.max(0, aspectRates.getOrDefault(aspect, 0));
                 nodeTag.setInteger(aspect.getTag(), amount);
             }
         }
-
-        root.setTag(NODE_CV_TAG, nodeTag);
+        NBTHelpers.setCompoundTag(stack, ASPECTS_TAG, nodeTag);
     }
 
-    private int getUpgradeSlotIndex() {
-        if (cachedUpgradeSlotIndex >= 0) {
-            return cachedUpgradeSlotIndex;
-        }
-
-        for (int i = 0; i < storage.getUpgradeHandler()
-            .getSlots(); i++) {
-            if (storage.getUpgradeHandler()
-                .getStackInSlot(i) == upgrade) {
-                cachedUpgradeSlotIndex = i;
-                break;
-            }
-        }
-
-        return cachedUpgradeSlotIndex;
+    public Iterable<ItemStack> getVisChargeableStacks() {
+        List<ItemStack> entries = new ArrayList<>();
+        this.storageWrapper.getUpgradeHandler()
+            .getWrappersThatImplement(IVisChargeUpgrade.class)
+            .forEach(upgrade -> {
+                for (ItemStack stack : upgrade.getVisChargeableStacks()) {
+                    entries.add(stack);
+                }
+            });
+        return entries;
     }
 }

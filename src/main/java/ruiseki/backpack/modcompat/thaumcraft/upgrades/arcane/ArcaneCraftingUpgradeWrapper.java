@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import ruiseki.backpack.modcompat.thaumcraft.upgrades.IVisChargeUpgrade;
 import ruiseki.okcore.helper.InventoryHelpers;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
@@ -22,7 +23,7 @@ import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 
 public class ArcaneCraftingUpgradeWrapper
     extends UpgradeWrapperBase<ArcaneCraftingUpgradeWrapper, ItemArcaneCraftingUpgrade>
-    implements IStorageUpgrade, ISlotClickUpgrade {
+    implements IStorageUpgrade, ISlotClickUpgrade, IVisChargeUpgrade {
 
     String ARCANE_ASPECTS_TAG = "ArcaneAspects";
 
@@ -152,6 +153,7 @@ public class ArcaneCraftingUpgradeWrapper
         this.missingResearchName = name;
     }
 
+    @Override
     public Iterable<ItemStack> getVisChargeableStacks() {
         ItemStack wandStack = this.inventory.getStackInSlot(9);
         return ItemHelpers.isEmpty(wandStack) ? Collections.emptyList() : Collections.singletonList(wandStack);

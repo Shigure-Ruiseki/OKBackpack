@@ -1,114 +1,53 @@
 package ruiseki.backpack.modcompat.thaumcraft.upgrades.energizednode;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.Set;
 
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.World;
 
-import ruiseki.backpack.modcompat.thaumcraft.helper.ThaumcraftHelpers;
-import ruiseki.okbackpack.api.IStoragePanel;
-import ruiseki.okbackpack.api.IStorageWrapper;
-import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
-import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
-import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotUpdateGroup;
-import ruiseki.okbackpack.client.gui.widget.upgrade.EnergizedNodeUpgradeWidget;
-import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
-import ruiseki.okbackpack.common.item.ItemUpgrade;
 import ruiseki.okcore.helper.LangHelpers;
+import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.helper.TranslateHelpers;
+import ruiseki.okstoragecore.upgrades.IUpgradeCountLimitConfig;
+import ruiseki.okstoragecore.upgrades.ItemUpgradeBase;
+import ruiseki.okstoragecore.upgrades.UpgradeSlotChangeResult;
+import ruiseki.okstoragecore.upgrades.UpgradeType;
 import thaumcraft.api.aspects.Aspect;
-import thaumcraft.common.tiles.TileNodeEnergized;
 
-public class ItemEnergizedNodeUpgrade extends ItemUpgrade<EnergizedNodeUpgradeWrapper> {
+public class ItemEnergizedNodeUpgrade extends ItemUpgradeBase<EnergizedNodeUpgradeWrapper> {
 
-    public ItemEnergizedNodeUpgrade() {
-        super();
-        setMaxStackSize(1);
-    }
+    public static final UpgradeType<EnergizedNodeUpgradeWrapper> TYPE = new UpgradeType<>(
+        EnergizedNodeUpgradeWrapper::new);
 
-    @Override
-    public boolean hasTab() {
-        return true;
-    }
+    public ItemEnergizedNodeUpgrade(IUpgradeCountLimitConfig upgradeTypeLimitConfig) {
+        super(upgradeTypeLimitConfig);
+        this.tooltipBuilder(builder -> {
+            builder.addLine("item.items.okbackpack.energized_node_upgrade.tooltip");
+            builder.addLine((stack, player, tooltip, advanced) -> {
+                if (!EnergizedNodeUpgradeWrapper.hasAspect(stack)) {
+                    tooltip.add(
+                        EnumChatFormatting.DARK_GRAY
+                            + LangHelpers.localize("item.items.backpack.energized_node_upgrade.empty"));
+                    return;
+                }
 
-    @Override
-    public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
-        list.add(LangHelpers.localize("tooltip.backpack.energized_node_upgrade"));
-
-        if (!EnergizedNodeUpgradeWrapper.isConfigured(itemstack)) {
-            list.add(
-                EnumChatFormatting.DARK_GRAY + LangHelpers.localize("tooltip.backpack.energized_node_upgrade.empty"));
-            return;
-        }
-
-        Map<Aspect, Integer> aspectRates = EnergizedNodeUpgradeWrapper.getStoredAspectRates(itemstack);
-        if (GuiScreen.isShiftKeyDown()) {
-            for (Map.Entry<Aspect, Integer> entry : aspectRates.entrySet()) {
-                Aspect aspect = entry.getKey();
-                if (aspect == null) continue;
-
-                list.add(" §" + aspect.getChatcolor() + aspect.getName() + "§r x " + entry.getValue() + " cv/t");
-            }
-            return;
-        }
-
-        list.add(buildCompactAspectTooltip(aspectRates));
-    }
-
-    @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
-        float hitX, float hitY, float hitZ) {
-        if (world.isRemote) return true;
-        if (stack == null || EnergizedNodeUpgradeWrapper.isConfigured(stack)) return false;
-
-        TileEntity tile = world.getTileEntity(x, y, z);
-        if (!(tile instanceof TileNodeEnergized energizedNode)) return false;
-
-        EnergizedNodeUpgradeWrapper
-            .setStoredAspectRates(stack, ThaumcraftHelpers.getEnergizedNodeAspectValues(energizedNode));
-        ThaumcraftHelpers.resetNodeConverterAbove(world, x, y, z);
-        world.setBlockToAir(x, y, z);
-
-        if (player instanceof EntityPlayerMP playerMP) {
-            playerMP.updateHeldItem();
-            playerMP.inventoryContainer.detectAndSendChanges();
-        }
-        return true;
-    }
-
-    @Override
-    public UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper wrapper, ItemStack upgradeStack, int targetSlot) {
-        int[] conflicts = IUpgradeItem.findConflictSlots(wrapper, targetSlot, ItemEnergizedNodeUpgrade.class);
-        if (conflicts.length >= 1) {
-            return UpgradeSlotChangeResult.failOnlySingleAllowed(
-                conflicts,
-                LangHelpers.localize("item.energized_node_upgrade.name"),
-                wrapper.getInventoryName());
-        }
-        return super.canAddUpgradeTo(wrapper, upgradeStack, targetSlot);
-    }
-
-    @Override
-    public EnergizedNodeUpgradeWrapper createWrapper(ItemStack stack, IStorageWrapper storage,
-        Consumer<ItemStack> upgradeConsumer) {
-        return new EnergizedNodeUpgradeWrapper(stack, storage, upgradeConsumer);
-    }
-
-    @Override
-    public void updateWidgetDelegates(EnergizedNodeUpgradeWrapper wrapper, UpgradeSlotUpdateGroup group) {
-        // This upgrade no longer exposes any widget slots.
-    }
-
-    @Override
-    public ExpandedTabWidget getExpandedTabWidget(int slotIndex, EnergizedNodeUpgradeWrapper wrapper, ItemStack stack,
-        IStoragePanel<?> panel, String titleKey) {
-        return new EnergizedNodeUpgradeWidget(slotIndex, wrapper, stack, panel, titleKey);
+                Map<Aspect, Integer> aspectRates = EnergizedNodeUpgradeWrapper.getStoredAspectRates(stack);
+                if (GuiScreen.isShiftKeyDown()) {
+                    for (Map.Entry<Aspect, Integer> entry : aspectRates.entrySet()) {
+                        Aspect aspect = entry.getKey();
+                        if (aspect == null) continue;
+                        tooltip.add(
+                            " §" + aspect.getChatcolor() + aspect.getName() + "§r x " + entry.getValue() + " cv/t");
+                    }
+                } else {
+                    tooltip.add(buildCompactAspectTooltip(aspectRates));
+                }
+            });
+        });
     }
 
     private String buildCompactAspectTooltip(Map<Aspect, Integer> aspectRates) {
@@ -123,13 +62,37 @@ public class ItemEnergizedNodeUpgrade extends ItemUpgrade<EnergizedNodeUpgradeWr
                 builder.append(" | ");
             }
 
-            builder.append('\u00a7')
+            builder.append('§')
                 .append(aspect.getChatcolor())
                 .append(entry.getValue())
-                .append("\u00a7r");
+                .append("§r");
             first = false;
         }
 
         return builder.toString();
+    }
+
+    @Override
+    public UpgradeType<EnergizedNodeUpgradeWrapper> getType() {
+        return TYPE;
+    }
+
+    @Override
+    public UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper storageWrapper, ItemStack upgradeStack) {
+        UpgradeSlotChangeResult result = super.canAddUpgradeTo(storageWrapper, upgradeStack);
+        if (!result.isSuccessful()) return result;
+
+        Set<Integer> errorUpgradeSlots = new HashSet<>();
+        this.findUpgrades(errorUpgradeSlots, storageWrapper, upgrade -> upgrade instanceof EnergizedNodeUpgradeWrapper);
+
+        if (!errorUpgradeSlots.isEmpty()) {
+            return new UpgradeSlotChangeResult.Fail(
+                TranslateHelpers.error("add.energizednode_exists"),
+                errorUpgradeSlots,
+                Collections.emptySet(),
+                Collections.emptySet());
+        }
+
+        return new UpgradeSlotChangeResult.Success();
     }
 }
