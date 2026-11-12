@@ -21,7 +21,8 @@ public class ItemGhastUpgradeConfig extends ItemConfig {
             true,
             "ghast_upgrade",
             null,
-            config -> new ItemGhastUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemGhastUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.ghast_upgrade.tooltip")));
     }
 
 }

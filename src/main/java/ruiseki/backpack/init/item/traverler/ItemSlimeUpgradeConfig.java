@@ -21,7 +21,9 @@ public class ItemSlimeUpgradeConfig extends ItemConfig {
             true,
             "slime_upgrade",
             null,
-            config -> new ItemSlimeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemSlimeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.addLine("item.items.okbackpack.slime_upgrade.tooltip")
+                    .addLine("item.items.okbackpack.slime_upgrade.tooltip.1")));
     }
 
 }

@@ -15,7 +15,8 @@ public class ItemQuartzUpgradeConfig extends ItemConfig {
             true,
             "quartz_upgrade",
             null,
-            config -> new ItemQuartzUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemQuartzUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.quartz_upgrade.tooltip")));
     }
 
 }

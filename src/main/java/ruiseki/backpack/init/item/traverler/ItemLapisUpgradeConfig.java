@@ -15,7 +15,8 @@ public class ItemLapisUpgradeConfig extends ItemConfig {
             true,
             "lapis_upgrade",
             null,
-            config -> new ItemLapisUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemLapisUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.lapis_upgrade.tooltip")));
     }
 
 }

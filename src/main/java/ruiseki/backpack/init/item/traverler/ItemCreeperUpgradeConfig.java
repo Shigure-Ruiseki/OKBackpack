@@ -15,6 +15,7 @@ public class ItemCreeperUpgradeConfig extends ItemConfig {
             true,
             "creeper_upgrade",
             null,
-            config -> new ItemCreeperUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemCreeperUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.creeper_upgrade.tooltip")));
     }
 }

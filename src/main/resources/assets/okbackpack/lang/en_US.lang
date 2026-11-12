@@ -145,32 +145,6 @@ item.items.okbackpack.energized_node_upgrade.name=Energized Node Upgrade
 item.items.okbackpack.energized_node_upgrade.tooltip=Slowly charges wands in the backpack
 item.items.okbackpack.energized_node_upgrade.empty=Empty
 
-item.items.okbackpack.redstone_upgrade.name=Redstone Upgrade
-item.items.okbackpack.glowstone_upgrade.name=Glowstone Upgrade
-item.items.okbackpack.rainbow_upgrade.name=Rainbow Upgrade
-item.items.okbackpack.cactus_upgrade.name=Cactus Upgrade
-item.items.okbackpack.cow_upgrade.name=Cow Upgrade
-item.items.okbackpack.bat_upgrade.name=Bat Upgrade
-item.items.okbackpack.squid_upgrade.name=Squid Upgrade
-item.items.okbackpack.wither_upgrade.name=Wither Upgrade
-item.items.okbackpack.cake_upgrade.name=Cake Upgrade
-item.items.okbackpack.slime_upgrade.name=Slime Upgrade
-item.items.okbackpack.bookshelf_upgrade.name=Bookshelf Upgrade
-item.items.okbackpack.wolf_upgrade.name=Wolf Upgrade
-item.items.okbackpack.ocelot_upgrade.name=Ocelot Upgrade
-item.items.okbackpack.quiver_upgrade.name=Quiver Upgrade
-item.items.okbackpack.chicken_upgrade.name=Chicken Upgrade
-item.items.okbackpack.magma_cube_upgrade.name=Magma Cube Upgrade
-item.items.okbackpack.dragon_upgrade.name=Dragon Upgrade
-item.items.okbackpack.blaze_upgrade.name=Blaze Upgrade
-item.items.okbackpack.sponge_upgrade.name=Sponge Upgrade
-item.items.okbackpack.creeper_upgrade.name=Creeper Upgrade
-item.items.okbackpack.ghast_upgrade.name=Ghast Upgrade
-item.items.okbackpack.spider_upgrade.name=Spider Upgrade
-item.items.okbackpack.lapis_upgrade.name=Lapis Upgrade
-item.items.okbackpack.quartz_upgrade.name=Quartz Upgrade
-item.items.okbackpack.hay_upgrade.name=Hay Upgrade
-
 item.items.okbackpack.deposit_upgrade.name=Deposit Upgrade
 item.items.okbackpack.deposit_upgrade.tooltip=Sneak right-click a container while holding a backpack to deposit items
 
@@ -184,23 +158,88 @@ item.items.okbackpack.advanced_restock_upgrade.name=Advanced Restock Upgrade
 item.items.okbackpack.advanced_restock_upgrade.tooltip=Sneak right-click a container while holding a backpack to restock items
 item.items.okbackpack.advanced_restock_upgrade.tooltip.1=More filter options
 
-# Tooltips
-tooltip.backpack.inventory_size=Inventory size: %d
-tooltip.backpack.upgrade_slots_size=Upgrade slots: %d
-tooltip.backpack.stack_multiplier=Stack multiplier: %d%s
-tooltip.backpack.contents.uuid=UUID: %s
-tooltip.backpack.contents.press_for_contents=Press %s to View Contents
-tooltip.backpack.contents.shift=Left Shift
-tooltip.backpack.contents.stack_multiplier=Stack Size Multiplier: %s
-tooltip.backpack.contents.energy=%s RF
-tooltip.backpack.contents.fluid=%s mB %s
-tooltip.backpack.contents.fluid_empty=Empty tank
-tooltip.backpack.inventory_interaction.right_click_add=Right-click to add
-tooltip.backpack.contents.upgrades=Upgrades
-tooltip.backpack.contents.inventory=Inventory
-tooltip.backpack.contents.empty=No Upgrades or Inventory Contents
 
-tooltip.backpack.upgrade_base=It does nothing! Feel free to put it in your upgrade slots!
+item.items.okbackpack.redstone_upgrade.name=Redstone Upgrade
+item.items.okbackpack.redstone_upgrade.tooltip=Emits redstone signal to surroundings
+
+item.items.okbackpack.glowstone_upgrade.name=Glowstone Upgrade
+item.items.okbackpack.glowstone_upgrade.tooltip=Emits light to surroundings
+
+item.items.okbackpack.rainbow_upgrade.name=Rainbow Upgrade
+item.items.okbackpack.rainbow_upgrade.tooltip=Grants Jump Boost and Speed effects
+item.items.okbackpack.rainbow_upgrade.tooltip.1=Immune to fall damage
+
+item.items.okbackpack.cactus_upgrade.name=Cactus Upgrade
+item.items.okbackpack.cactus_upgrade.tooltip=Automatically collects water in rain or water
+
+item.items.okbackpack.cow_upgrade.name=Cow Upgrade
+item.items.okbackpack.cow_upgrade.tooltip=Clears all negative status effects
+
+item.items.okbackpack.bat_upgrade.name=Bat Upgrade
+item.items.okbackpack.bat_upgrade.tooltip=Grants Night Vision
+
+item.items.okbackpack.squid_upgrade.name=Squid Upgrade
+item.items.okbackpack.squid_upgrade.tooltip=Grants Water Breathing and Night Vision while underwater
+
+item.items.okbackpack.wither_upgrade.name=Wither Upgrade
+item.items.okbackpack.wither_upgrade.tooltip=Immunity to damage caused by the Wither effect
+item.items.okbackpack.wither_upgrade.tooltip.1=Applies the Wither effect when attacking entities
+
+item.items.okbackpack.cake_upgrade.name=Cake Upgrade
+item.items.okbackpack.cake_upgrade.tooltip=Grants hunger, saturation, and health regeneration
+
+item.items.okbackpack.slime_upgrade.name=Slime Upgrade
+item.items.okbackpack.slime_upgrade.tooltip=Bounce like a slime
+item.items.okbackpack.slime_upgrade.tooltip.1=Grants a speed effect on full-moon nights
+
+item.items.okbackpack.bookshelf_upgrade.name=Bookshelf Upgrade
+item.items.okbackpack.bookshelf_upgrade.tooltip=Provides an enchantment level bonus to nearby enchanting tables
+
+item.items.okbackpack.wolf_upgrade.name=Wolf Upgrade
+item.items.okbackpack.wolf_upgrade.tooltip=Calms nearby angry wolves and dogs
+item.items.okbackpack.wolf_upgrade.tooltip.1=Grants Strength on full-moon nights
+
+item.items.okbackpack.ocelot_upgrade.name=Ocelot Upgrade
+item.items.okbackpack.ocelot_upgrade.tooltip=Grants Speed while hostile mobs are nearby
+
+item.items.okbackpack.quiver_upgrade.name=Quiver Upgrade
+item.items.okbackpack.quiver_upgrade.tooltip=Prioritizes arrows stored in the backpack when firing a bow
+
+item.items.okbackpack.chicken_upgrade.name=Chicken Upgrade
+item.items.okbackpack.chicken_upgrade.tooltip=Generates eggs from time to time
+
+item.items.okbackpack.magma_cube_upgrade.name=Magma Cube Upgrade
+item.items.okbackpack.magma_cube_upgrade.tooltip=Grants Fire Resistance
+
+item.items.okbackpack.dragon_upgrade.name=Dragon Upgrade
+item.items.okbackpack.dragon_upgrade.tooltip=Grants Fire Resistance, Strength, Water Breathing, and Regeneration
+
+item.items.okbackpack.blaze_upgrade.name=Blaze Upgrade
+item.items.okbackpack.blaze_upgrade.tooltip=Immunity to fall damage and blaze fireballs
+
+item.items.okbackpack.sponge_upgrade.name=Sponge Upgrade
+item.items.okbackpack.sponge_upgrade.tooltip=Automatically absorbs nearby water source blocks
+
+item.items.okbackpack.creeper_upgrade.name=Creeper Upgrade
+item.items.okbackpack.creeper_upgrade.tooltip=Triggers an explosion at near death and grants Absorption, Regeneration, and Fire Resistance
+
+item.items.okbackpack.ghast_upgrade.name=Ghast Upgrade
+item.items.okbackpack.ghast_upgrade.tooltip=Makes ghasts neutral
+
+item.items.okbackpack.spider_upgrade.name=Spider Upgrade
+item.items.okbackpack.spider_upgrade.tooltip=Allows climbing walls
+
+item.items.okbackpack.lapis_upgrade.name=Lapis Upgrade
+item.items.okbackpack.lapis_upgrade.tooltip=Has a chance to double experience gained
+
+item.items.okbackpack.quartz_upgrade.name=Quartz Upgrade
+item.items.okbackpack.quartz_upgrade.tooltip=Grants Haste
+
+item.items.okbackpack.hay_upgrade.name=Hay Upgrade
+item.items.okbackpack.hay_upgrade.tooltip=Has a chance to double crop drops
+item.items.okbackpack.hay_upgrade.tooltip.1=Has a chance to obtain edible crops from grass
+
+# Tooltips
 tooltip.backpack.jukebox_upgrade=Portable Jukebox
 tooltip.backpack.advanced_jukebox_upgrade=Portable Jukebox with support for more music discs
 tooltip.backpack.advanced_jukebox_upgrade.1=Also more playback options
@@ -220,42 +259,11 @@ tooltip.backpack.auto_blasting_upgrade.1=Automatically pulls/pushes items
 tooltip.backpack.tool_swapper_upgrade=Automatically swaps item in player's hand for the one effective on the block/entity when these are left clicked.
 tooltip.backpack.advanced_tool_swapper_upgrade=Automatically swaps item in player's hand for the one effective on the block/entity when these are left clicked.
 tooltip.backpack.advanced_tool_swapper_upgrade.1=Has filter options and enables swapping wrench like tools for block/entity player is looking at with %s
-tooltip.backpack.battery_contents=%s RF / %s RF
-tooltip.backpack.tank_contents=%s mB / %s mB
 tooltip.backpack.refill_upgrade=Keeps refilling stack of selected items in player's inventory
 tooltip.backpack.advanced_refill_upgrade=Keeps refilling stack of selected items in player's inventory
 tooltip.backpack.advanced_refill_upgrade.1=Allows for more precise target slot selection
 tooltip.backpack.advanced_refill_upgrade.2=Also allows middle click picking blocks from backpack
-tooltip.backpack.redstone_upgrade=Emits redstone signal to surroundings
-tooltip.backpack.glowstone_upgrade=Emits light to surroundings
-tooltip.backpack.rainbow_upgrade=Grants Jump Boost and Speed effects
-tooltip.backpack.rainbow_upgrade.1=Immune to fall damage
-tooltip.backpack.cactus_upgrade=Automatically collects water in rain or water
-tooltip.backpack.cow_upgrade=Clears all negative status effects
-tooltip.backpack.bat_upgrade=Grants Night Vision
-tooltip.backpack.squid_upgrade=Grants Water Breathing and Night Vision while underwater
-tooltip.backpack.wither_upgrade=Immunity to damage caused by the Wither effect
-tooltip.backpack.wither_upgrade.1=Applies the Wither effect when attacking entities
-tooltip.backpack.cake_upgrade=Grants hunger, saturation, and health regeneration
-tooltip.backpack.slime_upgrade=Bounce like a slime
-tooltip.backpack.slime_upgrade.1=Grants a speed effect on full-moon nights
-tooltip.backpack.bookshelf_upgrade=Provides an enchantment level bonus to nearby enchanting tables
-tooltip.backpack.wolf_upgrade=Calms nearby angry wolves and dogs
-tooltip.backpack.wolf_upgrade.1=Grants Strength on full-moon nights
-tooltip.backpack.ocelot_upgrade=Grants Speed while hostile mobs are nearby
-tooltip.backpack.quiver_upgrade=Prioritizes arrows stored in the backpack when firing a bow
-tooltip.backpack.chicken_upgrade=Generates eggs from time to time
-tooltip.backpack.magma_cube_upgrade=Grants Fire Resistance
-tooltip.backpack.dragon_upgrade=Grants Fire Resistance, Strength, Water Breathing, and Regeneration
-tooltip.backpack.blaze_upgrade=Immunity to fall damage and blaze fireballs
-tooltip.backpack.sponge_upgrade=Automatically absorbs nearby water source blocks
-tooltip.backpack.creeper_upgrade=Triggers an explosion at near death and grants Absorption, Regeneration, and Fire Resistance
-tooltip.backpack.ghast_upgrade=Makes ghasts neutral
-tooltip.backpack.spider_upgrade=Allows climbing walls
-tooltip.backpack.lapis_upgrade=Has a chance to double experience gained
-tooltip.backpack.quartz_upgrade=Grants Haste
-tooltip.backpack.hay_upgrade=Has a chance to double crop drops
-tooltip.backpack.hay_upgrade.1=Has a chance to obtain edible crops from grass
+
 gui.backpack.deposit_settings=Deposit
 gui.backpack.advanced_deposit_settings=Advanced Deposit
 gui.backpack.restock_settings=Restock

@@ -15,6 +15,7 @@ public class ItemBookShelfUpgradeConfig extends ItemConfig {
             true,
             "bookshelf_upgrade",
             null,
-            config -> new ItemBatUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemBatUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.bookshelf_upgrade.tooltip")));
     }
 }

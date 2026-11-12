@@ -21,7 +21,9 @@ public class ItemWolfUpgradeConfig extends ItemConfig {
             true,
             "wolf_upgrade",
             null,
-            config -> new ItemWolfUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemWolfUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.addLine("item.items.okbackpack.wolf_upgrade.tooltip")
+                    .addLine("item.items.okbackpack.wolf_upgrade.tooltip.1")));
     }
 
 }

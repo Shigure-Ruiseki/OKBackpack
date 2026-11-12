@@ -15,6 +15,7 @@ public class ItemChickenUpgradeConfig extends ItemConfig {
             true,
             "chicken_upgrade",
             null,
-            config -> new ItemChickenUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemChickenUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.chicken_upgrade.tooltip")));
     }
 }

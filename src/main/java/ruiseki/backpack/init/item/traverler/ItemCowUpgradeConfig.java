@@ -15,6 +15,7 @@ public class ItemCowUpgradeConfig extends ItemConfig {
             true,
             "cow_upgrade",
             null,
-            config -> new ItemCowUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemCowUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.cow_upgrade.tooltip")));
     }
 }

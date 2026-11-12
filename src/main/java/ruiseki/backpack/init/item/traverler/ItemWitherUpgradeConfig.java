@@ -21,7 +21,9 @@ public class ItemWitherUpgradeConfig extends ItemConfig {
             true,
             "wither_upgrade",
             null,
-            config -> new ItemWitherUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemWitherUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.addLine("item.items.okbackpack.wither_upgrade.tooltip")
+                    .addLine("item.items.okbackpack.wither_upgrade.tooltip.1")));
     }
 
 }

@@ -15,7 +15,8 @@ public class ItemOcelotUpgradeConfig extends ItemConfig {
             true,
             "ocelot_upgrade",
             null,
-            config -> new ItemOcelotUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemOcelotUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.ocelot_upgrade.tooltip")));
     }
 
 }

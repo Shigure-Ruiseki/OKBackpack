@@ -21,7 +21,8 @@ public class ItemMagmaCubeUpgradeConfig extends ItemConfig {
             true,
             "magma_cube_upgrade",
             null,
-            config -> new ItemMagmaCubeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemMagmaCubeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.magma_cube_upgrade.tooltip")));
     }
 
 }

@@ -15,6 +15,7 @@ public class ItemBatUpgradeConfig extends ItemConfig {
             true,
             "bat_upgrade",
             null,
-            config -> new ItemBatUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemBatUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.bat_upgrade.tooltip")));
     }
 }

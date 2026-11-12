@@ -21,7 +21,8 @@ public class ItemQuiverUpgradeConfig extends ItemConfig {
             true,
             "quiver_upgrade",
             null,
-            config -> new ItemQuiverUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemQuiverUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.quiver_upgrade.tooltip")));
     }
 
 }

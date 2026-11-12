@@ -21,7 +21,9 @@ public class ItemRainbowUpgradeConfig extends ItemConfig {
             true,
             "rainbow_upgrade",
             null,
-            config -> new ItemRainbowUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemRainbowUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.addLine("item.items.okbackpack.rainbow_upgrade.tooltip")
+                    .addLine("item.items.okbackpack.rainbow_upgrade.tooltip.1")));
     }
 
 }

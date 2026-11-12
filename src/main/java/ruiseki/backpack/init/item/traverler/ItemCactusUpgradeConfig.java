@@ -15,6 +15,7 @@ public class ItemCactusUpgradeConfig extends ItemConfig {
             true,
             "cactus_upgrade",
             null,
-            config -> new ItemCactusUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemCactusUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.cactus_upgrade.tooltip")));
     }
 }

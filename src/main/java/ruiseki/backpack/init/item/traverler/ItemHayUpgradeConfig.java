@@ -15,7 +15,9 @@ public class ItemHayUpgradeConfig extends ItemConfig {
             true,
             "hay_upgrade",
             null,
-            config -> new ItemHayUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemHayUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.addLine("item.items.okbackpack.hay_upgrade.tooltip")
+                    .addLine("item.items.okbackpack.hay_upgrade.tooltip.1")));
     }
 
 }

@@ -21,7 +21,8 @@ public class ItemSpongeUpgradeConfig extends ItemConfig {
             true,
             "sponge_upgrade",
             null,
-            config -> new ItemSpongeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemSpongeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.sponge_upgrade.tooltip")));
     }
 
 }

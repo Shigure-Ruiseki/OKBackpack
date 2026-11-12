@@ -15,6 +15,7 @@ public class ItemBlazeUpgradeConfig extends ItemConfig {
             true,
             "blaze_upgrade",
             null,
-            config -> new ItemBatUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemBatUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.blaze_upgrade.tooltip")));
     }
 }

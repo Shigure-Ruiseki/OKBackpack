@@ -15,7 +15,8 @@ public class ItemGlowstoneUpgradeConfig extends ItemConfig {
             true,
             "glowstone_upgrade",
             null,
-            config -> new ItemGlowstoneUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemGlowstoneUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.glowstone_upgrade.tooltip")));
     }
 
 }

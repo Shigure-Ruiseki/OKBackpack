@@ -15,6 +15,7 @@ public class ItemDragonUpgradeConfig extends ItemConfig {
             true,
             "dragon_upgrade",
             null,
-            config -> new ItemDragonUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemDragonUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.dragon_upgrade.tooltip")));
     }
 }

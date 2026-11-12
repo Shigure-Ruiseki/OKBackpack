@@ -15,6 +15,7 @@ public class ItemCakeUpgradeConfig extends ItemConfig {
             true,
             "cake_upgrade",
             null,
-            config -> new ItemCakeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemCakeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.cake_upgrade.tooltip")));
     }
 }

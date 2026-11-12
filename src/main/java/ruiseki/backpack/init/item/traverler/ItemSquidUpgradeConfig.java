@@ -21,7 +21,8 @@ public class ItemSquidUpgradeConfig extends ItemConfig {
             true,
             "squid_upgrade",
             null,
-            config -> new ItemSquidUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemSquidUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.squid_upgrade.tooltip")));
     }
 
 }

@@ -21,7 +21,8 @@ public class ItemSpiderUpgradeConfig extends ItemConfig {
             true,
             "spider_upgrade",
             null,
-            config -> new ItemSpiderUpgrade(GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemSpiderUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
+                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.spider_upgrade.tooltip")));
     }
 
 }
