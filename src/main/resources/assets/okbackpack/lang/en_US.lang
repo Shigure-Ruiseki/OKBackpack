@@ -74,8 +74,8 @@ item.items.okbackpack.feeding_upgrade.name=Feeding Upgrade
 item.items.okbackpack.feeding_upgrade.tooltip=Feeds player with food from backpack's inventory
 
 item.items.okbackpack.advanced_feeding_upgrade.name=Advanced Feeding Upgrade
-item.items.okbackpack..advanced_feeding_upgrade.tooltip=Feeds player with food from backpack's inventory
-item.items.okbackpack..advanced_feeding_upgrade.tooltip.1=More options for when food gets fed to player
+item.items.okbackpack.advanced_feeding_upgrade.tooltip=Feeds player with food from backpack's inventory
+item.items.okbackpack.advanced_feeding_upgrade.tooltip.1=More options for when food gets fed to player
 
 item.items.okbackpack.filter_upgrade.name=Filter Upgrade
 item.items.okbackpack.filter_upgrade.tooltip=Filters items piped in and/or out of backpack

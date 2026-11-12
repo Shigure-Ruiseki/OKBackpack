@@ -31,7 +31,7 @@ public class ItemEnergizedNodeUpgrade extends ItemUpgradeBase<EnergizedNodeUpgra
                 if (!EnergizedNodeUpgradeWrapper.hasAspect(stack)) {
                     tooltip.add(
                         EnumChatFormatting.DARK_GRAY
-                            + LangHelpers.localize("item.items.backpack.energized_node_upgrade.empty"));
+                            + LangHelpers.localize("item.items.okbackpack.energized_node_upgrade.empty"));
                     return;
                 }
 
