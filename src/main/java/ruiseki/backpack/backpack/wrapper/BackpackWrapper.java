@@ -10,9 +10,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.IntConsumer;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import cofh.api.energy.IEnergyStorage;
@@ -21,6 +23,9 @@ import ruiseki.backpack.api.IFluidHandlerWrapperUpgrade;
 import ruiseki.backpack.backpack.BackpackStorage;
 import ruiseki.backpack.backpack.ItemBackpack;
 import ruiseki.okbackpack.OKBackpack;
+import ruiseki.okbackpack.common.block.BlockSleepingBag;
+import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
+import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.Helpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.NBTHelpers;
@@ -513,5 +518,48 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public String getDisplayName() {
         return ItemHelpers.isEmpty(backpack) ? "" : backpack.getDisplayName();
+    }
+
+    private boolean isSBDeployed() {
+        return NBTHelpers.getBoolean(backpack, "SBDEPLOYED").orElse(false);
+    }
+
+    private void setSBDeployed(boolean deployed) {
+        NBTHelpers.setBoolean(backpack, "SBDEPLOYED", deployed);
+    }
+
+    private BlockPos getSBPos() {
+        return NBTHelpers.getBlockPos(backpack, "SBPos").orElse(new BlockPos());
+    }
+
+    private void setSBPos(BlockPos sbPos) {
+        NBTHelpers.setBlockPos(backpack, "SBDEPLOYED", sbPos);
+    }
+
+    @Override
+    public boolean deploySleepingBag(EntityPlayer player, World world, int meta, BlockPos pos) {
+        if (player.worldObj.isRemote) return false;
+        if (this.isSBDeployed()) removeSleepingBag(player);
+        this.setSBDeployed(BlockSleepingBag.spawnSleepingBag(player, world, meta, pos));
+        if (this.isSBDeployed()) {
+            this.setSBPos(pos);
+        }
+        return this.isSBDeployed();
+    }
+
+    public void removeSleepingBag(EntityPlayer player) {
+        if (this.isSBDeployed()) {
+            this.destroySleepingBagIfLoaded(player);
+        }
+        this.setSBDeployed(false);
+    }
+
+    private void destroySleepingBagIfLoaded(EntityPlayer player) {
+        BlockPos sbPos = this.getSBPos();
+        if (!sbPos.isLoaded(player.worldObj)) return;
+        if (sbPos.getBlock(player.worldObj)
+            == BlockSleepingBagConfig._instance.getInstance()) {
+            player.worldObj.func_147480_a(sbPos.getX(), sbPos.getY(), sbPos.getZ(), false);
+        }
     }
 }

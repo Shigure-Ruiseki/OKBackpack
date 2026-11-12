@@ -22,7 +22,7 @@ public abstract class MixinTileMagicWorkbench implements IVisChargeTarget {
 
     @Override
     public Iterable<ItemStack> getVisChargeableStacks() {
-        return Collections.singletonList(getStackInSlot(10));
+        return Collections.singletonList(getStackInSlot(9));
     }
 
     @Override

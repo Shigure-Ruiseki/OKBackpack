@@ -24,6 +24,7 @@ import ruiseki.backpack.client.gui.container.BackpackContainer;
 import ruiseki.backpack.client.gui.container.BackpackGuiContainer;
 import ruiseki.backpack.client.gui.slot.LockedPlayerSlot;
 import ruiseki.backpack.client.gui.sync.BackpackSH;
+import ruiseki.backpack.client.gui.sync.BackpackSHRegistries;
 import ruiseki.backpack.client.gui.sync.BackpackSlotSH;
 import ruiseki.backpack.client.gui.widget.BackpackSettingPanel;
 import ruiseki.backpack.client.gui.widget.BackpackSlot;
@@ -117,8 +118,8 @@ public class BackpackPanel extends StoragePanel {
                 .overlay(OKBGuiTextures.SLEEPING_BAG)
                 .onMousePressed(mouseButton -> {
                     if (mouseButton == 0) {
-                        // TODO: add sleeping bag
-                        // this.getStorageSH().syncToServer(BackpackSHRegistries);
+                        this.getStorageSH()
+                            .syncToServer(BackpackSHRegistries.DEPLOY_SLEEPING_BAG);
                         return true;
                     }
                     return false;

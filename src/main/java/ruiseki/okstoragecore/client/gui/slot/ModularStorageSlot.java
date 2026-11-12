@@ -4,13 +4,16 @@ import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import cpw.mods.fml.common.Optional;
 import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
 import ruiseki.okcore.item.handler.IItemHandler;
 import ruiseki.okstoragecore.api.ISlotChangeResponseUpgrade;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
+import tconstruct.api.IExtendedStackLimitProvider;
 
-public class ModularStorageSlot extends ModularItemSlot {
+@Optional.Interface(iface = "tconstruct.api.IExtendedStackLimitProvider", modid = "TConstruct")
+public class ModularStorageSlot extends ModularItemSlot implements IExtendedStackLimitProvider {
 
     protected final StoragePanel panel;
 
@@ -73,5 +76,13 @@ public class ModularStorageSlot extends ModularItemSlot {
                 .getWrappersThatImplementFromMainStorage(ISlotChangeResponseUpgrade.class)
                 .forEach(u -> u.onSlotChange(handler, slot));
         }
+    }
+
+    @Override
+    @Optional.Method(modid = "TConstruct")
+    public int getExtendedStackLimit(int slotIndex, ItemStack stack) {
+        return this.getWrapper()
+            .getInventoryHandler()
+            .getStackLimit(slotIndex, stack);
     }
 }

@@ -1239,16 +1239,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public boolean deploySleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ) {
         if (world.isRemote) return false;
-
         if (sleepingBagDeployed) removeSleepingBag(world);
-
-        sleepingBagDeployed = BlockSleepingBag.spawnSleepingBag(player, world, meta, cX, cY, cZ);
-        if (sleepingBagDeployed) {
-            sleepingBagX = cX;
-            sleepingBagY = cY;
-            sleepingBagZ = cZ;
-            writeToItem();
-        }
         return sleepingBagDeployed;
     }
 

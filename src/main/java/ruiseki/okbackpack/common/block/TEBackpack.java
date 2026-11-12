@@ -252,6 +252,7 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
         return (int) Math.ceil(raw);
     }
 
+    @Override
     public int getExtendedStackLimit(int slot, ItemStack stack) {
         if (stack == null) {
             return 0;
@@ -296,15 +297,6 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
 
     public boolean deploySleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ) {
         if (world.isRemote) return false;
-
-        sleepingBagDeployed = BlockSleepingBag.spawnSleepingBag(player, world, meta, cX, cY, cZ);
-        if (sleepingBagDeployed) {
-            sbx = cX;
-            sby = cY;
-            sbz = cZ;
-            markDirty();
-            onSendUpdate();
-        }
         return sleepingBagDeployed;
     }
 
