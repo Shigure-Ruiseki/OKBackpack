@@ -1,9 +1,6 @@
 # General
 itemGroup.okbackpack=OK Backpack
 
-# Config
-config.generalConfig=General Settings
-
 # Key binding
 key.categories.okbackpack=OK Backpack
 key.okbackpack.open_backpack=Open Backpack
@@ -18,14 +15,6 @@ key.okbackpack.toggle_upgrade_5=Switch Upgrade in the 5th Slot On/Off
 # Status
 gui.okbackpack.status.upgrade_switched_off=%s Switched Off
 gui.okbackpack.status.upgrade_switched_on=%s Switched On
-
-# Sort
-gui.sort_type.by_mod_id=Mod ID
-gui.sort_type.by_name=Name
-gui.sort_type.by_count=Count
-gui.sort_type.by_ore_dict=OreDict
-gui.sort_order.asc=Ascending
-gui.sort_order.desc=Descending
 
 # Items
 tile.blocks.okbackpack.leather_backpack.name=Leather Backpack
