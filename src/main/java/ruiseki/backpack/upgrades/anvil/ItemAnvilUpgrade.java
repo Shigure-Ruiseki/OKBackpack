@@ -1,11 +1,13 @@
-package ruiseki.okstoragecore.upgrades.anvil;
+package ruiseki.backpack.upgrades.anvil;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import ruiseki.backpack.client.gui.sync.BackpackSHRegistries;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.sync.CommonSHRegistries;
@@ -43,14 +45,14 @@ public class ItemAnvilUpgrade extends ItemUpgradeBase<AnvilUpgradeWrapper> {
                 slotUpdate.getUpgradeIndex(),
                 handler.getItemHandler());
             slotUpdate.setUpgradeContainer(container);
-            slotSH.syncToServer(CommonSHRegistries.ANVIL_CONTAINER);
+            slotSH.syncToServer(BackpackSHRegistries.ANVIL_CONTAINER);
 
             DelegatedStringSH nameField = slotUpdate.get("anvil_name_field");
             nameField.setDelegated(wrapper::getItemName, s -> {
                 wrapper.setItemName(s);
                 container.updateRepairOutput();
             });
-            handler.syncToServer(CommonSHRegistries.ANVIL_NAME);
+            handler.syncToServer(BackpackSHRegistries.ANVIL_NAME);
         }
 
         @Override
@@ -67,5 +69,10 @@ public class ItemAnvilUpgrade extends ItemUpgradeBase<AnvilUpgradeWrapper> {
     @Override
     public UpgradeType<AnvilUpgradeWrapper> getType() {
         return TYPE;
+    }
+
+    @Override
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return List.of();
     }
 }

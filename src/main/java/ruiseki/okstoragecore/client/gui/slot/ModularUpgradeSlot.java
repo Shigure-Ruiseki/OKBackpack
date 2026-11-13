@@ -46,12 +46,13 @@ public class ModularUpgradeSlot extends ModularItemSlot {
         }
         UpgradeSlotChangeResult result;
         if (ItemHelpers.isEmpty(this.getStack())) {
-            result = ((IUpgradeItem<?>) ItemHelpers.getItem(stack)).canAddUpgradeTo(this.getWrapper(), stack);
+            result = ((IUpgradeItem<?>) ItemHelpers.getItem(stack))
+                .canAddUpgradeTo(this.getWrapper(), stack, this.getPlayer());
         } else if (ItemHelpers.getCount(stack) > 1) {
             return false;
         } else {
             result = ((IUpgradeItem<?>) ItemHelpers.getItem(this.getStack()))
-                .canSwapUpgradeFor(stack, this.getWrapper());
+                .canSwapUpgradeFor(stack, this.getSlotIndex(), this.getWrapper(), this.getPlayer());
         }
 
         this.getPanel()
@@ -70,7 +71,7 @@ public class ModularUpgradeSlot extends ModularItemSlot {
             return false;
         }
 
-        UpgradeSlotChangeResult result = upgradeItem.canRemoveUpgradeFrom(this.getWrapper());
+        UpgradeSlotChangeResult result = upgradeItem.canRemoveUpgradeFrom(this.getWrapper(), player);
 
         this.getPanel()
             .updateSlotChangeError(result);
@@ -83,7 +84,7 @@ public class ModularUpgradeSlot extends ModularItemSlot {
             return false;
         }
         UpgradeSlotChangeResult result = ((IUpgradeItem<?>) ItemHelpers.getItem(this.getStack()))
-            .canSwapUpgradeFor(stackToPut, this.getWrapper());
+            .canSwapUpgradeFor(stackToPut, this.getSlotIndex(), this.getWrapper(), player);
         this.getPanel()
             .updateSlotChangeError(result);
         return result.isSuccessful();

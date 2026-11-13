@@ -112,6 +112,10 @@ public interface IStorageWrapper {
         return 1;
     }
 
+    default double getMinimumStackMultiplierRequired() {
+        return 0;
+    }
+
     default void onInit() {
         getInventoryHandler().onInit();
     }

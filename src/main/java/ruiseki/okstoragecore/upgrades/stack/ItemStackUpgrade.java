@@ -3,10 +3,13 @@ package ruiseki.okstoragecore.upgrades.stack;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import ruiseki.okcore.helper.ItemHelpers;
@@ -15,12 +18,12 @@ import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.helper.TranslateHelpers;
 import ruiseki.okstoragecore.upgrades.IStackableContentsUpgrade;
 import ruiseki.okstoragecore.upgrades.IUpgradeCountLimitConfig;
+import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.ItemUpgradeBase;
 import ruiseki.okstoragecore.upgrades.UpgradeGroup;
 import ruiseki.okstoragecore.upgrades.UpgradeSlotChangeResult;
 import ruiseki.okstoragecore.upgrades.UpgradeType;
 import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
-import ruiseki.okstoragecore.upgrades.tank.TankUpgradeWrapper;
 
 public class ItemStackUpgrade extends ItemUpgradeBase<ItemStackUpgrade.Wrapper> {
 
@@ -35,29 +38,41 @@ public class ItemStackUpgrade extends ItemUpgradeBase<ItemStackUpgrade.Wrapper> 
         this.stackSizeMultiplier = stackSizeMultiplier;
     }
 
-    public static double getInventoryStackMultiplier(IStorageWrapper storageWrapper) {
-        double multiplier = storageWrapper.getBaseStackSizeMultiplier();
-        for (Wrapper wrapper : storageWrapper.getUpgradeHandler()
-            .getTypeWrappers(TYPE)) {
-            multiplier *= wrapper.getStackSizeMultiplier();
-        }
-        return multiplier;
+    public static int getInventorySlotLimit(IStorageWrapper storageWrapper) {
+        return getInventorySlotLimit(storageWrapper, 1);
     }
 
-    public static int getInventorySlotLimit(IStorageWrapper storageWrapper) {
-        double multiplier = getInventoryStackMultiplier(storageWrapper);
-        if (!Double.isFinite(multiplier) || multiplier <= 0) {
-            return 1;
+    private static int getInventorySlotLimit(IStorageWrapper storageWrapper, double skipMultiplier) {
+        double multiplier = storageWrapper.getBaseStackSizeMultiplier();
+        boolean multiplierSkipped = false;
+        for (Wrapper stackWrapper : storageWrapper.getUpgradeHandler()
+            .getTypeWrappers(TYPE)) {
+            if (!multiplierSkipped && stackWrapper.getStackSizeMultiplier() == skipMultiplier) {
+                multiplierSkipped = true;
+                continue;
+            }
+
+            if (Integer.MAX_VALUE / stackWrapper.getStackSizeMultiplier() < multiplier) {
+                return Integer.MAX_VALUE;
+            }
+            multiplier *= stackWrapper.getStackSizeMultiplier();
         }
-        if (multiplier >= Integer.MAX_VALUE / 64D) {
-            return Integer.MAX_VALUE;
-        }
-        return Math.max(1, (int) (multiplier * 64));
+
+        return getInventorySlotLimit(multiplier);
+    }
+
+    private static int getInventorySlotLimit(double multiplier) {
+        return Integer.MAX_VALUE / 64D < multiplier ? Integer.MAX_VALUE : Math.max(1, (int) (multiplier * 64));
     }
 
     @Override
     public UpgradeType<Wrapper> getType() {
         return TYPE;
+    }
+
+    @Override
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return List.of();
     }
 
     public double getStackSizeMultiplier() {
@@ -70,7 +85,7 @@ public class ItemStackUpgrade extends ItemUpgradeBase<ItemStackUpgrade.Wrapper> 
     }
 
     @Override
-    public UpgradeSlotChangeResult canRemoveUpgradeFrom(IStorageWrapper storageWrapper) {
+    public UpgradeSlotChangeResult canRemoveUpgradeFrom(IStorageWrapper storageWrapper, EntityPlayer player) {
         if (!isValidMultiplier()) {
             return new UpgradeSlotChangeResult.Fail(
                 TranslateHelpers.error("remove.stack_invalid_multiplier"),
@@ -78,64 +93,78 @@ public class ItemStackUpgrade extends ItemUpgradeBase<ItemStackUpgrade.Wrapper> 
                 Collections.emptySet(),
                 Collections.emptySet());
         }
-        double multiplierWhenRemoved = getInventoryStackMultiplier(storageWrapper) / getStackSizeMultiplier();
-        return isMultiplierHighEnough(storageWrapper, multiplierWhenRemoved);
+        double multiplierWhenRemoved = getInventorySlotLimit(storageWrapper, this.getStackSizeMultiplier()) / 64D;
+        return isMultiplierHighEnough(storageWrapper, multiplierWhenRemoved, -1);
     }
 
     @Override
-    public UpgradeSlotChangeResult canSwapUpgradeFor(ItemStack upgradeStackToPut, IStorageWrapper storageWrapper) {
+    public UpgradeSlotChangeResult canSwapUpgradeFor(ItemStack upgradeStackToPut, int upgradeSlot,
+        IStorageWrapper storageWrapper, EntityPlayer player) {
+        UpgradeSlotChangeResult result = super.canSwapUpgradeFor(
+            upgradeStackToPut,
+            upgradeSlot,
+            storageWrapper,
+            player);
+        if (!result.isSuccessful()) {
+            return result;
+        }
         if (!(ItemHelpers.getItem(upgradeStackToPut) instanceof ItemStackUpgrade otherUpgrade)) {
-            return canRemoveUpgradeFrom(storageWrapper);
+            return canRemoveUpgradeFrom(storageWrapper, player);
         }
 
-        double oldMultiplier = getStackSizeMultiplier();
-        double newMultiplier = otherUpgrade.getStackSizeMultiplier();
-
-        if (!Double.isFinite(oldMultiplier) || oldMultiplier <= 0
-            || !Double.isFinite(newMultiplier)
-            || newMultiplier <= 0) {
-            return new UpgradeSlotChangeResult.Fail(
-                TranslateHelpers.error("remove.stack_invalid_multiplier"),
-                Collections.emptySet(),
-                Collections.emptySet(),
-                Collections.emptySet());
-        }
-
-        if (newMultiplier >= oldMultiplier) {
+        if (otherUpgrade.getStackSizeMultiplier() >= this.getStackSizeMultiplier()) {
             return new UpgradeSlotChangeResult.Success();
         }
 
-        double multiplierWhenRemoved = getInventoryStackMultiplier(storageWrapper) / oldMultiplier * newMultiplier;
+        double multiplierWhenRemoved = getInventorySlotLimit(storageWrapper, this.getStackSizeMultiplier()) / 64D;
 
-        return isMultiplierHighEnough(storageWrapper, multiplierWhenRemoved);
+        return isMultiplierHighEnough(
+            storageWrapper,
+            multiplierWhenRemoved * otherUpgrade.getStackSizeMultiplier(),
+            -1);
     }
 
-    private UpgradeSlotChangeResult isMultiplierHighEnough(IStorageWrapper storageWrapper, double multiplier) {
+    static UpgradeSlotChangeResult isMultiplierHighEnough(IStorageWrapper storageWrapper, double multiplier,
+        int ignoreUpgradeSlot) {
+        int inventorySlotLimit = getInventorySlotLimit(multiplier);
+        double effectiveMultiplier = inventorySlotLimit / 64D;
         Set<Integer> slotsOverMultiplier = new HashSet<>();
 
         for (int slot = 0; slot < storageWrapper.getInventoryHandler()
             .getSlots(); slot++) {
             ItemStack stack = storageWrapper.getInventoryHandler()
                 .getSlotStack(slot);
-            if (ItemHelpers.isEmpty(stack)) continue;
-            double stackMultiplierNeeded = (double) ItemHelpers.getCount(stack) / ItemHelpers.getMaxStackSize(stack);
-            if (stackMultiplierNeeded > multiplier) {
+            if (ItemHelpers.getCount(stack) <= 1) {
+                continue;
+            }
+            double stackMultiplierNeeded = (double) ItemHelpers.getCount(stack) / stack.getMaxStackSize();
+            if (stackMultiplierNeeded > effectiveMultiplier) {
                 slotsOverMultiplier.add(slot);
             }
         }
 
+        Set<Integer> errorUpgradeSlots = new HashSet<>();
         Set<Integer> errorInventoryParts = new HashSet<>();
-        this.findUpgrades(
-            errorInventoryParts,
-            storageWrapper,
-            upgrade -> upgrade instanceof TankUpgradeWrapper
-                || (upgrade instanceof IStackableContentsUpgrade stackableContentsUpgrade
-                    && stackableContentsUpgrade.getMinimumMultiplierRequired() > multiplier));
+        for (Map.Entry<Integer, IUpgradeWrapper> entry : storageWrapper.getUpgradeHandler()
+            .getSlotWrappers()
+            .entrySet()) {
+            Integer slot = entry.getKey();
+            IUpgradeWrapper wrapper = entry.getValue();
+            if (slot == ignoreUpgradeSlot) {
+                continue;
+            }
+            if (wrapper instanceof IStackableContentsUpgrade stackableContentsUpgrade
+                && stackableContentsUpgrade.getMinimumMultiplierRequired() > effectiveMultiplier) {
+                errorUpgradeSlots.add(slot);
+                errorInventoryParts.add(slot);
+            }
+        }
 
-        if (!slotsOverMultiplier.isEmpty() || !errorInventoryParts.isEmpty()) {
+        if (!slotsOverMultiplier.isEmpty() || !errorInventoryParts.isEmpty()
+            || storageWrapper.getMinimumStackMultiplierRequired() > effectiveMultiplier) {
             return new UpgradeSlotChangeResult.Fail(
-                TranslateHelpers.error("remove.stack_low_multiplier", multiplier),
-                Collections.emptySet(),
+                TranslateHelpers.error("remove.stack_low_multiplier", inventorySlotLimit),
+                errorUpgradeSlots,
                 slotsOverMultiplier,
                 errorInventoryParts);
         }

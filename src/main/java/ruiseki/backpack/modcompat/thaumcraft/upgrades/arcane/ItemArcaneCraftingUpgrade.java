@@ -1,5 +1,6 @@
 package ruiseki.backpack.modcompat.thaumcraft.upgrades.arcane;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
@@ -96,5 +97,10 @@ public class ItemArcaneCraftingUpgrade extends ItemUpgradeBase<ArcaneCraftingUpg
     @Override
     public UpgradeType<ArcaneCraftingUpgradeWrapper> getType() {
         return TYPE;
+    }
+
+    @Override
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return List.of();
     }
 }

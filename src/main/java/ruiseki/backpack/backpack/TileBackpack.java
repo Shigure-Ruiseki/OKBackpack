@@ -176,16 +176,6 @@ public class TileBackpack extends TileTicking
         return new BackpackGuiHolder.TileEntityGuiHolder().buildUI(data, syncManager, settings);
     }
 
-    public ForgeDirection getFacing() {
-        return this.facing;
-    }
-
-    public void setFacing(ForgeDirection facing) {
-        this.facing = facing;
-        this.markDirty();
-        this.onSendUpdate();
-    }
-
     public int getMainColor() {
         return this.backpackWrapper.getMainColor();
     }

@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.upgrades.pump;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
@@ -72,5 +73,10 @@ public class ItemPumpUpgrade extends ItemUpgradeBase<PumpUpgradeWrapper> {
     @Override
     public UpgradeType<PumpUpgradeWrapper> getType() {
         return TYPE;
+    }
+
+    @Override
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return List.of();
     }
 }

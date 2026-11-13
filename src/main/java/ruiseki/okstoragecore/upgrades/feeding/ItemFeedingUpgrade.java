@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.upgrades.feeding;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 
@@ -57,5 +58,10 @@ public class ItemFeedingUpgrade extends ItemUpgradeBase<FeedingUpgradeWrapper> {
     @Override
     public UpgradeType<FeedingUpgradeWrapper> getType() {
         return TYPE;
+    }
+
+    @Override
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return List.of();
     }
 }

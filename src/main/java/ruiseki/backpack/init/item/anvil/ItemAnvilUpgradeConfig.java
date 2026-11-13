@@ -1,10 +1,10 @@
 package ruiseki.backpack.init.item.anvil;
 
+import ruiseki.backpack.upgrades.anvil.AnvilSlotUpdate;
+import ruiseki.backpack.upgrades.anvil.ItemAnvilUpgrade;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdateRegistry;
-import ruiseki.okstoragecore.upgrades.anvil.AnvilSlotUpdate;
-import ruiseki.okstoragecore.upgrades.anvil.ItemAnvilUpgrade;
 
 public class ItemAnvilUpgradeConfig extends ItemConfig {
 

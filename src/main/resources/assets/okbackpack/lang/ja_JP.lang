@@ -106,8 +106,13 @@ item.items.okbackpack.jukebox_upgrade.name=ジュークボックス機能
 item.items.okbackpack.advanced_jukebox_upgrade.name=ジュークボックス機能・改
 item.items.okbackpack.tool_swapper_upgrade.name=ツール交換機能
 item.items.okbackpack.advanced_tool_swapper_upgrade.name=ツール交換機能・改
+
 item.items.okbackpack.infinity_upgrade.name=無限スタック数 (Admin)
+item.items.okbackpack.infinity_upgrade.tooltip=リュック内のアイテム個数を無限にします。
+item.items.okbackpack.infinity_upgrade.tooltip.1=Adminのみ設定可能で、リュックを壊したり拾うのもAdminのみに限定されます。
 item.items.okbackpack.survival_infinity_upgrade.name=無限スタック数
+item.items.okbackpack.survival_infinity_upgrade.tooltip=リュック内のアイテム個数を無限にします。
+item.items.okbackpack.survival_infinity_upgrade.tooltip.1=利用に制限はありません。
 
 item.items.okbackpack.anvil_upgrade.name=金床機能
 item.items.okbackpack.anvil_upgrade.tooltip=リュック内で金床が使えるようになります。
@@ -237,10 +242,6 @@ item.items.okbackpack.hay_upgrade.tooltip.1=草から食用作物を得られる
 tooltip.backpack.jukebox_upgrade=リュックでジュークボックスの機能を楽しめます。
 tooltip.backpack.advanced_jukebox_upgrade=リュックでより多くのディスクによるジュークボックスの機能を楽しめます。
 tooltip.backpack.advanced_jukebox_upgrade.1=再生オプションも充実。
-tooltip.backpack.infinity_upgrade=リュック内のアイテム個数を無限にします。
-tooltip.backpack.infinity_upgrade.1=Adminのみ設定可能で、リュックを壊したり拾うのもAdminのみに限定されます。
-tooltip.backpack.survival_infinity_upgrade=リュック内のアイテム個数を無限にします。
-tooltip.backpack.survival_infinity_upgrade.1=利用に制限はありません。
 tooltip.backpack.smelting_upgrade=リュック内で食料や鉱石を手動で焼けるようになります。
 tooltip.backpack.auto_smelting_upgrade=リュック内で食料や鉱石を自動で焼けるようになります。
 tooltip.backpack.auto_smelting_upgrade.1=自動搬入/搬出対応

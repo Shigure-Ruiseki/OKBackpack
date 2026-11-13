@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.upgrades.filter;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 
@@ -57,5 +58,10 @@ public class ItemFilterUpgrade extends ItemUpgradeBase<FilterUpgradeWrapper> {
     @Override
     public UpgradeType<FilterUpgradeWrapper> getType() {
         return TYPE;
+    }
+
+    @Override
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return List.of();
     }
 }

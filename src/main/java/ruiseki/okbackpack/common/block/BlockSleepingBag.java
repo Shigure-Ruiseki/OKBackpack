@@ -334,7 +334,7 @@ public class BlockSleepingBag extends BlockBase {
         int switchBy = -1;
         if (isTile) {
             if (pos.getTileEntity(world) instanceof TileBackpack te && !te.isSleepingBagDeployed()) {
-                switchBy = te.getFacing()
+                switchBy = te.getRotation()
                     .ordinal() & 3;
             }
         } else {

@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.upgrades.magnet;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 
@@ -64,5 +65,10 @@ public class ItemMagnetUpgrade extends ItemUpgradeBase<MagnetUpgradeWrapper> {
     @Override
     public UpgradeType<MagnetUpgradeWrapper> getType() {
         return TYPE;
+    }
+
+    @Override
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return List.of();
     }
 }

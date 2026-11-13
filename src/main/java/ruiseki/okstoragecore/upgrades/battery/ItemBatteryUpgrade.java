@@ -1,13 +1,15 @@
 package ruiseki.okstoragecore.upgrades.battery;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.function.Consumer;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.widget.Widget;
 
@@ -20,9 +22,11 @@ import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
 import ruiseki.okstoragecore.helper.TranslateHelpers;
 import ruiseki.okstoragecore.upgrades.IUpgradeCountLimitConfig;
+import ruiseki.okstoragecore.upgrades.IUpgradeItem;
 import ruiseki.okstoragecore.upgrades.ItemUpgradeBase;
 import ruiseki.okstoragecore.upgrades.UpgradeSlotChangeResult;
 import ruiseki.okstoragecore.upgrades.UpgradeType;
+import ruiseki.okstoragecore.upgrades.stack.ItemStackUpgrade;
 
 public class ItemBatteryUpgrade extends ItemUpgradeBase<BatteryUpgradeWrapper> {
 
@@ -43,11 +47,11 @@ public class ItemBatteryUpgrade extends ItemUpgradeBase<BatteryUpgradeWrapper> {
 
                 DelegatedIntSH energyStoredHandler = group.get("battery_energy_stored");
                 energyStoredHandler.setDelegated(wrapper::getEnergyStored);
-                batteryHandler.syncToServer(CommonSHRegistries.BATTERY_ENERGY);
+                energyStoredHandler.syncToServer(CommonSHRegistries.BATTERY_ENERGY);
 
                 DelegatedIntSH maxEnergyHandler = group.get("battery_max_energy");
                 maxEnergyHandler.setDelegated(wrapper::getMaxEnergyStored);
-                batteryHandler.syncToServer(CommonSHRegistries.BATTERY_CAPACITY);
+                maxEnergyHandler.syncToServer(CommonSHRegistries.BATTERY_CAPACITY);
             }
 
             @Override
@@ -62,6 +66,11 @@ public class ItemBatteryUpgrade extends ItemUpgradeBase<BatteryUpgradeWrapper> {
                 return new BatterySlotWidget(slotIndex, wrapper, storagePanel);
             }
         });
+    public static final List<UpgradeConflictDefinition> UPGRADE_CONFLICT_DEFINITIONS = List.of(
+        new UpgradeConflictDefinition(
+            ItemBatteryUpgrade.class::isInstance,
+            0,
+            TranslateHelpers.error("add.battery_exists")));
 
     private final BatteryUpgradeConfig batteryUpgradeConfig;
 
@@ -81,33 +90,36 @@ public class ItemBatteryUpgrade extends ItemUpgradeBase<BatteryUpgradeWrapper> {
     }
 
     @Override
+    public UpgradeSlotChangeResult canSwapUpgradeFor(ItemStack upgradeStackToPut, int upgradeSlot,
+        IStorageWrapper storageWrapper, EntityPlayer player) {
+        if (upgradeStackToPut.getItem() == this) {
+            return checkExtraInsertConditions(upgradeStackToPut, storageWrapper, upgradeSlot, this);
+        }
+
+        return super.canSwapUpgradeFor(upgradeStackToPut, upgradeSlot, storageWrapper, player);
+    }
+
+    @Override
     public int getInventoryColumnsTaken() {
         return 2;
     }
 
     @Override
-    public UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper storageWrapper, ItemStack upgradeStack) {
-        UpgradeSlotChangeResult result = super.canAddUpgradeTo(storageWrapper, upgradeStack);
-        if (!result.isSuccessful()) {
-            return result;
-        }
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return UPGRADE_CONFLICT_DEFINITIONS;
+    }
 
-        Set<Integer> errorUpgradeSlots = new HashSet<>();
-        this.findUpgrades(errorUpgradeSlots, storageWrapper, upgrade -> upgrade instanceof BatteryUpgradeWrapper);
-
-        if (!errorUpgradeSlots.isEmpty()) {
-            return new UpgradeSlotChangeResult.Fail(
-                TranslateHelpers.error("add.battery_exists"),
-                errorUpgradeSlots,
-                Collections.emptySet(),
-                Collections.emptySet());
-        }
-
-        int multiplierRequired = (int) Math
-            .ceil((float) BatteryUpgradeWrapper.getEnergyStored(upgradeStack) / getMaxEnergyStored(storageWrapper));
+    @Override
+    public UpgradeSlotChangeResult checkExtraInsertConditions(ItemStack upgradeStack, IStorageWrapper storageWrapper,
+        @Nullable IUpgradeItem<?> upgradeInSlot) {
+        int maxEnergyAfter = (int) (getMaxEnergyStored(storageWrapper)
+            / (upgradeInSlot instanceof ItemStackUpgrade stackUpgrade ? stackUpgrade.getStackSizeMultiplier() : 1));
+        double multiplierRequired = (double) BatteryUpgradeWrapper.getEnergyStored(upgradeStack) / maxEnergyAfter;
         if (multiplierRequired > 1) {
+            DecimalFormat multiplierFormat = new DecimalFormat("0.#");
+            String formattedMultiplierRequired = multiplierFormat.format(Math.ceil(10 * multiplierRequired) / 10);
             return new UpgradeSlotChangeResult.Fail(
-                TranslateHelpers.error("add.battery_energy_high", multiplierRequired),
+                TranslateHelpers.error("add.battery_energy_high", formattedMultiplierRequired),
                 Collections.emptySet(),
                 Collections.emptySet(),
                 Collections.emptySet());

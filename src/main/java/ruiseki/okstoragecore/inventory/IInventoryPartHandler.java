@@ -3,9 +3,11 @@ package ruiseki.okstoragecore.inventory;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -30,6 +32,10 @@ public interface IInventoryPartHandler {
         return false;
     }
 
+    default boolean shouldRenderInaccessibleSlotOverlay(int slot) {
+        return !isSlotAccessible(slot);
+    }
+
     default int getStackLimit(int slot, ItemStack stack) {
         return 0;
     }
@@ -47,7 +53,8 @@ public interface IInventoryPartHandler {
         // noop
     }
 
-    default boolean isItemValid(int slot, ItemStack stack) {
+    default boolean isItemValid(int slot, ItemStack stack, @Nullable EntityPlayer player,
+        BiPredicate<Integer, ItemStack> isItemValidSuper) {
         return false;
     }
 
@@ -98,6 +105,10 @@ public interface IInventoryPartHandler {
         // noop
     }
 
+    default boolean isInfinite(int slot) {
+        return false;
+    }
+
     class Default implements IInventoryPartHandler {
 
         public static final String NAME = "default";
@@ -136,7 +147,8 @@ public interface IInventoryPartHandler {
         }
 
         @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
+        public boolean isItemValid(int slot, ItemStack stack, @Nullable EntityPlayer player,
+            BiPredicate<Integer, ItemStack> isItemValidSuper) {
             return true;
         }
 

@@ -1,20 +1,14 @@
 package ruiseki.backpack.modcompat.thaumcraft.upgrades.energizednode;
 
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
 import ruiseki.okcore.helper.LangHelpers;
-import ruiseki.okstoragecore.api.IStorageWrapper;
-import ruiseki.okstoragecore.helper.TranslateHelpers;
 import ruiseki.okstoragecore.upgrades.IUpgradeCountLimitConfig;
 import ruiseki.okstoragecore.upgrades.ItemUpgradeBase;
-import ruiseki.okstoragecore.upgrades.UpgradeSlotChangeResult;
 import ruiseki.okstoragecore.upgrades.UpgradeType;
 import thaumcraft.api.aspects.Aspect;
 
@@ -22,6 +16,11 @@ public class ItemEnergizedNodeUpgrade extends ItemUpgradeBase<EnergizedNodeUpgra
 
     public static final UpgradeType<EnergizedNodeUpgradeWrapper> TYPE = new UpgradeType<>(
         EnergizedNodeUpgradeWrapper::new);
+    public static final List<UpgradeConflictDefinition> UPGRADE_CONFLICT_DEFINITIONS = List.of(
+        new UpgradeConflictDefinition(
+            ItemEnergizedNodeUpgrade.class::isInstance,
+            0,
+            LangHelpers.localize("gui.okbackpack.error.add.energizednode_exists")));
 
     public ItemEnergizedNodeUpgrade(IUpgradeCountLimitConfig upgradeTypeLimitConfig) {
         super(upgradeTypeLimitConfig);
@@ -78,21 +77,7 @@ public class ItemEnergizedNodeUpgrade extends ItemUpgradeBase<EnergizedNodeUpgra
     }
 
     @Override
-    public UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper storageWrapper, ItemStack upgradeStack) {
-        UpgradeSlotChangeResult result = super.canAddUpgradeTo(storageWrapper, upgradeStack);
-        if (!result.isSuccessful()) return result;
-
-        Set<Integer> errorUpgradeSlots = new HashSet<>();
-        this.findUpgrades(errorUpgradeSlots, storageWrapper, upgrade -> upgrade instanceof EnergizedNodeUpgradeWrapper);
-
-        if (!errorUpgradeSlots.isEmpty()) {
-            return new UpgradeSlotChangeResult.Fail(
-                TranslateHelpers.error("add.energizednode_exists"),
-                errorUpgradeSlots,
-                Collections.emptySet(),
-                Collections.emptySet());
-        }
-
-        return new UpgradeSlotChangeResult.Success();
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return UPGRADE_CONFLICT_DEFINITIONS;
     }
 }

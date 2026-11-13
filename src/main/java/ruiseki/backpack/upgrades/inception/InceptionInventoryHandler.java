@@ -12,6 +12,7 @@ import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
 import ruiseki.okcore.item.capability.wrapper.CombinedInvWrapper;
 import ruiseki.okcore.item.handler.IItemHandlerModifiable;
+import ruiseki.okcore.item.handler.IItemHandlerSimpleExtractor;
 import ruiseki.okcore.item.handler.IItemHandlerSimpleInserter;
 import ruiseki.okstoragecore.inventory.ITrackedContentsItemHandler;
 
@@ -104,6 +105,17 @@ public class InceptionInventoryHandler implements ITrackedContentsItemHandler {
     }
 
     @Override
+    public ItemStack extractItem(ItemStack stack, boolean simulate) {
+        for (IItemHandlerSimpleExtractor handler : handlers) {
+            ItemStack extracted = handler.extractItem(stack, simulate);
+            if (!ItemHelpers.isEmpty(extracted)) {
+                return extracted;
+            }
+        }
+        return ItemHelpers.EMPTY;
+    }
+
+    @Override
     public Set<ItemStackKey> getTrackedStacks() {
         Set<ItemStackKey> ret = new HashSet<>();
         handlers.forEach(h -> ret.addAll(h.getTrackedStacks()));
@@ -130,14 +142,6 @@ public class InceptionInventoryHandler implements ITrackedContentsItemHandler {
     public boolean hasEmptySlots() {
         return handlers.stream()
             .anyMatch(ITrackedContentsItemHandler::hasEmptySlots);
-    }
-
-    @Override
-    public int getInternalSlotLimit(int slot) {
-        int index = getIndexForSlot(slot);
-        ITrackedContentsItemHandler handler = getHandlerFromIndex(index);
-        int localSlot = getSlotFromIndex(slot, index);
-        return handler.getInternalSlotLimit(localSlot);
     }
 
     private int getIndexForSlot(int slot) {

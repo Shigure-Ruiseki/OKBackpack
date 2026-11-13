@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.upgrades.crafting;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
@@ -79,5 +80,10 @@ public class ItemCraftingUpgrade extends ItemUpgradeBase<CraftingUpgradeWrapper>
     @Override
     public UpgradeType<CraftingUpgradeWrapper> getType() {
         return TYPE;
+    }
+
+    @Override
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return List.of();
     }
 }

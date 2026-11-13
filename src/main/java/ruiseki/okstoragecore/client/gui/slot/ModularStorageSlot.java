@@ -3,6 +3,7 @@ package ruiseki.okstoragecore.client.gui.slot;
 import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import cpw.mods.fml.common.Optional;
 import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
@@ -37,6 +38,13 @@ public class ModularStorageSlot extends ModularItemSlot implements IExtendedStac
     public com.cleanroommc.modularui.utils.item.IItemHandler getItemHandler() {
         return this.getWrapper()
             .getInventoryHandler();
+    }
+
+    @Override
+    public boolean isItemValid(@Nullable ItemStack stack) {
+        return this.getWrapper()
+            .getInventoryHandler()
+            .isItemValid(this.getSlotIndex(), stack, this.getPlayer());
     }
 
     @Override

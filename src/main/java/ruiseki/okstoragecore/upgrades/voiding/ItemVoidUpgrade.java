@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.upgrades.voiding;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
@@ -64,5 +65,10 @@ public class ItemVoidUpgrade extends ItemUpgradeBase<VoidUpgradeWrapper> {
 
     public boolean isVoidAnythingEnabled() {
         return voidAnythingEnabled.getAsBoolean();
+    }
+
+    @Override
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return List.of();
     }
 }

@@ -8,15 +8,12 @@ import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
 import ruiseki.okstoragecore.client.gui.slot.ModularCraftingSlot;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedFluidStackSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedIntSH;
-import ruiseki.okstoragecore.client.gui.sync.value.DelegatedStringSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedValueSH;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 import ruiseki.okstoragecore.upgrades.IFilteredUpgrade;
 import ruiseki.okstoragecore.upgrades.IFluidFilteredUpgrade;
 import ruiseki.okstoragecore.upgrades.IStorageUpgrade;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
-import ruiseki.okstoragecore.upgrades.anvil.AnvilContainer;
-import ruiseki.okstoragecore.upgrades.anvil.AnvilUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.battery.BatteryUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.crafting.CraftingContainer;
 import ruiseki.okstoragecore.upgrades.tank.TankUpgradeWrapper;
@@ -35,11 +32,6 @@ public class CommonSHRegistries {
     public static final ResourceLocation STORAGE = new ResourceLocation(Reference.MOD_ID, "storage_storage");
     public static final ResourceLocation FILTER = new ResourceLocation(Reference.MOD_ID, "storage_filter");
     public static final ResourceLocation FLUID_FILTER = new ResourceLocation(Reference.MOD_ID, "storage_filter");
-
-    public static final ResourceLocation ANVIL_CONTAINER = new ResourceLocation(
-        Reference.MOD_ID,
-        "storage_anvil_container");
-    public static final ResourceLocation ANVIL_NAME = new ResourceLocation(Reference.MOD_ID, "storage_anvil_name");
 
     public static final ResourceLocation CRAFTING_CONTAINER = new ResourceLocation(
         Reference.MOD_ID,
@@ -76,28 +68,6 @@ public class CommonSHRegistries {
             IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
             if (!(wrapper instanceof IFluidFilteredUpgrade upgradeWrapper)) return;
             ((DelegatedFluidFilterLogicSH) handler).setFilterLogic(upgradeWrapper::getFilterLogic);
-        });
-
-        UPGRADE_REGISTRY.registerServer(ANVIL_CONTAINER, (handler, buf) -> {
-            UpgradeSlotUpdate slotUpdate = handler.getUpgradeUpdate();
-            DelegatedItemHandlerSH handlerSH = slotUpdate.get("anvil_handler");
-            AnvilContainer container = new AnvilContainer(
-                slotUpdate.getWrapper(),
-                slotUpdate.getPanel(),
-                handlerSH.getContainerSupplier(),
-                slotUpdate.getPlayer(),
-                slotUpdate.getUpgradeIndex(),
-                handlerSH.getItemHandler());
-            slotUpdate.setUpgradeContainer(container);
-        });
-        VALUE_REGISTRY.registerServer(ANVIL_NAME, (handler, buf) -> {
-            IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
-            if (!(wrapper instanceof AnvilUpgradeWrapper upgradeWrapper)) return;
-            ((DelegatedStringSH) handler).setDelegated(upgradeWrapper::getItemName, s -> {
-                upgradeWrapper.setItemName(s);
-                ((AnvilContainer) handler.getUpgradeUpdate()
-                    .getUpgradeContainer()).updateRepairOutput();
-            });
         });
 
         UPGRADE_REGISTRY.registerServer(CRAFTING_CONTAINER, (handler, buf) -> {

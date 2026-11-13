@@ -1,5 +1,6 @@
 package ruiseki.backpack.upgrades.deposit;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 
@@ -57,5 +58,10 @@ public class ItemDepositUpgrade extends ItemUpgradeBase<DepositUpgradeWrapper> {
     @Override
     public UpgradeType<DepositUpgradeWrapper> getType() {
         return TYPE;
+    }
+
+    @Override
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return List.of();
     }
 }

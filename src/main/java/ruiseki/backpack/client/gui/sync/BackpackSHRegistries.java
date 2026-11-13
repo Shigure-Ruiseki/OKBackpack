@@ -9,20 +9,32 @@ import net.minecraft.world.World;
 
 import ruiseki.backpack.backpack.TileBackpack;
 import ruiseki.backpack.settings.BackpackMainSettingsCategory;
+import ruiseki.backpack.upgrades.anvil.AnvilContainer;
+import ruiseki.backpack.upgrades.anvil.AnvilUpgradeWrapper;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSH;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegistry;
+import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
+import ruiseki.okstoragecore.client.gui.sync.value.DelegatedStringSH;
+import ruiseki.okstoragecore.client.gui.sync.value.DelegatedValueSH;
+import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 import ruiseki.okstoragecore.settings.SettingsManager;
 import ruiseki.okstoragecore.settings.main.MainSettingsCategory;
 import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
 import ruiseki.okstoragecore.settings.nosort.NoSortSettingsCategory;
+import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 
 public class BackpackSHRegistries {
 
     public static final StorageSHRegistry.Entry<BackpackSH> REGISTRY = StorageSHRegistry.get(BackpackSH.class);
+    public static final StorageSHRegistry.Entry<DelegatedValueSH> VALUE_REGISTRY = StorageSHRegistry
+        .get(DelegatedValueSH.class);
+    public static final StorageSHRegistry.Entry<UpgradeSlotSH> UPGRADE_REGISTRY = StorageSHRegistry
+        .get(UpgradeSlotSH.class);
 
     public static final ResourceLocation SET_ANOTHER_PLAYER_CAN_OPEN_SETTING = new ResourceLocation(
         Reference.MOD_ID,
@@ -30,6 +42,13 @@ public class BackpackSHRegistries {
     public static final ResourceLocation DEPLOY_SLEEPING_BAG = new ResourceLocation(
         Reference.MOD_ID,
         "backpack_deploy_sleeping_bag");
+
+    public static final ResourceLocation ANVIL_CONTAINER = new ResourceLocation(
+        ruiseki.okstoragecore.Reference.MOD_ID,
+        "storage_anvil_container");
+    public static final ResourceLocation ANVIL_NAME = new ResourceLocation(
+        ruiseki.okstoragecore.Reference.MOD_ID,
+        "storage_anvil_name");
 
     public static void load() {
         REGISTRY.registerServer(SET_ANOTHER_PLAYER_CAN_OPEN_SETTING, (handler, buf) -> {
@@ -44,6 +63,28 @@ public class BackpackSHRegistries {
         });
 
         REGISTRY.registerServer(DEPLOY_SLEEPING_BAG, (handler, buf) -> { deploySleepingBag(handler); });
+
+        UPGRADE_REGISTRY.registerServer(ANVIL_CONTAINER, (handler, buf) -> {
+            UpgradeSlotUpdate slotUpdate = handler.getUpgradeUpdate();
+            DelegatedItemHandlerSH handlerSH = slotUpdate.get("anvil_handler");
+            AnvilContainer container = new AnvilContainer(
+                slotUpdate.getWrapper(),
+                slotUpdate.getPanel(),
+                handlerSH.getContainerSupplier(),
+                slotUpdate.getPlayer(),
+                slotUpdate.getUpgradeIndex(),
+                handlerSH.getItemHandler());
+            slotUpdate.setUpgradeContainer(container);
+        });
+        VALUE_REGISTRY.registerServer(ANVIL_NAME, (handler, buf) -> {
+            IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
+            if (!(wrapper instanceof AnvilUpgradeWrapper upgradeWrapper)) return;
+            ((DelegatedStringSH) handler).setDelegated(upgradeWrapper::getItemName, s -> {
+                upgradeWrapper.setItemName(s);
+                ((AnvilContainer) handler.getUpgradeUpdate()
+                    .getUpgradeContainer()).updateRepairOutput();
+            });
+        });
     }
 
     public static void deploySleepingBag(BackpackSH backpackSH) {

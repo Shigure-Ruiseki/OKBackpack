@@ -85,6 +85,14 @@ public class MemorySettingsCategory implements ISettingsCategory<MemorySettingsC
         return true;
     }
 
+    public boolean matchesStackKey(ItemStackKey stackKey) {
+        return filterStackSlots.containsKey(stackKey.hashCode());
+    }
+
+    public boolean matchesItem(ItemMeta item) {
+        return filterItemSlots.containsKey(item);
+    }
+
     public Optional<ItemStack> getSlotFilterStack(int slotNumber, boolean copy) {
         if (slotFilterItems.containsKey(slotNumber)) {
             return Optional.of(

@@ -43,7 +43,8 @@ public class SubBackpacksHandler {
 
     private void onContentsChanged(int slot) {
         ItemStack stackInSlot = inventoryHandler.getStackInSlot(slot);
-        boolean backpackIsInTheSlot = ItemHelpers.hasItem(stackInSlot, ItemBackpack.class);
+        if (ItemHelpers.isEmpty(stackInSlot)) return;
+        boolean backpackIsInTheSlot = ItemHelpers.getItem(stackInSlot) instanceof ItemBackpack;
         boolean backpackWasInTheSlot = subBackpacks.containsKey(slot);
         if (!backpackWasInTheSlot && !backpackIsInTheSlot) {
             return;

@@ -19,6 +19,8 @@ import ruiseki.backpack.init.item.feeding.ItemFeedingUpgradeConfig;
 import ruiseki.backpack.init.item.filter.ItemAdvFilterUpgradeConfig;
 import ruiseki.backpack.init.item.filter.ItemFilterUpgradeConfig;
 import ruiseki.backpack.init.item.inception.ItemInceptionUpgradeConfig;
+import ruiseki.backpack.init.item.infinity.ItemInfinityUpgradeConfig;
+import ruiseki.backpack.init.item.infinity.ItemSurvivalInfinityUpgradeConfig;
 import ruiseki.backpack.init.item.magnet.ItemAdvMagnetUpgradeConfig;
 import ruiseki.backpack.init.item.magnet.ItemMagnetUpgradeConfig;
 import ruiseki.backpack.init.item.pickup.ItemAdvPickupUpgradeConfig;
@@ -66,8 +68,6 @@ import ruiseki.backpack.init.item.voiding.ItemAdvVoidUpgradeConfig;
 import ruiseki.backpack.init.item.voiding.ItemVoidUpgradeConfig;
 import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
 import ruiseki.okbackpack.common.item.ItemUpgradeConfig;
-import ruiseki.okbackpack.common.item.infinity.ItemInfinityUpgradeConfig;
-import ruiseki.okbackpack.common.item.infinity.ItemSurvivalInfinityUpgradeConfig;
 import ruiseki.okbackpack.common.item.jukebox.ItemAdvancedJukeBoxUpgradeConfig;
 import ruiseki.okbackpack.common.item.jukebox.ItemJukeBoxUpgradeConfig;
 import ruiseki.okbackpack.common.item.refill.ItemAdvancedRefillUpgradeConfig;
@@ -88,8 +88,6 @@ public class Configs {
 
         // Items
         configHandler.add(new ItemUpgradeConfig());
-        configHandler.add(new ItemInfinityUpgradeConfig());
-        configHandler.add(new ItemSurvivalInfinityUpgradeConfig());
         configHandler.add(new ItemJukeBoxUpgradeConfig());
         configHandler.add(new ItemAdvancedJukeBoxUpgradeConfig());
         configHandler.add(new ItemRefillUpgradeConfig());
@@ -163,6 +161,9 @@ public class Configs {
 
         configHandler.add(new ItemPumpUpgradeConfig());
         configHandler.add(new ItemAdvPumpUpgradeConfig());
+
+        configHandler.add(new ItemInfinityUpgradeConfig());
+        configHandler.add(new ItemSurvivalInfinityUpgradeConfig());
 
         configHandler.add(new ItemBatUpgradeConfig());
         configHandler.add(new ItemBlazeUpgradeConfig());

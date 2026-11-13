@@ -1,13 +1,15 @@
 package ruiseki.okstoragecore.upgrades.tank;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.function.Consumer;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.widget.Widget;
 
@@ -22,9 +24,11 @@ import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
 import ruiseki.okstoragecore.helper.TranslateHelpers;
 import ruiseki.okstoragecore.upgrades.IUpgradeCountLimitConfig;
+import ruiseki.okstoragecore.upgrades.IUpgradeItem;
 import ruiseki.okstoragecore.upgrades.ItemUpgradeBase;
 import ruiseki.okstoragecore.upgrades.UpgradeSlotChangeResult;
 import ruiseki.okstoragecore.upgrades.UpgradeType;
+import ruiseki.okstoragecore.upgrades.stack.ItemStackUpgrade;
 
 public class ItemTankUpgrade extends ItemUpgradeBase<TankUpgradeWrapper> {
 
@@ -63,6 +67,11 @@ public class ItemTankUpgrade extends ItemUpgradeBase<TankUpgradeWrapper> {
             return new TankSlotWidget(slotIndex, wrapper, storagePanel);
         }
     });
+    public static final List<UpgradeConflictDefinition> UPGRADE_CONFLICT_DEFINITIONS = List.of(
+        new UpgradeConflictDefinition(
+            ItemTankUpgrade.class::isInstance,
+            1,
+            TranslateHelpers.error("add.two_tank_upgrades_present")));
 
     private final TankUpgradeConfig tankUpgradeConfig;
 
@@ -96,35 +105,38 @@ public class ItemTankUpgrade extends ItemUpgradeBase<TankUpgradeWrapper> {
     }
 
     @Override
-    public UpgradeSlotChangeResult canAddUpgradeTo(IStorageWrapper storageWrapper, ItemStack upgradeStack) {
-        UpgradeSlotChangeResult result = super.canAddUpgradeTo(storageWrapper, upgradeStack);
-        if (!result.isSuccessful()) {
-            return result;
+    public UpgradeSlotChangeResult canSwapUpgradeFor(ItemStack upgradeStackToPut, int upgradeSlot,
+        IStorageWrapper storageWrapper, EntityPlayer player) {
+        if (upgradeStackToPut.getItem() == this) {
+            return checkExtraInsertConditions(upgradeStackToPut, storageWrapper, upgradeSlot, this);
         }
 
-        Set<Integer> errorUpgradeSlots = new HashSet<>();
-        this.findUpgrades(errorUpgradeSlots, storageWrapper, upgrade -> upgrade instanceof TankUpgradeWrapper);
+        return super.canSwapUpgradeFor(upgradeStackToPut, upgradeSlot, storageWrapper, player);
+    }
 
-        if (errorUpgradeSlots.size() >= 2) {
-            return new UpgradeSlotChangeResult.Fail(
-                TranslateHelpers.error("add.two_tank_upgrades_present"),
-                errorUpgradeSlots,
-                Collections.emptySet(),
-                Collections.emptySet());
-        }
-
-        int multiplierRequired = (int) Math.ceil(
-            (float) FluidHelpers.getAmount(TankUpgradeWrapper.getContents(upgradeStack))
-                / getTankCapacity(storageWrapper));
+    @Override
+    public UpgradeSlotChangeResult checkExtraInsertConditions(ItemStack upgradeStack, IStorageWrapper storageWrapper,
+        @Nullable IUpgradeItem<?> upgradeInSlot) {
+        int capacityAfter = (int) (getTankCapacity(storageWrapper)
+            / (upgradeInSlot instanceof ItemStackUpgrade stackUpgrade ? stackUpgrade.getStackSizeMultiplier() : 1));
+        double multiplierRequired = (double) FluidHelpers.getAmount(TankUpgradeWrapper.getContents(upgradeStack))
+            / capacityAfter;
         if (multiplierRequired > 1) {
+            DecimalFormat multiplierFormat = new DecimalFormat("0.#");
+            String formattedMultiplierRequired = multiplierFormat.format(Math.ceil(10 * multiplierRequired) / 10);
             return new UpgradeSlotChangeResult.Fail(
-                TranslateHelpers.error("add.tank_capacity_high", multiplierRequired),
+                TranslateHelpers.error("add.tank_capacity_high", formattedMultiplierRequired),
                 Collections.emptySet(),
                 Collections.emptySet(),
                 Collections.emptySet());
         }
 
         return new UpgradeSlotChangeResult.Success();
+    }
+
+    @Override
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return UPGRADE_CONFLICT_DEFINITIONS;
     }
 
     @Override

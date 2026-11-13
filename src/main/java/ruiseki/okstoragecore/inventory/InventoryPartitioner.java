@@ -24,6 +24,7 @@ import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
 
 public class InventoryPartitioner {
 
+    public static final String BASE_INDEXES_TAG = "baseIndexes";
     private IInventoryPartHandler[] inventoryPartHandlers;
 
     private int[] baseIndexes;
@@ -32,7 +33,7 @@ public class InventoryPartitioner {
     public InventoryPartitioner(NBTTagCompound tag, InventoryHandler parent,
         Supplier<MemorySettingsCategory> getMemorySettings) {
         this.parent = parent;
-        deserializeNBT(tag, getMemorySettings);
+        this.deserializeNBT(tag, getMemorySettings);
     }
 
     private int getIndexForSlot(int slot) {
@@ -40,9 +41,13 @@ public class InventoryPartitioner {
             return -1;
         }
 
+        if (this.baseIndexes.length == 1) {
+            return 0;
+        }
+
         int i = 0;
-        for (; i < baseIndexes.length; i++) {
-            if (slot - baseIndexes[i] < 0) {
+        for (; i < this.baseIndexes.length; i++) {
+            if (slot - this.baseIndexes[i] < 0) {
                 return i - 1;
             }
         }
@@ -50,37 +55,38 @@ public class InventoryPartitioner {
     }
 
     public IInventoryPartHandler getPartBySlot(int slot) {
-        if (slot < 0 || slot >= parent.getSlots()) {
+        if (slot < 0 || slot >= this.parent.getSlots()) {
             return IInventoryPartHandler.EMPTY;
         }
         int index = getIndexForSlot(slot);
-        if (index < 0 || index >= inventoryPartHandlers.length) {
+        if (index < 0 || index >= this.inventoryPartHandlers.length) {
             return IInventoryPartHandler.EMPTY;
         }
-        return inventoryPartHandlers[index];
+        return this.inventoryPartHandlers[index];
     }
 
     @Nullable
     public Pair<ResourceLocation, ResourceLocation> getNoItemIcon(int slot) {
-        return getPartBySlot(slot).getNoItemIcon(slot);
+        return this.getPartBySlot(slot)
+            .getNoItemIcon(slot);
     }
 
     public void onSlotLimitChange() {
-        for (IInventoryPartHandler inventoryPartHandler : inventoryPartHandlers) {
+        for (IInventoryPartHandler inventoryPartHandler : this.inventoryPartHandlers) {
             inventoryPartHandler.onSlotLimitChange();
         }
     }
 
     public Set<Integer> getNoSortSlots() {
         Set<Integer> noSortSlots = new HashSet<>();
-        for (IInventoryPartHandler inventoryPartHandler : inventoryPartHandlers) {
+        for (IInventoryPartHandler inventoryPartHandler : this.inventoryPartHandlers) {
             noSortSlots.addAll(inventoryPartHandler.getNoSortSlots());
         }
         return noSortSlots;
     }
 
     public boolean isFilterItem(ItemMeta item) {
-        for (IInventoryPartHandler inventoryPartHandler : inventoryPartHandlers) {
+        for (IInventoryPartHandler inventoryPartHandler : this.inventoryPartHandlers) {
             if (inventoryPartHandler.isFilterItem(item)) {
                 return true;
             }
@@ -91,7 +97,7 @@ public class InventoryPartitioner {
 
     public Map<ItemMeta, Set<Integer>> getFilterItems() {
         Map<ItemMeta, Set<Integer>> filterItems = new HashMap<>();
-        for (IInventoryPartHandler inventoryPartHandler : inventoryPartHandlers) {
+        for (IInventoryPartHandler inventoryPartHandler : this.inventoryPartHandlers) {
             for (Map.Entry<ItemMeta, Set<Integer>> entry : inventoryPartHandler.getFilterItems()
                 .entrySet()) {
                 filterItems.computeIfAbsent(entry.getKey(), k -> new HashSet<>())
@@ -107,16 +113,22 @@ public class InventoryPartitioner {
         }
     }
 
-    public record SlotRange(int firstSlot, int numberOfSlots) {}
+    public record SlotRange(int firstSlot, int numberOfSlots) {
+
+        public boolean isInRange(int slotIndex) {
+            return slotIndex >= firstSlot && slotIndex < firstSlot + numberOfSlots;
+        }
+    }
 
     public Optional<SlotRange> getFirstSpace(int maxNumberOfSlots) {
-        for (int partIndex = 0; partIndex < inventoryPartHandlers.length; partIndex++) {
-            if (inventoryPartHandlers[partIndex].canBeReplaced()) {
-                int firstSlot = baseIndexes[partIndex];
-                int numberOfSlots = baseIndexes.length > partIndex + 1 ? baseIndexes[partIndex + 1] - firstSlot
+        for (int partIndex = 0; partIndex < this.inventoryPartHandlers.length; partIndex++) {
+            if (this.inventoryPartHandlers[partIndex].canBeReplaced()) {
+                int firstSlot = this.baseIndexes[partIndex];
+                int numberOfSlots = this.baseIndexes.length > partIndex + 1
+                    ? this.baseIndexes[partIndex + 1] - firstSlot
                     : parent.getSlots() - firstSlot;
                 numberOfSlots = Math.min(numberOfSlots, maxNumberOfSlots);
-                return numberOfSlots > 0 ? Optional.of(new SlotRange(baseIndexes[partIndex], numberOfSlots))
+                return numberOfSlots > 0 ? Optional.of(new SlotRange(this.baseIndexes[partIndex], numberOfSlots))
                     : Optional.empty();
             }
         }
@@ -125,7 +137,7 @@ public class InventoryPartitioner {
 
     public void addInventoryPart(int inventorySlot, int numberOfSlots, IInventoryPartHandler inventoryPartHandler) {
         int index = getIndexForSlot(inventorySlot);
-        if (index < 0 || index >= inventoryPartHandlers.length || baseIndexes[index] != inventorySlot) {
+        if (index < 0 || index >= this.inventoryPartHandlers.length || this.baseIndexes[index] != inventorySlot) {
             return;
         }
 
@@ -133,109 +145,110 @@ public class InventoryPartitioner {
         List<Integer> newBaseIndexes = new ArrayList<>();
 
         for (int i = 0; i < index; i++) {
-            newParts.add(inventoryPartHandlers[i]);
-            newBaseIndexes.add(baseIndexes[i]);
+            newParts.add(this.inventoryPartHandlers[i]);
+            newBaseIndexes.add(this.baseIndexes[i]);
         }
 
         newParts.add(inventoryPartHandler);
         newBaseIndexes.add(inventorySlot);
 
         int newNextSlot = inventorySlot + numberOfSlots;
-        if (inventoryPartHandlers[index].getSlots() > newNextSlot) {
-            newParts.add(new IInventoryPartHandler.Default(parent, parent.getSlots() - newNextSlot));
+        int remainingSlots = this.inventoryPartHandlers[index].getSlots() - numberOfSlots;
+        if (remainingSlots > 0) {
+            newParts.add(new IInventoryPartHandler.Default(this.parent, remainingSlots));
             newBaseIndexes.add(newNextSlot);
         }
 
-        for (int i = index + 1; i < inventoryPartHandlers.length; i++) {
-            newParts.add(inventoryPartHandlers[i]);
-            newBaseIndexes.add(baseIndexes[i]);
+        for (int i = index + 1; i < this.inventoryPartHandlers.length; i++) {
+            newParts.add(this.inventoryPartHandlers[i]);
+            newBaseIndexes.add(this.baseIndexes[i]);
         }
 
-        updatePartsAndIndexesFromLists(newParts, newBaseIndexes);
+        this.updatePartsAndIndexesFromLists(newParts, newBaseIndexes);
 
         inventoryPartHandler.onInit();
-        parent.onFilterItemsChanged();
+        this.parent.onFilterItemsChanged();
     }
 
     public void removeInventoryPart(int inventorySlot) {
         int index = getIndexForSlot(inventorySlot);
 
-        if (index < 0 || index >= inventoryPartHandlers.length || baseIndexes[index] != inventorySlot) {
+        if (index < 0 || index >= this.inventoryPartHandlers.length || this.baseIndexes[index] != inventorySlot) {
             return;
         }
 
-        if (inventoryPartHandlers.length == 1) {
+        if (this.inventoryPartHandlers.length == 1) {
             updatePartsAndIndexesFromLists(
-                List.of(new IInventoryPartHandler.Default(parent, parent.getSlots())),
+                List.of(new IInventoryPartHandler.Default(this.parent, this.parent.getSlots())),
                 List.of(0));
-            parent.onFilterItemsChanged();
+            this.parent.onFilterItemsChanged();
             return;
         }
 
-        int slotsAtPartIndex = (baseIndexes.length > index + 1 ? baseIndexes[index + 1] : parent.getSlots())
-            - baseIndexes[index];
+        int slotsAtPartIndex = (this.baseIndexes.length > index + 1 ? this.baseIndexes[index + 1]
+            : this.parent.getSlots()) - this.baseIndexes[index];
 
         List<IInventoryPartHandler> newParts = new ArrayList<>();
         List<Integer> newBaseIndexes = new ArrayList<>();
 
         boolean replacedNext = false;
         for (int i = 0; i < index; i++) {
-            if (i == index - 1 && inventoryPartHandlers[i] instanceof IInventoryPartHandler.Default
-                && baseIndexes.length > index + 1
-                && inventoryPartHandlers[index + 1] instanceof IInventoryPartHandler.Default) {
+            if (i == index - 1 && this.inventoryPartHandlers[i] instanceof IInventoryPartHandler.Default
+                && this.baseIndexes.length > index + 1
+                && this.inventoryPartHandlers[index + 1] instanceof IInventoryPartHandler.Default) {
                 newParts.add(
                     new IInventoryPartHandler.Default(
-                        parent,
-                        inventoryPartHandlers[i].getSlots() + inventoryPartHandlers[index + 1].getSlots()
+                        this.parent,
+                        this.inventoryPartHandlers[i].getSlots() + this.inventoryPartHandlers[index + 1].getSlots()
                             + slotsAtPartIndex));
-                newBaseIndexes.add(baseIndexes[i]);
+                newBaseIndexes.add(this.baseIndexes[i]);
                 replacedNext = true;
                 continue;
             }
 
-            newParts.add(inventoryPartHandlers[i]);
-            newBaseIndexes.add(baseIndexes[i]);
+            newParts.add(this.inventoryPartHandlers[i]);
+            newBaseIndexes.add(this.baseIndexes[i]);
         }
 
-        if (!replacedNext && baseIndexes.length > index + 1) {
-            if (inventoryPartHandlers[index + 1] instanceof IInventoryPartHandler.Default) {
+        if (!replacedNext && this.baseIndexes.length > index + 1) {
+            if (this.inventoryPartHandlers[index + 1] instanceof IInventoryPartHandler.Default) {
                 newParts.add(
                     new IInventoryPartHandler.Default(
-                        parent,
-                        inventoryPartHandlers[index + 1].getSlots() + slotsAtPartIndex));
+                        this.parent,
+                        this.inventoryPartHandlers[index + 1].getSlots() + slotsAtPartIndex));
                 newBaseIndexes.add(inventorySlot);
             } else {
-                newParts.add(new IInventoryPartHandler.Default(parent, slotsAtPartIndex));
+                newParts.add(new IInventoryPartHandler.Default(this.parent, slotsAtPartIndex));
                 newBaseIndexes.add(inventorySlot);
-                newParts.add(inventoryPartHandlers[index + 1]);
-                newBaseIndexes.add(baseIndexes[index + 1]);
+                newParts.add(this.inventoryPartHandlers[index + 1]);
+                newBaseIndexes.add(this.baseIndexes[index + 1]);
             }
         }
 
-        for (int i = index + 2; i < inventoryPartHandlers.length; i++) {
-            newParts.add(inventoryPartHandlers[i]);
-            newBaseIndexes.add(baseIndexes[i]);
+        for (int i = index + 2; i < this.inventoryPartHandlers.length; i++) {
+            newParts.add(this.inventoryPartHandlers[i]);
+            newBaseIndexes.add(this.baseIndexes[i]);
         }
 
-        updatePartsAndIndexesFromLists(newParts, newBaseIndexes);
+        this.updatePartsAndIndexesFromLists(newParts, newBaseIndexes);
 
-        parent.onFilterItemsChanged();
+        this.parent.onFilterItemsChanged();
     }
 
     private void updatePartsAndIndexesFromLists(List<IInventoryPartHandler> newParts, List<Integer> newBaseIndexes) {
-        inventoryPartHandlers = newParts.toArray(new IInventoryPartHandler[0]);
-        baseIndexes = new int[newBaseIndexes.size()];
+        this.inventoryPartHandlers = newParts.toArray(new IInventoryPartHandler[0]);
+        this.baseIndexes = new int[newBaseIndexes.size()];
         for (int i = 0; i < newBaseIndexes.size(); i++) {
-            baseIndexes[i] = newBaseIndexes.get(i);
+            this.baseIndexes[i] = newBaseIndexes.get(i);
         }
-        parent.saveInventory();
+        this.parent.saveInventory();
     }
 
     public NBTTagCompound serializeNBT() {
         NBTTagCompound ret = new NBTTagCompound();
-        ret.setIntArray("baseIndexes", baseIndexes);
+        ret.setIntArray(BASE_INDEXES_TAG, this.baseIndexes);
         NBTTagList partNames = new NBTTagList();
-        for (IInventoryPartHandler inventoryPartHandler : inventoryPartHandlers) {
+        for (IInventoryPartHandler inventoryPartHandler : this.inventoryPartHandlers) {
             partNames.appendTag(new NBTTagString(inventoryPartHandler.getName()));
         }
         ret.setTag("inventoryPartNames", partNames);
@@ -243,23 +256,29 @@ public class InventoryPartitioner {
     }
 
     private void deserializeNBT(NBTTagCompound tag, Supplier<MemorySettingsCategory> getMemorySettings) {
-        if (!tag.hasKey("baseIndexes")) {
+        if (!tag.hasKey(BASE_INDEXES_TAG)) {
             this.inventoryPartHandlers = new IInventoryPartHandler[] {
-                new IInventoryPartHandler.Default(parent, parent.getSlots()) };
+                new IInventoryPartHandler.Default(this.parent, this.parent.getSlots()) };
             this.baseIndexes = new int[] { 0 };
             return;
         }
 
-        baseIndexes = tag.getIntArray("baseIndexes");
-        inventoryPartHandlers = new IInventoryPartHandler[baseIndexes.length];
+        this.baseIndexes = tag.getIntArray(BASE_INDEXES_TAG);
+        this.inventoryPartHandlers = new IInventoryPartHandler[this.baseIndexes.length];
         NBTTagList partNamesTag = tag.getTagList("inventoryPartNames", Constants.NBT.TAG_STRING);
         for (int i = 0; i < partNamesTag.tagCount(); i++) {
             SlotRange slotRange = new SlotRange(
-                baseIndexes[i],
-                (i + 1 < baseIndexes.length ? baseIndexes[i + 1] : parent.getSlots()) - baseIndexes[i]);
+                this.baseIndexes[i],
+                (i + 1 < this.baseIndexes.length ? this.baseIndexes[i + 1] : this.parent.getSlots())
+                    - this.baseIndexes[i]);
 
-            inventoryPartHandlers[i] = InventoryPartRegistry
-                .instantiatePart(partNamesTag.getStringTagAt(i), parent, slotRange, getMemorySettings);
+            this.inventoryPartHandlers[i] = InventoryPartRegistry
+                .instantiatePart(partNamesTag.getStringTagAt(i), this.parent, slotRange, getMemorySettings);
         }
+    }
+
+    public boolean isInfinite(int slot) {
+        return this.getPartBySlot(slot)
+            .isInfinite(slot);
     }
 }

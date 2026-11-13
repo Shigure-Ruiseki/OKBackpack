@@ -14,7 +14,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
@@ -22,10 +25,13 @@ import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
+import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.event.world.BlockEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ruiseki.backpack.api.IArrowResponseUpgrade;
 import ruiseki.backpack.api.IAttackEntityResponseUpgrade;
 import ruiseki.backpack.api.IBlockClickResponseUpgrade;
@@ -39,6 +45,11 @@ import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.backpack.helpers.InteractionHelpers;
 import ruiseki.backpack.helpers.PlayerInventoryProvider;
 import ruiseki.okbackpack.GeneralConfig;
+import ruiseki.okbackpack.api.tier.BackpackTier;
+import ruiseki.okbackpack.api.tier.TierRegistry;
+import ruiseki.okbackpack.common.block.BlockSleepingBag;
+import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
+import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.event.entity.GhastTargetEvent;
 import ruiseki.okcore.event.entity.LivingClimbEvent;
@@ -126,9 +137,7 @@ public class CommonEventHandler {
 
     @SubscribeEvent
     public void onBlockClick(PlayerInteractEvent.LeftClickBlock event) {
-        if (event.getWorld().isRemote) {
-            return;
-        }
+        if (event.getWorld().isRemote) return;
         EntityPlayer player = event.getEntity();
         BlockPos pos = event.getPos();
         PlayerInventoryProvider.get()
@@ -151,7 +160,7 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onAttackEntity(AttackEntityEvent event) {
         EntityPlayer player = event.entityPlayer;
-        if (player.worldObj.isRemote) return;
+        if (player == null || player.worldObj.isRemote) return;
         PlayerInventoryProvider.get()
             .runOnBackpacks(
                 player,
@@ -172,7 +181,7 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
         EntityLivingBase entity = event.entityLiving;
-        if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
+        if (entity == null || entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
         PlayerInventoryProvider.get()
             .runOnBackpacks(
                 player,
@@ -193,7 +202,7 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onLivingFall(LivingFallEvent event) {
         EntityLivingBase entity = event.entityLiving;
-        if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
+        if (entity == null || entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
         PlayerInventoryProvider.get()
             .runOnBackpacks(
                 player,
@@ -235,7 +244,7 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onLivingClimb(LivingClimbEvent event) {
         EntityLivingBase entity = event.entityLiving;
-        if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
+        if (entity == null || entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
         PlayerInventoryProvider.get()
             .runOnBackpacks(
                 player,
@@ -256,7 +265,7 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onArrowNock(ArrowNockEvent event) {
         EntityLivingBase entity = event.entityLiving;
-        if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
+        if (entity == null || entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
         PlayerInventoryProvider.get()
             .runOnBackpacks(
                 player,
@@ -277,7 +286,7 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onArrowLoose(ArrowLooseEvent event) {
         EntityLivingBase entity = event.entityLiving;
-        if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
+        if (entity == null || entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
         PlayerInventoryProvider.get()
             .runOnBackpacks(
                 player,
@@ -298,7 +307,7 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onGhastTarget(GhastTargetEvent event) {
         EntityLivingBase entity = event.entityLiving;
-        if (entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
+        if (entity == null || entity.worldObj.isRemote || !(entity instanceof EntityPlayer player)) return;
         PlayerInventoryProvider.get()
             .runOnBackpacks(
                 player,
@@ -319,7 +328,7 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onPickupXp(PlayerPickupXpEvent event) {
         EntityPlayer player = event.entityPlayer;
-        if (player.worldObj.isRemote) return;
+        if (player == null || player.worldObj.isRemote) return;
         PlayerInventoryProvider.get()
             .runOnBackpacks(
                 player,
@@ -340,9 +349,7 @@ public class CommonEventHandler {
     @SubscribeEvent
     public void onItemPickup(EntityItemPickupEvent event) {
         EntityItem itemEntity = event.item;
-        if (ItemHelpers.isEmpty(itemEntity.getEntityItem())) {
-            return;
-        }
+        if (ItemHelpers.isEmpty(itemEntity.getEntityItem())) return;
 
         AtomicReference<ItemStack> remainingStackSimulated = new AtomicReference<>(
             ItemHelpers.copy(itemEntity.getEntityItem()));
@@ -361,7 +368,6 @@ public class CommonEventHandler {
                                 wrapper.getUpgradeHandler(),
                                 remainingStackSimulated.get(),
                                 true));
-
                         return ItemHelpers.isEmpty(remainingStackSimulated.get());
                     })
                     .orElse(false),
@@ -400,7 +406,7 @@ public class CommonEventHandler {
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         EntityPlayer player = event.player;
-        if (player.worldObj.isRemote || player.isDead) return;
+        if (player == null || player.worldObj.isRemote || player.isDead) return;
         this.tickBackpacks(player);
     }
 
@@ -429,6 +435,68 @@ public class CommonEventHandler {
             event.getMode())) {
             event.setResultStack(null);
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void onTextureStitch(TextureStitchEvent.Pre event) {
+        if (event.map.getTextureType() == 0) {
+            for (BackpackTier tier : TierRegistry.getAllTiers()) {
+                var clipLocation = tier.getClipTexturePath();
+                event.map.registerIcon(clipLocation.toString());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void registerBackpackProperty(EntityEvent.EntityConstructing event) {
+        if (event.entity instanceof EntityPlayer && BackpackProperty.get((EntityPlayer) event.entity) == null) {
+            BackpackProperty.register((EntityPlayer) event.entity);
+        }
+    }
+
+    @SubscribeEvent
+    public void playerWokeUp(PlayerWakeUpEvent event) {
+        if (event.entity.worldObj.isRemote) return;
+
+        EntityPlayer player = event.entityPlayer;
+        ChunkCoordinates bedLocation = player.getBedLocation(player.dimension);
+        if (bedLocation != null && player.worldObj.getBlock(bedLocation.posX, bedLocation.posY, bedLocation.posZ)
+            == BlockSleepingBagConfig._instance.getInstance()) {
+            if (BlockSleepingBag.isSleepingInPortableBag(player)) {
+                BlockSleepingBag.packPortableSleepingBag(player);
+                BackpackProperty.get(player)
+                    .setWakingUpInPortableBag(true);
+            } else {
+                BackpackProperty props = BackpackProperty.get(player);
+                if (props != null) {
+                    BackpackProperty.get(player)
+                        .setWakingUpInDeployedBag(true);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void tickPlayer(TickEvent.PlayerTickEvent event) {
+        EntityPlayer player = event.player;
+        if (player == null || player.isDead) return;
+        if (event.phase == TickEvent.Phase.END) {
+            if (!player.worldObj.isRemote) {
+                if (BackpackProperty.get(player)
+                    .isWakingUpInPortableBag()) {
+                    BlockSleepingBag.restoreOriginalSpawn(player);
+                    BackpackProperty.get(player)
+                        .setWakingUpInPortableBag(false);
+                }
+                if (BackpackProperty.get(player)
+                    .isWakingUpInDeployedBag()) {
+                    BlockSleepingBag.restoreOriginalSpawn(player);
+                    BackpackProperty.get(player)
+                        .setWakingUpInDeployedBag(false);
+                }
+            }
         }
     }
 }

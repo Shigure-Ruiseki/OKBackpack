@@ -101,8 +101,13 @@ item.items.okbackpack.jukebox_upgrade.name=Jukebox Upgrade
 item.items.okbackpack.advanced_jukebox_upgrade.name=Advanced Jukebox Upgrade
 item.items.okbackpack.tool_swapper_upgrade.name=Tool Swapper Upgrade
 item.items.okbackpack.advanced_tool_swapper_upgrade.name=Advanced Tool Swapper Upgrade
+
 item.items.okbackpack.infinity_upgrade.name=Infinity Upgrade (Admin)
+item.items.okbackpack.infinity_upgrade.tooltip=Makes all items in backpack infinite
+item.items.okbackpack.infinity_upgrade.tooltip.1=Only admins can set infinite items and break or pickup backpack
 item.items.okbackpack.survival_infinity_upgrade.name=Survival Infinity Upgrade
+item.items.okbackpack.survival_infinity_upgrade.tooltip=Makes all items in backpack infinite
+item.items.okbackpack.survival_infinity_upgrade.tooltip.1=All players can set infinite items and break or pickup backpack
 
 item.items.okbackpack.anvil_upgrade.name=Anvil Upgrade
 item.items.okbackpack.anvil_upgrade.tooltip=Anvil in an upgrade tab
@@ -232,10 +237,6 @@ item.items.okbackpack.hay_upgrade.tooltip.1=Has a chance to obtain edible crops 
 tooltip.backpack.jukebox_upgrade=Portable Jukebox
 tooltip.backpack.advanced_jukebox_upgrade=Portable Jukebox with support for more music discs
 tooltip.backpack.advanced_jukebox_upgrade.1=Also more playback options
-tooltip.backpack.infinity_upgrade=Makes all items in backpack infinite
-tooltip.backpack.infinity_upgrade.1=Only admins can set infinite items and break or pickup backpack
-tooltip.backpack.survival_infinity_upgrade=Makes all items in backpack infinite
-tooltip.backpack.survival_infinity_upgrade.1=All players can set infinite items and break or pickup backpack
 tooltip.backpack.smelting_upgrade=Smelting in an upgrade tab
 tooltip.backpack.auto_smelting_upgrade=Smelting in an upgrade tab
 tooltip.backpack.auto_smelting_upgrade.1=Automatically pulls/pushes items

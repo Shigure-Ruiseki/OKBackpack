@@ -2,6 +2,7 @@ package ruiseki.backpack.client.gui.sync;
 
 import net.minecraft.util.ResourceLocation;
 
+import ruiseki.backpack.upgrades.anvil.AnvilUpgradeWrapper;
 import ruiseki.backpack.upgrades.deposit.DepositFilterType;
 import ruiseki.backpack.upgrades.deposit.DepositUpgradeWrapper;
 import ruiseki.backpack.upgrades.inception.InceptionUpgradeWrapper;
@@ -10,7 +11,6 @@ import ruiseki.okbackpack.Reference;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegistry;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
-import ruiseki.okstoragecore.upgrades.anvil.AnvilUpgradeWrapper;
 
 public class OBUpgradeSlotSHRegistries {
 

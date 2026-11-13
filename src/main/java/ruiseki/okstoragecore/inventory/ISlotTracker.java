@@ -4,11 +4,15 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import com.gtnewhorizon.gtnhlib.util.data.ItemMeta;
+
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
 
 public interface ISlotTracker {
@@ -20,6 +24,8 @@ public interface ISlotTracker {
     Set<ItemStackKey> getPartialStacks();
 
     Set<Item> getItems();
+
+    boolean hasMatchingFullStack(ItemStack stack, Predicate<ItemStack> stackMatcher);
 
     void removeAndSetSlotIndexes(InventoryHandler inventoryHandler, int slot, ItemStack stack);
 
@@ -40,9 +46,23 @@ public interface ISlotTracker {
 
     boolean hasEmptySlots();
 
+    boolean hasExactStackMemorized(ItemStackKey stackKey);
+
+    boolean hasItemMemorizedOrFiltered(ItemMeta item);
+
+    int getFirstMatchingSlot(ItemStackKey stackKey);
+
+    ItemStack extractItemFromHandler(InventoryHandler inventoryHandler, IItemHandlerExtractor extractItemInternal,
+        ItemStack stack, boolean simulate);
+
     interface IItemHandlerInserter {
 
         ItemStack insertItem(int slot, ItemStack stack, boolean simulate);
+    }
+
+    interface IItemHandlerExtractor {
+
+        ItemStack extractItem(int slot, int amount, boolean simulate);
     }
 
     class Noop implements ISlotTracker {
@@ -68,6 +88,11 @@ public interface ISlotTracker {
         }
 
         @Override
+        public boolean hasMatchingFullStack(ItemStack stack, Predicate<ItemStack> stackMatcher) {
+            return false;
+        }
+
+        @Override
         public void removeAndSetSlotIndexes(InventoryHandler inventoryHandler, int slot, ItemStack stack) {
             // noop
         }
@@ -89,6 +114,12 @@ public interface ISlotTracker {
         }
 
         @Override
+        public ItemStack extractItemFromHandler(InventoryHandler inventoryHandler,
+            IItemHandlerExtractor extractItemInternal, ItemStack stack, boolean simulate) {
+            return ItemHelpers.EMPTY;
+        }
+
+        @Override
         public ItemStack insertItemIntoHandler(InventoryHandler itemHandler, IItemHandlerInserter inserter,
             UnaryOperator<ItemStack> overflowHandler, int slot, ItemStack stack, boolean simulate) {
             return inserter.insertItem(slot, stack, simulate);
@@ -107,6 +138,21 @@ public interface ISlotTracker {
 
         @Override
         public boolean hasEmptySlots() {
+            return false;
+        }
+
+        @Override
+        public int getFirstMatchingSlot(ItemStackKey stackKey) {
+            return -1;
+        }
+
+        @Override
+        public boolean hasExactStackMemorized(ItemStackKey stackKey) {
+            return false;
+        }
+
+        @Override
+        public boolean hasItemMemorizedOrFiltered(ItemMeta item) {
             return false;
         }
     }

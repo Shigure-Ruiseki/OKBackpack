@@ -22,6 +22,7 @@ import ruiseki.okbackpack.api.wrapper.IBookshelfUpgrade;
 import ruiseki.okbackpack.common.block.property.TierProperty;
 import ruiseki.okcore.block.BlockTile;
 import ruiseki.okcore.block.property.BlockProperty;
+import ruiseki.okcore.block.property.DirectionProperty;
 import ruiseki.okcore.helper.TileHelpers;
 import ruiseki.okstoragecore.upgrades.ILightUpgrade;
 import ruiseki.okstoragecore.upgrades.IRedstoneUpgrade;
@@ -31,17 +32,19 @@ public class BlockBackpack extends BlockTile {
     @BlockProperty
     public final static TierProperty TIER_PROPERTY = TierProperty.tier(LEATHER, (world, x, y, z) -> {
         Block block = world.getBlock(x, y, z);
-        if (block instanceof ruiseki.okbackpack.common.block.BlockBackpack backpack) {
-            return backpack.getTierId();
-        }
+        if (block instanceof BlockBackpack backpack) return backpack.getTierId();
         return LEATHER;
     }, (world, x, y, z, value) -> {});
+
+    @BlockProperty
+    public static final DirectionProperty DIRECTION = DirectionProperty.facing();
 
     private final String tierId;
 
     public BlockBackpack(String tierId) {
         super(Material.cloth, TileBackpack.class);
         this.tierId = tierId;
+        this.setRotatable(true);
     }
 
     /**

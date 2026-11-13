@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.upgrades.compacting;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
@@ -65,5 +66,10 @@ public class ItemCompactingUpgrade extends ItemUpgradeBase<CompactingUpgradeWrap
     @Override
     public UpgradeType<CompactingUpgradeWrapper> getType() {
         return TYPE;
+    }
+
+    @Override
+    public List<UpgradeConflictDefinition> getUpgradeConflicts() {
+        return List.of();
     }
 }

@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.NBTHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 
@@ -23,7 +24,7 @@ public abstract class UpgradeWrapperBase<W extends IUpgradeWrapper, T extends It
         this.storageWrapper = storageWrapper;
         this.upgrade = upgrade;
         // noinspection unchecked
-        upgradeItem = (T) upgrade.getItem();
+        upgradeItem = (T) ItemHelpers.getItem(upgrade);
         this.upgradeSaveHandler = upgradeSaveHandler;
     }
 

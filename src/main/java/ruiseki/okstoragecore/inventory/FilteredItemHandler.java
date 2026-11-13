@@ -7,16 +7,18 @@ import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
 
+import ruiseki.okcore.helper.InventoryHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
 import ruiseki.okcore.item.handler.IItemHandler;
+import ruiseki.okcore.item.handler.IItemHandlerSimpleInserter;
 import ruiseki.okstoragecore.upgrades.FilterLogic;
 
-public class FilteredItemHandler<T extends IItemHandler> implements IItemHandler {
+public class FilteredItemHandler<T extends IItemHandler> implements IItemHandler, IItemHandlerSimpleInserter {
 
     protected final T inventoryHandler;
     protected final List<FilterLogic> inputFilters;
-    private final List<FilterLogic> outputFilters;
+    protected final List<FilterLogic> outputFilters;
 
     public FilteredItemHandler(T inventoryHandler, List<FilterLogic> inputFilters, List<FilterLogic> outputFilters) {
         this.inventoryHandler = inventoryHandler;
@@ -40,10 +42,8 @@ public class FilteredItemHandler<T extends IItemHandler> implements IItemHandler
             return inventoryHandler.insertItem(slot, stack, simulate);
         }
 
-        for (FilterLogic filter : inputFilters) {
-            if (filter.matchesFilter(stack)) {
-                return inventoryHandler.insertItem(slot, stack, simulate);
-            }
+        if (matchesFilters(stack, inputFilters)) {
+            return inventoryHandler.insertItem(slot, stack, simulate);
         }
         return stack;
     }
@@ -54,12 +54,37 @@ public class FilteredItemHandler<T extends IItemHandler> implements IItemHandler
             return inventoryHandler.extractItem(slot, amount, simulate);
         }
 
-        for (FilterLogic filter : outputFilters) {
-            if (filter.matchesFilter(getStackInSlot(slot))) {
-                return inventoryHandler.extractItem(slot, amount, simulate);
+        if (matchesFilters(getStackInSlot(slot), outputFilters)) {
+            return inventoryHandler.extractItem(slot, amount, simulate);
+        }
+
+        return ItemHelpers.EMPTY;
+    }
+
+    protected boolean matchesFilters(ItemStack stack, List<FilterLogic> filters) {
+        boolean matchAll = shouldMatchAllFilters(filters);
+
+        for (FilterLogic filter : filters) {
+            if (matchAll && !filter.matchesFilter(stack)) {
+                return false;
+            } else if (!matchAll && filter.matchesFilter(stack)) {
+                return true;
             }
         }
-        return ItemHelpers.EMPTY;
+        return matchAll;
+    }
+
+    private boolean shouldMatchAllFilters(List<FilterLogic> filters) {
+        if (filters.size() < 2) {
+            return false;
+        }
+
+        for (FilterLogic filter : filters) {
+            if (!filter.isAllowList()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -69,14 +94,33 @@ public class FilteredItemHandler<T extends IItemHandler> implements IItemHandler
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
-        if (!inventoryHandler.isItemValid(slot, stack)) return false;
-        if (inputFilters.isEmpty()) return true;
-        for (FilterLogic filter : inputFilters) {
-            if (filter.matchesFilter(stack)) {
-                return true;
-            }
+        if (matchesFilters(stack, inputFilters)) {
+            return inventoryHandler.isItemValid(slot, stack);
         }
         return false;
+    }
+
+    @Override
+    public ItemStack insertItem(ItemStack stack, boolean simulate) {
+        if (inputFilters.isEmpty() || matchesFilters(stack, inputFilters)) {
+            if (inventoryHandler instanceof IItemHandlerSimpleInserter simpleInserter) {
+                return simpleInserter.insertItem(stack, simulate);
+            } else {
+                return InventoryHelpers.insertIntoInventory(stack, inventoryHandler, simulate);
+            }
+        }
+
+        return stack;
+    }
+
+    @Override
+    public void setStackInSlot(int i, ItemStack itemStack) {
+        if (inventoryHandler instanceof IItemHandlerSimpleInserter simpleInserter) {
+            simpleInserter.setStackInSlot(i, itemStack);
+        } else {
+            throw new UnsupportedOperationException(
+                "setStackInSlot is not supported by the underlying inventory handler");
+        }
     }
 
     public static class Modifiable extends FilteredItemHandler<ITrackedContentsItemHandler>
@@ -98,11 +142,10 @@ public class FilteredItemHandler<T extends IItemHandler> implements IItemHandler
                 return inventoryHandler.insertItem(stack, simulate);
             }
 
-            for (FilterLogic filter : inputFilters) {
-                if (filter.matchesFilter(stack)) {
-                    return inventoryHandler.insertItem(stack, simulate);
-                }
+            if (matchesFilters(stack, inputFilters)) {
+                return inventoryHandler.insertItem(stack, simulate);
             }
+
             return stack;
         }
 
@@ -112,7 +155,7 @@ public class FilteredItemHandler<T extends IItemHandler> implements IItemHandler
 
             inventoryHandler.getTrackedStacks()
                 .forEach(ts -> {
-                    if (inputFiltersMatchStack(ts.getStack())) {
+                    if (matchesFilters(ts.getStack(), inputFilters)) {
                         ret.add(ts);
                     }
                 });
@@ -154,8 +197,16 @@ public class FilteredItemHandler<T extends IItemHandler> implements IItemHandler
         }
 
         @Override
-        public int getInternalSlotLimit(int slot) {
-            return inventoryHandler.getInternalSlotLimit(slot);
+        public ItemStack extractItem(ItemStack stack, boolean simulate) {
+            if (outputFilters.isEmpty()) {
+                return inventoryHandler.extractItem(stack, simulate);
+            }
+
+            if (matchesFilters(stack, outputFilters)) {
+                return inventoryHandler.extractItem(stack, simulate);
+            }
+
+            return ItemHelpers.EMPTY;
         }
     }
 }
