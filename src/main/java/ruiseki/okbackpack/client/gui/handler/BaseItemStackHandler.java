@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 
+import ruiseki.okcore.datastructure.NonNullList;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.item.handler.ItemStackHandler;
 
@@ -20,7 +21,7 @@ public class BaseItemStackHandler extends ItemStackHandler {
     }
 
     public void resize(int newSize) {
-        List<ItemStack> newStacks = new ArrayList<>(newSize);
+        NonNullList<ItemStack> newStacks = NonNullList.withSize(newSize, ItemHelpers.EMPTY);
 
         for (int i = 0; i < newSize; i++) {
             if (i < stacks.size()) {
@@ -141,10 +142,7 @@ public class BaseItemStackHandler extends ItemStackHandler {
                 : itemTag.getByte("Slot") & 255;
             if (slot < 0 || slot >= stacks.size()) continue;
 
-            ItemStack loaded = ItemStack.loadItemStackFromNBT(itemTag);
-            if (loaded != null && itemTag.hasKey("Count", Constants.NBT.TAG_INT)) {
-                loaded.stackSize = itemTag.getInteger("Count");
-            }
+            ItemStack loaded = ItemHelpers.readFromNBT(itemTag);
             stacks.set(slot, ItemHelpers.isEmpty(loaded) ? ItemHelpers.EMPTY : loaded);
         }
 

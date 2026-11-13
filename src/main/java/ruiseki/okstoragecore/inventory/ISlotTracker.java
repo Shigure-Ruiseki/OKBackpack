@@ -1,0 +1,159 @@
+package ruiseki.okstoragecore.inventory;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import com.gtnewhorizon.gtnhlib.util.data.ItemMeta;
+
+import ruiseki.okcore.helper.ItemHelpers;
+import ruiseki.okcore.inventory.ItemStackKey;
+
+public interface ISlotTracker {
+
+    void setShouldInsertIntoEmpty(BooleanSupplier shouldInsertIntoEmpty);
+
+    Set<ItemStackKey> getFullStacks();
+
+    Set<ItemStackKey> getPartialStacks();
+
+    Set<Item> getItems();
+
+    boolean hasMatchingFullStack(ItemStack stack, Predicate<ItemStack> stackMatcher);
+
+    void removeAndSetSlotIndexes(InventoryHandler inventoryHandler, int slot, ItemStack stack);
+
+    void clear();
+
+    void refreshSlotIndexesFrom(InventoryHandler itemHandler);
+
+    ItemStack insertItemIntoHandler(InventoryHandler itemHandler, IItemHandlerInserter inserter,
+        UnaryOperator<ItemStack> overflowHandler, ItemStack stack, boolean simulate);
+
+    ItemStack insertItemIntoHandler(InventoryHandler itemHandler, IItemHandlerInserter inserter,
+        UnaryOperator<ItemStack> overflowHandler, int slot, ItemStack stack, boolean simulate);
+
+    void registerListeners(Consumer<ItemStackKey> onAddStackKey, Consumer<ItemStackKey> onRemoveStackKey,
+        Runnable onAddFirstEmptySlot, Runnable onRemoveLastEmptySlot);
+
+    void unregisterStackKeyListeners();
+
+    boolean hasEmptySlots();
+
+    boolean hasExactStackMemorized(ItemStackKey stackKey);
+
+    boolean hasItemMemorizedOrFiltered(ItemMeta item);
+
+    int getFirstMatchingSlot(ItemStackKey stackKey);
+
+    ItemStack extractItemFromHandler(InventoryHandler inventoryHandler, IItemHandlerExtractor extractItemInternal,
+        ItemStack stack, boolean simulate);
+
+    interface IItemHandlerInserter {
+
+        ItemStack insertItem(int slot, ItemStack stack, boolean simulate);
+    }
+
+    interface IItemHandlerExtractor {
+
+        ItemStack extractItem(int slot, int amount, boolean simulate);
+    }
+
+    class Noop implements ISlotTracker {
+
+        @Override
+        public void setShouldInsertIntoEmpty(BooleanSupplier shouldInsertIntoEmpty) {
+            // noop
+        }
+
+        @Override
+        public Set<ItemStackKey> getFullStacks() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Set<ItemStackKey> getPartialStacks() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Set<Item> getItems() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public boolean hasMatchingFullStack(ItemStack stack, Predicate<ItemStack> stackMatcher) {
+            return false;
+        }
+
+        @Override
+        public void removeAndSetSlotIndexes(InventoryHandler inventoryHandler, int slot, ItemStack stack) {
+            // noop
+        }
+
+        @Override
+        public void clear() {
+            // noop
+        }
+
+        @Override
+        public void refreshSlotIndexesFrom(InventoryHandler itemHandler) {
+            // noop
+        }
+
+        @Override
+        public ItemStack insertItemIntoHandler(InventoryHandler itemHandler, IItemHandlerInserter inserter,
+            UnaryOperator<ItemStack> overflowHandler, ItemStack stack, boolean simulate) {
+            return stack;
+        }
+
+        @Override
+        public ItemStack extractItemFromHandler(InventoryHandler inventoryHandler,
+            IItemHandlerExtractor extractItemInternal, ItemStack stack, boolean simulate) {
+            return ItemHelpers.EMPTY;
+        }
+
+        @Override
+        public ItemStack insertItemIntoHandler(InventoryHandler itemHandler, IItemHandlerInserter inserter,
+            UnaryOperator<ItemStack> overflowHandler, int slot, ItemStack stack, boolean simulate) {
+            return inserter.insertItem(slot, stack, simulate);
+        }
+
+        @Override
+        public void registerListeners(Consumer<ItemStackKey> onAddStackKey, Consumer<ItemStackKey> onRemoveStackKey,
+            Runnable onAddFirstEmptySlot, Runnable onRemoveLastEmptySlot) {
+            // noop
+        }
+
+        @Override
+        public void unregisterStackKeyListeners() {
+            // noop
+        }
+
+        @Override
+        public boolean hasEmptySlots() {
+            return false;
+        }
+
+        @Override
+        public int getFirstMatchingSlot(ItemStackKey stackKey) {
+            return -1;
+        }
+
+        @Override
+        public boolean hasExactStackMemorized(ItemStackKey stackKey) {
+            return false;
+        }
+
+        @Override
+        public boolean hasItemMemorizedOrFiltered(ItemMeta item) {
+            return false;
+        }
+    }
+}

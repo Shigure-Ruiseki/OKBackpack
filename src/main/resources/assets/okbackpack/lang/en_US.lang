@@ -1,9 +1,6 @@
 # General
 itemGroup.okbackpack=OK Backpack
 
-# Config
-config.generalConfig=General Settings
-
 # Key binding
 key.categories.okbackpack=OK Backpack
 key.okbackpack.open_backpack=Open Backpack
@@ -19,273 +16,6 @@ key.okbackpack.toggle_upgrade_5=Switch Upgrade in the 5th Slot On/Off
 gui.okbackpack.status.upgrade_switched_off=%s Switched Off
 gui.okbackpack.status.upgrade_switched_on=%s Switched On
 
-# Sort
-gui.sort_type.by_mod_id=Mod ID
-gui.sort_type.by_name=Name
-gui.sort_type.by_count=Count
-gui.sort_type.by_ore_dict=OreDict
-gui.sort_order.asc=Ascending
-gui.sort_order.desc=Descending
-
-# Backpack ==============================================
-
-# Config
-config.backpackConfig=Backpack Settings
-config.feedingConfig=Feeding Settings
-config.magnetConfig=Magnet Settings
-
-# GUI
-container.backpack=Backpack
-gui.backpack=Backpack
-gui.backpack.settings=Settings
-gui.configuration_tab=Configuration Tab
-
-gui.search_bar.tool_tip=Right click to clear the search bar
-
-gui.backpack.pickup_settings=Pickup Settings
-gui.backpack.advanced_pickup_settings=Advanced Pickup Settings
-gui.backpack.magnet_settings=Magnet Settings
-gui.backpack.advanced_magnet_settings=Advanced Magnet Settings
-gui.backpack.feeding_settings=Feeding Settings
-gui.backpack.advanced_feeding_settings=Advanced Feeding Settings
-gui.backpack.filter_settings=Filter Settings
-gui.backpack.advanced_filter_settings=Advanced Filter Settings
-gui.backpack.backpack_settings=Backpack Settings
-gui.backpack.memory_settings=Slot Memory Settings
-gui.backpack.memory_settings.tooltip_detail=Make selected slots remember the current item\nOpen the tab to change this setting
-gui.backpack.memory_settings.tooltip_open_detail=Left click or drag to select slots\nRight click or drag to unselect slots\nSelect all slots\nUnselect all slots\nToggle matching NBT
-gui.backpack.sorting_settings=No Sort Slot Settings
-gui.backpack.sorting_settings.tooltip_detail=Exclude selected slots from sorting\nOpen the tab to change this setting
-gui.backpack.sorting_settings.tooltip_open_detail=Left click or drag to select slots\nRight click or drag to unselect slots\nSelect all slots\nUnselect all slots\nCycle highlight color
-gui.backpack.crafting_settings=Crafting
-gui.backpack.arcane_crafting_settings=Arcane Crafting
-gui.backpack.energized_node_settings=Energized Node
-gui.backpack.insufficient_vis=Insufficient vis
-gui.backpack.missing_research=Missing Research
-gui.backpack.void_settings=Void Settings
-gui.backpack.advanced_void_settings=Advanced Void Settings
-gui.backpack.compacting_settings=Compacting Settings
-gui.backpack.advanced_compacting_settings=Advanced Compacting Settings
-gui.backpack.jukebox_settings=Jukebox
-gui.backpack.advanced_jukebox_settings=Advanced Jukebox
-gui.backpack.refill_settings=Refill Settings
-gui.backpack.advanced_refill_settings=Advanced Refill Settings
-gui.backpack.smelting_settings=Smelting
-gui.backpack.anvil_settings=Anvil
-gui.backpack.battery_settings=Battery
-gui.backpack.tank_settings=Tank
-gui.backpack.pump_settings=Pump
-gui.backpack.advanced_pump_settings=Adv. Pump
-gui.backpack.xp_pump_settings=Exp. Pump
-gui.backpack.auto_smelting_settings=Auto-Smelting
-gui.backpack.smoking_settings=Smoking
-gui.backpack.auto_smoking_settings=Auto-Smoking
-gui.backpack.blasting_settings=Blasting
-gui.backpack.auto_blasting_settings=Auto-Blasting
-gui.backpack.smelting_input=Input
-gui.backpack.fuel_filter=Fuel Filter
-gui.backpack.only_reversible=Compact Only Uncraftable
-gui.backpack.all_recipes=Compact Anything
-gui.backpack.pump.input=Input
-gui.backpack.pump.output=Output
-gui.backpack.pump.interact_with_hand=Interact With\nFluid Container in Hand
-gui.backpack.pump.do_not_interact_with_hand=Do Not Interact With\nFluid Container in Hand
-gui.backpack.pump.interact_with_world=Interact With World
-gui.backpack.pump.do_not_interact_with_world=Do Not Interact With World
-gui.backpack.pump.interact_with_tanks_and_pipes=Interact With Tanks & Pipes
-gui.backpack.pump.do_not_interact_with_tanks_and_pipes=Do Not Interact With Tanks & Pipes
-gui.backpack.pump.fluid_filter_allow=Allow
-gui.backpack.pump.fluid_filter_block=Block
-gui.backpack.xp_pump.direction_input=Pump Experience From Player
-gui.backpack.xp_pump.direction_output=Pump Experience To Player
-gui.backpack.xp_pump.direction_keep=Keep Player at Level
-gui.backpack.xp_pump.direction_off=Pump Off
-gui.backpack.xp_pump.mending_on=Repair Items With Mending
-gui.backpack.xp_pump.mending_off=Do Not Repair Items
-gui.backpack.xp_pump.take_levels=Take %s Levels
-gui.backpack.xp_pump.store_levels=Store %s Levels
-gui.backpack.xp_pump.take_all=Take All Experience
-gui.backpack.xp_pump.store_all=Store All Experience
-gui.backpack.xp_pump.level_unit=lvls
-gui.backpack.xp_pump.level_select.tooltip=Level at which Pump Stops
-gui.backpack.scroll_to_change_value=Scroll to change value
-
-
-# Tooltips
-gui.backpack.stack_size_extra=Count: %s / %s
-gui.backpack.not_in_effect=Not in effect
-gui.backpack.whitelist=Allow
-gui.backpack.blacklist=Block
-
-gui.backpack.match_item=Match Item
-gui.backpack.match_mod_id=Match Mod
-gui.backpack.match_ore_dict=Match Ore Dictionary
-
-gui.backpack.match_durability=Match Durability
-gui.backpack.ignore_durability=Ignore Durability
-
-gui.backpack.match_nbt=Match NBT
-gui.backpack.ignore_nbt=Ignore NBT
-
-gui.backpack.item_magnet=Pickup Items
-gui.backpack.ignore_item_magnet=Do Not Pickup Items
-
-gui.backpack.exp_magnet=Pickup Experience
-gui.backpack.ignore_exp_magnet=Do Not Pickup Experience
-
-gui.backpack.add_ore_dict_entry=Add Ore Dict.
-gui.backpack.remove_ore_dict_entry=Remove Ore Dict.
-gui.backpack.ore_dict_list.title=Ore Dict
-gui.backpack.add_ore_dict=Add Ore Dict
-gui.backpack.add_ore_dict.no_item=<- Click an Item into slot to start adding its ore dicts
-gui.backpack.add_ore_dict.no_additional=All Item's ore dicts are already added
-gui.backpack.add_ore_dict.controls=Scroll to Select, Click to Add
-gui.backpack.remove_ore_dict=Remove Ore Dict
-gui.backpack.remove_ore_dict.empty=No ore dicts to remove
-gui.backpack.remove_ore_dict.controls=Scroll to Select, Click to Remove
-gui.backpack.match_any_ore_dict=Match Any Ore Dict
-gui.backpack.match_all_ore_dict=Match All Ore Dicts
-gui.backpack.ore_dict_input_help=You can input ore dictionary here, regex is supported
-
-gui.backpack.complete_hunger=Only feed when player is hungry enough\nto not waste any hunger points of the food at all
-gui.backpack.half_hunger=Only feed when player is hungry enough\nto only waste half hunger points of the food at most
-gui.backpack.immediate_hunger=Feed as soon as player is tiny bit hungry\nwastes quite a few hunger points of the food
-gui.backpack.ignore_health=Do not consider health\nIgnores player's health and only feeds based on hunger setting
-gui.backpack.consider_health=Feed player immediately when hurt\nIgnores hunger setting when player is not at max health
-
-gui.backpack.input_output=Input & Output
-gui.backpack.input=Input
-gui.backpack.output=Output
-
-gui.backpack.sort_inventory=Sort Inventory
-gui.backpack.sort_by_name=By Name
-gui.backpack.sort_by_mod_id=By Mod
-gui.backpack.sort_by_count=By Count
-gui.backpack.sort_by_ore_dict=By Ore Dictionary
-
-gui.backpack.transfer_to_player_inv=Transfer to Inventory
-gui.backpack.transfer_to_player_inv_matched_1=Transfer Matching to Inventory
-gui.backpack.transfer_to_player_inv_matched_2=Shift To Transfer All
-gui.backpack.transfer_to_backpack_inv=Transfer to Storage
-gui.backpack.transfer_to_backpack_inv_matched_1=Transfer Matching to Storage
-gui.backpack.transfer_to_backpack_inv_matched_2=Shift To Transfer All
-
-gui.backpack.memorized_slot=Memorized Slot
-gui.backpack.memorize_all=Select All Slots
-gui.backpack.unmemorize_all=Unselect All Slots
-gui.backpack.select_all_slots=Select All Slots
-gui.backpack.unselect_all_slots=Unselect All Slots
-
-gui.backpack.no_sorting_slot=No Sorting Slot
-gui.backpack.lock_all_sort=Select All Slots
-gui.backpack.unlock_all_sort=Unselect All Slots
-
-gui.backpack.shift_click_inventory=Shift Click Into Inventory First
-gui.backpack.shift_click_inventory.tooltip=Shift click from storage/inventory will first try to put the stack in inventory/storage and only then into an open tab.
-gui.backpack.shift_click_open_tab=Shift Click Into Open Tab First
-gui.backpack.shift_click_open_tab.tooltip=Shift click from storage/inventory will first try to put the stack in an open tab and only then into inventory/storage.
-
-gui.backpack.toggle_color=Toggle Color
-gui.backpack.toggle_color_detail=Next = Left Click\nPrevious = Right Click\nScroll to cycle the current color
-
-gui.backpack.into_backpack=Shift Click Result Into\nBackpack
-gui.backpack.into_inventory=Shift Click Result Into\nPlayer's Inventory
-gui.backpack.used_backpack=Refill Crafting Grid
-gui.backpack.unused_backpack=Do Not Refill Crafting Grid
-
-gui.backpack.search_hint=Search...
-gui.backpack.lock_search=Keep Search Phrase: ON
-gui.backpack.lock_search.tooltip=Search phrase will be kept when backpack GUI is closed and reopened
-gui.backpack.unlock_search=Keep Search Phrase: OFF
-gui.backpack.unlock_search.tooltip=Search phrase will be cleared when backpack GUI is closed
-
-gui.backpack.lock_backpack=Another player can NOT open
-gui.backpack.lock_backpack.tooltip=Other players are prevented from opening this backpack
-gui.backpack.unlock_backpack=Another player can open
-gui.backpack.unlock_backpack.tooltip=Any player can open this backpack
-
-gui.backpack.main_color=Main Color
-gui.backpack.accent_color=Accent Color
-
-gui.backpack.keep_tab=Keep Tab Open: ON
-gui.backpack.keep_tab.tooltip=Currently opened upgrade tab will remain open when backpack GUI is closed and reopened
-gui.backpack.not_keep_tab=Keep Tab Open: OFF
-gui.backpack.not_keep_tab.tooltip=Upgrade tabs will close when backpack GUI is closed
-gui.backpack.settings_context_backpack=Backpack
-gui.backpack.settings_context_backpack.tooltip=This Backpack's settings\nInherited from player or overriden for this backpack
-gui.backpack.settings_context_player=Player
-gui.backpack.settings_context_player.tooltip=Player level settings\nApply to all backpacks/storages unless overriden
-gui.backpack.settings_preset_save=Save settings to slot %s
-gui.backpack.settings_preset_save_controls=Scroll to change slot
-gui.backpack.settings_preset_save_custom_name=Enter slot name
-gui.backpack.settings_preset_load=Load settings from slot %s
-gui.backpack.settings_preset_load_controls=Scroll to change slot
-gui.backpack.settings_preset_load_no_save=No saved settings to load
-gui.backpack.settings_preset_delete=Delete settings in slot %s
-gui.backpack.settings_preset_delete_controls=Scroll to change slot
-gui.backpack.settings_preset_export=Export settings to %s
-gui.backpack.settings_preset_export_enter_name=Enter file name
-gui.backpack.settings_preset_export_info=Export as JSON file
-gui.backpack.settings_preset_import=Import settings from %s
-gui.backpack.settings_preset_import_controls=Scroll to change file
-gui.backpack.settings_preset_confirm=Confirm input
-gui.backpack.settings_preset_no_files=No JSON files available to import
-gui.backpack.settings_preset_new_slot=1
-gui.backpack.settings_preset_unnamed=Enter slot name
-gui.backpack.settings_message_save=Settings saved to slot %s
-gui.backpack.settings_message_load=Loaded settings from slot %s
-gui.backpack.settings_message_export=Settings exported to %s
-gui.backpack.settings_message_export_empty_name=File name cannot be empty
-gui.backpack.settings_message_export_invalid_chars=File name contains invalid characters: %s
-
-gui.backpack.void_any=Void Always
-gui.backpack.void_overflow=Void Slot Overflow
-
-gui.backpack.void_all=Works in GUI as well
-gui.backpack.void_automation=Only works with other upgrades/automation
-
-gui.backpack.sleeping_bag=Use Sleeping Bag
-
-gui.backpack.jukebox_play=Play
-gui.backpack.jukebox_stop=Stop
-gui.backpack.jukebox_prev=Previous
-gui.backpack.jukebox_next=Next
-gui.backpack.jukebox_shuffle_off=Shuffle Disabled
-gui.backpack.jukebox_shuffle_on=Shuffle Enabled
-gui.backpack.jukebox_loop_off=Repeat Disabled
-gui.backpack.jukebox_loop_all=Repeat All
-gui.backpack.jukebox_loop_single=Repeat One
-
-gui.backpack.refill.enabled=Enabled
-gui.backpack.refill.target.main_hand=Main hand
-gui.backpack.refill.target.main_hand.acronym=M
-gui.backpack.refill.target.any=Any slot
-gui.backpack.refill.target.any.acronym=A
-gui.backpack.refill.target.hotbar=Hotbar slot %s
-gui.backpack.refill.target_tooltip=Refill %s
-gui.backpack.refill.scroll_hint=Scroll to change target slot
-
-gui.backpack.swap_weapon=Swap Weapon\nSwaps weapon into hand when a tool is clicked on entity
-gui.backpack.no_swap_weapon=Do Not Swap Weapon\nWeapon is never swapped into hand
-gui.backpack.swap_tool=Swap Tools\nSwaps appropriate tool into hand when it holds weapon or another tool
-gui.backpack.only_tool_swap_tool=Only Swap For Other Tools\nSwaps tool into hand only if it holds another tool, does not swap for weapon
-gui.backpack.no_swap_tool=Do Not Swap Tools\nTools are never swapped into hand
-
-gui.backpack.advanced_tool_swapper_settings=Advanced Tool Swapper Settings
-
-gui.backpack.error.add.upgrade_not_allowed=%s can't be used in %s
-gui.backpack.error.add.only_single_upgrade_allowed=Only single %s can be used in %s
-gui.backpack.error.add.only_x_upgrades_allowed=Only %dx %s can be used in %s
-gui.backpack.error.add.any_upgrade_exists=All upgrade slots need to be empty
-gui.backpack.error.add.no_upgrade_can_be_added=No upgrade can be added
-gui.backpack.error.add.upgrade_high=Backpack can't support %1$s. Upgrade backpack or add stack multiplier to at least %2$s
-gui.backpack.error.add.battery_exists=There's already Battery Upgrade in another upgrade slot
-gui.backpack.error.add.needs_occupied_inventory_slots=There's an item in at least one of the last %s slots needed for %s
-gui.backpack.error.remove.infinity_upgrade_only_admin=Only admins can remove Infinity Upgrade
-gui.backpack.error.remove.banned_item=This item must be removed before the upgrade can be
-gui.backpack.error.remove.stack_low_multiplier=There's at least one slot or upgrade that requires multiplier higher than %s
-gui.backpack.error.remove.inception_sub_backpack=There's one or more backpacks in the backpack
-
 # Items
 tile.blocks.okbackpack.leather_backpack.name=Leather Backpack
 tile.blocks.okbackpack.iron_backpack.name=Iron Backpack
@@ -297,131 +27,216 @@ tile.blocks.okbackpack.sleeping_bag.name=Sleeping Bag
 item.items.okbackpack.upgrade_base.name=Upgrade Base
 item.items.okbackpack.travelers_upgrade.name=Travelers Upgrade
 item.items.okbackpack.stack_upgrade.name=Stack Upgrade
-item.items.okbackpack.stack_upgrade.iron.name=Stack Upgrade Tier 1
-item.items.okbackpack.stack_upgrade.gold.name=Stack Upgrade Tier 2
-item.items.okbackpack.stack_upgrade.diamond.name=Stack Upgrade Tier 3
-item.items.okbackpack.stack_upgrade.obsidian.name=Stack Upgrade Tier 4
-item.items.okbackpack.stack_upgrade.omega.name=Stack Upgrade Omega Tier
-item.items.okbackpack.stack_upgrade.starter.name=Stack Upgrade Starter Tier
-item.items.okbackpack.stack_upgrade.down_t1.name=Stack Downgrade Tier 1
-item.items.okbackpack.stack_upgrade.down_t2.name=Stack Downgrade Tier 2
-item.items.okbackpack.stack_upgrade.down_t3.name=Stack Downgrade Tier 3
+item.items.okbackpack.stack_upgrade_tier_1.name=Stack Upgrade Tier 1
+item.items.okbackpack.stack_upgrade_tier_2.name=Stack Upgrade Tier 2
+item.items.okbackpack.stack_upgrade_tier_3.name=Stack Upgrade Tier 3
+item.items.okbackpack.stack_upgrade_tier_4.name=Stack Upgrade Tier 4
+item.items.okbackpack.stack_upgrade_omega.name=Stack Upgrade Omega Tier
+item.items.okbackpack.stack_upgrade_starter.name=Stack Upgrade Starter Tier
+item.items.okbackpack.stack_upgrade.tooltip=Multiplies the number of stacks that can fit in a slot by %s
+item.items.okbackpack.stack_downgrade_tier_1.name=Stack Downgrade Tier 1
+item.items.okbackpack.stack_downgrade_tier_2.name=Stack Downgrade Tier 2
+item.items.okbackpack.stack_downgrade_tier_3.name=Stack Downgrade Tier 3
+item.items.okbackpack.stack_downgrade.tooltip=Divides the per-slot stack limit by %s
+
 item.items.okbackpack.crafting_upgrade.name=Crafting Upgrade
+item.items.okbackpack.crafting_upgrade.tooltip=Crafting table in an upgrade tab
+
 item.items.okbackpack.everlasting_upgrade.name=Everlasting Upgrade
+item.items.okbackpack.everlasting_upgrade.tooltip=Backpack becomes indestructible
+item.items.okbackpack.everlasting_upgrade.tooltip.1=Can't despawn or fall into void
+
 item.items.okbackpack.magnet_upgrade.name=Magnet Upgrade
+item.items.okbackpack.magnet_upgrade.tooltip=Magnets items into backpack at range
+
 item.items.okbackpack.advanced_magnet_upgrade.name=Advanced Magnet Upgrade
+item.items.okbackpack.advanced_magnet_upgrade.tooltip=Magnets items into backpack at a greater range
+item.items.okbackpack.advanced_magnet_upgrade.tooltip.1=Has more filtering options
+
 item.items.okbackpack.pickup_upgrade.name=Pickup Upgrade
+item.items.okbackpack.pickup_upgrade.tooltip=Makes backpack pickup items
 item.items.okbackpack.advanced_pickup_upgrade.name=Advanced Pickup Upgrade
+item.items.okbackpack.advanced_pickup_upgrade.tooltip=Makes backpack pickup items
+item.items.okbackpack.advanced_pickup_upgrade.tooltip.1=Has more filtering options
+
 item.items.okbackpack.feeding_upgrade.name=Feeding Upgrade
+item.items.okbackpack.feeding_upgrade.tooltip=Feeds player with food from backpack's inventory
+
 item.items.okbackpack.advanced_feeding_upgrade.name=Advanced Feeding Upgrade
+item.items.okbackpack.advanced_feeding_upgrade.tooltip=Feeds player with food from backpack's inventory
+item.items.okbackpack.advanced_feeding_upgrade.tooltip.1=More options for when food gets fed to player
+
 item.items.okbackpack.filter_upgrade.name=Filter Upgrade
+item.items.okbackpack.filter_upgrade.tooltip=Filters items piped in and/or out of backpack
+
 item.items.okbackpack.advanced_filter_upgrade.name=Advanced Filter Upgrade
+item.items.okbackpack.advanced_filter_upgrade.tooltip=Filters items piped in and/or out of backpack
+item.items.okbackpack.advanced_filter_upgrade.tooltip.1=Has more filtering options
+
 item.items.okbackpack.compacting_upgrade.name=Compacting Upgrade
+item.items.okbackpack.compacting_upgrade.tooltip=Compacts items into their compressed variants
+item.items.okbackpack.compacting_upgrade.tooltip.1=Only 2x2 recipes
+
 item.items.okbackpack.advanced_compacting_upgrade.name=Advanced Compacting Upgrade
+item.items.okbackpack.advanced_compacting_upgrade.tooltip=Compacts items into their compressed variants
+item.items.okbackpack.advanced_compacting_upgrade.tooltip.1=Both 2x2 and 3x3 recipes with more filtering options
+
 item.items.okbackpack.smelting_upgrade.name=Smelting Upgrade
 item.items.okbackpack.auto_smelting_upgrade.name=Auto-smelting Upgrade
 item.items.okbackpack.smoking_upgrade.name=Smoking Upgrade
 item.items.okbackpack.auto_smoking_upgrade.name=Auto-smoking Upgrade
 item.items.okbackpack.blasting_upgrade.name=Blasting Upgrade
 item.items.okbackpack.auto_blasting_upgrade.name=Auto-blasting Upgrade
+
 item.items.okbackpack.inception_upgrade.name=Inception Upgrade
+item.items.okbackpack.inception_upgrade.tooltip=Makes it possible to put backpacks into the backpack
+
 item.items.okbackpack.void_upgrade.name=Void Upgrade
+item.items.okbackpack.void_upgrade.tooltip=Voids items selected in filter
 item.items.okbackpack.advanced_void_upgrade.name=Advanced Void Upgrade
+item.items.okbackpack.advanced_void_upgrade.tooltip=Voids items selected in filter
+item.items.okbackpack.advanced_void_upgrade.tooltip.1=Has more filtering options
+
 item.items.okbackpack.jukebox_upgrade.name=Jukebox Upgrade
 item.items.okbackpack.advanced_jukebox_upgrade.name=Advanced Jukebox Upgrade
 item.items.okbackpack.tool_swapper_upgrade.name=Tool Swapper Upgrade
 item.items.okbackpack.advanced_tool_swapper_upgrade.name=Advanced Tool Swapper Upgrade
+
 item.items.okbackpack.infinity_upgrade.name=Infinity Upgrade (Admin)
+item.items.okbackpack.infinity_upgrade.tooltip=Makes all items in backpack infinite
+item.items.okbackpack.infinity_upgrade.tooltip.1=Only admins can set infinite items and break or pickup backpack
 item.items.okbackpack.survival_infinity_upgrade.name=Survival Infinity Upgrade
+item.items.okbackpack.survival_infinity_upgrade.tooltip=Makes all items in backpack infinite
+item.items.okbackpack.survival_infinity_upgrade.tooltip.1=All players can set infinite items and break or pickup backpack
+
 item.items.okbackpack.anvil_upgrade.name=Anvil Upgrade
+item.items.okbackpack.anvil_upgrade.tooltip=Anvil in an upgrade tab
+
 item.items.okbackpack.battery_upgrade.name=Battery Upgrade
+item.items.okbackpack.battery_upgrade.tooltip=Replaces some backpack inventory space with energy storage
+
 item.items.okbackpack.tank_upgrade.name=Tank Upgrade
+item.items.okbackpack.tank_upgrade.tooltip=Replaces some backpack inventory space with fluid storage
+
 item.items.okbackpack.pump_upgrade.name=Pump Upgrade
+item.items.okbackpack.pump_upgrade.tooltip=Pumps fluids between Tank upgrade and adjacent blocks
+
 item.items.okbackpack.advanced_pump_upgrade.name=Advanced Pump Upgrade
+item.items.okbackpack.advanced_pump_upgrade.tooltip=Pumps Fluids between Tank upgrade and adjacent blocks
+item.items.okbackpack.advanced_pump_upgrade.tooltip.1=Works with fluid containers in hand and fluid blocks in world
+item.items.okbackpack.advanced_pump_upgrade.tooltip.2=Allows to filter which fluids are pumped
+
 item.items.okbackpack.xp_pump_upgrade.name=Experience Pump Upgrade
+item.items.okbackpack.xp_pump_upgrade.tooltip=Pumps experience between Tank upgrade and player
+
 item.items.okbackpack.refill_upgrade.name=Refill Upgrade
 item.items.okbackpack.advanced_refill_upgrade.name=Advanced Refill Upgrade
+
 item.items.okbackpack.arcane_crafting_upgrade.name=Arcane Crafting Upgrade
+item.items.okbackpack.arcane_crafting_upgrade.tooltip=Arcane workbench in an upgrade tab
+
 item.items.okbackpack.energized_node_upgrade.name=Energized Node Upgrade
-item.items.okbackpack.redstone_upgrade.name=Redstone Upgrade
-item.items.okbackpack.glowstone_upgrade.name=Glowstone Upgrade
-item.items.okbackpack.rainbow_upgrade.name=Rainbow Upgrade
-item.items.okbackpack.cactus_upgrade.name=Cactus Upgrade
-item.items.okbackpack.cow_upgrade.name=Cow Upgrade
-item.items.okbackpack.bat_upgrade.name=Bat Upgrade
-item.items.okbackpack.squid_upgrade.name=Squid Upgrade
-item.items.okbackpack.wither_upgrade.name=Wither Upgrade
-item.items.okbackpack.cake_upgrade.name=Cake Upgrade
-item.items.okbackpack.slime_upgrade.name=Slime Upgrade
-item.items.okbackpack.bookshelf_upgrade.name=Bookshelf Upgrade
-item.items.okbackpack.wolf_upgrade.name=Wolf Upgrade
-item.items.okbackpack.ocelot_upgrade.name=Ocelot Upgrade
-item.items.okbackpack.quiver_upgrade.name=Quiver Upgrade
-item.items.okbackpack.chicken_upgrade.name=Chicken Upgrade
-item.items.okbackpack.magma_cube_upgrade.name=Magma Cube Upgrade
-item.items.okbackpack.dragon_upgrade.name=Dragon Upgrade
-item.items.okbackpack.blaze_upgrade.name=Blaze Upgrade
-item.items.okbackpack.sponge_upgrade.name=Sponge Upgrade
-item.items.okbackpack.creeper_upgrade.name=Creeper Upgrade
-item.items.okbackpack.ghast_upgrade.name=Ghast Upgrade
-item.items.okbackpack.spider_upgrade.name=Spider Upgrade
-item.items.okbackpack.lapis_upgrade.name=Lapis Upgrade
-item.items.okbackpack.quartz_upgrade.name=Quartz Upgrade
-item.items.okbackpack.hay_upgrade.name=Hay Upgrade
+item.items.okbackpack.energized_node_upgrade.tooltip=Slowly charges wands in the backpack
+item.items.okbackpack.energized_node_upgrade.empty=Empty
+
 item.items.okbackpack.deposit_upgrade.name=Deposit Upgrade
+item.items.okbackpack.deposit_upgrade.tooltip=Sneak right-click a container while holding a backpack to deposit items
+
 item.items.okbackpack.advanced_deposit_upgrade.name=Advanced Deposit Upgrade
+item.items.okbackpack.advanced_deposit_upgrade.tooltip=Sneak right-click a container while holding a backpack to deposit items
+item.items.okbackpack.advanced_deposit_upgrade.tooltip.1=More filter options
+
 item.items.okbackpack.restock_upgrade.name=Restock Upgrade
+item.items.okbackpack.restock_upgrade.tooltip=Sneak right-click a container while holding a backpack to restock items
 item.items.okbackpack.advanced_restock_upgrade.name=Advanced Restock Upgrade
+item.items.okbackpack.advanced_restock_upgrade.tooltip=Sneak right-click a container while holding a backpack to restock items
+item.items.okbackpack.advanced_restock_upgrade.tooltip.1=More filter options
+
+
+item.items.okbackpack.redstone_upgrade.name=Redstone Upgrade
+item.items.okbackpack.redstone_upgrade.tooltip=Emits redstone signal to surroundings
+
+item.items.okbackpack.glowstone_upgrade.name=Glowstone Upgrade
+item.items.okbackpack.glowstone_upgrade.tooltip=Emits light to surroundings
+
+item.items.okbackpack.rainbow_upgrade.name=Rainbow Upgrade
+item.items.okbackpack.rainbow_upgrade.tooltip=Grants Jump Boost and Speed effects
+item.items.okbackpack.rainbow_upgrade.tooltip.1=Immune to fall damage
+
+item.items.okbackpack.cactus_upgrade.name=Cactus Upgrade
+item.items.okbackpack.cactus_upgrade.tooltip=Automatically collects water in rain or water
+
+item.items.okbackpack.cow_upgrade.name=Cow Upgrade
+item.items.okbackpack.cow_upgrade.tooltip=Clears all negative status effects
+
+item.items.okbackpack.bat_upgrade.name=Bat Upgrade
+item.items.okbackpack.bat_upgrade.tooltip=Grants Night Vision
+
+item.items.okbackpack.squid_upgrade.name=Squid Upgrade
+item.items.okbackpack.squid_upgrade.tooltip=Grants Water Breathing and Night Vision while underwater
+
+item.items.okbackpack.wither_upgrade.name=Wither Upgrade
+item.items.okbackpack.wither_upgrade.tooltip=Immunity to damage caused by the Wither effect
+item.items.okbackpack.wither_upgrade.tooltip.1=Applies the Wither effect when attacking entities
+
+item.items.okbackpack.cake_upgrade.name=Cake Upgrade
+item.items.okbackpack.cake_upgrade.tooltip=Grants hunger, saturation, and health regeneration
+
+item.items.okbackpack.slime_upgrade.name=Slime Upgrade
+item.items.okbackpack.slime_upgrade.tooltip=Bounce like a slime
+item.items.okbackpack.slime_upgrade.tooltip.1=Grants a speed effect on full-moon nights
+
+item.items.okbackpack.bookshelf_upgrade.name=Bookshelf Upgrade
+item.items.okbackpack.bookshelf_upgrade.tooltip=Provides an enchantment level bonus to nearby enchanting tables
+
+item.items.okbackpack.wolf_upgrade.name=Wolf Upgrade
+item.items.okbackpack.wolf_upgrade.tooltip=Calms nearby angry wolves and dogs
+item.items.okbackpack.wolf_upgrade.tooltip.1=Grants Strength on full-moon nights
+
+item.items.okbackpack.ocelot_upgrade.name=Ocelot Upgrade
+item.items.okbackpack.ocelot_upgrade.tooltip=Grants Speed while hostile mobs are nearby
+
+item.items.okbackpack.quiver_upgrade.name=Quiver Upgrade
+item.items.okbackpack.quiver_upgrade.tooltip=Prioritizes arrows stored in the backpack when firing a bow
+
+item.items.okbackpack.chicken_upgrade.name=Chicken Upgrade
+item.items.okbackpack.chicken_upgrade.tooltip=Generates eggs from time to time
+
+item.items.okbackpack.magma_cube_upgrade.name=Magma Cube Upgrade
+item.items.okbackpack.magma_cube_upgrade.tooltip=Grants Fire Resistance
+
+item.items.okbackpack.dragon_upgrade.name=Dragon Upgrade
+item.items.okbackpack.dragon_upgrade.tooltip=Grants Fire Resistance, Strength, Water Breathing, and Regeneration
+
+item.items.okbackpack.blaze_upgrade.name=Blaze Upgrade
+item.items.okbackpack.blaze_upgrade.tooltip=Immunity to fall damage and blaze fireballs
+
+item.items.okbackpack.sponge_upgrade.name=Sponge Upgrade
+item.items.okbackpack.sponge_upgrade.tooltip=Automatically absorbs nearby water source blocks
+
+item.items.okbackpack.creeper_upgrade.name=Creeper Upgrade
+item.items.okbackpack.creeper_upgrade.tooltip=Triggers an explosion at near death and grants Absorption, Regeneration, and Fire Resistance
+
+item.items.okbackpack.ghast_upgrade.name=Ghast Upgrade
+item.items.okbackpack.ghast_upgrade.tooltip=Makes ghasts neutral
+
+item.items.okbackpack.spider_upgrade.name=Spider Upgrade
+item.items.okbackpack.spider_upgrade.tooltip=Allows climbing walls
+
+item.items.okbackpack.lapis_upgrade.name=Lapis Upgrade
+item.items.okbackpack.lapis_upgrade.tooltip=Has a chance to double experience gained
+
+item.items.okbackpack.quartz_upgrade.name=Quartz Upgrade
+item.items.okbackpack.quartz_upgrade.tooltip=Grants Haste
+
+item.items.okbackpack.hay_upgrade.name=Hay Upgrade
+item.items.okbackpack.hay_upgrade.tooltip=Has a chance to double crop drops
+item.items.okbackpack.hay_upgrade.tooltip.1=Has a chance to obtain edible crops from grass
 
 # Tooltips
-tooltip.backpack.inventory_size=Inventory size: %d
-tooltip.backpack.upgrade_slots_size=Upgrade slots: %d
-tooltip.backpack.stack_multiplier=Stack multiplier: %d%s
-tooltip.backpack.contents.uuid=UUID: %s
-tooltip.backpack.contents.press_for_contents=Press <%s> to View Contents
-tooltip.backpack.contents.shift=Left Shift
-tooltip.backpack.contents.stack_multiplier=Stack Size Multiplier: %s
-tooltip.backpack.contents.energy=%s RF
-tooltip.backpack.contents.fluid=%s mB %s
-tooltip.backpack.contents.fluid_empty=Empty tank
-tooltip.backpack.inventory_interaction.right_click_add=Right-click to add
-tooltip.backpack.contents.upgrades=Upgrades
-tooltip.backpack.contents.inventory=Inventory
-tooltip.backpack.contents.empty=No Upgrades or Inventory Contents
-
-tooltip.backpack.magnet_upgrade=Magnets items into backpack at range
-tooltip.backpack.advanced_magnet_upgrade=Magnets items into backpack at a greater range
-tooltip.backpack.advanced_magnet_upgrade.1=Has more filtering options
-tooltip.backpack.everlasting_upgrade=Backpack becomes indestructible
-tooltip.backpack.everlasting_upgrade.1=Can't despawn or fall into void
-tooltip.backpack.upgrade_base=It does nothing! Feel free to put it in your upgrade slots!
-tooltip.backpack.stack_upgrade=Multiplies the number of stacks that can fit in a slot by %s
-tooltip.backpack.stack_downgrade=Divides the per-slot stack limit by %s
-tooltip.backpack.crafting_upgrade=Crafting table in an upgrade tab
-tooltip.backpack.inception_upgrade=Makes it possible to put backpacks into the backpack
-tooltip.backpack.pickup_upgrade=Makes backpack pickup items
-tooltip.backpack.advanced_pickup_upgrade=Makes backpack pickup items
-tooltip.backpack.advanced_pickup_upgrade.1=Has more filtering options
-tooltip.backpack.feeding_upgrade=Feeds player with food from backpack's inventory
-tooltip.backpack.advanced_feeding_upgrade=Feeds player with food from backpack's inventory
-tooltip.backpack.advanced_feeding_upgrade.1=More options for when food gets fed to player
-tooltip.backpack.filter_upgrade=Filters items piped in and/or out of backpack
-tooltip.backpack.advanced_filter_upgrade=Filters items piped in and/or out of backpack
-tooltip.backpack.advanced_filter_upgrade.1=Has more filtering options
-tooltip.backpack.void_upgrade=Voids items selected in filter
-tooltip.backpack.advanced_void_upgrade=Voids items selected in filter
-tooltip.backpack.advanced_void_upgrade.1=Has more filtering options
 tooltip.backpack.jukebox_upgrade=Portable Jukebox
 tooltip.backpack.advanced_jukebox_upgrade=Portable Jukebox with support for more music discs
 tooltip.backpack.advanced_jukebox_upgrade.1=Also more playback options
-tooltip.backpack.infinity_upgrade=Makes all items in backpack infinite
-tooltip.backpack.infinity_upgrade.1=Only admins can set infinite items and break or pickup backpack
-tooltip.backpack.survival_infinity_upgrade=Makes all items in backpack infinite
-tooltip.backpack.survival_infinity_upgrade.1=All players can set infinite items and break or pickup backpack
-tooltip.backpack.compacting_upgrade=Compacts items into their compressed variants
-tooltip.backpack.compacting_upgrade.1=Only 2x2 recipes
-tooltip.backpack.advanced_compacting_upgrade=Compacts items into their compressed variants
-tooltip.backpack.advanced_compacting_upgrade.1=Both 2x2 and 3x3 recipes with more filtering options
 tooltip.backpack.smelting_upgrade=Smelting in an upgrade tab
 tooltip.backpack.auto_smelting_upgrade=Smelting in an upgrade tab
 tooltip.backpack.auto_smelting_upgrade.1=Automatically pulls/pushes items
@@ -434,59 +249,11 @@ tooltip.backpack.auto_blasting_upgrade.1=Automatically pulls/pushes items
 tooltip.backpack.tool_swapper_upgrade=Automatically swaps item in player's hand for the one effective on the block/entity when these are left clicked.
 tooltip.backpack.advanced_tool_swapper_upgrade=Automatically swaps item in player's hand for the one effective on the block/entity when these are left clicked.
 tooltip.backpack.advanced_tool_swapper_upgrade.1=Has filter options and enables swapping wrench like tools for block/entity player is looking at with %s
-tooltip.backpack.anvil_upgrade=Anvil in an upgrade tab
-tooltip.backpack.battery_upgrade=Replaces some backpack inventory space with energy storage
-tooltip.backpack.battery_contents=%s RF / %s RF
-tooltip.backpack.tank_upgrade=Replaces some backpack inventory space with fluid storage
-tooltip.backpack.tank_contents=%s mB / %s mB
-tooltip.backpack.pump_upgrade=Pumps fluids between Tank upgrade and adjacent blocks
-tooltip.backpack.advanced_pump_upgrade=Pumps Fluids between Tank upgrade and adjacent blocks
-tooltip.backpack.advanced_pump_upgrade.1=Works with fluid containers in hand and fluid blocks in world
-tooltip.backpack.advanced_pump_upgrade.2=Allows to filter which fluids are pumped
-tooltip.backpack.xp_pump_upgrade=Pumps experience between Tank upgrade and player
 tooltip.backpack.refill_upgrade=Keeps refilling stack of selected items in player's inventory
 tooltip.backpack.advanced_refill_upgrade=Keeps refilling stack of selected items in player's inventory
 tooltip.backpack.advanced_refill_upgrade.1=Allows for more precise target slot selection
 tooltip.backpack.advanced_refill_upgrade.2=Also allows middle click picking blocks from backpack
-tooltip.backpack.arcane_crafting_upgrade=Arcane workbench in an upgrade tab
-tooltip.backpack.energized_node_upgrade=Slowly charges wands in the backpack
-tooltip.backpack.energized_node_upgrade.empty=Empty
-tooltip.backpack.redstone_upgrade=Emits redstone signal to surroundings
-tooltip.backpack.glowstone_upgrade=Emits light to surroundings
-tooltip.backpack.rainbow_upgrade=Grants Jump Boost and Speed effects
-tooltip.backpack.rainbow_upgrade.1=Immune to fall damage
-tooltip.backpack.cactus_upgrade=Automatically collects water in rain or water
-tooltip.backpack.cow_upgrade=Clears all negative status effects
-tooltip.backpack.bat_upgrade=Grants Night Vision
-tooltip.backpack.squid_upgrade=Grants Water Breathing and Night Vision while underwater
-tooltip.backpack.wither_upgrade=Immunity to damage caused by the Wither effect
-tooltip.backpack.wither_upgrade.1=Applies the Wither effect when attacking entities
-tooltip.backpack.cake_upgrade=Grants hunger, saturation, and health regeneration
-tooltip.backpack.slime_upgrade=Bounce like a slime
-tooltip.backpack.slime_upgrade.1=Grants a speed effect on full-moon nights
-tooltip.backpack.bookshelf_upgrade=Provides an enchantment level bonus to nearby enchanting tables
-tooltip.backpack.wolf_upgrade=Calms nearby angry wolves and dogs
-tooltip.backpack.wolf_upgrade.1=Grants Strength on full-moon nights
-tooltip.backpack.ocelot_upgrade=Grants Speed while hostile mobs are nearby
-tooltip.backpack.quiver_upgrade=Prioritizes arrows stored in the backpack when firing a bow
-tooltip.backpack.chicken_upgrade=Generates eggs from time to time
-tooltip.backpack.magma_cube_upgrade=Grants Fire Resistance
-tooltip.backpack.dragon_upgrade=Grants Fire Resistance, Strength, Water Breathing, and Regeneration
-tooltip.backpack.blaze_upgrade=Immunity to fall damage and blaze fireballs
-tooltip.backpack.sponge_upgrade=Automatically absorbs nearby water source blocks
-tooltip.backpack.creeper_upgrade=Triggers an explosion at near death and grants Absorption, Regeneration, and Fire Resistance
-tooltip.backpack.ghast_upgrade=Makes ghasts neutral
-tooltip.backpack.spider_upgrade=Allows climbing walls
-tooltip.backpack.lapis_upgrade=Has a chance to double experience gained
-tooltip.backpack.quartz_upgrade=Grants Haste
-tooltip.backpack.hay_upgrade=Has a chance to double crop drops
-tooltip.backpack.hay_upgrade.1=Has a chance to obtain edible crops from grass
-tooltip.backpack.deposit_upgrade=Sneak right-click a container while holding a backpack to deposit items
-tooltip.backpack.advanced_deposit_upgrade=Sneak right-click a container while holding a backpack to deposit items
-tooltip.backpack.advanced_deposit_upgrade.1=More filter options
-tooltip.backpack.restock_upgrade=Sneak right-click a container while holding a backpack to restock items
-tooltip.backpack.advanced_restock_upgrade=Sneak right-click a container while holding a backpack to restock items
-tooltip.backpack.advanced_restock_upgrade.1=More filter options
+
 gui.backpack.deposit_settings=Deposit
 gui.backpack.advanced_deposit_settings=Advanced Deposit
 gui.backpack.restock_settings=Restock
@@ -505,3 +272,34 @@ gui.okbackpack.status.nothing_to_restock=Nothing to restock
 #Messages
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.
 messages.cant.sleep.here=Ancient forces do not welcome sleep here.
+
+#Error
+gui.okbackpack.error.add.inception_exists=There's already Inception Upgrade in another upgrade slot
+gui.okbackpack.error.add.traveler_exists=There's already Traveler Upgrade in another upgrade slot
+gui.okbackpack.error.remove.inception_sub_backpack=There's one or more backpacks in the backpack
+
+#Settings
+gui.okbackpack.settings.backpack=Backpack
+gui.okbackpack.settings.backpack.tooltip=Backpack Settings
+gui.okbackpack.back_to_backpack.tooltip=Back To Backpack
+gui.okbackpack.settings.buttons.context_backpack=Backpack
+gui.okbackpack.settings.buttons.context_backpack.tooltip=This Backpack's settings
+gui.okbackpack.settings.buttons.context_backpack.tooltip_detail=Inherited from player or overriden for this backpack
+gui.okbackpack.settings.buttons.another_player_can_open.on=Another player can open
+gui.okbackpack.settings.buttons.another_player_can_open.on.tooltip=When this backpack is worn and visible another player can open it when right clicking on this player's back
+gui.okbackpack.settings.buttons.another_player_can_open.off=Another player can NOT open
+gui.okbackpack.settings.buttons.another_player_can_open.off.tooltip=Backpack can not be open by another player when right clicking on this player's back even if the backpack is worn there
+
+#Upgrades
+
+gui.okbackpack.upgrades.inception=Inception
+gui.okbackpack.upgrades.buttons.inventory_order_main_first=Upgrades work with inventory\nof main backpack first
+gui.okbackpack.upgrades.buttons.inventory_order_incepted_first=Upgrades work with inventories\nof backpacks in backpack first
+
+gui.okbackpack.upgrades.deposit=Deposit
+gui.okbackpack.upgrades.advanced_deposit=Adv. Deposit
+gui.okbackpack.upgrades.buttons.deposit_filter_type_inventory=Match Inventory Contents
+
+gui.okbackpack.upgrades.anvil=Anvil
+
+gui.okbackpack.upgrades.arcane_crafting=Arcane Crafting

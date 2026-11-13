@@ -15,8 +15,8 @@ import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
 import com.github.bsideup.jabel.Desugar;
 
+import ruiseki.backpack.init.block.BlockLeatherBackpackConfig;
 import ruiseki.okbackpack.client.gui.interaction.BackpackGuiOpenHelpers;
-import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
 import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BaublesHelpers;
 import tconstruct.client.tabs.AbstractTab;

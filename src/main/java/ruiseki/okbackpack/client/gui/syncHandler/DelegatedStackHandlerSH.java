@@ -14,7 +14,7 @@ import ruiseki.okbackpack.api.upgrade.DelegatedStackHandlerSHRegistry;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.DelegatedItemHandler;
 import ruiseki.okcore.item.handler.EmptyHandler;
-import ruiseki.okcore.item.handler.IItemHandler;
+import ruiseki.okcore.item.handler.IItemHandlerModifiable;
 
 public class DelegatedStackHandlerSH extends SyncHandler<DelegatedStackHandlerSH> {
 
@@ -36,7 +36,7 @@ public class DelegatedStackHandlerSH extends SyncHandler<DelegatedStackHandlerSH
         this.delegatedStackHandler = new DelegatedItemHandler(() -> EmptyHandler.INSTANCE, this.wrappedSlotAmount);
     }
 
-    public void setDelegatedStackHandler(Supplier<IItemHandler> delegated) {
+    public void setDelegatedStackHandler(Supplier<IItemHandlerModifiable> delegated) {
         this.delegatedStackHandler.setDelegated(delegated);
     }
 

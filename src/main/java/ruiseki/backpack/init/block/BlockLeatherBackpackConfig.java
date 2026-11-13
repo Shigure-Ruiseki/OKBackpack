@@ -1,0 +1,37 @@
+package ruiseki.backpack.init.block;
+
+import static ruiseki.okbackpack.common.init.TierRegistries.LEATHER;
+
+import net.minecraft.item.Item;
+
+import ruiseki.backpack.backpack.BlockBackpack;
+import ruiseki.backpack.backpack.ItemBackpack;
+import ruiseki.okbackpack.OKBackpack;
+import ruiseki.okcore.config.ConfigurableProperty;
+import ruiseki.okcore.config.extendedconfig.BlockContainerConfig;
+
+public class BlockLeatherBackpackConfig extends BlockContainerConfig {
+
+    /**
+     * The unique instance.
+     */
+    public static BlockLeatherBackpackConfig _instance;
+
+    @ConfigurableProperty(category = "block", comment = "Number of item slots for Leather Backpack.")
+    public static int leatherBackpackSlots = 27;
+
+    @ConfigurableProperty(category = "block", comment = "Number of upgrade slots for Leather Backpack.")
+    public static int leatherUpgradeSlots = 1;
+
+    /**
+     * Make a new instance.
+     */
+    public BlockLeatherBackpackConfig() {
+        super(OKBackpack._instance, true, "leather_backpack", null, config -> new BlockBackpack(LEATHER));
+    }
+
+    @Override
+    public Class<? extends Item> getItemBlockClass() {
+        return ItemBackpack.class;
+    }
+}

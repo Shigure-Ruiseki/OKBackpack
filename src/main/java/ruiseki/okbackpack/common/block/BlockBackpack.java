@@ -789,10 +789,10 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
             }
 
             if (!GuiScreen.isShiftKeyDown()) {
-                // "Press <Left Shift> to View Contents"
-                String shiftKey = "\u00a7b" + LangHelpers.localize("tooltip.backpack.contents.shift")
-                    + "\u00a7r\u00a77";
-                list.add("\u00a77" + LangHelpers.localize("tooltip.backpack.contents.press_for_contents", shiftKey));
+                list.add(
+                    "§7" + LangHelpers.localize(
+                        "tooltip.backpack.contents.press_for_contents",
+                        LangHelpers.localize("tooltip.backpack.contents.shift")));
                 if (Mods.CodeChickenCore.isModLoaded()) {
                     BackpackContentHandler.reset();
                 }

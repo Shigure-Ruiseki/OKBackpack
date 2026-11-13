@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
+import ruiseki.backpack.modcompat.thaumcraft.helper.ThaumcraftHelpers;
 import ruiseki.okbackpack.api.upgrade.DelegatedStackHandlerSHRegistry;
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
@@ -16,7 +17,6 @@ import ruiseki.okbackpack.api.wrapper.IStorageUpgrade;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.handler.IndexedInventoryCraftingWrapper;
 import ruiseki.okbackpack.compat.Mods;
-import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 import ruiseki.okcore.init.IInitListener;
 import ruiseki.okcore.item.handler.EmptyHandler;

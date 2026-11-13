@@ -1,0 +1,34 @@
+package ruiseki.backpack.upgrades.traverler.bookshelf;
+
+import java.util.function.Consumer;
+
+import net.minecraft.item.ItemStack;
+
+import ruiseki.backpack.upgrades.traverler.ITravelersUpgrade;
+import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.upgrades.IBookshelfUpgrade;
+import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
+
+public class BookShelfUpgradeWrapper extends UpgradeWrapperBase<BookShelfUpgradeWrapper, ItemBookShelfUpgrade>
+    implements IBookshelfUpgrade, ITravelersUpgrade {
+
+    public BookShelfUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
+        Consumer<ItemStack> upgradeSaveHandler) {
+        super(storageWrapper, upgrade, upgradeSaveHandler);
+    }
+
+    @Override
+    public float getEnchantPowerBonus() {
+        return 10.0f;
+    }
+
+    @Override
+    public boolean canBeDisabled() {
+        return false;
+    }
+
+    @Override
+    public boolean hideSettingsTab() {
+        return true;
+    }
+}

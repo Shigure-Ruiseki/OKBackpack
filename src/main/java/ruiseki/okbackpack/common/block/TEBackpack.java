@@ -28,11 +28,11 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.experimental.Delegate;
+import ruiseki.backpack.modcompat.thaumcraft.IVisChargeTarget;
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.wrapper.IBatteryUpgrade;
 import ruiseki.okbackpack.api.wrapper.ITankUpgrade;
 import ruiseki.okbackpack.client.gui.container.BackpackModularScreen;
-import ruiseki.okbackpack.compat.thaumcraft.IVisChargeTarget;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileEntityOK;
 import tconstruct.api.IExtendedStackLimitProvider;
@@ -252,6 +252,7 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
         return (int) Math.ceil(raw);
     }
 
+    @Override
     public int getExtendedStackLimit(int slot, ItemStack stack) {
         if (stack == null) {
             return 0;
@@ -296,15 +297,6 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
 
     public boolean deploySleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ) {
         if (world.isRemote) return false;
-
-        sleepingBagDeployed = BlockSleepingBag.spawnSleepingBag(player, world, meta, cX, cY, cZ);
-        if (sleepingBagDeployed) {
-            sbx = cX;
-            sby = cY;
-            sbz = cZ;
-            markDirty();
-            onSendUpdate();
-        }
         return sleepingBagDeployed;
     }
 
@@ -453,7 +445,7 @@ public class TEBackpack extends TileEntityOK implements ISidedInventory, IGuiHol
 
     @Override
     public void onVisCharged() {
-        markDirty();
+        this.markDirty();
     }
 
 }

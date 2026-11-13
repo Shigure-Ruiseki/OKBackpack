@@ -88,9 +88,9 @@ public interface IStorageWrapper extends IItemHandlerModifiable, IItemHandler, I
 
     <T> Map<Integer, T> gatherCapabilityUpgrades(Class<T> capabilityClass);
 
-    void setSortType(SortType sortType);
+    void setSortType(SortBy sortBy);
 
-    SortType getSortType();
+    SortBy getSortType();
 
     boolean isKeepTab();
 

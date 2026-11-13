@@ -60,7 +60,7 @@ public interface IAdvancedFilterable extends IBasicFilterable {
 
         for (int i = 0; i < filterItems.getSlots(); i++) {
             ItemStack filterStack = filterItems.getStackInSlot(i);
-            if (filterStack == null || filterStack.getItem() != stack.getItem()) {
+            if (ItemHelpers.isEmpty(filterStack) || ItemHelpers.getItem(filterStack) != ItemHelpers.getItem(stack)) {
                 continue;
             }
             filterResult[i] = matchItemInfo(stack, filterStack);
@@ -88,13 +88,13 @@ public interface IAdvancedFilterable extends IBasicFilterable {
 
         for (int i = 0; i < filterItems.getSlots(); i++) {
             ItemStack filterStack = filterItems.getStackInSlot(i);
-            if (filterStack == null || filterStack.getItem() == null) {
+            if (ItemHelpers.isEmpty(filterStack)) {
                 filterResult[i] = false;
                 continue;
             }
 
-            String stackMod = getModID(stack.getItem());
-            String filterMod = getModID(filterStack.getItem());
+            String stackMod = getModID(ItemHelpers.getItem(stack));
+            String filterMod = getModID(ItemHelpers.getItem(filterStack));
 
             filterResult[i] = stackMod.equals(filterMod);
         }

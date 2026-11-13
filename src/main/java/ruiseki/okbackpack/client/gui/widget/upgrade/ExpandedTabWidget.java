@@ -27,7 +27,6 @@ public abstract class ExpandedTabWidget extends ParentWidget<ExpandedTabWidget> 
         .tiled()
         .build();
 
-    @Getter
     protected final int coveredTabSize;
     protected final ExpandDirection expandDirection;
 
@@ -81,6 +80,10 @@ public abstract class ExpandedTabWidget extends ParentWidget<ExpandedTabWidget> 
         height(coveredTabSize * 30);
         background(TAB_TEXTURE);
         child(upperTabRow);
+    }
+
+    public int getCoveredTabSize() {
+        return coveredTabSize;
     }
 
     public abstract void updateTabState();

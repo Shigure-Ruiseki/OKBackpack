@@ -7,7 +7,7 @@ public interface IArcaneCraftingUpgrade extends ICraftingUpgrade {
     String ARCANE_ASPECTS_TAG = "ArcaneAspects";
     String WAND_SLOT_TAG = "WandSlot";
 
-    int WAND_SLOT_INDEX = 10;
+    int WAND_SLOT_INDEX = 9;
 
     Map<String, Integer> getRequiredAspects();
 
