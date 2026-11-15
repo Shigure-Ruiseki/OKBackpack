@@ -135,7 +135,8 @@ public class CommonSHRegistries {
         VALUE_REGISTRY.registerServer(JUKEBOX_SLOT_ACTIVE, (handler, buf) -> {
             IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
             if (!(wrapper instanceof JukeboxUpgradeWrapper upgradeWrapper)) return;
-            ((DelegatedIntSH) handler).setDelegated(upgradeWrapper::getDiscSlotActive, upgradeWrapper::setDiscSlotActive);
+            ((DelegatedIntSH) handler)
+                .setDelegated(upgradeWrapper::getDiscSlotActive, upgradeWrapper::setDiscSlotActive);
         });
         VALUE_REGISTRY.registerServer(JUKEBOX_IS_PLAYING, (handler, buf) -> {
             IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
