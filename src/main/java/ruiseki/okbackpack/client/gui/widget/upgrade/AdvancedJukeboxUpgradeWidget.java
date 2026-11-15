@@ -16,7 +16,6 @@ import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
-import lombok.Getter;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.wrapper.IJukeboxUpgrade.JukeboxLoopMode;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
@@ -44,9 +43,7 @@ public class AdvancedJukeboxUpgradeWidget extends ExpandedUpgradeTabWidget<Advan
 
     private final AdvancedJukeboxUpgradeWrapper wrapper;
 
-    @Getter
     private final CyclicVariantButtonWidget shuffleButton;
-    @Getter
     private final CyclicVariantButtonWidget loopButton;
 
     public AdvancedJukeboxUpgradeWidget(int slotIndex, AdvancedJukeboxUpgradeWrapper wrapper, ItemStack stack,
@@ -174,6 +171,14 @@ public class AdvancedJukeboxUpgradeWidget extends ExpandedUpgradeTabWidget<Advan
             .child(modeRow);
 
         child(column);
+    }
+
+    public CyclicVariantButtonWidget getShuffleButton() {
+        return shuffleButton;
+    }
+
+    public CyclicVariantButtonWidget getLoopButton() {
+        return loopButton;
     }
 
     @Override

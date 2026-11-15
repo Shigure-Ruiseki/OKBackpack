@@ -1,8 +1,5 @@
 package ruiseki.okbackpack.common.item.jukebox;
 
-import lombok.Getter;
-
-@Getter
 public class JukeboxPlaybackDecision {
 
     private final boolean playing;
@@ -13,5 +10,17 @@ public class JukeboxPlaybackDecision {
         this.playing = playing;
         this.currentSlotIndex = currentSlotIndex;
         this.progressTicks = progressTicks;
+    }
+
+    public boolean isPlaying() {
+        return playing;
+    }
+
+    public int getCurrentSlotIndex() {
+        return currentSlotIndex;
+    }
+
+    public int getProgressTicks() {
+        return progressTicks;
     }
 }

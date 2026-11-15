@@ -85,14 +85,13 @@ public abstract class ExpandedTab extends ParentWidget<ExpandedTab> {
     }
 
     protected Flow addContentsColumn() {
-        Flow column = Flow.column()
+        return Flow.column()
             .coverChildren()
             .padding(7)
             .paddingTop(5)
             .childPadding(2)
-            .crossAxisAlignment(Alignment.CrossAxis.START);
-        column.addChild(this.getHeaderRow(), 0);
-        return column;
+            .crossAxisAlignment(Alignment.CrossAxis.START)
+            .child(0, this.getHeaderRow());
     }
 
     protected PhantomTab addPhantomTab(IDrawable icon) {

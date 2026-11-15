@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -40,10 +41,13 @@ import ruiseki.okstoragecore.settings.SettingsHandler;
 import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
 import ruiseki.okstoragecore.settings.nosort.NoSortSettingsCategory;
 import ruiseki.okstoragecore.upgrades.UpgradeHandler;
+import ruiseki.okstoragecore.upgrades.jukebox.IJukeboxPlaybackLocationProvider;
+import ruiseki.okstoragecore.upgrades.jukebox.JukeboxPlaybackLocation;
+import ruiseki.okstoragecore.upgrades.jukebox.StorageJukeboxPlaybackAnchors;
 import ruiseki.okstoragecore.upgrades.stack.ItemStackUpgrade;
 import ruiseki.okstoragecore.upgrades.tank.ItemTankUpgrade;
 
-public class BackpackWrapper implements IBackpackWrapper {
+public class BackpackWrapper implements IBackpackWrapper, IJukeboxPlaybackLocationProvider {
 
     public static final int DEFAULT_CLOTH_COLOR = 13394234;
     public static final int DEFAULT_BORDER_COLOR = 6434330;
@@ -562,5 +566,15 @@ public class BackpackWrapper implements IBackpackWrapper {
         if (sbPos.getBlock(player.worldObj) == BlockSleepingBagConfig._instance.getInstance()) {
             player.worldObj.func_147480_a(sbPos.getX(), sbPos.getY(), sbPos.getZ(), false);
         }
+    }
+
+    @Override
+    public Optional<JukeboxPlaybackLocation> getJukeboxPlaybackLocation(WorldServer initiatingLevel) {
+        if (this.getContentsUuid()
+            .isEmpty()) return Optional.empty();
+        return StorageJukeboxPlaybackAnchors.getPlaybackLocation(
+            initiatingLevel,
+            this.getContentsUuid()
+                .get());
     }
 }

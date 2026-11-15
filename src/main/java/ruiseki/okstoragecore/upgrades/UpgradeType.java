@@ -25,8 +25,8 @@ public class UpgradeType<T extends IUpgradeWrapper> {
         return factory.create(storageWrapper, upgrade, upgradeSaveHandler);
     }
 
-    public void updateWidgetDelegates(T wrapper, UpgradeSlotUpdate group) {
-        factory.updateTabDelegates(wrapper, group);
+    public void updateWidgetDelegates(T wrapper, UpgradeSlotUpdate slotUpdate) {
+        factory.updateTabDelegates(wrapper, slotUpdate);
     }
 
     @NotNull
@@ -44,7 +44,7 @@ public class UpgradeType<T extends IUpgradeWrapper> {
 
         T create(IStorageWrapper storageWrapper, ItemStack upgrade, Consumer<ItemStack> upgradeSaveHandler);
 
-        default void updateTabDelegates(T wrapper, UpgradeSlotUpdate group) {
+        default void updateTabDelegates(T wrapper, UpgradeSlotUpdate slotUpdate) {
 
         }
 

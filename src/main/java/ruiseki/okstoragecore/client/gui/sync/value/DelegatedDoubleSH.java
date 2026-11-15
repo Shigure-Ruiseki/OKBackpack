@@ -15,12 +15,17 @@ public class DelegatedDoubleSH extends DelegatedValueSH<Double, DelegatedDoubleS
     implements IFloatSyncValue<Double>, IDoubleSyncValue<Double>, IStringSyncValue<Double> {
 
     public DelegatedDouble delegatedDouble;
-    public double self = 0d;
+    public double self;
 
     public DelegatedDoubleSH(StoragePanel panel, int slotIndex) {
+        this(panel, slotIndex, 0d);
+    }
+
+    public DelegatedDoubleSH(StoragePanel panel, int slotIndex, double defaultValue) {
         super(panel, slotIndex);
+        this.cache = self = defaultValue;
         this.delegatedDouble = new DelegatedDouble(() -> this.self, value -> this.self = value);
-        this.cache = 0d;
+
     }
 
     public void setDelegated(DoubleSupplier getter) {

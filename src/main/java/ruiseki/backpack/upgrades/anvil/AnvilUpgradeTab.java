@@ -52,7 +52,7 @@ public class AnvilUpgradeTab extends ExpandedUpgradeTab<AnvilUpgradeWrapper> {
 
     protected Flow addButtonRow() {
         return Flow.row()
-            .coverChildrenHeight()
+            .coverChildren()
             .childPadding(2)
             .child(this.addShiftClickIntoButton());
     }

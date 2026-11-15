@@ -2,6 +2,7 @@ package ruiseki.okstoragecore.client.gui.sync;
 
 import net.minecraft.util.ResourceLocation;
 
+import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okstoragecore.Reference;
 import ruiseki.okstoragecore.helper.StorageInventoryHelpers;
 import ruiseki.okstoragecore.upgrades.ContentsFilterType;
@@ -16,6 +17,8 @@ import ruiseki.okstoragecore.upgrades.feeding.FeedingUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.feeding.HungerLevel;
 import ruiseki.okstoragecore.upgrades.filter.Direction;
 import ruiseki.okstoragecore.upgrades.filter.FilterUpgradeWrapper;
+import ruiseki.okstoragecore.upgrades.jukebox.JukeboxUpgradeWrapper;
+import ruiseki.okstoragecore.upgrades.jukebox.RepeatMode;
 import ruiseki.okstoragecore.upgrades.magnet.MagnetUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.pump.PumpUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.voiding.VoidUpgradeWrapper;
@@ -94,6 +97,18 @@ public class UpgradeSlotSHRegistries {
     public static final ResourceLocation INTERACTION_WITH_WORLD = new ResourceLocation(
         Reference.MOD_ID,
         "storage_interact_with_world");
+    public static final ResourceLocation JUKEBOX_STOP = new ResourceLocation(Reference.MOD_ID, "storage_jukebox_stop");
+    public static final ResourceLocation JUKEBOX_PLAY = new ResourceLocation(Reference.MOD_ID, "storage_jukebox_play");
+    public static final ResourceLocation JUKEBOX_NEXT = new ResourceLocation(Reference.MOD_ID, "storage_jukebox_next");
+    public static final ResourceLocation JUKEBOX_PREVIOUS = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_jukebox_previous");
+    public static final ResourceLocation JUKEBOX_SHUFFLE = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_jukebox_shuffle");
+    public static final ResourceLocation JUKEBOX_REPEAT = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_jukebox_repeat");
 
     public static void load() {
 
@@ -252,6 +267,40 @@ public class UpgradeSlotSHRegistries {
             IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
             if (!(wrapper instanceof PumpUpgradeWrapper upgradeWrapper)) return;
             upgradeWrapper.setInteractWithWorld(buf.readBoolean());
+        });
+
+        REGISTRY.registerServer(JUKEBOX_STOP, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof JukeboxUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.stop(slot.getPlayer());
+        });
+        REGISTRY.registerServer(JUKEBOX_PLAY, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof JukeboxUpgradeWrapper upgradeWrapper)) return;
+            slot.getTile()
+                .ifPresentOrElse(
+                    tile -> upgradeWrapper.play(tile.getWorldObj(), new BlockPos(tile)),
+                    () -> upgradeWrapper.play(slot.getPlayer()));
+        });
+        REGISTRY.registerServer(JUKEBOX_NEXT, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof JukeboxUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.next();
+        });
+        REGISTRY.registerServer(JUKEBOX_PREVIOUS, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof JukeboxUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.previous();
+        });
+        REGISTRY.registerServer(JUKEBOX_SHUFFLE, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof JukeboxUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setShuffleEnabled(buf.readBoolean());
+        });
+        REGISTRY.registerServer(JUKEBOX_REPEAT, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof JukeboxUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setRepeatMode(RepeatMode.fromOrdinal(buf.readInt()));
         });
     }
 }

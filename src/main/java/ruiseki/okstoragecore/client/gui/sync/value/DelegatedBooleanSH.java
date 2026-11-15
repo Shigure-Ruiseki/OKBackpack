@@ -14,12 +14,17 @@ public class DelegatedBooleanSH extends DelegatedValueSH<Boolean, DelegatedBoole
     implements IBoolSyncValue<Boolean>, IStringSyncValue<Boolean> {
 
     public DelegatedBoolean delegatedBoolean;
-    public boolean self = false;
+    public boolean self;
 
     public DelegatedBooleanSH(StoragePanel panel, int slotIndex) {
+        this(panel, slotIndex, false);
+    }
+
+    public DelegatedBooleanSH(StoragePanel panel, int slotIndex, boolean defaultValue) {
         super(panel, slotIndex);
+        this.cache = self = defaultValue;
         this.delegatedBoolean = new DelegatedBoolean(() -> this.self, value -> this.self = value);
-        this.cache = false;
+
     }
 
     public void setDelegated(BooleanSupplier getter) {

@@ -34,8 +34,6 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import lombok.Getter;
-import lombok.Setter;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
@@ -52,14 +50,20 @@ public class BackpackSlot extends ItemSlot {
     private final IStoragePanel<?> panel;
     private final IStorageWrapper wrapper;
 
-    @Getter
-    @Setter
     private boolean focus;
 
     public BackpackSlot(IStoragePanel<?> panel, IStorageWrapper wrapper) {
         this.panel = panel;
         this.wrapper = wrapper;
         this.focus = true;
+    }
+
+    public boolean isFocus() {
+        return focus;
+    }
+
+    public void setFocus(boolean focus) {
+        this.focus = focus;
     }
 
     private boolean isInSettingMode() {

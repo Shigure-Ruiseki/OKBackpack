@@ -29,10 +29,10 @@ public class ItemPumpUpgrade extends ItemUpgradeBase<PumpUpgradeWrapper> {
         }
 
         @Override
-        public void updateTabDelegates(PumpUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
+        public void updateTabDelegates(PumpUpgradeWrapper wrapper, UpgradeSlotUpdate slotUpdate) {
             DelegatedFluidFilterLogicSH filterLogic = wrapper.getSlotCount() == 9
-                ? group.get("basic_fluid_filter_logic")
-                : group.get("adv_fluid_filter_logic");
+                ? slotUpdate.get("basic_fluid_filter_logic")
+                : slotUpdate.get("adv_fluid_filter_logic");
             filterLogic.setFilterLogic(wrapper::getFilterLogic);
             filterLogic.syncToServer(CommonSHRegistries.FLUID_FILTER);
         }

@@ -16,12 +16,17 @@ public class DelegatedFluidStackSH extends DelegatedValueSH<FluidStack, Delegate
     implements IStringSyncValue<FluidStack> {
 
     public DelegatedFluidStack delegatedFluidStack;
-    public FluidStack self = FluidHelpers.EMPTY;
+    public FluidStack self;
 
     public DelegatedFluidStackSH(StoragePanel panel, int slotIndex) {
+        this(panel, slotIndex, FluidHelpers.EMPTY);
+    }
+
+    public DelegatedFluidStackSH(StoragePanel panel, int slotIndex, FluidStack defaultValue) {
         super(panel, slotIndex);
+        this.cache = self = defaultValue;
         this.delegatedFluidStack = new DelegatedFluidStack(() -> this.self, value -> this.self = value);
-        this.cache = FluidHelpers.EMPTY;
+
     }
 
     public void setDelegated(Supplier<FluidStack> getter) {

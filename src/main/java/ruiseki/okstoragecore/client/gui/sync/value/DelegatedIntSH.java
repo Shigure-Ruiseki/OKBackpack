@@ -18,9 +18,13 @@ public class DelegatedIntSH extends DelegatedValueSH<Integer, DelegatedIntSH>
     public int self = 0;
 
     public DelegatedIntSH(StoragePanel panel, int slotIndex) {
+        this(panel, slotIndex, 0);
+    }
+
+    public DelegatedIntSH(StoragePanel panel, int slotIndex, int defaultValue) {
         super(panel, slotIndex);
+        this.cache = self = defaultValue;
         this.delegatedInt = new DelegatedInt(() -> this.self, i -> this.self = i);
-        this.cache = 0;
     }
 
     public void setDelegated(IntSupplier getter) {

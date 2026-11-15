@@ -797,8 +797,8 @@ public class StoragePanel extends ModularPanel {
         return player;
     }
 
-    public TileEntity getTile() {
-        return tile;
+    public Optional<TileEntity> getTile() {
+        return Optional.ofNullable(this.tile);
     }
 
     public int getSlotIndex() {

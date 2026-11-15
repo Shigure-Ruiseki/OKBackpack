@@ -40,16 +40,16 @@ public class ItemBatteryUpgrade extends ItemUpgradeBase<BatteryUpgradeWrapper> {
             }
 
             @Override
-            public void updateTabDelegates(BatteryUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
-                DelegatedItemHandlerSH batteryHandler = group.get("battery_handler");
+            public void updateTabDelegates(BatteryUpgradeWrapper wrapper, UpgradeSlotUpdate slotUpdate) {
+                DelegatedItemHandlerSH batteryHandler = slotUpdate.get("battery_handler");
                 batteryHandler.setItemHandler(wrapper::getStorage);
                 batteryHandler.syncToServer(CommonSHRegistries.STORAGE);
 
-                DelegatedIntSH energyStoredHandler = group.get("battery_energy_stored");
+                DelegatedIntSH energyStoredHandler = slotUpdate.get("battery_energy_stored");
                 energyStoredHandler.setDelegated(wrapper::getEnergyStored);
                 energyStoredHandler.syncToServer(CommonSHRegistries.BATTERY_ENERGY);
 
-                DelegatedIntSH maxEnergyHandler = group.get("battery_max_energy");
+                DelegatedIntSH maxEnergyHandler = slotUpdate.get("battery_max_energy");
                 maxEnergyHandler.setDelegated(wrapper::getMaxEnergyStored);
                 maxEnergyHandler.syncToServer(CommonSHRegistries.BATTERY_CAPACITY);
             }

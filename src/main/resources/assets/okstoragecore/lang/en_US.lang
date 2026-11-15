@@ -121,6 +121,19 @@ gui.okstoragecore.upgrades.buttons.xp_pump_input=Pump Experience From Player
 gui.okstoragecore.upgrades.buttons.xp_pump_output=Pump Experience To Player
 gui.okstoragecore.upgrades.buttons.xp_pump_off=Pump Off
 
+gui.okstoragecore.upgrades.jukebox=Jukebox
+gui.okstoragecore.upgrades.advanced_jukebox=Jukebox
+gui.okstoragecore.upgrades.buttons.play=Play
+gui.okstoragecore.upgrades.buttons.stop=Stop
+gui.okstoragecore.upgrades.buttons.previous_disc=Previous
+gui.okstoragecore.upgrades.buttons.next_disc=Next
+gui.okstoragecore.upgrades.buttons.select_result=Select Result
+gui.okstoragecore.upgrades.buttons.shuffle_on=Shuffle Enabled
+gui.okstoragecore.upgrades.buttons.shuffle_off=Shuffle Disabled
+gui.okstoragecore.upgrades.buttons.repeat_all=Repeat All
+gui.okstoragecore.upgrades.buttons.repeat_one=Repeat One
+gui.okstoragecore.upgrades.buttons.no_repeat=Repeat Disabled
+
 gui.okstoragecore.upgrades.buttons.allow=Allow
 gui.okstoragecore.upgrades.buttons.block=Block
 gui.okstoragecore.upgrades.buttons.inventory=Match Inventory Contents

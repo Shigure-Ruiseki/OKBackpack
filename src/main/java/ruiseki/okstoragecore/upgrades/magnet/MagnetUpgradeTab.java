@@ -92,7 +92,7 @@ public class MagnetUpgradeTab extends ExpandedUpgradeTab<MagnetUpgradeWrapper> {
 
         protected Flow addButtonRow() {
             return Flow.row()
-                .coverChildrenHeight()
+                .coverChildren()
                 .childPadding(2)
                 .child(this.addPickupItemsButton())
                 .child(this.addPickupXpButton());

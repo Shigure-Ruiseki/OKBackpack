@@ -15,12 +15,16 @@ public class DelegatedLongSH extends DelegatedValueSH<Long, DelegatedLongSH>
     implements ILongSyncValue<Long>, IIntSyncValue<Long>, IStringSyncValue<Long> {
 
     public DelegatedLong delegatedLong;
-    public long self = 0L;
+    public long self;
 
     public DelegatedLongSH(StoragePanel panel, int slotIndex) {
+        this(panel, slotIndex, 0L);
+    }
+
+    public DelegatedLongSH(StoragePanel panel, int slotIndex, long defaultValue) {
         super(panel, slotIndex);
+        this.cache = self = defaultValue;
         this.delegatedLong = new DelegatedLong(() -> this.self, l -> this.self = l);
-        this.cache = 0L;
     }
 
     public void setDelegated(LongSupplier getter) {

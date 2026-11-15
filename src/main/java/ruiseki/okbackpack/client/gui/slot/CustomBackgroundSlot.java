@@ -16,7 +16,7 @@ public class CustomBackgroundSlot extends ResizableItemSlot {
     public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         super.drawBackground(context, widgetTheme);
         if (context != null && getSlot().getStack() == null) {
-            emptyIcon.draw(context, this.getSlotX(), this.getSlotY(), 16, 16, widgetTheme.getTheme());
+            emptyIcon.draw(context, this.okcore$getSlotX(), this.okcore$getSlotY(), 16, 16, widgetTheme.getTheme());
         }
     }
 }

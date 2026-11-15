@@ -19,10 +19,13 @@ public class DelegatedEnumSH<T extends Enum<T>> extends DelegatedValueSH<T, Dele
     public T self;
 
     public DelegatedEnumSH(StoragePanel panel, int slotIndex, Class<T> enumClass) {
+        this(panel, slotIndex, enumClass, enumClass.getEnumConstants()[0]);
+    }
+
+    public DelegatedEnumSH(StoragePanel panel, int slotIndex, Class<T> enumClass, T defaultValue) {
         super(panel, slotIndex);
         this.enumClass = enumClass;
-        this.self = enumClass.getEnumConstants()[0];
-        this.cache = this.self;
+        this.cache = this.self = defaultValue;
         this.delegatedEnum = new DelegatedEnum<>(() -> this.self, value -> this.self = value);
     }
 

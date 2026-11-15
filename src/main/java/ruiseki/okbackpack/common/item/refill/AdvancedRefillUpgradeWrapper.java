@@ -7,12 +7,10 @@ import java.util.function.Consumer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import lombok.Getter;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.TargetSlot;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 
-@Getter
 public class AdvancedRefillUpgradeWrapper extends RefillUpgradeWrapper {
 
     private static final String TARGET_SLOTS_TAG = "TargetSlots";
@@ -25,6 +23,10 @@ public class AdvancedRefillUpgradeWrapper extends RefillUpgradeWrapper {
 
         this.targetSlots = new HashMap<>();
         loadTargetSlots();
+    }
+
+    public Map<Integer, TargetSlot> getTargetSlots() {
+        return targetSlots;
     }
 
     private void loadTargetSlots() {

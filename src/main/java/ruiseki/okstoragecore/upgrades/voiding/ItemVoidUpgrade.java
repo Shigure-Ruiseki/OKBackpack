@@ -30,9 +30,9 @@ public class ItemVoidUpgrade extends ItemUpgradeBase<VoidUpgradeWrapper> {
         }
 
         @Override
-        public void updateTabDelegates(VoidUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
-            DelegatedFilterLogicSH filterLogic = wrapper.getSlotCount() == 9 ? group.get("basic_filter_logic")
-                : group.get("adv_filter_logic");
+        public void updateTabDelegates(VoidUpgradeWrapper wrapper, UpgradeSlotUpdate slotUpdate) {
+            DelegatedFilterLogicSH filterLogic = wrapper.getSlotCount() == 9 ? slotUpdate.get("basic_filter_logic")
+                : slotUpdate.get("adv_filter_logic");
             filterLogic.setFilterLogic(wrapper::getFilterLogic);
             filterLogic.syncToServer(CommonSHRegistries.FILTER);
         }

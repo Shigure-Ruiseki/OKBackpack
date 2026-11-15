@@ -63,6 +63,17 @@ public class OSCTextures {
     public static final UITexture PUMP_INTERACT_HAND = icon("pump_interact_hand", 208, 0);
     public static final UITexture PUMP_NO_INTERACT_HAND = icon("pump_no_interact_hand", 224, 0);
 
+    public static final IDrawable STOP = icon("stop", 0, 64);
+    public static final IDrawable PLAY = icon("play", 16, 64);
+    public static final IDrawable NEXT = icon("next", 32, 96);
+    public static final IDrawable PREVIOUS = icon("previous", 48, 96);
+
+    public static final IDrawable SHUFFLE_OFF = icon("shuffle_off", 112, 80);
+    public static final IDrawable SHUFFLE_ON = icon("shuffle_on", 96, 80);
+    public static final IDrawable REPEAT_ALL = icon("repeat_all", 128, 80);
+    public static final IDrawable REPEAT_ONE = icon("repeat_single", 144, 80);
+    public static final IDrawable REPEAT_OFF = icon("repeat_off", 160, 80);
+
     public static final UITexture MAIN_FIRST = icon("main_first", 48, 32);
     public static final UITexture INCEPTION_FIRST = icon("inception_first", 64, 32);
 

@@ -91,7 +91,7 @@ public class VoidUpgradeTab extends ExpandedUpgradeTab<VoidUpgradeWrapper> {
 
         protected Flow addButtonRow() {
             return Flow.row()
-                .coverChildrenHeight()
+                .coverChildren()
                 .childPadding(2)
                 .child(this.addWorkInGUIButton())
                 .child(this.addVoidTypeButton());

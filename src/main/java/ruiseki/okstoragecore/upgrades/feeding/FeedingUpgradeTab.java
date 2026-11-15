@@ -95,7 +95,7 @@ public class FeedingUpgradeTab extends ExpandedUpgradeTab<FeedingUpgradeWrapper>
 
         protected Flow addButtonRow() {
             return Flow.row()
-                .coverChildrenHeight()
+                .coverChildren()
                 .childPadding(2)
                 .child(this.addHungerLevelButton())
                 .child(this.addFeedWhenHurtButton());

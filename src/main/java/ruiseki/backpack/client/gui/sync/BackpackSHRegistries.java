@@ -2,7 +2,6 @@ package ruiseki.backpack.client.gui.sync;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -91,28 +90,30 @@ public class BackpackSHRegistries {
         EntityPlayer player = backpackSH.getSyncManager()
             .getPlayer();
         World world = player.worldObj;
-        TileEntity tile = backpackSH.getPanel()
-            .getTile();
-        if (tile != null) {
-            BlockPos pos = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
-            if (pos.getTileEntity(world) instanceof TileBackpack te) {
-                if (!te.isSleepingBagDeployed()) {
-                    BlockSleepingBag.SleepingBagResult result = BlockSleepingBag
-                        .canDeploySleepingBag(world, player, pos, true);
-                    if (result != null) {
-                        if (te.deploySleepingBag(player, world, result.footPos(), result.direction())) {
-                            player.closeScreen();
+        boolean deploy = backpackSH.getPanel()
+            .getTile()
+            .map(tile -> {
+                BlockPos pos = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+                if (pos.getTileEntity(world) instanceof TileBackpack te) {
+                    if (!te.isSleepingBagDeployed()) {
+                        BlockSleepingBag.SleepingBagResult result = BlockSleepingBag
+                            .canDeploySleepingBag(world, player, pos, true);
+                        if (result != null) {
+                            if (te.deploySleepingBag(player, world, result.footPos(), result.direction())) {
+                                player.closeScreen();
+                            }
+                        } else if (!world.isRemote) {
+                            player.addChatComponentMessage(new ChatComponentTranslation("messages.backpack.cant.bag"));
                         }
-                    } else if (!world.isRemote) {
-                        player.addChatComponentMessage(new ChatComponentTranslation("messages.backpack.cant.bag"));
+                    } else {
+                        te.removeSleepingBag(world);
                     }
-                } else {
-                    te.removeSleepingBag(world);
                 }
-            }
-            player.closeScreen();
-            return;
-        }
+                player.closeScreen();
+                return true;
+            })
+            .orElse(false);
+        if (deploy) return;
 
         BlockPos playerPos = new BlockPos(player);
         BlockSleepingBag.SleepingBagResult result = BlockSleepingBag

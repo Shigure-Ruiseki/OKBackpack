@@ -11,7 +11,6 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import cpw.mods.fml.common.Optional;
-import lombok.Getter;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSH;
@@ -44,7 +43,6 @@ public class SortingSettingWidget extends ExpandedTabWidget {
         0x8080FF, // Light Blue
     };
 
-    @Getter
     private int currentColorIndex;
 
     private final IStoragePanel<?> panel;
@@ -163,6 +161,10 @@ public class SortingSettingWidget extends ExpandedTabWidget {
             });
         phantomTabWidget.getTabIcon()
             .tooltipAutoUpdate(true);
+    }
+
+    public int getCurrentColorIndex() {
+        return currentColorIndex;
     }
 
     @Optional.Method(modid = "bogosorter")

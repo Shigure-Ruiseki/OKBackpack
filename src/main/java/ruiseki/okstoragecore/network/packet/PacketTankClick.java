@@ -15,7 +15,7 @@ import ruiseki.okstoragecore.upgrades.tank.TankUpgradeWrapper;
 public class PacketTankClick extends PacketCodec {
 
     @CodecField
-    public int slotIndex;
+    public int slotIndex = -1;
 
     public PacketTankClick() {}
 

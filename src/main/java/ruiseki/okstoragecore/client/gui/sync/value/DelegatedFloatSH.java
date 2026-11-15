@@ -14,12 +14,17 @@ public class DelegatedFloatSH extends DelegatedValueSH<Float, DelegatedFloatSH>
     implements IFloatSyncValue<Float>, IDoubleSyncValue<Float>, IStringSyncValue<Float> {
 
     public DelegatedFloat delegatedFloat;
-    public float self = 0f;
+    public float self;
 
     public DelegatedFloatSH(StoragePanel panel, int slotIndex) {
+        this(panel, slotIndex, 0f);
+    }
+
+    public DelegatedFloatSH(StoragePanel panel, int slotIndex, float defaultValue) {
         super(panel, slotIndex);
+        this.cache = self = defaultValue;
         this.delegatedFloat = new DelegatedFloat(() -> this.self, value -> this.self = value);
-        this.cache = 0f;
+
     }
 
     public void setDelegated(FloatSupplier getter) {

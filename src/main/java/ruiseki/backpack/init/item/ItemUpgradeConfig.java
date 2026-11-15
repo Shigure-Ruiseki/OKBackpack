@@ -1,7 +1,8 @@
-package ruiseki.okbackpack.common.item;
+package ruiseki.backpack.init.item;
 
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.item.ItemBase;
 
 public class ItemUpgradeConfig extends ItemConfig {
 
@@ -14,7 +15,7 @@ public class ItemUpgradeConfig extends ItemConfig {
      * Make a new instance.
      */
     public ItemUpgradeConfig() {
-        super(OKBackpack._instance, true, "upgrade_base", null, config -> new ItemUpgrade<>());
+        super(OKBackpack._instance, true, "upgrade_base", null, config -> new ItemBase());
     }
 
 }

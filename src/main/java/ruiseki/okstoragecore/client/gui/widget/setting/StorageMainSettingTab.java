@@ -74,6 +74,7 @@ public class StorageMainSettingTab extends SettingTab {
         this(
             new ItemDrawable(
                 storagePanel.getTile()
+                    .get()
                     .getBlockType()),
             "gui.okstoragecore.storage_settings",
             Tab.ExpandDirection.RIGHT,

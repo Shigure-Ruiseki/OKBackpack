@@ -14,12 +14,16 @@ import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 public class DelegatedStringSH extends DelegatedValueSH<String, DelegatedStringSH> implements IStringSyncValue<String> {
 
     public DelegatedString delegatedString;
-    public String self = "";
+    public String self;
 
     public DelegatedStringSH(StoragePanel panel, int slotIndex) {
+        this(panel, slotIndex, "");
+    }
+
+    public DelegatedStringSH(StoragePanel panel, int slotIndex, String defaultValue) {
         super(panel, slotIndex);
+        this.cache = self = defaultValue;
         this.delegatedString = new DelegatedString(() -> this.self, value -> this.self = value);
-        this.cache = "";
     }
 
     public void setDelegated(Supplier<String> getter) {

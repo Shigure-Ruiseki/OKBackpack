@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import com.cleanroommc.modularui.api.value.ISyncOrValue;
 import com.cleanroommc.modularui.drawable.ItemDrawable;
 
-import lombok.Getter;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.wrapper.IUpgradeWrapper;
 import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSH;
@@ -18,10 +17,8 @@ public abstract class ExpandedUpgradeTabWidget<U extends UpgradeWrapperBase> ext
 
     protected abstract U getWrapper();
 
-    @Getter
     protected UpgradeSlotSH slotSyncHandler = null;
 
-    @Getter
     protected IStoragePanel<?> storagePanel;
 
     public ExpandedUpgradeTabWidget(int slotIndex, int coveredTabSize, ItemStack delegatedIconStack,
@@ -34,6 +31,14 @@ public abstract class ExpandedUpgradeTabWidget<U extends UpgradeWrapperBase> ext
     public ExpandedUpgradeTabWidget(int slotIndex, int coveredTabSize, ItemStack delegatedIconStack,
         IStoragePanel<?> storagePanel, String titleKey) {
         this(slotIndex, coveredTabSize, delegatedIconStack, storagePanel, titleKey, 80);
+    }
+
+    public UpgradeSlotSH getSlotSyncHandler() {
+        return slotSyncHandler;
+    }
+
+    public IStoragePanel<?> getStoragePanel() {
+        return storagePanel;
     }
 
     @Override

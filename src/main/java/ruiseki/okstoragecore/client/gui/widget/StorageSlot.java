@@ -234,8 +234,8 @@ public class StorageSlot extends ResizableItemSlot {
 
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetThemeEntry) {
-        if (MinecraftForge.EVENT_BUS.post(new SlotRenderEvent.Pre(this.getSlot(), this.getSlotX(), this.getSlotY())))
-            return;
+        if (MinecraftForge.EVENT_BUS
+            .post(new SlotRenderEvent.Pre(this.getSlot(), this.okcore$getSlotX(), this.okcore$getSlotY()))) return;
 
         WidgetTheme widgetTheme = widgetThemeEntry.getTheme() != null ? widgetThemeEntry.getTheme()
             : WidgetTheme.getDefault()
@@ -248,7 +248,8 @@ public class StorageSlot extends ResizableItemSlot {
 
         this.drawHighlightConflict();
 
-        MinecraftForge.EVENT_BUS.post(new SlotRenderEvent.Post(this.getSlot(), this.getSlotX(), this.getSlotY()));
+        MinecraftForge.EVENT_BUS
+            .post(new SlotRenderEvent.Post(this.getSlot(), this.okcore$getSlotX(), this.okcore$getSlotY()));
     }
 
     protected boolean shouldHighlightConflict() {
@@ -263,7 +264,7 @@ public class StorageSlot extends ResizableItemSlot {
     protected void drawHighlightConflict() {
         if (this.shouldHighlightConflict()) {
             GlStateManager.disableDepth();
-            GuiDraw.drawRect(this.getSlotX(), this.getSlotY(), 16, 16, UpgradeSlot.ERROR_SLOT_COLOR);
+            GuiDraw.drawRect(this.okcore$getSlotX(), this.okcore$getSlotY(), 16, 16, UpgradeSlot.ERROR_SLOT_COLOR);
             GlStateManager.enableDepth();
         }
     }

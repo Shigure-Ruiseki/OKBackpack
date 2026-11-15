@@ -74,7 +74,7 @@ public class FilterUpgradeTab extends ExpandedUpgradeTab<FilterUpgradeWrapper> {
 
         protected Flow addButtonRow() {
             return Flow.row()
-                .coverChildrenHeight()
+                .coverChildren()
                 .childPadding(2)
                 .child(this.addDirectionButton());
         }

@@ -3,11 +3,11 @@ package ruiseki.backpack.modcompat.thaumcraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
+import ruiseki.backpack.init.item.ItemUpgradeConfig;
 import ruiseki.backpack.modcompat.thaumcraft.client.gui.sync.ThaumcraftSHRegistries;
 import ruiseki.backpack.modcompat.thaumcraft.item.ItemArcaneCraftingUpgradeConfig;
 import ruiseki.backpack.modcompat.thaumcraft.item.ItemEnergizedNodeUpgradeConfig;
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.common.item.ItemUpgradeConfig;
 import ruiseki.okcore.config.ConfigHandler;
 import ruiseki.okcore.enums.Mods;
 import ruiseki.okcore.modcompat.IModCompat;

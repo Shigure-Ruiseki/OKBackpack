@@ -2,8 +2,6 @@ package ruiseki.okbackpack.api.upgrade;
 
 import org.jetbrains.annotations.Nullable;
 
-import lombok.Getter;
-
 public class UpgradeSlotChangeResult {
 
     private static final int[] EMPTY_SLOTS = new int[0];
@@ -13,15 +11,10 @@ public class UpgradeSlotChangeResult {
         EMPTY_SLOTS,
         EMPTY_SLOTS);
 
-    @Getter
     private final boolean successful;
-    @Nullable
     private final String errorLangKey;
-    @Getter
     private final Object[] errorArgs;
-    @Getter
     private final int[] conflictSlots;
-    @Getter
     private final int[] inventoryConflictSlots;
 
     private UpgradeSlotChangeResult(boolean successful, @Nullable String errorLangKey, int[] conflictSlots,
@@ -31,6 +24,22 @@ public class UpgradeSlotChangeResult {
         this.conflictSlots = conflictSlots;
         this.inventoryConflictSlots = inventoryConflictSlots;
         this.errorArgs = errorArgs;
+    }
+
+    public boolean isSuccessful() {
+        return successful;
+    }
+
+    public Object[] getErrorArgs() {
+        return errorArgs;
+    }
+
+    public int[] getConflictSlots() {
+        return conflictSlots;
+    }
+
+    public int[] getInventoryConflictSlots() {
+        return inventoryConflictSlots;
     }
 
     @Nullable

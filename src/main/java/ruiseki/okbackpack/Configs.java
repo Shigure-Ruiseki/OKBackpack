@@ -6,6 +6,7 @@ import ruiseki.backpack.init.block.BlockGoldBackpackConfig;
 import ruiseki.backpack.init.block.BlockIronBackpackConfig;
 import ruiseki.backpack.init.block.BlockLeatherBackpackConfig;
 import ruiseki.backpack.init.block.BlockObsidianBackpackConfig;
+import ruiseki.backpack.init.item.ItemUpgradeConfig;
 import ruiseki.backpack.init.item.anvil.ItemAnvilUpgradeConfig;
 import ruiseki.backpack.init.item.battery.ItemBatteryUpgradeConfig;
 import ruiseki.backpack.init.item.compacting.ItemAdvCompactingUpgradeConfig;
@@ -21,6 +22,8 @@ import ruiseki.backpack.init.item.filter.ItemFilterUpgradeConfig;
 import ruiseki.backpack.init.item.inception.ItemInceptionUpgradeConfig;
 import ruiseki.backpack.init.item.infinity.ItemInfinityUpgradeConfig;
 import ruiseki.backpack.init.item.infinity.ItemSurvivalInfinityUpgradeConfig;
+import ruiseki.backpack.init.item.jukebox.ItemAdvJukeBoxUpgradeConfig;
+import ruiseki.backpack.init.item.jukebox.ItemJukeBoxUpgradeConfig;
 import ruiseki.backpack.init.item.magnet.ItemAdvMagnetUpgradeConfig;
 import ruiseki.backpack.init.item.magnet.ItemMagnetUpgradeConfig;
 import ruiseki.backpack.init.item.pickup.ItemAdvPickupUpgradeConfig;
@@ -67,9 +70,6 @@ import ruiseki.backpack.init.item.traverler.ItemWolfUpgradeConfig;
 import ruiseki.backpack.init.item.voiding.ItemAdvVoidUpgradeConfig;
 import ruiseki.backpack.init.item.voiding.ItemVoidUpgradeConfig;
 import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
-import ruiseki.okbackpack.common.item.ItemUpgradeConfig;
-import ruiseki.okbackpack.common.item.jukebox.ItemAdvancedJukeBoxUpgradeConfig;
-import ruiseki.okbackpack.common.item.jukebox.ItemJukeBoxUpgradeConfig;
 import ruiseki.okbackpack.common.item.refill.ItemAdvancedRefillUpgradeConfig;
 import ruiseki.okbackpack.common.item.refill.ItemRefillUpgradeConfig;
 import ruiseki.okbackpack.common.item.smelter.ItemAutoBlastingUpgradeConfig;
@@ -87,9 +87,6 @@ public class Configs {
     public static void registerBlocks(ConfigHandler configHandler) {
 
         // Items
-        configHandler.add(new ItemUpgradeConfig());
-        configHandler.add(new ItemJukeBoxUpgradeConfig());
-        configHandler.add(new ItemAdvancedJukeBoxUpgradeConfig());
         configHandler.add(new ItemRefillUpgradeConfig());
         configHandler.add(new ItemAdvancedRefillUpgradeConfig());
         configHandler.add(new ItemBlastingUpgradeConfig());
@@ -113,6 +110,8 @@ public class Configs {
         configHandler.add(new BlockSleepingBagConfig());
 
         // Items
+        configHandler.add(new ItemUpgradeConfig());
+
         configHandler.add(new ItemStackUpgradeStarterConfig());
         configHandler.add(new ItemStackUpgradeTier1Config());
         configHandler.add(new ItemStackUpgradeTier2Config());
@@ -164,6 +163,9 @@ public class Configs {
 
         configHandler.add(new ItemInfinityUpgradeConfig());
         configHandler.add(new ItemSurvivalInfinityUpgradeConfig());
+
+        configHandler.add(new ItemJukeBoxUpgradeConfig());
+        configHandler.add(new ItemAdvJukeBoxUpgradeConfig());
 
         configHandler.add(new ItemBatUpgradeConfig());
         configHandler.add(new ItemBlazeUpgradeConfig());

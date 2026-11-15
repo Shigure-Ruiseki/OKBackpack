@@ -41,16 +41,16 @@ public class ItemTankUpgrade extends ItemUpgradeBase<TankUpgradeWrapper> {
         }
 
         @Override
-        public void updateTabDelegates(TankUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
-            DelegatedItemHandlerSH tankHandler = group.get("tank_handler");
+        public void updateTabDelegates(TankUpgradeWrapper wrapper, UpgradeSlotUpdate slotUpdate) {
+            DelegatedItemHandlerSH tankHandler = slotUpdate.get("tank_handler");
             tankHandler.setItemHandler(wrapper::getStorage);
             tankHandler.syncToServer(CommonSHRegistries.STORAGE);
 
-            DelegatedFluidStackSH fluidStackHandler = group.get("tank_fluid");
+            DelegatedFluidStackSH fluidStackHandler = slotUpdate.get("tank_fluid");
             fluidStackHandler.setDelegated(wrapper::getContents);
             fluidStackHandler.syncToServer(CommonSHRegistries.TANK_FLUID);
 
-            DelegatedIntSH tankCapacityHandler = group.get("tank_capacity");
+            DelegatedIntSH tankCapacityHandler = slotUpdate.get("tank_capacity");
             tankCapacityHandler.setDelegated(wrapper::getTankCapacity);
             tankCapacityHandler.syncToServer(CommonSHRegistries.TANK_CAPACITY);
         }

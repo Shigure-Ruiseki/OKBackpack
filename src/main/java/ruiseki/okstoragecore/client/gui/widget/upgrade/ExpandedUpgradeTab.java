@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.client.gui.widget.upgrade;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +33,7 @@ public class ExpandedUpgradeTab<U extends IUpgradeWrapper> extends ExpandedTab {
         this.syncHandler("upgrades", this.getSlotIndex());
 
         this.getContentsColumn()
-            .addChild(this.addUpgradeColumn(), 1);
+            .child(1, this.addUpgradeColumn());
     }
 
     protected U getWrapper() {
@@ -79,6 +80,11 @@ public class ExpandedUpgradeTab<U extends IUpgradeWrapper> extends ExpandedTab {
     public IStorageWrapper getStorageWrapper() {
         return this.getStoragePanel()
             .getWrapper();
+    }
+
+    public EntityPlayer getPlayer() {
+        return this.getSyncManager()
+            .getPlayer();
     }
 
     public PanelSyncManager getSyncManager() {

@@ -33,7 +33,6 @@ import com.cleanroommc.modularui.widgets.TextWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
-import lombok.Getter;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.wrapper.IAdvancedFilterable;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
@@ -76,27 +75,18 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
             IKey.lang("gui.backpack.match_all_ore_dict"),
             OKBGuiTextures.ALL_FOUR_SLOT_ICON) };
 
-    @Getter
     private CyclicVariantButtonWidget filterTypeButton;
-    @Getter
     private final CyclicVariantButtonWidget matchTypeButton;
-    @Getter
     private final CyclicVariantButtonWidget ignoreDurabilityButton;
-    @Getter
     private final CyclicVariantButtonWidget ignoreNBTButton;
-    @Getter
     private final CyclicVariantButtonWidget matchAllOreDictButton;
 
-    @Getter
     private final Flow itemBasedConfigurationGroup;
-    @Getter
     private final Flow oreDictBasedConfigurationGroup;
-    @Getter
     private final List<ItemSlot> filterSlots;
 
     private final OreDictRegexListWidget oreDictList;
 
-    @Getter
     private UpgradeSlotSH slotSyncHandler = null;
 
     private final IAdvancedFilterable filterableWrapper;
@@ -408,6 +398,42 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
             .child(this.oreDictBasedConfigurationGroup);
     }
 
+    public CyclicVariantButtonWidget getFilterTypeButton() {
+        return filterTypeButton;
+    }
+
+    public CyclicVariantButtonWidget getMatchTypeButton() {
+        return matchTypeButton;
+    }
+
+    public CyclicVariantButtonWidget getIgnoreDurabilityButton() {
+        return ignoreDurabilityButton;
+    }
+
+    public CyclicVariantButtonWidget getIgnoreNBTButton() {
+        return ignoreNBTButton;
+    }
+
+    public CyclicVariantButtonWidget getMatchAllOreDictButton() {
+        return matchAllOreDictButton;
+    }
+
+    public Flow getItemBasedConfigurationGroup() {
+        return itemBasedConfigurationGroup;
+    }
+
+    public Flow getOreDictBasedConfigurationGroup() {
+        return oreDictBasedConfigurationGroup;
+    }
+
+    public List<ItemSlot> getFilterSlots() {
+        return filterSlots;
+    }
+
+    public UpgradeSlotSH getSlotSyncHandler() {
+        return slotSyncHandler;
+    }
+
     private List<String> getAvailableOreDicts(ItemSlot oreDictSlot) {
         ItemStack stack = oreDictSlot.isSynced() ? oreDictSlot.getSlot()
             .getStack() : null;
@@ -508,7 +534,6 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
         private static final int PAUSE_TIME = 60;
 
         private final AdvancedFilterWidget parent;
-        @Getter
         private final String text;
 
         private TextRenderer.Line line = new TextRenderer.Line("", 0f);
@@ -520,6 +545,10 @@ public class AdvancedFilterWidget extends ParentWidget<AdvancedFilterWidget> {
         private boolean isSelected() {
             return parent.removeScrollIndex == parent.filterableWrapper.getOreDictEntries()
                 .indexOf(text);
+        }
+
+        public String getText() {
+            return text;
         }
 
         public OreDictEntryWidget(AdvancedFilterWidget parent, String text, int width) {

@@ -9,7 +9,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import lombok.Getter;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.api.wrapper.IRefillUpgrade;
@@ -21,7 +20,6 @@ import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.ItemNBTHelpers;
 import ruiseki.okcore.item.handler.IItemHandler;
 
-@Getter
 public class RefillUpgradeWrapper extends UpgradeWrapperBase implements IRefillUpgrade {
 
     private static final String ENABLED_TAG = "Enabled";
@@ -53,6 +51,15 @@ public class RefillUpgradeWrapper extends UpgradeWrapperBase implements IRefillU
 
         NBTTagCompound handlerTag = ItemNBTHelpers.getCompound(upgrade, IBasicFilterable.FILTER_ITEMS_TAG, false);
         if (handlerTag != null) filterHandler.deserializeNBT(handlerTag);
+    }
+
+    public BaseItemStackHandler getFilterHandler() {
+        return filterHandler;
+    }
+
+    @Override
+    public int getFilterSlotCount() {
+        return filterSlotCount;
     }
 
     protected void onFilterSlotChanged(int slot) {

@@ -52,5 +52,6 @@ public class CommonProxy extends CommonProxyComponent {
         FMLCommonHandler.instance()
             .bus()
             .register(CommonEventHandler.INSTANCE);
+
     }
 }

@@ -29,9 +29,9 @@ public class ItemDepositUpgrade extends ItemUpgradeBase<DepositUpgradeWrapper> {
         }
 
         @Override
-        public void updateTabDelegates(DepositUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
-            DelegatedFilterLogicSH filterLogic = wrapper.getSlotCount() == 9 ? group.get("basic_filter_logic")
-                : group.get("adv_filter_logic");
+        public void updateTabDelegates(DepositUpgradeWrapper wrapper, UpgradeSlotUpdate slotUpdate) {
+            DelegatedFilterLogicSH filterLogic = wrapper.getSlotCount() == 9 ? slotUpdate.get("basic_filter_logic")
+                : slotUpdate.get("adv_filter_logic");
             filterLogic.setFilterLogic(wrapper::getFilterLogic);
             filterLogic.syncToServer(CommonSHRegistries.FILTER);
         }

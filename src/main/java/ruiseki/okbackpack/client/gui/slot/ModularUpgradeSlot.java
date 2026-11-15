@@ -7,8 +7,6 @@ import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import lombok.Getter;
-import lombok.Setter;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
@@ -19,14 +17,20 @@ public class ModularUpgradeSlot extends ModularItemSlot {
 
     protected final IStorageWrapper wrapper;
 
-    @Getter
-    @Setter
     @Nullable
     private UpgradeSlotChangeResult lastChangeResult;
 
     public ModularUpgradeSlot(IStorageWrapper wrapper, int index) {
         super(wrapper.getUpgradeHandler(), index);
         this.wrapper = wrapper;
+    }
+
+    public void setLastChangeResult(@Nullable UpgradeSlotChangeResult lastChangeResult) {
+        this.lastChangeResult = lastChangeResult;
+    }
+
+    public @Nullable UpgradeSlotChangeResult getLastChangeResult() {
+        return lastChangeResult;
     }
 
     @Override

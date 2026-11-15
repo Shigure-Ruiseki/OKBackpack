@@ -9,13 +9,14 @@ import ruiseki.backpack.api.IBlockPickResponseUpgrade;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.backpack.helpers.PlayerInventoryProvider;
 import ruiseki.okcore.helper.CapabilityHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.network.CodecField;
 import ruiseki.okcore.network.PacketCodec;
 
 public class PacketBlockPick extends PacketCodec {
 
     @CodecField
-    public ItemStack filter;
+    public ItemStack filter = ItemHelpers.EMPTY;
 
     public PacketBlockPick() {}
 

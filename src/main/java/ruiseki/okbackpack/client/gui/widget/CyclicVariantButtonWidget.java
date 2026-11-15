@@ -11,12 +11,10 @@ import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 
-import lombok.Getter;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 
 public class CyclicVariantButtonWidget extends ButtonWidget<CyclicVariantButtonWidget> {
 
-    @Getter
     protected int index = 0;
 
     protected final List<Variant> variants;
@@ -101,6 +99,10 @@ public class CyclicVariantButtonWidget extends ButtonWidget<CyclicVariantButtonW
     public CyclicVariantButtonWidget setInEffect(boolean inEffect) {
         this.inEffect = inEffect;
         return this;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     @Override

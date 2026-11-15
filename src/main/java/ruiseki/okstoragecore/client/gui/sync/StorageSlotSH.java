@@ -1,8 +1,11 @@
 package ruiseki.okstoragecore.client.gui.sync;
 
 import java.io.IOException;
+import java.util.Optional;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 import com.cleanroommc.modularui.api.IPacketWriter;
@@ -90,5 +93,15 @@ public class StorageSlotSH extends ItemSlotSH {
     public int getSlotIndex() {
         return this.getSlot()
             .getSlotIndex();
+    }
+
+    public EntityPlayer getPlayer() {
+        return this.getSyncManager()
+            .getPlayer();
+    }
+
+    public Optional<TileEntity> getTile() {
+        return this.getPanel()
+            .getTile();
     }
 }

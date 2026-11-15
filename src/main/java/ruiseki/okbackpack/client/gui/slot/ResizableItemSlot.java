@@ -48,19 +48,19 @@ public class ResizableItemSlot extends ItemSlot implements SlotRenderEvent.ISlot
     }
 
     @Override
-    public int getSlotX() {
+    public int okcore$getSlotX() {
         return (getArea().width - 16) / 2;
     }
 
     @Override
-    public int getSlotY() {
+    public int okcore$getSlotY() {
         return (getArea().height - 16) / 2;
     }
 
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        if (MinecraftForge.EVENT_BUS.post(new SlotRenderEvent.Pre(this.getSlot(), this.getSlotX(), this.getSlotY())))
-            return;
+        if (MinecraftForge.EVENT_BUS
+            .post(new SlotRenderEvent.Pre(this.getSlot(), this.okcore$getSlotX(), this.okcore$getSlotY()))) return;
 
         RenderHelper.enableGUIStandardItemLighting();
         drawSlot(getSlot());
@@ -68,14 +68,15 @@ public class ResizableItemSlot extends ItemSlot implements SlotRenderEvent.ISlot
         GlStateManager.disableLighting();
         drawOverlay();
 
-        MinecraftForge.EVENT_BUS.post(new SlotRenderEvent.Post(this.getSlot(), this.getSlotX(), this.getSlotY()));
+        MinecraftForge.EVENT_BUS
+            .post(new SlotRenderEvent.Post(this.getSlot(), this.okcore$getSlotX(), this.okcore$getSlotY()));
     }
 
     @Override
     protected void drawOverlay() {
         if (this.isHovering() && (!ModularUI.Mods.NEA.isLoaded() || NEAConfig.itemHoverOverlay)) {
             GlStateManager.colorMask(true, true, true, false);
-            GuiDraw.drawRect(this.getSlotX(), this.getSlotY(), 16, 16, getSlotHoverColor());
+            GuiDraw.drawRect(this.okcore$getSlotX(), this.okcore$getSlotY(), 16, 16, getSlotHoverColor());
             GlStateManager.colorMask(true, true, true, true);
         }
     }
@@ -142,7 +143,7 @@ public class ResizableItemSlot extends ItemSlot implements SlotRenderEvent.ISlot
 
         if (!doDrawItem) {
             if (isDragPreview) {
-                GuiDraw.drawRect(this.getSlotX(), this.getSlotY(), 16, 16, 0x80FFFFFF);
+                GuiDraw.drawRect(this.okcore$getSlotX(), this.okcore$getSlotY(), 16, 16, 0x80FFFFFF);
             }
 
             ((ItemSlotInvoker) this).invokeRenderSlotUnderlayNEI(guiContainer, slotIn);
@@ -161,8 +162,8 @@ public class ResizableItemSlot extends ItemSlot implements SlotRenderEvent.ISlot
                     Minecraft.getMinecraft()
                         .getTextureManager(),
                     itemstack,
-                    this.getSlotX(),
-                    this.getSlotY());
+                    this.okcore$getSlotX(),
+                    this.okcore$getSlotY());
 
                 GuiDraw.afterRenderItemAndEffectIntoGUI(itemstack);
                 GlStateManager.disableRescaleNormal();
@@ -182,8 +183,8 @@ public class ResizableItemSlot extends ItemSlot implements SlotRenderEvent.ISlot
                     Minecraft.getMinecraft()
                         .getTextureManager(),
                     itemstack,
-                    this.getSlotX(),
-                    this.getSlotY(),
+                    this.okcore$getSlotX(),
+                    this.okcore$getSlotY(),
                     null);
                 NEAAnimationHandler.endHoverScale();
                 itemstack.stackSize = cachedCount;

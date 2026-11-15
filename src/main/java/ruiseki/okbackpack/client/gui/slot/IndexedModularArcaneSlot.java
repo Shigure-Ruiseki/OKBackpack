@@ -5,7 +5,6 @@ import java.util.Map;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import lombok.Setter;
 import ruiseki.backpack.modcompat.thaumcraft.helper.ThaumcraftHelpers;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.wrapper.IArcaneCraftingUpgrade;
@@ -14,7 +13,6 @@ import ruiseki.okcore.item.handler.IItemHandler;
 
 public class IndexedModularArcaneSlot extends IndexedModularCraftingSlot {
 
-    @Setter
     private Runnable onCraftCallback;
 
     public IndexedModularArcaneSlot(int upgradeSlotIndex, IStorageWrapper wrapper, IItemHandler inv, int invIndex) {
@@ -46,6 +44,10 @@ public class IndexedModularArcaneSlot extends IndexedModularCraftingSlot {
         }
 
         return super.canTakeStack(player);
+    }
+
+    public Runnable getOnCraftCallback() {
+        return onCraftCallback;
     }
 
     @Override

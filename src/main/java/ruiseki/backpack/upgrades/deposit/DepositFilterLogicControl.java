@@ -33,9 +33,7 @@ public class DepositFilterLogicControl extends FilterLogicControl {
 
     @Override
     protected Flow addButtonRow() {
-        Flow row = super.addButtonRow();
-        row.addChild(addContentsFilterButton(), 0);
-        return row;
+        return super.addButtonRow().child(0, this.addContentsFilterButton());
     }
 
     protected ButtonWidget<?> addContentsFilterButton() {

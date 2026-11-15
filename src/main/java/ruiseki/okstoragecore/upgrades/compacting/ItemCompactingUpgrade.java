@@ -30,9 +30,9 @@ public class ItemCompactingUpgrade extends ItemUpgradeBase<CompactingUpgradeWrap
         }
 
         @Override
-        public void updateTabDelegates(CompactingUpgradeWrapper wrapper, UpgradeSlotUpdate group) {
-            DelegatedFilterLogicSH filterLogic = wrapper.getSlotCount() == 9 ? group.get("basic_filter_logic")
-                : group.get("adv_filter_logic");
+        public void updateTabDelegates(CompactingUpgradeWrapper wrapper, UpgradeSlotUpdate slotUpdate) {
+            DelegatedFilterLogicSH filterLogic = wrapper.getSlotCount() == 9 ? slotUpdate.get("basic_filter_logic")
+                : slotUpdate.get("adv_filter_logic");
             filterLogic.setFilterLogic(wrapper::getFilterLogic);
             filterLogic.syncToServer(CommonSHRegistries.FILTER);
         }

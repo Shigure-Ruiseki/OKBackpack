@@ -14,7 +14,6 @@ import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
-import lombok.Getter;
 import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.slot.DisableablePhantomItemSlot;
@@ -28,11 +27,8 @@ public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.whitelist"), OKBGuiTextures.CHECK_ICON),
         new CyclicVariantButtonWidget.Variant(IKey.lang("gui.backpack.blacklist"), OKBGuiTextures.CROSS_ICON));
 
-    @Getter
     private CyclicVariantButtonWidget filterTypeButton;
-    @Getter
     private final List<ItemSlot> filterSlots;
-    @Getter
     private UpgradeSlotSH slotSyncHandler = null;
 
     private final SlotGroupWidget slotGroup;
@@ -75,6 +71,18 @@ public class BasicFilterWidget extends ParentWidget<BasicFilterWidget> {
 
     public BasicFilterWidget(IBasicFilterable filterableWrapper, int slotIndex) {
         this(filterableWrapper, slotIndex, "common_filter");
+    }
+
+    public List<ItemSlot> getFilterSlots() {
+        return filterSlots;
+    }
+
+    public UpgradeSlotSH getSlotSyncHandler() {
+        return slotSyncHandler;
+    }
+
+    public CyclicVariantButtonWidget getFilterTypeButton() {
+        return filterTypeButton;
     }
 
     public void replaceFilterTypeButton(CyclicVariantButtonWidget newButton) {

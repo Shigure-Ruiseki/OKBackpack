@@ -32,6 +32,7 @@ import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.MathHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
 import ruiseki.okcore.item.handler.IItemHandlerSimpleInserter;
+import ruiseki.okcore.item.handler.IItemHandlerStackLimit;
 import ruiseki.okcore.item.handler.ItemStackHandler;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.helper.SlotValueMap;
@@ -41,7 +42,7 @@ import ruiseki.okstoragecore.upgrades.IOverflowResponseUpgrade;
 import ruiseki.okstoragecore.upgrades.voiding.ItemVoidUpgrade;
 
 public abstract class InventoryHandler extends ItemStackHandler
-    implements ITrackedContentsItemHandler, IItemHandlerModifiable {
+    implements ITrackedContentsItemHandler, IItemHandlerStackLimit, IItemHandlerModifiable {
 
     public static final String INVENTORY_TAG = "inventory";
     private static final String PARTITIONER_TAG = "partitioner";
@@ -62,7 +63,6 @@ public abstract class InventoryHandler extends ItemStackHandler
     private final SlotValueMap<ItemMeta> filterItemSlots = new SlotValueMap<>();
     private BooleanSupplier shouldInsertIntoEmpty = () -> true;
     private IntPredicate isSlotBlocked = slot -> false;
-    private IntPredicate shouldRenderBlockedSlotOverlay = slot -> false;
     private boolean voidUpgradeInfoInitialized = false;
     private boolean hasVoidUpgrade = false;
 

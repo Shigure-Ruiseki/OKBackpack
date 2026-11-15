@@ -94,7 +94,7 @@ public class ArcaneCraftingUpgradeTab extends ExpandedUpgradeTab<ArcaneCraftingU
 
     protected Flow addButtonRow() {
         return Flow.row()
-            .coverChildrenHeight()
+            .coverChildren()
             .childPadding(2)
             .child(this.addShiftClickIntoButton())
             .child(this.addFillCraftingButton());

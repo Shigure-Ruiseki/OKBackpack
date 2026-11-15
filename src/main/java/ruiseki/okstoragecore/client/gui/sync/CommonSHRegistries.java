@@ -6,6 +6,7 @@ import ruiseki.okstoragecore.Reference;
 import ruiseki.okstoragecore.client.gui.slot.CraftingSlotInfo;
 import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
 import ruiseki.okstoragecore.client.gui.slot.ModularCraftingSlot;
+import ruiseki.okstoragecore.client.gui.sync.value.DelegatedBooleanSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedFluidStackSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedIntSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedValueSH;
@@ -16,6 +17,7 @@ import ruiseki.okstoragecore.upgrades.IStorageUpgrade;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.battery.BatteryUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.crafting.CraftingContainer;
+import ruiseki.okstoragecore.upgrades.jukebox.JukeboxUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.tank.TankUpgradeWrapper;
 
 public class CommonSHRegistries {
@@ -51,6 +53,13 @@ public class CommonSHRegistries {
     public static final ResourceLocation BATTERY_CAPACITY = new ResourceLocation(
         Reference.MOD_ID,
         "storage_battery_capacity");
+
+    public static final ResourceLocation JUKEBOX_SLOT_ACTIVE = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_jukebox_slot_active");
+    public static final ResourceLocation JUKEBOX_IS_PLAYING = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_jukebox_is_playing");
 
     public static void load() {
         ITEM_REGISTRY.registerServer(STORAGE, (handler, buf) -> {
@@ -121,6 +130,17 @@ public class CommonSHRegistries {
             IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
             if (!(wrapper instanceof BatteryUpgradeWrapper upgradeWrapper)) return;
             ((DelegatedIntSH) handler).setDelegated(upgradeWrapper::getEnergyStored);
+        });
+
+        VALUE_REGISTRY.registerServer(JUKEBOX_SLOT_ACTIVE, (handler, buf) -> {
+            IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
+            if (!(wrapper instanceof JukeboxUpgradeWrapper upgradeWrapper)) return;
+            ((DelegatedIntSH) handler).setDelegated(upgradeWrapper::getDiscSlotActive);
+        });
+        VALUE_REGISTRY.registerServer(JUKEBOX_IS_PLAYING, (handler, buf) -> {
+            IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
+            if (!(wrapper instanceof JukeboxUpgradeWrapper upgradeWrapper)) return;
+            ((DelegatedBooleanSH) handler).setDelegated(upgradeWrapper::isPlaying);
         });
     }
 }

@@ -18,7 +18,6 @@ import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widget.Widget;
 
-import lombok.Setter;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.wrapper.IToggleable;
@@ -104,7 +103,6 @@ public class UpgradeSlotGroupWidget extends ParentWidget<UpgradeSlotGroupWidget>
             .xy(0, 204, WIDTH, HEIGHT)
             .build();
 
-        @Setter
         private boolean isToggleEnabled = false;
         private UpgradeSlotSH slotSyncHandler = null;
         private final IStoragePanel panel;
@@ -151,6 +149,10 @@ public class UpgradeSlotGroupWidget extends ParentWidget<UpgradeSlotGroupWidget>
 
             Interactable.playButtonClickSound();
             return Result.SUCCESS;
+        }
+
+        public void setToggleEnabled(boolean toggleEnabled) {
+            isToggleEnabled = toggleEnabled;
         }
 
         @Override
