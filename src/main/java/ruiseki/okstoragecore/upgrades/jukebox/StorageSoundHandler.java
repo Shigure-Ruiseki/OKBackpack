@@ -91,9 +91,7 @@ public class StorageSoundHandler {
             new SoundExtended(RecordHelpers.getRecordLocation(soundEvent), VectorHelpers.atCenterOf(pos)));
     }
 
-    public static void playStorageSound(RecordData soundEvent, UUID storageUuid, int entityId) {
-        World world = Minecraft.getMinecraft().theWorld;
-        if (world == null) return;
+    public static void playStorageSound(RecordData soundEvent, UUID storageUuid, int entityId, World world, EntityPlayer player) {
         float volume = 2;
         float pitch = 1;
 
@@ -103,7 +101,6 @@ public class StorageSoundHandler {
             return;
         }
 
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         if (player != null && player.getEntityId() == entityId) {
             playStorageSound(
                 storageUuid,

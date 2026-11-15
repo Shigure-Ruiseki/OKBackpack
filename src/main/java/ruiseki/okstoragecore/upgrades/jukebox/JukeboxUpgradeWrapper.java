@@ -126,7 +126,7 @@ public class JukeboxUpgradeWrapper extends UpgradeWrapperBase<JukeboxUpgradeWrap
             .orElse(-1);
     }
 
-    private void setDiscSlotActive(int discSlotActive) {
+    public void setDiscSlotActive(int discSlotActive) {
         NBTHelpers.setInteger(upgrade, "discSlotActive", discSlotActive);
         save();
     }
@@ -292,6 +292,10 @@ public class JukeboxUpgradeWrapper extends UpgradeWrapperBase<JukeboxUpgradeWrap
 
     public boolean isPlaying() {
         return isPlaying;
+    }
+
+    public void setPlaying(boolean playing) {
+        isPlaying = playing;
     }
 
     @Override

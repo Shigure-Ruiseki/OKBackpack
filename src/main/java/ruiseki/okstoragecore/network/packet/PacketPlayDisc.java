@@ -59,7 +59,7 @@ public class PacketPlayDisc extends PacketCodec {
         if (this.blockStorage) {
             StorageSoundHandler.playStorageSound(soundEvent, this.storageUuid, this.pos);
         } else {
-            StorageSoundHandler.playStorageSound(soundEvent, this.storageUuid, this.entityId);
+            StorageSoundHandler.playStorageSound(soundEvent, this.storageUuid, this.entityId, world, player);
         }
     }
 

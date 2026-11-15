@@ -42,11 +42,11 @@ public class ItemJukeboxUpgrade extends ItemUpgradeBase<JukeboxUpgradeWrapper> {
             handler.syncToServer(CommonSHRegistries.STORAGE);
 
             DelegatedIntSH slotActiveHandler = slotUpdate.get("jukebox_slot_active");
-            slotActiveHandler.setDelegated(wrapper::getDiscSlotActive);
+            slotActiveHandler.setDelegated(wrapper::getDiscSlotActive, wrapper::setDiscSlotActive);
             slotActiveHandler.syncToServer(CommonSHRegistries.JUKEBOX_SLOT_ACTIVE);
 
             DelegatedBooleanSH isPlayingHandler = slotUpdate.get("jukebox_is_playing");
-            isPlayingHandler.setDelegated(wrapper::isPlaying);
+            isPlayingHandler.setDelegated(wrapper::isPlaying, wrapper::setPlaying);
             isPlayingHandler.syncToServer(CommonSHRegistries.JUKEBOX_IS_PLAYING);
         }
 
