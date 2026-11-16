@@ -9,11 +9,13 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,8 +23,18 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
+import org.apache.logging.log4j.Level;
+
+import ruiseki.okcore.datastructure.NonNullList;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.inventory.ItemStackKey;
+import ruiseki.okcore.inventory.RecipeInventory;
+import ruiseki.okcore.item.handler.ItemStackHandler;
+import ruiseki.okcore.recipe.IRecipeOK;
+import ruiseki.okcore.recipe.IRecipeType;
+import ruiseki.okcore.recipe.RecipeManager;
+import ruiseki.okcore.recipe.type.cooking.AbstractCookingRecipe;
+import ruiseki.okstoragecore.OKStorageCore;
 
 public class RecipeHelpers {
 
@@ -37,16 +49,12 @@ public class RecipeHelpers {
 
     private RecipeHelpers() {}
 
-    public static void setWorld(World newWorld) {
-        if (getWorld() != newWorld) {
-            clearCache();
-        }
-
-        world = new WeakReference<>(newWorld);
+    public static void setWorld(World w) {
+        world = new WeakReference<>(w);
     }
 
-    private static World getWorld() {
-        return world.get();
+    private static Optional<World> getWorld() {
+        return world != null ? Optional.ofNullable(world.get()) : Optional.empty();
     }
 
     public static void clearCache() {
@@ -61,7 +69,7 @@ public class RecipeHelpers {
     // Compacting shapes
 
     public static Set<CompactingShape> getItemCompactingShapes(ItemStack stack) {
-        World w = getWorld();
+        World w = getWorld().orElse(null);
 
         if (w == null || ItemHelpers.isEmpty(stack)) {
             return Collections.emptySet();
@@ -252,7 +260,7 @@ public class RecipeHelpers {
             return cached;
         }
 
-        World w = getWorld();
+        World w = getWorld().orElse(null);
         if (w == null) {
             return UncompactingResult.EMPTY;
         }
@@ -362,7 +370,7 @@ public class RecipeHelpers {
     }
 
     public static CompactingResult getCompactingResult(ItemStack stack, int width, int height) {
-        World w = getWorld();
+        World w = getWorld().orElse(null);
 
         if (w == null || ItemHelpers.isEmpty(stack) || !isValidGridSize(width, height)) {
             return CompactingResult.EMPTY;
@@ -616,6 +624,26 @@ public class RecipeHelpers {
         @Override
         public void onCraftMatrixChanged(net.minecraft.inventory.IInventory inventory) {
             // No-op.
+        }
+    }
+
+    public static <T extends AbstractCookingRecipe> Optional<T> getCookingRecipe(ItemStack stack,
+        IRecipeType<T> recipeType) {
+        return getWorld().flatMap(
+            w -> safeGetRecipeFor(
+                recipeType,
+                new RecipeInventory(new ItemStackHandler(NonNullList.from(ItemHelpers.EMPTY, stack))),
+                w));
+    }
+
+    public static <C extends IInventory, T extends IRecipeOK<C>> Optional<T> safeGetRecipeFor(IRecipeType<T> recipeType,
+        C inventory, World level) {
+        try {
+            return RecipeManager.getManager()
+                .getRecipeFor(recipeType, inventory, level);
+        } catch (Exception e) {
+            OKStorageCore.okLog(Level.ERROR, "Error while getting recipe ", e);
+            return Optional.empty();
         }
     }
 }

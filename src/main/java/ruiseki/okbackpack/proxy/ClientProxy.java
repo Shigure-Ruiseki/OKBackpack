@@ -8,7 +8,6 @@ import org.lwjgl.input.Keyboard;
 import ruiseki.backpack.event.ClientEventHandler;
 import ruiseki.backpack.event.ItemRenderEvent;
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.client.audio.BackpackJukeboxSoundManager;
 import ruiseki.okbackpack.client.key.OpenBackpackHandler;
 import ruiseki.okbackpack.client.key.PickBlockHandler;
 import ruiseki.okbackpack.client.key.ToggleUpgradeHandler;
@@ -74,7 +73,6 @@ public class ClientProxy extends ClientProxyComponent {
     public void registerEventHooks() {
         super.registerEventHooks();
         MinecraftForge.EVENT_BUS.register(new ItemRenderEvent());
-        MinecraftForge.EVENT_BUS.register(BackpackJukeboxSoundManager.getInstance());
         if (Mods.CodeChickenCore.isModLoaded()) {
             MinecraftForge.EVENT_BUS.register(new BackpackContentHandler());
         }

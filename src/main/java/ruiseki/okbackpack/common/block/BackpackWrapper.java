@@ -24,7 +24,6 @@ import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.github.bsideup.jabel.Desugar;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
-import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.SortBy;
 import ruiseki.okbackpack.api.tier.BackpackTier;
@@ -50,7 +49,6 @@ import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackSettingsTemplate;
 import ruiseki.okbackpack.common.helpers.UpgradeFeatureHelper;
-import ruiseki.okbackpack.common.network.PacketJukeboxPlaybackState;
 import ruiseki.okbackpack.compat.thaumcraft.IUpgradeVisChargeTarget;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
@@ -606,11 +604,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         float z = (float) player.posZ;
         int carrierEntityId = player.getEntityId();
         var targetPoint = new NetworkRegistry.TargetPoint(player.worldObj.provider.dimensionId, x, y, z, 64);
-        for (int slot : pendingJukeboxStops) {
-            var packet = new PacketJukeboxPlaybackState(uuid, slot, false, 0, 0, x, y, z, "", carrierEntityId);
-            OKBackpack._instance.getPacketHandler()
-                .sendToAllAround(packet, targetPoint);
-        }
+
         pendingJukeboxStops.clear();
     }
 
@@ -620,29 +614,14 @@ public class BackpackWrapper implements IBackpackWrapper {
         float y = pos.y + 0.5f;
         float z = pos.z + 0.5f;
         var targetPoint = new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 64);
-        for (int slot : pendingJukeboxStops) {
-            var packet = new PacketJukeboxPlaybackState(uuid, slot, false, 0, 0, x, y, z, "", -1);
-            OKBackpack._instance.getPacketHandler()
-                .sendToAllAround(packet, targetPoint);
-        }
+
         pendingJukeboxStops.clear();
     }
 
     public void forceStopAllJukeboxes(World world, float x, float y, float z) {
         if (world.isRemote) return;
         var targetPoint = new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 64);
-        for (int i = 0; i < upgradeSlots; i++) {
-            ItemStack stack = upgradeHandler.getStackInSlot(i);
-            if (stack == null) continue;
-            if (!ItemNBTHelpers.getBoolean(stack, IJukeboxUpgrade.PLAYING_TAG, false)) continue;
-            var packet = new PacketJukeboxPlaybackState(uuid, i, false, 0, 0, x, y, z, "", -1);
-            OKBackpack._instance.getPacketHandler()
-                .sendToAllAround(packet, targetPoint);
-            IUpgradeWrapper wrapper = upgradeHandler.getWrapperInSlot(i);
-            if (wrapper instanceof IJukeboxUpgrade jukebox) {
-                jukebox.stop();
-            }
-        }
+
     }
 
     public void writeAdditionalInfo(World world, float x, float y, float z) {
