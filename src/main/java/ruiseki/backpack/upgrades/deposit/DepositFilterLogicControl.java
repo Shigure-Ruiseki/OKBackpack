@@ -12,7 +12,7 @@ import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.widget.filter.ContentsFilterControl;
 import ruiseki.okstoragecore.client.gui.widget.filter.FilterLogicControl;
-import ruiseki.okstoragecore.upgrades.IFilteredUpgrade;
+import ruiseki.okstoragecore.upgrades.FilterLogic;
 import ruiseki.okstoragecore.upgrades.PrimaryMatch;
 
 public class DepositFilterLogicControl extends FilterLogicControl {
@@ -26,9 +26,9 @@ public class DepositFilterLogicControl extends FilterLogicControl {
 
     private CyclicVariantButtonWidget depositButton;
 
-    public DepositFilterLogicControl(int slotIndex, IFilteredUpgrade filteredWrapper, String syncKey, int slotCount,
+    public DepositFilterLogicControl(int slotIndex, FilterLogic filterLogic, String syncKey, int slotCount,
         MatchButton... showMatchButtons) {
-        super(slotIndex, filteredWrapper, syncKey, slotCount, showMatchButtons);
+        super(slotIndex, filterLogic, syncKey, slotCount, showMatchButtons);
     }
 
     @Override
@@ -75,17 +75,17 @@ public class DepositFilterLogicControl extends FilterLogicControl {
 
     public static class Basic extends ContentsFilterControl {
 
-        public Basic(int slotIndex, IFilteredUpgrade filteredWrapper, String syncKey) {
-            super(slotIndex, filteredWrapper, syncKey, 9);
+        public Basic(int slotIndex, FilterLogic filterLogic, String syncKey) {
+            super(slotIndex, filterLogic, syncKey, 9);
         }
     }
 
     public static class Advanced extends ContentsFilterControl {
 
-        public Advanced(int slotIndex, IFilteredUpgrade filteredWrapper, String syncKey) {
+        public Advanced(int slotIndex, FilterLogic filterLogic, String syncKey) {
             super(
                 slotIndex,
-                filteredWrapper,
+                filterLogic,
                 syncKey,
                 16,
                 MatchButton.PRIMARY_MATCH,

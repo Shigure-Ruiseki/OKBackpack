@@ -55,8 +55,12 @@ public class FilterUpgradeTab extends ExpandedUpgradeTab<FilterUpgradeWrapper> {
 
         @Override
         protected Flow addUpgradeColumn() {
-            return super.addUpgradeColumn()
-                .child(new ContentsFilterControl.Basic(this.getSlotIndex(), this.getWrapper(), "basic_filter"));
+            return super.addUpgradeColumn().child(
+                new ContentsFilterControl.Basic(
+                    this.getSlotIndex(),
+                    this.getWrapper()
+                        .getFilterLogic(),
+                    "basic_filter"));
         }
     }
 
@@ -69,7 +73,12 @@ public class FilterUpgradeTab extends ExpandedUpgradeTab<FilterUpgradeWrapper> {
         @Override
         protected Flow addUpgradeColumn() {
             return super.addUpgradeColumn().child(this.addButtonRow())
-                .child(new ContentsFilterControl.Advanced(this.getSlotIndex(), this.getWrapper(), "adv_filter"));
+                .child(
+                    new ContentsFilterControl.Advanced(
+                        this.getSlotIndex(),
+                        this.getWrapper()
+                            .getFilterLogic(),
+                        "adv_filter"));
         }
 
         protected Flow addButtonRow() {

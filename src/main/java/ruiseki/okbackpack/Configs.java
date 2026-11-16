@@ -90,10 +90,8 @@ public class Configs {
         configHandler.add(new ItemRefillUpgradeConfig());
         configHandler.add(new ItemAdvancedRefillUpgradeConfig());
         configHandler.add(new ItemBlastingUpgradeConfig());
-        configHandler.add(new ItemSmeltingUpgradeConfig());
         configHandler.add(new ItemSmokingUpgradeConfig());
         configHandler.add(new ItemAutoBlastingUpgradeConfig());
-        configHandler.add(new ItemAutoSmeltingUpgradeConfig());
         configHandler.add(new ItemAutoSmokingUpgradeConfig());
         configHandler.add(new ItemToolSwapperUpgradeConfig());
         configHandler.add(new ItemAdvancedToolSwapperUpgradeConfig());
@@ -166,6 +164,9 @@ public class Configs {
 
         configHandler.add(new ItemJukeBoxUpgradeConfig());
         configHandler.add(new ItemAdvJukeBoxUpgradeConfig());
+
+        configHandler.add(new ItemSmeltingUpgradeConfig());
+        configHandler.add(new ItemAutoSmeltingUpgradeConfig());
 
         configHandler.add(new ItemBatUpgradeConfig());
         configHandler.add(new ItemBlazeUpgradeConfig());

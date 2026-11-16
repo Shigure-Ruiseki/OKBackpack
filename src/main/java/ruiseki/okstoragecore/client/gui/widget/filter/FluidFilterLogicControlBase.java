@@ -56,7 +56,6 @@ public class FluidFilterLogicControlBase extends ParentWidget<FluidFilterLogicCo
             .coverChildren()
             .childPadding(4)
             .collapseDisabledChild()
-            .crossAxisAlignment(Alignment.CrossAxis.START)
             .child(this.addButtonRow())
             .child(this.addFluidFilterGroup());
     }

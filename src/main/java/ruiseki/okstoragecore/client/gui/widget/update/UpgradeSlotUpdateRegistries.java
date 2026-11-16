@@ -5,6 +5,7 @@ import ruiseki.okstoragecore.client.gui.widget.filter.AdvancedFluidFilterLogicUp
 import ruiseki.okstoragecore.client.gui.widget.filter.BasicFilterLogicUpdate;
 import ruiseki.okstoragecore.client.gui.widget.filter.BasicFluidFilterLogicUpdate;
 import ruiseki.okstoragecore.upgrades.battery.BatterySlotUpdate;
+import ruiseki.okstoragecore.upgrades.cooking.CookingSlotUpdate;
 import ruiseki.okstoragecore.upgrades.crafting.CraftingSlotUpdate;
 import ruiseki.okstoragecore.upgrades.jukebox.JukeboxSlotUpdate;
 import ruiseki.okstoragecore.upgrades.tank.TankSlotUpdate;
@@ -20,5 +21,6 @@ public class UpgradeSlotUpdateRegistries {
         UpgradeSlotUpdateRegistry.register(new BasicFluidFilterLogicUpdate());
         UpgradeSlotUpdateRegistry.register(new AdvancedFluidFilterLogicUpdate());
         UpgradeSlotUpdateRegistry.register(new JukeboxSlotUpdate());
+        UpgradeSlotUpdateRegistry.register(new CookingSlotUpdate());
     }
 }

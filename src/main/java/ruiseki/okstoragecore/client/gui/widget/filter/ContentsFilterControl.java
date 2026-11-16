@@ -12,7 +12,7 @@ import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.upgrades.ContentsFilterLogic;
 import ruiseki.okstoragecore.upgrades.ContentsFilterType;
-import ruiseki.okstoragecore.upgrades.IFilteredUpgrade;
+import ruiseki.okstoragecore.upgrades.FilterLogic;
 import ruiseki.okstoragecore.upgrades.PrimaryMatch;
 
 public class ContentsFilterControl extends FilterLogicControl {
@@ -26,9 +26,9 @@ public class ContentsFilterControl extends FilterLogicControl {
 
     private CyclicVariantButtonWidget contentsButton;
 
-    public ContentsFilterControl(int slotIndex, IFilteredUpgrade filteredWrapper, String syncKey, int slotCount,
+    public ContentsFilterControl(int slotIndex, FilterLogic filterLogic, String syncKey, int slotCount,
         MatchButton... showMatchButtons) {
-        super(slotIndex, filteredWrapper, syncKey, slotCount, showMatchButtons);
+        super(slotIndex, filterLogic, syncKey, slotCount, showMatchButtons);
         this.setSlotsDisabled(() -> getContentsFilterLogic().getFilterType() == ContentsFilterType.STORAGE);
     }
 
@@ -76,17 +76,17 @@ public class ContentsFilterControl extends FilterLogicControl {
 
     public static class Basic extends ContentsFilterControl {
 
-        public Basic(int slotIndex, IFilteredUpgrade filteredWrapper, String syncKey) {
-            super(slotIndex, filteredWrapper, syncKey, 9);
+        public Basic(int slotIndex, FilterLogic filterLogic, String syncKey) {
+            super(slotIndex, filterLogic, syncKey, 9);
         }
     }
 
     public static class Advanced extends ContentsFilterControl {
 
-        public Advanced(int slotIndex, IFilteredUpgrade filteredWrapper, String syncKey) {
+        public Advanced(int slotIndex, FilterLogic filterLogic, String syncKey) {
             super(
                 slotIndex,
-                filteredWrapper,
+                filterLogic,
                 syncKey,
                 16,
                 MatchButton.PRIMARY_MATCH,

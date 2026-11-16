@@ -7,6 +7,7 @@ import ruiseki.okstoragecore.client.gui.slot.CraftingSlotInfo;
 import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
 import ruiseki.okstoragecore.client.gui.slot.ModularCraftingSlot;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedBooleanSH;
+import ruiseki.okstoragecore.client.gui.sync.value.DelegatedFloatSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedFluidStackSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedIntSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedValueSH;
@@ -16,6 +17,8 @@ import ruiseki.okstoragecore.upgrades.IFluidFilteredUpgrade;
 import ruiseki.okstoragecore.upgrades.IStorageUpgrade;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.battery.BatteryUpgradeWrapper;
+import ruiseki.okstoragecore.upgrades.cooking.AutoCookingUpgradeWrapper;
+import ruiseki.okstoragecore.upgrades.cooking.ICookingUpgrade;
 import ruiseki.okstoragecore.upgrades.crafting.CraftingContainer;
 import ruiseki.okstoragecore.upgrades.jukebox.JukeboxUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.tank.TankUpgradeWrapper;
@@ -60,6 +63,14 @@ public class CommonSHRegistries {
     public static final ResourceLocation JUKEBOX_IS_PLAYING = new ResourceLocation(
         Reference.MOD_ID,
         "storage_jukebox_is_playing");
+
+    public static final ResourceLocation COOKING_STORAGE = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_cooking_storage");
+    public static final ResourceLocation INPUT_FILTER = new ResourceLocation(Reference.MOD_ID, "storage_input_filter");
+    public static final ResourceLocation FUEL_FILTER = new ResourceLocation(Reference.MOD_ID, "storage_fuel_filter");
+    public static final ResourceLocation COOKING_COOK = new ResourceLocation(Reference.MOD_ID, "storage_cooking_cook");
+    public static final ResourceLocation COOKING_BURN = new ResourceLocation(Reference.MOD_ID, "storage_cooking_fuel");
 
     public static void load() {
         ITEM_REGISTRY.registerServer(STORAGE, (handler, buf) -> {
@@ -142,6 +153,38 @@ public class CommonSHRegistries {
             IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
             if (!(wrapper instanceof JukeboxUpgradeWrapper upgradeWrapper)) return;
             ((DelegatedBooleanSH) handler).setDelegated(upgradeWrapper::isPlaying, upgradeWrapper::setPlaying);
+        });
+
+        ITEM_REGISTRY.registerServer(COOKING_STORAGE, (handler, buf) -> {
+            IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
+            if (!(wrapper instanceof ICookingUpgrade<?>upgradeWrapper)) return;
+            handler.setItemHandler(
+                () -> upgradeWrapper.getCookingLogic()
+                    .getCookingInventory());
+        });
+        ITEM_REGISTRY.registerServer(INPUT_FILTER, (handler, buf) -> {
+            IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
+            if (!(wrapper instanceof AutoCookingUpgradeWrapper<?, ?, ?>upgradeWrapper)) return;
+            ((DelegatedFilterLogicSH) handler).setFilterLogic(upgradeWrapper::getInputFilterLogic);
+        });
+        ITEM_REGISTRY.registerServer(FUEL_FILTER, (handler, buf) -> {
+            IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
+            if (!(wrapper instanceof AutoCookingUpgradeWrapper<?, ?, ?>upgradeWrapper)) return;
+            ((DelegatedFilterLogicSH) handler).setFilterLogic(upgradeWrapper::getFuelFilterLogic);
+        });
+        VALUE_REGISTRY.registerServer(COOKING_BURN, (handler, buf) -> {
+            IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
+            if (!(wrapper instanceof ICookingUpgrade<?>upgradeWrapper)) return;
+            ((DelegatedFloatSH) handler).setDelegated(
+                () -> upgradeWrapper.getCookingLogic()
+                    .getBurnProgress(handler.getPlayer().worldObj));
+        });
+        VALUE_REGISTRY.registerServer(COOKING_COOK, (handler, buf) -> {
+            IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
+            if (!(wrapper instanceof ICookingUpgrade<?>upgradeWrapper)) return;
+            ((DelegatedFloatSH) handler).setDelegated(
+                () -> upgradeWrapper.getCookingLogic()
+                    .getCookProgress(handler.getPlayer().worldObj));
         });
     }
 }

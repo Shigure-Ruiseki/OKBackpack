@@ -378,4 +378,19 @@ public class CookingLogic<T extends AbstractCookingRecipe> {
         NBTHelpers.setBoolean(upgrade, "isCooking", isCooking);
         save();
     }
+
+    public float getBurnProgress(World world) {
+        int total = getBurnTimeTotal();
+        if (total <= 0 || !isBurning(world)) return 0f;
+        long remaining = getBurnTimeFinish() - world.getTotalWorldTime();
+        return Math.clamp((float) remaining / total, 0f, 1f);
+    }
+
+    public float getCookProgress(World world) {
+        int total = getCookTimeTotal();
+        if (total <= 0 || !isCooking()) return 0f;
+        long remaining = getCookTimeFinish() - world.getTotalWorldTime();
+        return Math.clamp(1f - (float) remaining / total, 0f, 1f);
+    }
+
 }

@@ -16,6 +16,9 @@ public class OSCTextures {
     private static final ResourceLocation CRAFTING_TWEAKS = new ResourceLocation(
         Reference.MOD_ID,
         "gui/crafting_tweaks");
+    private static final ResourceLocation FURNACE_GUI = new ResourceLocation(
+        "minecraft",
+        "textures/gui/container/furnace.png");
 
     public static final IDrawable SHIFT_CLICK_INVENTORY = icon("shift_click_inv", 64, 96);
     public static final IDrawable SHIFT_CLICK_OPEN_TAB = icon("shift_click_tab", 80, 32);
@@ -222,6 +225,35 @@ public class OSCTextures {
         .imageSize(256, 256)
         .xy(113, 216, 15, 15)
         .name("anvil_red_cross")
+        .build();
+
+    // Furnace GUI textures (from vanilla furnace texture)
+    public static final UITexture FURNACE_FLAME_BACKGROUND = UITexture.builder()
+        .location(FURNACE_GUI)
+        .imageSize(256, 256)
+        .xy(56, 36, 14, 14)
+        .name("furnace_flame_bg")
+        .build();
+
+    public static final UITexture FURNACE_FLAME_FOREGROUND = UITexture.builder()
+        .location(FURNACE_GUI)
+        .imageSize(256, 256)
+        .xy(176, 0, 14, 14)
+        .name("furnace_flame_fg")
+        .build();
+
+    public static final UITexture FURNACE_ARROW_BACKGROUND = UITexture.builder()
+        .location(FURNACE_GUI)
+        .imageSize(256, 256)
+        .xy(79, 35, 24, 17)
+        .name("furnace_arrow_bg")
+        .build();
+
+    public static final UITexture FURNACE_ARROW_FOREGROUND = UITexture.builder()
+        .location(FURNACE_GUI)
+        .imageSize(256, 256)
+        .xy(176, 14, 24, 17)
+        .name("furnace_arrow_fg")
         .build();
 
     public static UITexture icon(String name, int x, int y) {

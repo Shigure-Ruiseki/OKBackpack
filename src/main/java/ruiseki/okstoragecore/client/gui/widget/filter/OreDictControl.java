@@ -34,7 +34,6 @@ import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.upgrades.FilterLogic;
-import ruiseki.okstoragecore.upgrades.IFilteredUpgrade;
 
 public class OreDictControl extends ParentWidget<OreDictControl> {
 
@@ -387,11 +386,6 @@ public class OreDictControl extends ParentWidget<OreDictControl> {
 
     public FilterLogicControlBase getController() {
         return controller;
-    }
-
-    public IFilteredUpgrade getFilteredWrapper() {
-        return this.getController()
-            .getFilteredWrapper();
     }
 
     public int getSlotIndex() {

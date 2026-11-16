@@ -53,8 +53,12 @@ public class CompactingUpgradeTab extends ExpandedUpgradeTab<CompactingUpgradeWr
 
         @Override
         protected Flow addUpgradeColumn() {
-            return super.addUpgradeColumn()
-                .child(new FilterLogicControl.Basic(this.getSlotIndex(), this.getWrapper(), "basic_filter"));
+            return super.addUpgradeColumn().child(
+                new FilterLogicControl.Basic(
+                    this.getSlotIndex(),
+                    this.getWrapper()
+                        .getFilterLogic(),
+                    "basic_filter"));
         }
     }
 
@@ -67,7 +71,12 @@ public class CompactingUpgradeTab extends ExpandedUpgradeTab<CompactingUpgradeWr
         @Override
         protected Flow addUpgradeColumn() {
             return super.addUpgradeColumn().child(this.addButtonRow())
-                .child(new FilterLogicControl.Advanced(this.getSlotIndex(), this.getWrapper(), "adv_filter"));
+                .child(
+                    new FilterLogicControl.Advanced(
+                        this.getSlotIndex(),
+                        this.getWrapper()
+                            .getFilterLogic(),
+                        "adv_filter"));
         }
 
         protected Flow addButtonRow() {

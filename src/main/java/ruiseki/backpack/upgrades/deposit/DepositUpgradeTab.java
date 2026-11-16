@@ -22,8 +22,12 @@ public class DepositUpgradeTab extends ExpandedUpgradeTab<DepositUpgradeWrapper>
 
         @Override
         protected Flow addUpgradeColumn() {
-            return super.addUpgradeColumn()
-                .child(new DepositFilterLogicControl.Basic(this.getSlotIndex(), this.getWrapper(), "basic_filter"));
+            return super.addUpgradeColumn().child(
+                new DepositFilterLogicControl.Basic(
+                    this.getSlotIndex(),
+                    this.getWrapper()
+                        .getFilterLogic(),
+                    "basic_filter"));
         }
     }
 
@@ -35,8 +39,12 @@ public class DepositUpgradeTab extends ExpandedUpgradeTab<DepositUpgradeWrapper>
 
         @Override
         protected Flow addUpgradeColumn() {
-            return super.addUpgradeColumn()
-                .child(new DepositFilterLogicControl.Advanced(this.getSlotIndex(), this.getWrapper(), "adv_filter"));
+            return super.addUpgradeColumn().child(
+                new DepositFilterLogicControl.Advanced(
+                    this.getSlotIndex(),
+                    this.getWrapper()
+                        .getFilterLogic(),
+                    "adv_filter"));
         }
     }
 }

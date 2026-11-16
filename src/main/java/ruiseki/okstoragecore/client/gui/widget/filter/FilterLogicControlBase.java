@@ -21,7 +21,6 @@ import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.client.gui.widget.StorageSlotGrid;
 import ruiseki.okstoragecore.upgrades.FilterLogic;
-import ruiseki.okstoragecore.upgrades.IFilteredUpgrade;
 import ruiseki.okstoragecore.upgrades.PrimaryMatch;
 
 public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase> {
@@ -59,7 +58,7 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
             IKey.lang("gui.okstoragecore.upgrades.buttons.ignore_nbt"),
             OSCTextures.IGNORE_NBT));
 
-    protected final IFilteredUpgrade filteredWrapper;
+    protected final FilterLogic filterLogic;
     protected final MatchButton[] showMatchButtons;
     protected final int slotIndex;
     protected final String syncKey;
@@ -67,13 +66,13 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
 
     protected BooleanSupplier slotsDisabled = () -> false;
 
-    public FilterLogicControlBase(int slotIndex, IFilteredUpgrade filteredWrapper, String syncKey, int slotCount,
+    public FilterLogicControlBase(int slotIndex, FilterLogic filteredWrapper, String syncKey, int slotCount,
         MatchButton... showMatchButtons) {
         this.slotIndex = slotIndex;
         this.showMatchButtons = showMatchButtons;
         this.syncKey = syncKey;
         this.slotCount = slotCount;
-        this.filteredWrapper = filteredWrapper;
+        this.filterLogic = filteredWrapper;
         this.coverChildren();
 
         this.syncHandler("upgrades", this.getSlotIndex());
@@ -85,8 +84,7 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
             .coverChildren()
             .childPadding(4)
             .collapseDisabledChild()
-            .crossAxisAlignment(Alignment.CrossAxis.START)
-            .child(this.addButtonRow())
+            .childIf(this.getShowMatchButtons().length > 0, this::addButtonRow)
             .child(this.addItemConfigGroup())
             .childIf(this.shouldShow(MatchButton.PRIMARY_MATCH), this::addOreDictControl);
     }
@@ -95,7 +93,8 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
         Flow buttonRow = Flow.row()
             .coverChildren()
             .crossAxisAlignment(Alignment.CrossAxis.START)
-            .childPadding(2);
+            .childPadding(2)
+            .name("filter_button_row_" + this.syncKey + "_" + this.slotIndex);
         if (this.shouldShow(MatchButton.ALLOW_LIST)) {
             buttonRow.child(this.addAllowListButton());
         }
@@ -111,8 +110,9 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
             .coverChildren()
             .childPadding(2)
             .setEnabledIf(
-                row -> this.filteredWrapper.getFilterLogic()
-                    .getPrimaryMatch() == PrimaryMatch.ITEM);
+                row -> this.getFilterLogic()
+                    .getPrimaryMatch() == PrimaryMatch.ITEM)
+            .name("filter_item_config_row_" + this.syncKey + "_" + this.slotIndex);
         if (this.shouldShow(MatchButton.DURABILITY)) {
             configRow.child(this.addDurabilityButton());
         }
@@ -125,10 +125,10 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
     protected ButtonWidget<?> addAllowListButton() {
         return new CyclicVariantButtonWidget(
             ALLOW_LIST_VARIANTS,
-            this.filteredWrapper.getFilterLogic()
+            this.getFilterLogic()
                 .isAllowList() ? 0 : 1,
             index -> {
-                this.filteredWrapper.getFilterLogic()
+                this.getFilterLogic()
                     .setAllowList(index == 0);
                 this.getSyncHandler()
                     .syncToServer(UpgradeSlotSHRegistries.ALLOW_LIST, buffer -> buffer.writeBoolean(index == 0));
@@ -138,7 +138,7 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
     protected ButtonWidget<?> addMatchTypesButton() {
         return new CyclicVariantButtonWidget(
             MATCH_TYPES_VARIANTS,
-            this.filteredWrapper.getFilterLogic()
+            this.getFilterLogic()
                 .getPrimaryMatch()
                 .ordinal(),
             index -> {
@@ -147,7 +147,7 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
                     onOreDictsMatchSelected();
                 }
                 final PrimaryMatch finalMatch = next;
-                this.filteredWrapper.getFilterLogic()
+                this.getFilterLogic()
                     .setPrimaryMatch(finalMatch);
                 this.getSyncHandler()
                     .syncToServer(
@@ -159,30 +159,30 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
     protected ButtonWidget<?> addDurabilityButton() {
         return new CyclicVariantButtonWidget(
             DURABILITY_VARIANTS,
-            this.filteredWrapper.getFilterLogic()
+            this.getFilterLogic()
                 .shouldMatchDurability() ? 0 : 1,
             index -> {
-                this.filteredWrapper.getFilterLogic()
+                this.getFilterLogic()
                     .setMatchDurability(index == 0);
                 this.getSyncHandler()
                     .syncToServer(UpgradeSlotSHRegistries.MATCH_DURABILITY, buffer -> buffer.writeBoolean(index == 0));
             }).setInEffect(
-                this.filteredWrapper.getFilterLogic()
+                this.getFilterLogic()
                     .getPrimaryMatch() == PrimaryMatch.ITEM);
     }
 
     protected ButtonWidget<?> addNBTButton() {
         return new CyclicVariantButtonWidget(
             NBT_VARIANTS,
-            this.filteredWrapper.getFilterLogic()
+            this.getFilterLogic()
                 .shouldMatchNbt() ? 0 : 1,
             index -> {
-                this.filteredWrapper.getFilterLogic()
+                this.getFilterLogic()
                     .setMatchNbt(index == 0);
                 this.getSyncHandler()
                     .syncToServer(UpgradeSlotSHRegistries.MATCH_NBT, buffer -> buffer.writeBoolean(index == 0));
             }).setInEffect(
-                this.filteredWrapper.getFilterLogic()
+                this.getFilterLogic()
                     .getPrimaryMatch() == PrimaryMatch.ITEM);
     }
 
@@ -203,13 +203,13 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
             .coverChildren()
             .child(slotGrid)
             .setEnabledIf(
-                flow -> this.filteredWrapper.getFilterLogic()
+                flow -> this.getFilterLogic()
                     .getPrimaryMatch() != PrimaryMatch.ORE_DICT);
     }
 
     protected OreDictControl addOreDictControl() {
         return new OreDictControl(this).setEnabledIf(
-            control -> this.filteredWrapper.getFilterLogic()
+            control -> this.getFilterLogic()
                 .getPrimaryMatch() == PrimaryMatch.ORE_DICT);
     }
 
@@ -247,10 +247,6 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
         NBT
     }
 
-    public IFilteredUpgrade getFilteredWrapper() {
-        return filteredWrapper;
-    }
-
     public int getSlotIndex() {
         return slotIndex;
     }
@@ -272,7 +268,6 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
     }
 
     public FilterLogic getFilterLogic() {
-        return this.getFilteredWrapper()
-            .getFilterLogic();
+        return this.filterLogic;
     }
 }

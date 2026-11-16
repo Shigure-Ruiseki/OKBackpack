@@ -121,6 +121,13 @@ gui.okstoragecore.upgrades.buttons.xp_pump_input=Pump Experience From Player
 gui.okstoragecore.upgrades.buttons.xp_pump_output=Pump Experience To Player
 gui.okstoragecore.upgrades.buttons.xp_pump_off=Pump Off
 
+gui.okstoragecore.upgrades.smelting=Smelting
+gui.okstoragecore.upgrades.auto_smelting=Auto-smelt
+gui.okstoragecore.upgrades.smoking=Smoking
+gui.okstoragecore.upgrades.auto_smoking=Auto-smoke
+gui.okstoragecore.upgrades.blasting=Blasting
+gui.okstoragecore.upgrades.auto_blasting=Auto-blast
+
 gui.okstoragecore.upgrades.jukebox=Jukebox
 gui.okstoragecore.upgrades.advanced_jukebox=Jukebox
 gui.okstoragecore.upgrades.buttons.play=Play

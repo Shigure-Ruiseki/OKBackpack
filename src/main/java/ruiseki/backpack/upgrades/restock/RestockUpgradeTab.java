@@ -23,8 +23,12 @@ public class RestockUpgradeTab extends ExpandedUpgradeTab<RestockUpgradeWrapper>
 
         @Override
         protected Flow addUpgradeColumn() {
-            return super.addUpgradeColumn()
-                .child(new ContentsFilterControl.Basic(this.getSlotIndex(), this.getWrapper(), "basic_filter"));
+            return super.addUpgradeColumn().child(
+                new ContentsFilterControl.Basic(
+                    this.getSlotIndex(),
+                    this.getWrapper()
+                        .getFilterLogic(),
+                    "basic_filter"));
         }
     }
 
@@ -36,8 +40,12 @@ public class RestockUpgradeTab extends ExpandedUpgradeTab<RestockUpgradeWrapper>
 
         @Override
         protected Flow addUpgradeColumn() {
-            return super.addUpgradeColumn()
-                .child(new ContentsFilterControl.Advanced(this.getSlotIndex(), this.getWrapper(), "adv_filter"));
+            return super.addUpgradeColumn().child(
+                new ContentsFilterControl.Advanced(
+                    this.getSlotIndex(),
+                    this.getWrapper()
+                        .getFilterLogic(),
+                    "adv_filter"));
         }
     }
 }

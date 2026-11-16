@@ -2,6 +2,7 @@ package ruiseki.okstoragecore.client.gui.sync.value;
 
 import java.io.IOException;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
@@ -33,6 +34,11 @@ public abstract class DelegatedValueSH<T, S extends DelegatedValueSH<T, S>> exte
 
     public StoragePanel getPanel() {
         return panel;
+    }
+
+    public EntityPlayer getPlayer() {
+        return this.getSyncManager()
+            .getPlayer();
     }
 
     public IUpgradeWrapper getUpgradeWrapper() {

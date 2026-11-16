@@ -44,6 +44,10 @@ public class FilterLogic extends FilterLogicBase {
         this.isItemValid = isItemValid;
     }
 
+    public void setEmptyAllowListMatchesEverything() {
+        this.emptyAllowListMatchesEverything = true;
+    }
+
     public ObservableFilterItemStackHandler getFilterHandler() {
         if (filterHandler == null) {
             filterHandler = new ObservableFilterItemStackHandler();
