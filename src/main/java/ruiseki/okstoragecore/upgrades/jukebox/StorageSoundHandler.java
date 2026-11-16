@@ -91,7 +91,8 @@ public class StorageSoundHandler {
             new SoundExtended(RecordHelpers.getRecordLocation(soundEvent), VectorHelpers.atCenterOf(pos)));
     }
 
-    public static void playStorageSound(RecordData soundEvent, UUID storageUuid, int entityId, World world, EntityPlayer player) {
+    public static void playStorageSound(RecordData soundEvent, UUID storageUuid, int entityId, World world,
+        EntityPlayer player) {
         float volume = 2;
         float pitch = 1;
 
