@@ -22,6 +22,7 @@ import ruiseki.backpack.backpack.BackpackStorage;
 import ruiseki.backpack.client.gui.sync.BackpackSHRegistries;
 import ruiseki.backpack.client.gui.sync.OBUpgradeSlotSHRegistries;
 import ruiseki.backpack.init.block.BlockLeatherBackpackConfig;
+import ruiseki.backpack.modcompat.efr.EFRModCompat;
 import ruiseki.backpack.modcompat.jfmuy.JFMUYModCompat;
 import ruiseki.backpack.modcompat.nei.NEIModCompat;
 import ruiseki.backpack.modcompat.thaumcraft.ThaumcraftModCompat;
@@ -105,6 +106,7 @@ public class OKBackpack extends ModBaseVersionable {
         modCompatLoader.addModCompat(new ThaumcraftModCompat());
         modCompatLoader.addModCompat(new NEIModCompat());
         modCompatLoader.addModCompat(new JFMUYModCompat());
+        modCompatLoader.addModCompat(new EFRModCompat());
     }
 
     @Override

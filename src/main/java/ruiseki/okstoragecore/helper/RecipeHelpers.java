@@ -630,10 +630,11 @@ public class RecipeHelpers {
     public static <T extends AbstractCookingRecipe> Optional<T> getCookingRecipe(ItemStack stack,
         IRecipeType<T> recipeType) {
         if (ItemHelpers.isEmpty(stack)) return Optional.empty();
-        NonNullList<ItemStack> items = NonNullList.create();
-        items.add(stack.copy());
-        return getWorld()
-            .flatMap(world -> safeGetRecipeFor(recipeType, new RecipeInventory(new ItemStackHandler(items)), world));
+        return getWorld().flatMap(
+            world -> safeGetRecipeFor(
+                recipeType,
+                new RecipeInventory(new ItemStackHandler(NonNullList.of(ItemHelpers.EMPTY, stack.copy()))),
+                world));
     }
 
     public static <C extends IInventory, T extends IRecipeOK<C>> Optional<T> safeGetRecipeFor(IRecipeType<T> recipeType,

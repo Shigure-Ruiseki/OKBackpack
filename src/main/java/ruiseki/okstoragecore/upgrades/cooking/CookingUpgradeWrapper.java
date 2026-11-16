@@ -9,6 +9,10 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import ruiseki.okcore.datastructure.BlockPos;
+import ruiseki.okcore.modcompat.efr.recipe.type.cooking.blast.BlastFurnaceRecipe;
+import ruiseki.okcore.modcompat.efr.recipe.type.cooking.blast.RecipeTypeBlastFurnaceConfig;
+import ruiseki.okcore.modcompat.efr.recipe.type.cooking.smoker.RecipeTypeSmokerConfig;
+import ruiseki.okcore.modcompat.efr.recipe.type.cooking.smoker.SmokerRecipe;
 import ruiseki.okcore.recipe.IRecipeType;
 import ruiseki.okcore.recipe.RecipeRegistry;
 import ruiseki.okcore.recipe.type.cooking.AbstractCookingRecipe;
@@ -73,4 +77,26 @@ public abstract class CookingUpgradeWrapper<W extends CookingUpgradeWrapper<W, U
         }
     }
 
+    public static class BlastingUpgradeWrapper
+        extends CookingUpgradeWrapper<BlastingUpgradeWrapper, ItemBlastingUpgrade, BlastFurnaceRecipe> {
+
+        public BlastingUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
+            Consumer<ItemStack> upgradeSaveHandler) {
+            super(
+                storageWrapper,
+                upgrade,
+                upgradeSaveHandler,
+                RecipeTypeBlastFurnaceConfig._instance.getInstance(),
+                0.5f);
+        }
+    }
+
+    public static class SmokingUpgradeWrapper
+        extends CookingUpgradeWrapper<SmokingUpgradeWrapper, ItemSmokingUpgrade, SmokerRecipe> {
+
+        public SmokingUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
+            Consumer<ItemStack> upgradeSaveHandler) {
+            super(storageWrapper, upgrade, upgradeSaveHandler, RecipeTypeSmokerConfig._instance.getInstance(), 0.5f);
+        }
+    }
 }

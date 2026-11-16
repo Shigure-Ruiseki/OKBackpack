@@ -11,6 +11,8 @@ import ruiseki.backpack.init.item.anvil.ItemAnvilUpgradeConfig;
 import ruiseki.backpack.init.item.battery.ItemBatteryUpgradeConfig;
 import ruiseki.backpack.init.item.compacting.ItemAdvCompactingUpgradeConfig;
 import ruiseki.backpack.init.item.compacting.ItemCompactingUpgradeConfig;
+import ruiseki.backpack.init.item.cooking.ItemAutoSmeltingUpgradeConfig;
+import ruiseki.backpack.init.item.cooking.ItemSmeltingUpgradeConfig;
 import ruiseki.backpack.init.item.crafting.ItemCraftingUpgradeConfig;
 import ruiseki.backpack.init.item.deposit.ItemAdvDepositUpgradeConfig;
 import ruiseki.backpack.init.item.deposit.ItemDepositUpgradeConfig;
@@ -72,12 +74,6 @@ import ruiseki.backpack.init.item.voiding.ItemVoidUpgradeConfig;
 import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
 import ruiseki.okbackpack.common.item.refill.ItemAdvancedRefillUpgradeConfig;
 import ruiseki.okbackpack.common.item.refill.ItemRefillUpgradeConfig;
-import ruiseki.okbackpack.common.item.smelter.ItemAutoBlastingUpgradeConfig;
-import ruiseki.okbackpack.common.item.smelter.ItemAutoSmeltingUpgradeConfig;
-import ruiseki.okbackpack.common.item.smelter.ItemAutoSmokingUpgradeConfig;
-import ruiseki.okbackpack.common.item.smelter.ItemBlastingUpgradeConfig;
-import ruiseki.okbackpack.common.item.smelter.ItemSmeltingUpgradeConfig;
-import ruiseki.okbackpack.common.item.smelter.ItemSmokingUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgradeConfig;
 import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgradeConfig;
 import ruiseki.okcore.config.ConfigHandler;
@@ -89,10 +85,6 @@ public class Configs {
         // Items
         configHandler.add(new ItemRefillUpgradeConfig());
         configHandler.add(new ItemAdvancedRefillUpgradeConfig());
-        configHandler.add(new ItemBlastingUpgradeConfig());
-        configHandler.add(new ItemSmokingUpgradeConfig());
-        configHandler.add(new ItemAutoBlastingUpgradeConfig());
-        configHandler.add(new ItemAutoSmokingUpgradeConfig());
         configHandler.add(new ItemToolSwapperUpgradeConfig());
         configHandler.add(new ItemAdvancedToolSwapperUpgradeConfig());
 

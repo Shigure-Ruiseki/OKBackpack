@@ -16,6 +16,10 @@ import ruiseki.okcore.helper.InventoryHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.item.handler.IItemHandlerModifiable;
 import ruiseki.okcore.item.handler.IItemHandlerSimpleInserter;
+import ruiseki.okcore.modcompat.efr.recipe.type.cooking.blast.BlastFurnaceRecipe;
+import ruiseki.okcore.modcompat.efr.recipe.type.cooking.blast.RecipeTypeBlastFurnaceConfig;
+import ruiseki.okcore.modcompat.efr.recipe.type.cooking.smoker.RecipeTypeSmokerConfig;
+import ruiseki.okcore.modcompat.efr.recipe.type.cooking.smoker.SmokerRecipe;
 import ruiseki.okcore.recipe.IRecipeType;
 import ruiseki.okcore.recipe.RecipeRegistry;
 import ruiseki.okcore.recipe.type.cooking.AbstractCookingRecipe;
@@ -213,6 +217,29 @@ public class AutoCookingUpgradeWrapper<W extends AutoCookingUpgradeWrapper<W, U,
         public AutoSmeltingUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
             Consumer<ItemStack> upgradeSaveHandler) {
             super(storageWrapper, upgrade, upgradeSaveHandler, RecipeRegistry.SMELTING, 1);
+        }
+    }
+
+    public static class AutoBlastingUpgradeWrapper
+        extends AutoCookingUpgradeWrapper<AutoBlastingUpgradeWrapper, ItemAutoBlastingUpgrade, BlastFurnaceRecipe> {
+
+        public AutoBlastingUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
+            Consumer<ItemStack> upgradeSaveHandler) {
+            super(
+                storageWrapper,
+                upgrade,
+                upgradeSaveHandler,
+                RecipeTypeBlastFurnaceConfig._instance.getInstance(),
+                0.5f);
+        }
+    }
+
+    public static class AutoSmokingUpgradeWrapper
+        extends AutoCookingUpgradeWrapper<AutoSmokingUpgradeWrapper, ItemAutoSmokingUpgrade, SmokerRecipe> {
+
+        public AutoSmokingUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade,
+            Consumer<ItemStack> upgradeSaveHandler) {
+            super(storageWrapper, upgrade, upgradeSaveHandler, RecipeTypeSmokerConfig._instance.getInstance(), 0.5f);
         }
     }
 }
