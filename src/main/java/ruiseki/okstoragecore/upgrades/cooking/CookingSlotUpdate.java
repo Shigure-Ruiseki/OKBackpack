@@ -52,6 +52,7 @@ public class CookingSlotUpdate implements IUpgradeSlotUpdateFactory {
             CookingLogic.COOK_OUTPUT_SLOT,
             group.getPanel(),
             group.getUpgradeIndex());
+        outputSlot.canPut(false);
         group.getSyncManager()
             .syncValue(
                 "cooking_slot_" + group.getUpgradeIndex(),

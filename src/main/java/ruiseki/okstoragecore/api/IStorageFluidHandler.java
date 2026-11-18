@@ -29,6 +29,10 @@ public interface IStorageFluidHandler extends IFluidHandlerItem {
 
     FluidStack drain(TagKey<Fluid> resourceTag, int maxDrain, boolean action, boolean ignoreInOutLimit);
 
+    default FluidStack drain(Fluid resourceTag, int maxDrain, boolean action, boolean ignoreInOutLimit) {
+        return drain(new FluidStack(resourceTag, maxDrain), action, ignoreInOutLimit);
+    }
+
     FluidStack drain(FluidStack resource, boolean action, boolean ignoreInOutLimit);
 
     FluidStack drain(int maxDrain, boolean action, boolean ignoreInOutLimit);

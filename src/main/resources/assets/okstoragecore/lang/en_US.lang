@@ -120,6 +120,17 @@ gui.okstoragecore.upgrades.buttons.do_not_interact_with_hand=Do Not Interact Wit
 gui.okstoragecore.upgrades.buttons.xp_pump_input=Pump Experience From Player
 gui.okstoragecore.upgrades.buttons.xp_pump_output=Pump Experience To Player
 gui.okstoragecore.upgrades.buttons.xp_pump_off=Pump Off
+gui.okstoragecore.upgrades.controls.xp_level_select=%s lvls
+gui.okstoragecore.upgrades.controls.xp_level_select.tooltip=Level at which Pump Stops
+gui.okstoragecore.upgrades.controls.xp_level_select.tooltip.controls=Scroll to change
+gui.okstoragecore.upgrades.buttons.mend_items=Repair Items With Mending
+gui.okstoragecore.upgrades.buttons.do_not_mend_items=Do Not Repair Items
+gui.okstoragecore.upgrades.buttons.store_all_experience=Store All Experience
+gui.okstoragecore.upgrades.buttons.take_all_experience=Take All Experience
+gui.okstoragecore.upgrades.buttons.store_levels=Store %s Levels
+gui.okstoragecore.upgrades.buttons.store_levels.controls=Scroll to change # of levels
+gui.okstoragecore.upgrades.buttons.take_levels=Take %s Levels
+gui.okstoragecore.upgrades.buttons.take_levels.controls=Scroll to change # of levels
 
 gui.okstoragecore.upgrades.smelting=Smelting
 gui.okstoragecore.upgrades.auto_smelting=Auto-smelt

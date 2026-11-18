@@ -158,6 +158,11 @@ public class InceptionFluidHandler implements IStorageFluidHandler {
     }
 
     @Override
+    public FluidStack drain(Fluid resourceTag, int maxDrain, boolean action, boolean ignoreInOutLimit) {
+        return null;
+    }
+
+    @Override
     public FluidStack drain(FluidStack resource, boolean action, boolean ignoreInOutLimit) {
         int drained = 0;
         FluidStack toDrain = resource;

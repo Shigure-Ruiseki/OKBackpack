@@ -71,6 +71,7 @@ import ruiseki.backpack.init.item.traverler.ItemWitherUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemWolfUpgradeConfig;
 import ruiseki.backpack.init.item.voiding.ItemAdvVoidUpgradeConfig;
 import ruiseki.backpack.init.item.voiding.ItemVoidUpgradeConfig;
+import ruiseki.backpack.init.item.xppump.ItemXpPumpUpgradeConfig;
 import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
 import ruiseki.okbackpack.common.item.refill.ItemAdvancedRefillUpgradeConfig;
 import ruiseki.okbackpack.common.item.refill.ItemRefillUpgradeConfig;
@@ -150,6 +151,7 @@ public class Configs {
 
         configHandler.add(new ItemPumpUpgradeConfig());
         configHandler.add(new ItemAdvPumpUpgradeConfig());
+        configHandler.add(new ItemXpPumpUpgradeConfig());
 
         configHandler.add(new ItemInfinityUpgradeConfig());
         configHandler.add(new ItemSurvivalInfinityUpgradeConfig());

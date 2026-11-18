@@ -38,7 +38,27 @@ public class ThaumcraftSHRegistries {
         Reference.MOD_ID,
         "thaumcraft_arcane_missing_research_name");
 
+    public static final ResourceLocation FILL_CRAFTING = new ResourceLocation(
+        Reference.MOD_ID,
+        "thaumcraft_fill_crafting");
+    public static final ResourceLocation SHIFT_INTO_STORAGE = new ResourceLocation(
+        Reference.MOD_ID,
+        "thaumcraft_shift_into_storage");
+
     public static void load() {
+
+        UPGRADE_REGISTRY.registerServer(FILL_CRAFTING, (slot, buf) -> {
+            boolean fill = buf.readBoolean();
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof ArcaneCraftingUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setRefillCraftingGrid(fill);
+        });
+        UPGRADE_REGISTRY.registerServer(SHIFT_INTO_STORAGE, (slot, buf) -> {
+            boolean shiftIntoStorage = buf.readBoolean();
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof ArcaneCraftingUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setShiftClickIntoStorage(shiftIntoStorage);
+        });
 
         UPGRADE_REGISTRY.registerServer(ARCANE_CONTAINER, (handler, buf) -> {
             UpgradeSlotUpdate slotUpdate = handler.getUpgradeUpdate();

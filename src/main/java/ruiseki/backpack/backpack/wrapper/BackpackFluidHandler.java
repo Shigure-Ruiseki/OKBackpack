@@ -87,10 +87,11 @@ public class BackpackFluidHandler implements IStorageFluidHandler {
         FluidStack drained = FluidHelpers.EMPTY;
         int toDrain = maxDrain;
         for (TankUpgradeWrapper tank : getAllTanks()) {
-            Fluid tankFluid = tank.getContents()
-                .getFluid();
-            if ((FluidHelpers.isEmpty(drained) && TagHelpers.hasTag(tankFluid, resourceTag)) || tank.getContents()
-                .isFluidEqual(drained)) {
+            FluidStack contents = tank.getContents();
+            if (FluidHelpers.isEmpty(contents)) continue;
+            if ((FluidHelpers.isEmpty(drained) && TagHelpers.hasTag(FluidHelpers.getFluid(contents), resourceTag))
+                || tank.getContents()
+                    .isFluidEqual(drained)) {
                 if (FluidHelpers.isEmpty(drained)) {
                     drained = tank.drain(toDrain, action, ignoreInOutLimit);
                 } else {
@@ -113,7 +114,7 @@ public class BackpackFluidHandler implements IStorageFluidHandler {
         int drained = 0;
         int toDrain = FluidHelpers.getAmount(resource);
         for (TankUpgradeWrapper tank : getAllTanks()) {
-            if (tank.getContents()
+            if (!FluidHelpers.isEmpty(tank.getContents()) && tank.getContents()
                 .isFluidEqual(resource)) {
                 drained += FluidHelpers.getAmount(tank.drain(toDrain, action, ignoreInOutLimit));
                 if (drained == FluidHelpers.getAmount(resource)) {

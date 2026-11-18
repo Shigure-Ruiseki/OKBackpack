@@ -22,6 +22,8 @@ import ruiseki.okstoragecore.upgrades.jukebox.RepeatMode;
 import ruiseki.okstoragecore.upgrades.magnet.MagnetUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.pump.PumpUpgradeWrapper;
 import ruiseki.okstoragecore.upgrades.voiding.VoidUpgradeWrapper;
+import ruiseki.okstoragecore.upgrades.xppump.AutomationDirection;
+import ruiseki.okstoragecore.upgrades.xppump.XpPumpUpgradeWrapper;
 
 public class UpgradeSlotSHRegistries {
 
@@ -109,6 +111,34 @@ public class UpgradeSlotSHRegistries {
     public static final ResourceLocation JUKEBOX_REPEAT = new ResourceLocation(
         Reference.MOD_ID,
         "storage_jukebox_repeat");
+
+    public static final ResourceLocation XP_PUMP_DIRECTION = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_xp_pump_direction");
+    public static final ResourceLocation XP_PUMP_LEVEL = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_xp_pump_level");
+    public static final ResourceLocation XP_PUMP_SHOULD_MEND = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_xp_pump_should_mend");
+    public static final ResourceLocation XP_PUMP_TAKE_ALL = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_xp_pump_take_all");
+    public static final ResourceLocation XP_PUMP_TAKE_LEVELS = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_xp_pump_take_levels");
+    public static final ResourceLocation XP_PUMP_SET_TAKE_LEVELS = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_xp_pump_set_take_levels");
+    public static final ResourceLocation XP_PUMP_STORE_LEVELS = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_xp_pump_store_levels");
+    public static final ResourceLocation XP_PUMP_SET_STORE_LEVELS = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_xp_pump_set_store_levels");
+    public static final ResourceLocation XP_PUMP_STORE_ALL = new ResourceLocation(
+        Reference.MOD_ID,
+        "storage_xp_pump_store_all");
 
     public static void load() {
 
@@ -301,6 +331,52 @@ public class UpgradeSlotSHRegistries {
             IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
             if (!(wrapper instanceof JukeboxUpgradeWrapper upgradeWrapper)) return;
             upgradeWrapper.setRepeatMode(RepeatMode.fromOrdinal(buf.readInt()));
+        });
+
+        REGISTRY.registerServer(XP_PUMP_DIRECTION, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof XpPumpUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setDirection(AutomationDirection.fromOrdinal(buf.readInt()));
+        });
+        REGISTRY.registerServer(XP_PUMP_LEVEL, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof XpPumpUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setLevel(buf.readInt());
+        });
+        REGISTRY.registerServer(XP_PUMP_SHOULD_MEND, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof XpPumpUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setMendItems(buf.readBoolean());
+        });
+        REGISTRY.registerServer(XP_PUMP_TAKE_ALL, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof XpPumpUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.takeAllExperienceFromPlayer(slot.getPlayer());
+        });
+        REGISTRY.registerServer(XP_PUMP_TAKE_LEVELS, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof XpPumpUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.takeLevelsFromPlayer(slot.getPlayer());
+        });
+        REGISTRY.registerServer(XP_PUMP_SET_TAKE_LEVELS, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof XpPumpUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setLevelsToTake(buf.readInt());
+        });
+        REGISTRY.registerServer(XP_PUMP_STORE_LEVELS, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof XpPumpUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.giveLevelsToPlayer(slot.getPlayer());
+        });
+        REGISTRY.registerServer(XP_PUMP_SET_STORE_LEVELS, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof XpPumpUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.setLevelsToStore(buf.readInt());
+        });
+        REGISTRY.registerServer(XP_PUMP_STORE_ALL, (slot, buf) -> {
+            IUpgradeWrapper wrapper = slot.getUpgradeWrapper();
+            if (!(wrapper instanceof XpPumpUpgradeWrapper upgradeWrapper)) return;
+            upgradeWrapper.giveAllExperienceToPlayer(slot.getPlayer());
         });
     }
 }

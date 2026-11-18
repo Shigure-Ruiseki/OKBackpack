@@ -21,6 +21,7 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
+import ruiseki.backpack.modcompat.thaumcraft.client.gui.sync.ThaumcraftSHRegistries;
 import ruiseki.backpack.modcompat.thaumcraft.helper.ThaumcraftHelpers;
 import ruiseki.okbackpack.client.gui.slot.ResizableItemSlot;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
@@ -109,7 +110,7 @@ public class ArcaneCraftingUpgradeTab extends ExpandedUpgradeTab<ArcaneCraftingU
                 this.getWrapper()
                     .setRefillCraftingGrid(index == 0);
                 this.getSyncHandler()
-                    .syncToServer(UpgradeSlotSHRegistries.FILL_CRAFTING, buffer -> buffer.writeBoolean(index == 0));
+                    .syncToServer(ThaumcraftSHRegistries.FILL_CRAFTING, buffer -> buffer.writeBoolean(index == 0));
             }).size(20, 20);
     }
 
@@ -122,9 +123,7 @@ public class ArcaneCraftingUpgradeTab extends ExpandedUpgradeTab<ArcaneCraftingU
                 this.getWrapper()
                     .setShiftClickIntoStorage(index == 0);
                 this.getSyncHandler()
-                    .syncToServer(
-                        UpgradeSlotSHRegistries.SHIFT_INTO_STORAGE,
-                        buffer -> buffer.writeBoolean(index == 0));
+                    .syncToServer(ThaumcraftSHRegistries.SHIFT_INTO_STORAGE, buffer -> buffer.writeBoolean(index == 0));
             }).size(20, 20);
     }
 

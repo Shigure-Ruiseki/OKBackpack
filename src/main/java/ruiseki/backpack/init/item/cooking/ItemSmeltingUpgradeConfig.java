@@ -38,7 +38,8 @@ public class ItemSmeltingUpgradeConfig extends ItemConfig {
             null,
             config -> new ItemSmeltingUpgrade(
                 new CookingUpgradeConfig(() -> cookingSpeedMultiplier, () -> fuelEfficiencyMultiplier),
-                GeneralConfig.maxUpgradesPerStorageConfig));
+                GeneralConfig.maxUpgradesPerStorageConfig)
+                    .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.smelting_upgrade.tooltip")));
     }
 
 }

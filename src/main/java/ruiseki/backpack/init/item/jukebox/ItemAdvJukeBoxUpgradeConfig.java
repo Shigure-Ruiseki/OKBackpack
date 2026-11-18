@@ -21,7 +21,9 @@ public class ItemAdvJukeBoxUpgradeConfig extends ItemConfig {
             true,
             "advanced_jukebox_upgrade",
             null,
-            config -> new ItemJukeboxUpgrade(() -> 16, GeneralConfig.maxUpgradesPerStorageConfig));
+            config -> new ItemJukeboxUpgrade(() -> 16, GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.addLine("item.items.okbackpack.advanced_jukebox_upgrade.tooltip")
+                    .addLine("item.items.okbackpack.advanced_jukebox_upgrade.tooltip.1")));
     }
 
 }

@@ -17,7 +17,6 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
-import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedBooleanSH;
@@ -62,8 +61,9 @@ public class JukeboxUpgradeTab extends ExpandedUpgradeTab<JukeboxUpgradeWrapper>
                     .findSyncHandler("jukebox_slot_" + this.getSlotIndex(), i, ItemSlotSH.class);
                 slotSH.getSlot()
                     .changeListener((newItem, onlyAmountChanged, client, init) -> {
-                        if (this.isPlayingSH.getValue() && this.activeSlotSH.getValue() == i) {
-                            this.stop();
+                        if (client && this.isPlayingSH.getValue() && this.activeSlotSH.getValue() == i) {
+                            this.getSyncHandler()
+                                .syncToServer(UpgradeSlotSHRegistries.JUKEBOX_STOP);
                         }
                     });
                 return new ItemSlot() {
@@ -98,7 +98,6 @@ public class JukeboxUpgradeTab extends ExpandedUpgradeTab<JukeboxUpgradeWrapper>
             .onMousePressed(button -> {
                 if (button == 0) {
                     Interactable.playButtonClickSound();
-                    this.stop();
                     this.getSyncHandler()
                         .syncToServer(UpgradeSlotSHRegistries.JUKEBOX_STOP);
                     return true;
@@ -114,38 +113,12 @@ public class JukeboxUpgradeTab extends ExpandedUpgradeTab<JukeboxUpgradeWrapper>
             .onMousePressed(button -> {
                 if (button == 0) {
                     Interactable.playButtonClickSound();
-                    this.play();
                     this.getSyncHandler()
                         .syncToServer(UpgradeSlotSHRegistries.JUKEBOX_PLAY);
                     return true;
                 }
                 return false;
             });
-    }
-
-    protected void play() {
-        this.getStoragePanel()
-            .getTile()
-            .ifPresentOrElse(
-                tile -> this.getWrapper()
-                    .play(tile.getWorldObj(), new BlockPos(tile)),
-                () -> this.getWrapper()
-                    .play(this.getPlayer()));
-    }
-
-    protected void stop() {
-        this.getWrapper()
-            .stop(this.getPlayer());
-    }
-
-    protected void next() {
-        this.getWrapper()
-            .next();
-    }
-
-    protected void previous() {
-        this.getWrapper()
-            .previous();
     }
 
     public static class Basic extends JukeboxUpgradeTab {
@@ -199,7 +172,6 @@ public class JukeboxUpgradeTab extends ExpandedUpgradeTab<JukeboxUpgradeWrapper>
                 .onMousePressed(button -> {
                     if (button == 0) {
                         Interactable.playButtonClickSound();
-                        this.previous();
                         this.getSyncHandler()
                             .syncToServer(UpgradeSlotSHRegistries.JUKEBOX_PREVIOUS);
                         return true;
@@ -215,7 +187,6 @@ public class JukeboxUpgradeTab extends ExpandedUpgradeTab<JukeboxUpgradeWrapper>
                 .onMousePressed(button -> {
                     if (button == 0) {
                         Interactable.playButtonClickSound();
-                        this.next();
                         this.getSyncHandler()
                             .syncToServer(UpgradeSlotSHRegistries.JUKEBOX_NEXT);
                         return true;

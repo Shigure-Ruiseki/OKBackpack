@@ -38,7 +38,8 @@ public class ItemBlastingUpgradeConfig extends ItemConfig {
             null,
             config -> new ItemBlastingUpgrade(
                 new CookingUpgradeConfig(() -> cookingSpeedMultiplier, () -> fuelEfficiencyMultiplier),
-                GeneralConfig.maxUpgradesPerStorageConfig));
+                GeneralConfig.maxUpgradesPerStorageConfig)
+                    .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.blasting_upgrade.tooltip")));
     }
 
 }

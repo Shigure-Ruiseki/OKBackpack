@@ -10,6 +10,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import cpw.mods.fml.common.Optional;
 import ganymedes01.etfuturum.ModEnchantments;
 import ganymedes01.etfuturum.configuration.configs.ConfigEnchantsPotions;
+import ruiseki.okcore.enums.Mods;
+import ruiseki.okcore.helper.PlayerHelpers;
 
 /**
  * Helper utilities for converting between vanilla XP points / levels and the {@code xpjuice} fluid
@@ -18,7 +20,7 @@ import ganymedes01.etfuturum.configuration.configs.ConfigEnchantsPotions;
 public final class XpHelpers {
 
     private static final String XPJUICE_FLUID_NAME = "xpjuice";
-    public static final int RATIO_MB_PER_XP = 20;
+    public static final int RATIO = 20;
 
     private XpHelpers() {}
 
@@ -26,14 +28,12 @@ public final class XpHelpers {
         return FluidRegistry.getFluid(XPJUICE_FLUID_NAME);
     }
 
-    public static int experienceToLiquid(float xp) {
-        if (xp <= 0) return 0;
-        return (int) (xp * RATIO_MB_PER_XP);
+    public static float liquidToExperience(int liquid) {
+        return (float) liquid / RATIO;
     }
 
-    public static float liquidToExperience(int liquid) {
-        if (liquid <= 0) return 0f;
-        return (float) liquid / RATIO_MB_PER_XP;
+    public static int experienceToLiquid(float xp) {
+        return (int) (xp * RATIO);
     }
 
     /**
@@ -58,51 +58,49 @@ public final class XpHelpers {
     public static int getExperienceLimitOnLevel(int level) {
         if (level >= 30) {
             return 112 + (level - 30) * 9;
+        } else {
+            if (level >= 15) {
+                return 37 + (level - 15) * 5;
+            }
+            return 7 + level * 2;
         }
-        if (level >= 15) {
-            return 37 + (level - 15) * 5;
+    }
+
+    public static int getLevelForExperience(int experience) {
+        int i = 0;
+        while (getExperienceForLevel(i) <= experience) {
+            i++;
         }
-        return 7 + level * 2;
+        return i - 1;
+    }
+
+    public static double getLevelsForExperience(int experience) {
+        int baseLevel = getLevelForExperience(experience);
+        int remainingExperience = experience - getExperienceForLevel(baseLevel);
+        return baseLevel + ((double) remainingExperience / getExperienceLimitOnLevel(baseLevel));
     }
 
     public static int getPlayerTotalExperience(EntityPlayer player) {
-        int forLevel = getExperienceForLevel(player.experienceLevel);
-        int onCurrent = (int) (player.experience * player.xpBarCap());
-        return forLevel + onCurrent;
+        int currentLevelPoints = getExperienceForLevel(player.experienceLevel);
+        int partialLevelPoints = (int) (player.experience * PlayerHelpers.getXpNeededForNextLevel(player));
+        return currentLevelPoints + partialLevelPoints;
     }
 
-    public static void setPlayerTotalExperience(EntityPlayer player, int totalXp) {
-        if (totalXp < 0) totalXp = 0;
-        player.experienceLevel = 0;
-        player.experience = 0f;
-        player.experienceTotal = 0;
-        player.addExperience(totalXp);
-    }
-
-    /**
-     * Adds the given amount of XP to the player. Negative amounts are subtracted.
-     */
-    public static void addPlayerExperience(EntityPlayer player, int xpDelta) {
-        int total = getPlayerTotalExperience(player) + xpDelta;
-        if (total < 0) total = 0;
-        setPlayerTotalExperience(player, total);
+    public static void playXpPickupSound(World world, EntityPlayer player) {
+        world.playSoundAtEntity(
+            player,
+            "random.orb",
+            0.1F,
+            (world.rand.nextFloat() - world.rand.nextFloat()) * 0.35F + 0.9F);
     }
 
     public static boolean isMendingEnabled() {
-        return readMendingFlag();
+        return Mods.EtFuturum.isModLoaded() && readMendingFlag();
     }
 
-    @Optional.Method(modid = "etfuturum")
-    private static boolean readMendingFlag() {
-        return ConfigEnchantsPotions.enableMending;
-    }
-
-    /**
-     * Returns the level of the EFR Mending enchantment on the given stack, or {@code 0} when
-     * Et-Futurum-Requiem is not loaded or the enchantment is disabled in its config.
-     */
     public static int getMendingLevel(ItemStack stack) {
         if (stack == null) return 0;
+        if (!isMendingEnabled()) return 0;
         return readMendingLevel(stack);
     }
 
@@ -112,11 +110,8 @@ public final class XpHelpers {
         return EnchantmentHelper.getEnchantmentLevel(ModEnchantments.mending.effectId, stack);
     }
 
-    public static void playXpPickupSound(World world, EntityPlayer player) {
-        world.playSoundAtEntity(
-            player,
-            "random.orb",
-            0.1F,
-            (world.rand.nextFloat() - world.rand.nextFloat()) * 0.35F + 0.9F);
+    @Optional.Method(modid = "etfuturum")
+    private static boolean readMendingFlag() {
+        return ConfigEnchantsPotions.enableMending;
     }
 }

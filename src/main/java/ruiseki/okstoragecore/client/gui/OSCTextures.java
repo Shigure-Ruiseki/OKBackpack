@@ -66,6 +66,16 @@ public class OSCTextures {
     public static final UITexture PUMP_INTERACT_HAND = icon("pump_interact_hand", 208, 0);
     public static final UITexture PUMP_NO_INTERACT_HAND = icon("pump_no_interact_hand", 224, 0);
 
+    public static final UITexture XP_PUMP_OUTPUT = icon("xp_pump_output", 128, 16);
+    public static final UITexture XP_PUMP_OFF = icon("xp_pump_off", 0, 96);
+
+    public static final UITexture XP_PUMP_TAKE_ALL = icon("xp_pump_take_all", 144, 16);
+    public static final UITexture XP_PUMP_TAKE_LEVELS = icon("xp_pump_take_levels", 160, 16);
+    public static final UITexture XP_PUMP_STORE_LEVELS = icon("xp_pump_store_levels", 176, 16);
+    public static final UITexture XP_PUMP_STORE_ALL = icon("xp_pump_store_all", 192, 16);
+    public static final UITexture XP_PUMP_MENDING_ON = icon("xp_pump_mending_on", 144, 32);
+    public static final UITexture XP_PUMP_MENDING_OFF = icon("xp_pump_mending_off", 160, 32);
+
     public static final IDrawable STOP = icon("stop", 0, 64);
     public static final IDrawable PLAY = icon("play", 16, 64);
     public static final IDrawable NEXT = icon("next", 32, 96);

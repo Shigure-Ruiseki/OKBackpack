@@ -42,7 +42,9 @@ public class ItemAutoSmeltingUpgradeConfig extends ItemConfig {
                     () -> fuelEfficiencyMultiplier,
                     () -> 16,
                     () -> 4),
-                GeneralConfig.maxUpgradesPerStorageConfig));
+                GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                    builder -> builder.addLine("item.items.okbackpack.auto_smelting_upgrade.tooltip")
+                        .addLine("item.items.okbackpack.auto_smelting_upgrade.tooltip,1")));
     }
 
 }

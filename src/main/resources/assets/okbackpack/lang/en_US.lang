@@ -82,11 +82,20 @@ item.items.okbackpack.advanced_compacting_upgrade.tooltip=Compacts items into th
 item.items.okbackpack.advanced_compacting_upgrade.tooltip.1=Both 2x2 and 3x3 recipes with more filtering options
 
 item.items.okbackpack.smelting_upgrade.name=Smelting Upgrade
+item.items.okbackpack.smelting_upgrade.tooltip=Smelting in an upgrade tab
 item.items.okbackpack.auto_smelting_upgrade.name=Auto-smelting Upgrade
+item.items.okbackpack.auto_smelting_upgrade.tooltip=Smelting in an upgrade tab
+item.items.okbackpack.auto_smelting_upgrade.tooltip.1=Automatically pulls/pushes items
 item.items.okbackpack.smoking_upgrade.name=Smoking Upgrade
+item.items.okbackpack.smoking_upgrade.tooltip=Smoking food in an upgrade tab
 item.items.okbackpack.auto_smoking_upgrade.name=Auto-smoking Upgrade
+item.items.okbackpack.auto_smoking_upgrade.tooltip=Smoking food in an upgrade tab
+item.items.okbackpack.auto_smoking_upgrade.tooltip.1=Automatically pulls/pushes items
 item.items.okbackpack.blasting_upgrade.name=Blasting Upgrade
+item.items.okbackpack.blasting_upgrade.tooltip=Blasting ores and metal stuff in an upgrade tab
 item.items.okbackpack.auto_blasting_upgrade.name=Auto-blasting Upgrade
+item.items.okbackpack.auto_blasting_upgrade.tooltip=Blasting ores and metal stuff in an upgrade tab
+item.items.okbackpack.auto_blasting_upgrade.tooltip.1=Automatically pulls/pushes items
 
 item.items.okbackpack.inception_upgrade.name=Inception Upgrade
 item.items.okbackpack.inception_upgrade.tooltip=Makes it possible to put backpacks into the backpack
@@ -98,9 +107,16 @@ item.items.okbackpack.advanced_void_upgrade.tooltip=Voids items selected in filt
 item.items.okbackpack.advanced_void_upgrade.tooltip.1=Has more filtering options
 
 item.items.okbackpack.jukebox_upgrade.name=Jukebox Upgrade
+item.items.okbackpack.jukebox_upgrade.tooltip=Portable Jukebox
 item.items.okbackpack.advanced_jukebox_upgrade.name=Advanced Jukebox Upgrade
+item.items.okbackpack.advanced_jukebox_upgrade.tooltip=Portable Jukebox with support for more music discs
+item.items.okbackpack.advanced_jukebox_upgrade.tooltip.1=Also more playback options
+
 item.items.okbackpack.tool_swapper_upgrade.name=Tool Swapper Upgrade
+item.items.okbackpack.tool_swapper_upgrade.tooltip=Automatically swaps item in player's hand for the one effective on the block/entity when these are left clicked.
 item.items.okbackpack.advanced_tool_swapper_upgrade.name=Advanced Tool Swapper Upgrade
+item.items.okbackpack.advanced_tool_swapper_upgrade.tooltip=Automatically swaps item in player's hand for the one effective on the block/entity when these are left clicked.
+item.items.okbackpack.advanced_tool_swapper_upgrade.tooltip.1=Has filter options and enables swapping wrench like tools for block/entity player is looking at with %s
 
 item.items.okbackpack.infinity_upgrade.name=Infinity Upgrade (Admin)
 item.items.okbackpack.infinity_upgrade.tooltip=Makes all items in backpack infinite
@@ -130,7 +146,11 @@ item.items.okbackpack.xp_pump_upgrade.name=Experience Pump Upgrade
 item.items.okbackpack.xp_pump_upgrade.tooltip=Pumps experience between Tank upgrade and player
 
 item.items.okbackpack.refill_upgrade.name=Refill Upgrade
+item.items.okbackpack.refill_upgrade.tooltip=Keeps refilling stack of selected items in player's inventory
 item.items.okbackpack.advanced_refill_upgrade.name=Advanced Refill Upgrade
+item.items.okbackpack.advanced_refill_upgrade.tooltip=Keeps refilling stack of selected items in player's inventory
+item.items.okbackpack.advanced_refill_upgrade.tooltip.1=Allows for more precise target slot selection
+item.items.okbackpack.advanced_refill_upgrade.tooltip.2=Also allows middle click picking blocks from backpack
 
 item.items.okbackpack.arcane_crafting_upgrade.name=Arcane Crafting Upgrade
 item.items.okbackpack.arcane_crafting_upgrade.tooltip=Arcane workbench in an upgrade tab
@@ -151,7 +171,6 @@ item.items.okbackpack.restock_upgrade.tooltip=Sneak right-click a container whil
 item.items.okbackpack.advanced_restock_upgrade.name=Advanced Restock Upgrade
 item.items.okbackpack.advanced_restock_upgrade.tooltip=Sneak right-click a container while holding a backpack to restock items
 item.items.okbackpack.advanced_restock_upgrade.tooltip.1=More filter options
-
 
 item.items.okbackpack.redstone_upgrade.name=Redstone Upgrade
 item.items.okbackpack.redstone_upgrade.tooltip=Emits redstone signal to surroundings
@@ -232,27 +251,6 @@ item.items.okbackpack.quartz_upgrade.tooltip=Grants Haste
 item.items.okbackpack.hay_upgrade.name=Hay Upgrade
 item.items.okbackpack.hay_upgrade.tooltip=Has a chance to double crop drops
 item.items.okbackpack.hay_upgrade.tooltip.1=Has a chance to obtain edible crops from grass
-
-# Tooltips
-tooltip.backpack.jukebox_upgrade=Portable Jukebox
-tooltip.backpack.advanced_jukebox_upgrade=Portable Jukebox with support for more music discs
-tooltip.backpack.advanced_jukebox_upgrade.1=Also more playback options
-tooltip.backpack.smelting_upgrade=Smelting in an upgrade tab
-tooltip.backpack.auto_smelting_upgrade=Smelting in an upgrade tab
-tooltip.backpack.auto_smelting_upgrade.1=Automatically pulls/pushes items
-tooltip.backpack.smoking_upgrade=Smoking food in an upgrade tab
-tooltip.backpack.auto_smoking_upgrade=Smoking food in an upgrade tab
-tooltip.backpack.auto_smoking_upgrade.1=Automatically pulls/pushes items
-tooltip.backpack.blasting_upgrade=Blasting ores and metal stuff in an upgrade tab
-tooltip.backpack.auto_blasting_upgrade=Blasting ores and metal stuff in an upgrade tab
-tooltip.backpack.auto_blasting_upgrade.1=Automatically pulls/pushes items
-tooltip.backpack.tool_swapper_upgrade=Automatically swaps item in player's hand for the one effective on the block/entity when these are left clicked.
-tooltip.backpack.advanced_tool_swapper_upgrade=Automatically swaps item in player's hand for the one effective on the block/entity when these are left clicked.
-tooltip.backpack.advanced_tool_swapper_upgrade.1=Has filter options and enables swapping wrench like tools for block/entity player is looking at with %s
-tooltip.backpack.refill_upgrade=Keeps refilling stack of selected items in player's inventory
-tooltip.backpack.advanced_refill_upgrade=Keeps refilling stack of selected items in player's inventory
-tooltip.backpack.advanced_refill_upgrade.1=Allows for more precise target slot selection
-tooltip.backpack.advanced_refill_upgrade.2=Also allows middle click picking blocks from backpack
 
 gui.backpack.deposit_settings=Deposit
 gui.backpack.advanced_deposit_settings=Advanced Deposit

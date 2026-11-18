@@ -197,7 +197,7 @@ public class OKBGuiTextures {
 
     public static final UITexture XP_PUMP_OUTPUT_ICON = icon("xp_pump_output", 128, 16);
     public static final UITexture XP_PUMP_KEEP_ICON = icon("xp_pump_keep", 96, 96);
-    public static final UITexture XP_PUMP_OFF_ICON = icon("xp_pump_off", 0, 96);
+    public static final UITexture XP_PUMP_OFF = icon("xp_pump_off", 0, 96);
     public static final UITexture XP_PUMP_MEND_ICON = icon("xp_pump_mend", 144, 32);
     public static final UITexture XP_PUMP_NO_MEND_ICON = icon("xp_pump_no_mend", 160, 32);
     public static final UITexture XP_PUMP_TAKE_ALL_ICON = icon("xp_pump_take_all", 144, 16);
