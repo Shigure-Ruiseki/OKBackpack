@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import ruiseki.backpack.modcompat.thaumcraft.client.gui.sync.ThaumcraftSHRegistries;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.slot.CraftingSlotInfo;
 import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
@@ -91,7 +92,8 @@ public class ItemArcaneCraftingUpgrade extends ItemUpgradeBase<ArcaneCraftingUpg
 
     public ItemArcaneCraftingUpgrade(IUpgradeCountLimitConfig upgradeTypeLimitConfig) {
         super(upgradeTypeLimitConfig);
-        this.tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.arcane_crafting_upgrade.tooltip"));
+        this.tooltipBuilder(
+            builder -> builder.add(LangHelpers.localize("item.items.okbackpack.arcane_crafting_upgrade.tooltip")));
     }
 
     @Override

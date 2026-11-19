@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.wither.ItemWitherUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemWitherUpgradeConfig extends ItemConfig {
 
@@ -22,8 +23,8 @@ public class ItemWitherUpgradeConfig extends ItemConfig {
             "wither_upgrade",
             null,
             config -> new ItemWitherUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
-                builder -> builder.addLine("item.items.okbackpack.wither_upgrade.tooltip")
-                    .addLine("item.items.okbackpack.wither_upgrade.tooltip.1")));
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.wither_upgrade.tooltip"))
+                    .add(LangHelpers.localize("item.items.okbackpack.wither_upgrade.tooltip.1"))));
     }
 
 }

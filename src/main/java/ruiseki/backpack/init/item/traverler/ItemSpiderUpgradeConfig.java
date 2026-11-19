@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.spider.ItemSpiderUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemSpiderUpgradeConfig extends ItemConfig {
 
@@ -21,8 +22,8 @@ public class ItemSpiderUpgradeConfig extends ItemConfig {
             true,
             "spider_upgrade",
             null,
-            config -> new ItemSpiderUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.spider_upgrade.tooltip")));
+            config -> new ItemSpiderUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.spider_upgrade.tooltip"))));
     }
 
 }

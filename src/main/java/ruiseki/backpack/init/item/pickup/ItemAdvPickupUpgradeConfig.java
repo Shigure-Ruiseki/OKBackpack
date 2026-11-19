@@ -3,6 +3,7 @@ package ruiseki.backpack.init.item.pickup;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.pickup.ItemPickupUpgrade;
 
 public class ItemAdvPickupUpgradeConfig extends ItemConfig {
@@ -16,7 +17,7 @@ public class ItemAdvPickupUpgradeConfig extends ItemConfig {
             "advanced_pickup_upgrade",
             null,
             config -> new ItemPickupUpgrade(() -> 16, GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
-                builder -> builder.addLine("item.items.okbackpack.advanced_pickup_upgrade.tooltip")
-                    .addLine("item.items.okbackpack.advanced_pickup_upgrade.tooltip.1")));
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.advanced_pickup_upgrade.tooltip"))
+                    .add(LangHelpers.localize("item.items.okbackpack.advanced_pickup_upgrade.tooltip.1"))));
     }
 }

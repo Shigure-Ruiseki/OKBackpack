@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.wolf.ItemWolfUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemWolfUpgradeConfig extends ItemConfig {
 
@@ -22,8 +23,8 @@ public class ItemWolfUpgradeConfig extends ItemConfig {
             "wolf_upgrade",
             null,
             config -> new ItemWolfUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
-                builder -> builder.addLine("item.items.okbackpack.wolf_upgrade.tooltip")
-                    .addLine("item.items.okbackpack.wolf_upgrade.tooltip.1")));
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.wolf_upgrade.tooltip"))
+                    .add(LangHelpers.localize("item.items.okbackpack.wolf_upgrade.tooltip.1"))));
     }
 
 }

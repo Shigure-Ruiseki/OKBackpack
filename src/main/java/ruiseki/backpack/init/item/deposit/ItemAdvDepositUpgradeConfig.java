@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.deposit.ItemDepositUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemAdvDepositUpgradeConfig extends ItemConfig {
 
@@ -16,7 +17,7 @@ public class ItemAdvDepositUpgradeConfig extends ItemConfig {
             "advanced_deposit_upgrade",
             null,
             config -> new ItemDepositUpgrade(() -> 16, GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
-                builder -> builder.addLine("item.items.okbackpack.advanced_deposit_upgrade.tooltip")
-                    .addLine("item.items.okbackpack.advanced_deposit_upgrade.tooltip.1")));
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.advanced_deposit_upgrade.tooltip"))
+                    .add(LangHelpers.localize("item.items.okbackpack.advanced_deposit_upgrade.tooltip.1"))));
     }
 }

@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.sponge.ItemSpongeUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemSpongeUpgradeConfig extends ItemConfig {
 
@@ -21,8 +22,8 @@ public class ItemSpongeUpgradeConfig extends ItemConfig {
             true,
             "sponge_upgrade",
             null,
-            config -> new ItemSpongeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.sponge_upgrade.tooltip")));
+            config -> new ItemSpongeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.sponge_upgrade.tooltip"))));
     }
 
 }

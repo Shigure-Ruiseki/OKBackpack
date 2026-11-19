@@ -167,19 +167,19 @@ public class ItemBackpack extends ItemBlockBauble implements IGuiHolder<PlayerIn
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean flag) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
         if (!GuiScreen.isShiftKeyDown()) {
             // "Press <Left Shift> to View Contents"
             list.add(
                 "§7" + LangHelpers.localize(
-                    "tooltip.backpack.contents.press_for_contents",
-                    LangHelpers.localize("tooltip.backpack.contents.shift")));
+                    "gui.okstoragecore.contents.press_for_contents",
+                    LangHelpers.localize("gui.okstoragecore.contents.shift")));
             StorageContentHandler.reset();
         } else {
             CapabilityHelpers.getCapability(stack, CapabilityStorageWrapperConfig.CAPABILITY)
                 .ifPresent(wrapper -> { list.addAll(StorageContentHandler.buildExpandedTooltipLines(wrapper)); });
         }
-        super.addInformation(stack, player, list, flag);
+        super.addInformation(stack, player, list, advanced);
     }
 
     @Override

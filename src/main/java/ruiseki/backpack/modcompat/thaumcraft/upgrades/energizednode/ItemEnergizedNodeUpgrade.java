@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
 import ruiseki.okcore.helper.LangHelpers;
@@ -24,9 +25,11 @@ public class ItemEnergizedNodeUpgrade extends ItemUpgradeBase<EnergizedNodeUpgra
 
     public ItemEnergizedNodeUpgrade(IUpgradeCountLimitConfig upgradeTypeLimitConfig) {
         super(upgradeTypeLimitConfig);
+
         this.tooltipBuilder(builder -> {
-            builder.addLine("item.items.okbackpack.energized_node_upgrade.tooltip");
-            builder.addLine((stack, player, tooltip, advanced) -> {
+            builder.add("item.items.okbackpack.energized_node_upgrade.tooltip");
+            builder.addProvider(tooltip -> {
+                ItemStack stack = tooltip.getStack();
                 if (!EnergizedNodeUpgradeWrapper.hasAspect(stack)) {
                     tooltip.add(
                         EnumChatFormatting.DARK_GRAY
@@ -39,8 +42,8 @@ public class ItemEnergizedNodeUpgrade extends ItemUpgradeBase<EnergizedNodeUpgra
                     for (Map.Entry<Aspect, Integer> entry : aspectRates.entrySet()) {
                         Aspect aspect = entry.getKey();
                         if (aspect == null) continue;
-                        tooltip.add(
-                            " §" + aspect.getChatcolor() + aspect.getName() + "§r x " + entry.getValue() + " cv/t");
+                        tooltip
+                            .add("§" + aspect.getChatcolor() + aspect.getName() + "§r x " + entry.getValue() + " cv/t");
                     }
                 } else {
                     tooltip.add(buildCompactAspectTooltip(aspectRates));

@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.rainbow.ItemRainbowUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemRainbowUpgradeConfig extends ItemConfig {
 
@@ -22,8 +23,8 @@ public class ItemRainbowUpgradeConfig extends ItemConfig {
             "rainbow_upgrade",
             null,
             config -> new ItemRainbowUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
-                builder -> builder.addLine("item.items.okbackpack.rainbow_upgrade.tooltip")
-                    .addLine("item.items.okbackpack.rainbow_upgrade.tooltip.1")));
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.rainbow_upgrade.tooltip"))
+                    .add(LangHelpers.localize("item.items.okbackpack.rainbow_upgrade.tooltip.1"))));
     }
 
 }

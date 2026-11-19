@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.magma.ItemMagmaCubeUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemMagmaCubeUpgradeConfig extends ItemConfig {
 
@@ -21,8 +22,8 @@ public class ItemMagmaCubeUpgradeConfig extends ItemConfig {
             true,
             "magma_cube_upgrade",
             null,
-            config -> new ItemMagmaCubeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.magma_cube_upgrade.tooltip")));
+            config -> new ItemMagmaCubeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.magma_cube_upgrade.tooltip"))));
     }
 
 }

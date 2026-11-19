@@ -5,6 +5,7 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.cooking.CookingUpgradeConfig;
 import ruiseki.okstoragecore.upgrades.cooking.ItemSmeltingUpgrade;
 
@@ -38,8 +39,8 @@ public class ItemSmeltingUpgradeConfig extends ItemConfig {
             null,
             config -> new ItemSmeltingUpgrade(
                 new CookingUpgradeConfig(() -> cookingSpeedMultiplier, () -> fuelEfficiencyMultiplier),
-                GeneralConfig.maxUpgradesPerStorageConfig)
-                    .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.smelting_upgrade.tooltip")));
+                GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                    builder -> builder.add(LangHelpers.localize("item.items.okbackpack.smelting_upgrade.tooltip"))));
     }
 
 }

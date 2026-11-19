@@ -1,5 +1,6 @@
 package ruiseki.okstoragecore.upgrades.tank;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
@@ -10,10 +11,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import ruiseki.okcore.client.gui.tooltip.FluidTooltipLine;
+import ruiseki.okcore.client.gui.tooltip.TooltipLineHandler;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.fluid.capability.CapabilityFluidHandler;
+import ruiseki.okcore.fluid.handler.IFluidHandler;
 import ruiseki.okcore.fluid.handler.IFluidHandlerItem;
 import ruiseki.okcore.helper.CapabilityHelpers;
 import ruiseki.okcore.helper.FluidHelpers;
@@ -27,7 +32,7 @@ import ruiseki.okstoragecore.upgrades.ITickableUpgrade;
 import ruiseki.okstoragecore.upgrades.UpgradeWrapperBase;
 
 public class TankUpgradeWrapper extends UpgradeWrapperBase<TankUpgradeWrapper, ItemTankUpgrade>
-    implements ITickableUpgrade, IStackableContentsUpgrade, IStorageUpgrade {
+    implements ITickableUpgrade, IStackableContentsUpgrade, IStorageUpgrade, IFluidHandler {
 
     public static final int INPUT_SLOT = 0;
     public static final int OUTPUT_SLOT = 1;
@@ -271,5 +276,53 @@ public class TankUpgradeWrapper extends UpgradeWrapperBase<TankUpgradeWrapper, I
     @Override
     public boolean canBeDisabled() {
         return false;
+    }
+
+    @Override
+    public List<String> getTooltipLines() {
+        List<String> list = super.getTooltipLines();
+        list.add(TooltipLineHandler.register(new FluidTooltipLine(this)));
+        return list;
+    }
+
+    @Override
+    public int getTanks() {
+        return 1;
+    }
+
+    @Override
+    public FluidStack getFluidInTank(int tank) {
+        return tank == 0 ? contents : FluidHelpers.EMPTY;
+    }
+
+    @Override
+    public int getTankCapacity(int tank) {
+        return tank == 0 ? this.getTankCapacity() : 0;
+    }
+
+    @Override
+    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        return tank == 0 && !FluidHelpers.isEmpty(stack)
+            && (FluidHelpers.isEmpty(contents) || contents.isFluidEqual(stack));
+    }
+
+    @Override
+    public int fill(FluidStack resource, boolean action) {
+        if (FluidHelpers.isEmpty(resource)) return 0;
+        return this.fill(resource, action, false);
+    }
+
+    @Override
+    public FluidStack drain(FluidStack resource, boolean action) {
+        if (FluidHelpers.isEmpty(resource) || FluidHelpers.isEmpty(contents) || !contents.isFluidEqual(resource)) {
+            return FluidHelpers.EMPTY;
+        }
+        return drain(FluidHelpers.getAmount(resource), action, false);
+    }
+
+    @Override
+    public FluidStack drain(int maxDrain, boolean action) {
+        if (maxDrain <= 0) return FluidHelpers.EMPTY;
+        return drain(maxDrain, action, false);
     }
 }

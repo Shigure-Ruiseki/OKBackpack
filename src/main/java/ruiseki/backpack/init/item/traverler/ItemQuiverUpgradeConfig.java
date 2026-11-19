@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.quiver.ItemQuiverUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemQuiverUpgradeConfig extends ItemConfig {
 
@@ -21,8 +22,8 @@ public class ItemQuiverUpgradeConfig extends ItemConfig {
             true,
             "quiver_upgrade",
             null,
-            config -> new ItemQuiverUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.quiver_upgrade.tooltip")));
+            config -> new ItemQuiverUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.quiver_upgrade.tooltip"))));
     }
 
 }

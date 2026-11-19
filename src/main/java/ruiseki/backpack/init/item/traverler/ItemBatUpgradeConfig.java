@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.bat.ItemBatUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemBatUpgradeConfig extends ItemConfig {
 
@@ -15,7 +16,7 @@ public class ItemBatUpgradeConfig extends ItemConfig {
             true,
             "bat_upgrade",
             null,
-            config -> new ItemBatUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.bat_upgrade.tooltip")));
+            config -> new ItemBatUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.bat_upgrade.tooltip"))));
     }
 }

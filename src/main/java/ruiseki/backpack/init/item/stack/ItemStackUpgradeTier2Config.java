@@ -5,6 +5,7 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.stack.ItemStackUpgrade;
 
 public class ItemStackUpgradeTier2Config extends ItemConfig {
@@ -25,6 +26,7 @@ public class ItemStackUpgradeTier2Config extends ItemConfig {
             null,
             config -> new ItemStackUpgrade(() -> stackUpgradeTier2Mul, GeneralConfig.maxUpgradesPerStorageConfig)
                 .tooltipBuilder(
-                    builder -> builder.addLine("item.items.okbackpack.stack_upgrade.tooltip", stackUpgradeTier2Mul)));
+                    builder -> builder.add(
+                        LangHelpers.localize("item.items.okbackpack.stack_upgrade.tooltip", stackUpgradeTier2Mul))));
     }
 }

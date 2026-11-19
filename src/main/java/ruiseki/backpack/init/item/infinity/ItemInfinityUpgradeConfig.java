@@ -3,6 +3,7 @@ package ruiseki.backpack.init.item.infinity;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.infinity.ItemInfinityUpgrade;
 
 public class ItemInfinityUpgradeConfig extends ItemConfig {
@@ -16,7 +17,7 @@ public class ItemInfinityUpgradeConfig extends ItemConfig {
             "infinity_upgrade",
             null,
             config -> new ItemInfinityUpgrade(GeneralConfig.maxUpgradesPerStorageConfig, true).tooltipBuilder(
-                builder -> builder.addLine("item.items.okbackpack.infinity_upgrade.tooltip")
-                    .addLine("item.items.okbackpack.infinity_upgrade.tooltip.1")));
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.infinity_upgrade.tooltip"))
+                    .add(LangHelpers.localize("item.items.okbackpack.infinity_upgrade.tooltip.1"))));
     }
 }

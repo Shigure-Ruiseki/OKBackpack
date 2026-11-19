@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.redstone.ItemRedstoneUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemRedstoneUpgradeConfig extends ItemConfig {
 
@@ -21,8 +22,8 @@ public class ItemRedstoneUpgradeConfig extends ItemConfig {
             true,
             "redstone_upgrade",
             null,
-            config -> new ItemRedstoneUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.redstone_upgrade.tooltip")));
+            config -> new ItemRedstoneUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.redstone_upgrade.tooltip"))));
     }
 
 }

@@ -5,6 +5,7 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.pump.ItemPumpUpgrade;
 import ruiseki.okstoragecore.upgrades.pump.PumpUpgradeConfig;
 
@@ -47,8 +48,8 @@ public class ItemAdvPumpUpgradeConfig extends ItemConfig {
                 () -> advInteractWithHandDefault,
                 () -> advInteractWithWorldDefault,
                 GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
-                    builder -> builder.addLine("item.items.okbackpack.advanced_pump_upgrade.tooltip")
-                        .addLine("item.items.okbackpack.advanced_pump_upgrade.tooltip.1")
-                        .addLine("item.items.okbackpack.advanced_pump_upgrade.tooltip.2")));
+                    builder -> builder.add(LangHelpers.localize("item.items.okbackpack.advanced_pump_upgrade.tooltip"))
+                        .add(LangHelpers.localize("item.items.okbackpack.advanced_pump_upgrade.tooltip.1"))
+                        .add(LangHelpers.localize("item.items.okbackpack.advanced_pump_upgrade.tooltip.2"))));
     }
 }

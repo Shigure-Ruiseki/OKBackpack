@@ -5,6 +5,7 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.magnet.ItemMagnetUpgrade;
 
 public class ItemMagnetUpgradeConfig extends ItemConfig {
@@ -21,6 +22,7 @@ public class ItemMagnetUpgradeConfig extends ItemConfig {
             "magnet_upgrade",
             null,
             config -> new ItemMagnetUpgrade(() -> basicMagnetRange, () -> 16, GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.magnet_upgrade.tooltip")));
+                .tooltipBuilder(
+                    builder -> builder.add(LangHelpers.localize("item.items.okbackpack.magnet_upgrade.tooltip"))));
     }
 }

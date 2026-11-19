@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.ocelot.ItemOcelotUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemOcelotUpgradeConfig extends ItemConfig {
 
@@ -15,8 +16,8 @@ public class ItemOcelotUpgradeConfig extends ItemConfig {
             true,
             "ocelot_upgrade",
             null,
-            config -> new ItemOcelotUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.ocelot_upgrade.tooltip")));
+            config -> new ItemOcelotUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.ocelot_upgrade.tooltip"))));
     }
 
 }

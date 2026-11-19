@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.creeper.ItemCreeperUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemCreeperUpgradeConfig extends ItemConfig {
 
@@ -15,7 +16,7 @@ public class ItemCreeperUpgradeConfig extends ItemConfig {
             true,
             "creeper_upgrade",
             null,
-            config -> new ItemCreeperUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.creeper_upgrade.tooltip")));
+            config -> new ItemCreeperUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.creeper_upgrade.tooltip"))));
     }
 }

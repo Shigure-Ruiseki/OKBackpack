@@ -3,6 +3,7 @@ package ruiseki.backpack.init.item.everlasting;
 import ruiseki.backpack.upgrades.everlasting.ItemEverlastingUpgrade;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemEverlastingUpgradeConfig extends ItemConfig {
 
@@ -15,7 +16,7 @@ public class ItemEverlastingUpgradeConfig extends ItemConfig {
             "everlasting_upgrade",
             null,
             config -> new ItemEverlastingUpgrade().tooltipBuilder(
-                builder -> builder.addLine("item.items.okbackpack.everlasting_upgrade.tooltip")
-                    .addLine("item.items.okbackpack.everlasting_upgrade.tooltip.1")));
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.everlasting_upgrade.tooltip"))
+                    .add(LangHelpers.localize("item.items.okbackpack.everlasting_upgrade.tooltip.1"))));
     }
 }

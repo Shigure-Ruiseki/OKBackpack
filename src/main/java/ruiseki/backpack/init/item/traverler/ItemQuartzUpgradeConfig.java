@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.quartz.ItemQuartzUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemQuartzUpgradeConfig extends ItemConfig {
 
@@ -15,8 +16,8 @@ public class ItemQuartzUpgradeConfig extends ItemConfig {
             true,
             "quartz_upgrade",
             null,
-            config -> new ItemQuartzUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.quartz_upgrade.tooltip")));
+            config -> new ItemQuartzUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.quartz_upgrade.tooltip"))));
     }
 
 }

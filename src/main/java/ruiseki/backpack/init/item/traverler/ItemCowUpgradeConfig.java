@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.cow.ItemCowUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemCowUpgradeConfig extends ItemConfig {
 
@@ -15,7 +16,7 @@ public class ItemCowUpgradeConfig extends ItemConfig {
             true,
             "cow_upgrade",
             null,
-            config -> new ItemCowUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.cow_upgrade.tooltip")));
+            config -> new ItemCowUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.cow_upgrade.tooltip"))));
     }
 }

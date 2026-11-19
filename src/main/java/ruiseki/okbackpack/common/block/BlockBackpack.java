@@ -783,7 +783,7 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
                     NBTTagCompound bpTag = tag.getCompoundTag(BackpackWrapper.BACKPACK_NBT);
                     if (bpTag.hasKey(BackpackWrapper.UUID_TAG, 8)) {
                         String uuid = bpTag.getString(BackpackWrapper.UUID_TAG);
-                        list.add("\u00a78" + LangHelpers.localize("tooltip.backpack.contents.uuid", uuid));
+                        list.add("§8" + LangHelpers.localize("tooltip.backpack.contents.uuid", uuid));
                     }
                 }
             }

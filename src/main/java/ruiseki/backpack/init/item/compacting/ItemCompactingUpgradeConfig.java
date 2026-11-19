@@ -5,6 +5,7 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.compacting.ItemCompactingUpgrade;
 
 public class ItemCompactingUpgradeConfig extends ItemConfig {
@@ -27,7 +28,7 @@ public class ItemCompactingUpgradeConfig extends ItemConfig {
                 () -> basicShouldCompactThreeByThree,
                 () -> 16,
                 GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
-                    builder -> builder.addLine("item.items.okbackpack.compacting_upgrade.tooltip")
-                        .addLine("item.items.okbackpack.compacting_upgrade.tooltip.1")));
+                    builder -> builder.add(LangHelpers.localize("item.items.okbackpack.compacting_upgrade.tooltip"))
+                        .add(LangHelpers.localize("item.items.okbackpack.compacting_upgrade.tooltip.1"))));
     }
 }

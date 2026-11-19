@@ -3,6 +3,7 @@ package ruiseki.backpack.init.item.feeding;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.feeding.ItemFeedingUpgrade;
 
 public class ItemAdvFeedingUpgradeConfig extends ItemConfig {
@@ -16,7 +17,7 @@ public class ItemAdvFeedingUpgradeConfig extends ItemConfig {
             "advanced_feeding_upgrade",
             null,
             config -> new ItemFeedingUpgrade(() -> 16, GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
-                builder -> builder.addLine("item.items.okbackpack.advanced_feeding_upgrade.tooltip")
-                    .addLine("item.items.okbackpack.advanced_feeding_upgrade.tooltip.1")));
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.advanced_feeding_upgrade.tooltip"))
+                    .add(LangHelpers.localize("item.items.okbackpack.advanced_feeding_upgrade.tooltip.1"))));
     }
 }

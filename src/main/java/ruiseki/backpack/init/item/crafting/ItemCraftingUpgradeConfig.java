@@ -3,6 +3,7 @@ package ruiseki.backpack.init.item.crafting;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.crafting.ItemCraftingUpgrade;
 
 public class ItemCraftingUpgradeConfig extends ItemConfig {
@@ -15,7 +16,7 @@ public class ItemCraftingUpgradeConfig extends ItemConfig {
             true,
             "crafting_upgrade",
             null,
-            config -> new ItemCraftingUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.crafting_upgrade.tooltip")));
+            config -> new ItemCraftingUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.crafting_upgrade.tooltip"))));
     }
 }

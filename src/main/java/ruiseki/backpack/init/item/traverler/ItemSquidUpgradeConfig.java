@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.squid.ItemSquidUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemSquidUpgradeConfig extends ItemConfig {
 
@@ -21,8 +22,8 @@ public class ItemSquidUpgradeConfig extends ItemConfig {
             true,
             "squid_upgrade",
             null,
-            config -> new ItemSquidUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.squid_upgrade.tooltip")));
+            config -> new ItemSquidUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.squid_upgrade.tooltip"))));
     }
 
 }

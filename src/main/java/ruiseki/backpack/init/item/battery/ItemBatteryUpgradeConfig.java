@@ -5,6 +5,7 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.battery.BatteryUpgradeConfig;
 import ruiseki.okstoragecore.upgrades.battery.ItemBatteryUpgrade;
 
@@ -41,7 +42,7 @@ public class ItemBatteryUpgradeConfig extends ItemConfig {
                     () -> batteryEnergyPerSlotRow,
                     () -> batteryStackMultiplierRatio,
                     () -> batteryMaxInputOutput),
-                GeneralConfig.maxUpgradesPerStorageConfig)
-                    .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.battery_upgrade.tooltip")));
+                GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                    builder -> builder.add(LangHelpers.localize("item.items.okbackpack.battery_upgrade.tooltip"))));
     }
 }

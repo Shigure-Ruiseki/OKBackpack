@@ -5,6 +5,7 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.xppump.ItemXpPumpUpgrade;
 import ruiseki.okstoragecore.upgrades.xppump.XpPumpUpgradeConfig;
 
@@ -32,7 +33,7 @@ public class ItemXpPumpUpgradeConfig extends ItemConfig {
             null,
             config -> new ItemXpPumpUpgrade(
                 new XpPumpUpgradeConfig(() -> maxXpPointsPerMending, () -> mendingOn),
-                GeneralConfig.maxUpgradesPerStorageConfig)
-                    .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.xp_pump_upgrade.tooltip")));
+                GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                    builder -> builder.add(LangHelpers.localize("item.items.okbackpack.xp_pump_upgrade.tooltip"))));
     }
 }

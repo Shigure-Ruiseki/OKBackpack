@@ -5,6 +5,7 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.pump.ItemPumpUpgrade;
 import ruiseki.okstoragecore.upgrades.pump.PumpUpgradeConfig;
 
@@ -46,7 +47,7 @@ public class ItemPumpUpgradeConfig extends ItemConfig {
                 new PumpUpgradeConfig(() -> basicMaxInputOutput, () -> basicStackMultiplierRatio, () -> 16),
                 () -> basicInteractWithHandDefault,
                 () -> basicInteractWithWorldDefault,
-                GeneralConfig.maxUpgradesPerStorageConfig)
-                    .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.pump_upgrade.tooltip")));
+                GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                    builder -> builder.add(LangHelpers.localize("item.items.okbackpack.pump_upgrade.tooltip"))));
     }
 }

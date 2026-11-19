@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.cactus.ItemCactusUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemCactusUpgradeConfig extends ItemConfig {
 
@@ -15,7 +16,7 @@ public class ItemCactusUpgradeConfig extends ItemConfig {
             true,
             "cactus_upgrade",
             null,
-            config -> new ItemCactusUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.cactus_upgrade.tooltip")));
+            config -> new ItemCactusUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.cactus_upgrade.tooltip"))));
     }
 }

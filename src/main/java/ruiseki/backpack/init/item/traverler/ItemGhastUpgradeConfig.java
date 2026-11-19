@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.ghast.ItemGhastUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemGhastUpgradeConfig extends ItemConfig {
 
@@ -21,8 +22,8 @@ public class ItemGhastUpgradeConfig extends ItemConfig {
             true,
             "ghast_upgrade",
             null,
-            config -> new ItemGhastUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.ghast_upgrade.tooltip")));
+            config -> new ItemGhastUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.ghast_upgrade.tooltip"))));
     }
 
 }

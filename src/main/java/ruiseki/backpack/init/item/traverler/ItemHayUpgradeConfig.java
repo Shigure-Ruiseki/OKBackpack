@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.hay.ItemHayUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemHayUpgradeConfig extends ItemConfig {
 
@@ -16,8 +17,8 @@ public class ItemHayUpgradeConfig extends ItemConfig {
             "hay_upgrade",
             null,
             config -> new ItemHayUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
-                builder -> builder.addLine("item.items.okbackpack.hay_upgrade.tooltip")
-                    .addLine("item.items.okbackpack.hay_upgrade.tooltip.1")));
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.hay_upgrade.tooltip"))
+                    .add(LangHelpers.localize("item.items.okbackpack.hay_upgrade.tooltip.1"))));
     }
 
 }

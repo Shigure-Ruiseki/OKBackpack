@@ -3,6 +3,7 @@ package ruiseki.backpack.init.item.jukebox;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.jukebox.ItemJukeboxUpgrade;
 
 public class ItemJukeBoxUpgradeConfig extends ItemConfig {
@@ -21,8 +22,8 @@ public class ItemJukeBoxUpgradeConfig extends ItemConfig {
             true,
             "jukebox_upgrade",
             null,
-            config -> new ItemJukeboxUpgrade(() -> 1, GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.jukebox_upgrade.tooltip")));
+            config -> new ItemJukeboxUpgrade(() -> 1, GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.jukebox_upgrade.tooltip"))));
     }
 
 }

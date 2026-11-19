@@ -4,6 +4,7 @@ import ruiseki.backpack.upgrades.traverler.cake.ItemCakeUpgrade;
 import ruiseki.okbackpack.GeneralConfig;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemCakeUpgradeConfig extends ItemConfig {
 
@@ -15,7 +16,7 @@ public class ItemCakeUpgradeConfig extends ItemConfig {
             true,
             "cake_upgrade",
             null,
-            config -> new ItemCakeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig)
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.cake_upgrade.tooltip")));
+            config -> new ItemCakeUpgrade(GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.cake_upgrade.tooltip"))));
     }
 }

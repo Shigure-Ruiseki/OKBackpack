@@ -5,6 +5,7 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.voiding.ItemVoidUpgrade;
 
 public class ItemVoidUpgradeConfig extends ItemConfig {
@@ -26,7 +27,7 @@ public class ItemVoidUpgradeConfig extends ItemConfig {
             config -> new ItemVoidUpgrade(
                 () -> basicVoidAnythingEnabled,
                 () -> 9,
-                GeneralConfig.maxUpgradesPerStorageConfig)
-                    .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.void_upgrade.tooltip")));
+                GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                    builder -> builder.add(LangHelpers.localize("item.items.okbackpack.void_upgrade.tooltip"))));
     }
 }

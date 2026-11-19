@@ -186,3 +186,14 @@ gui.okstoragecore.sort_by_count=Sort By Count
 gui.okstoragecore.sort_by_ore_dict=Sort By OreDict
 gui.okstoragecore.sort_by_tag=Sort By Tag
 gui.okstoragecore.sort=Sort
+
+gui.okstoragecore.inventory_size=Inventory size: %d
+gui.okstoragecore.upgrade_slots_size=Upgrade slots: %d
+gui.okstoragecore.contents.uuid=UUID: %s
+gui.okstoragecore.contents.press_for_contents=Press <%s> to View Contents
+gui.okstoragecore.contents.shift=Left Shift
+gui.okstoragecore.contents.stack_multiplier=Stack Size Multiplier: %s
+gui.okstoragecore.inventory_interaction.right_click_add=Right-click to add
+gui.okstoragecore.contents.upgrades=Upgrades
+gui.okstoragecore.contents.inventory=Inventory
+gui.okstoragecore.contents.empty=No Upgrades or Inventory Contents

@@ -3,6 +3,7 @@ package ruiseki.backpack.init.item.inception;
 import ruiseki.backpack.upgrades.inception.ItemInceptionUpgrade;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 
 public class ItemInceptionUpgradeConfig extends ItemConfig {
 
@@ -14,7 +15,7 @@ public class ItemInceptionUpgradeConfig extends ItemConfig {
             true,
             "inception_upgrade",
             null,
-            config -> new ItemInceptionUpgrade()
-                .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.inception_upgrade.tooltip")));
+            config -> new ItemInceptionUpgrade().tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.inception_upgrade.tooltip"))));
     }
 }

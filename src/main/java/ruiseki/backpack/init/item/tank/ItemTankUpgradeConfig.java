@@ -6,6 +6,7 @@ import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.ItemConfig;
+import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.upgrades.tank.ItemTankUpgrade;
 import ruiseki.okstoragecore.upgrades.tank.TankUpgradeConfig;
 
@@ -49,7 +50,7 @@ public class ItemTankUpgradeConfig extends ItemConfig {
                     () -> tankStackMultiplierRatio,
                     () -> tankAutoFillDrainContainerCooldown,
                     () -> tankMaxInputOutput),
-                GeneralConfig.maxUpgradesPerStorageConfig)
-                    .tooltipBuilder(builder -> builder.addLine("item.items.okbackpack.tank_upgrade.tooltip")));
+                GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
+                    builder -> builder.add(LangHelpers.localize("item.items.okbackpack.tank_upgrade.tooltip"))));
     }
 }
