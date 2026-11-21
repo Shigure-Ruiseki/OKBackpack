@@ -10,26 +10,26 @@ import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 public class BasicFluidFilterLogicUpdate implements IUpgradeSlotUpdateFactory {
 
     @Override
-    public void build(UpgradeSlotUpdate group) {
+    public void build(UpgradeSlotUpdate slotUpdate) {
 
         DelegatedFluidFilterLogicSH logicSH = new DelegatedFluidFilterLogicSH(
-            group.getPanel(),
-            group::getContainer,
-            group.getUpgradeIndex(),
+            slotUpdate.getPanel(),
+            slotUpdate::getContainer,
+            slotUpdate.getUpgradeIndex(),
             9);
-        group.getSyncManager()
-            .syncValue("basic_fluid_filter_delegation_" + group.getUpgradeIndex(), logicSH);
-        group.put("basic_fluid_filter_logic", logicSH);
+        slotUpdate.getSyncManager()
+            .syncValue("basic_fluid_filter_delegation_" + slotUpdate.getUpgradeIndex(), logicSH);
+        slotUpdate.put("basic_fluid_filter_logic", logicSH);
 
         FluidSlotSyncHandler[] slotSHs = new FluidSlotSyncHandler[9];
         DelegatedFluidHandler handler = logicSH.getFluidHandler();
         for (int i = 0; i < 9; i++) {
             FluidSlotSyncHandler slotSH = new FluidSlotSyncHandler(handler.getTank(i)).phantom(true)
                 .controlsAmount(false);
-            group.getSyncManager()
-                .syncValue("basic_fluid_filter_" + group.getUpgradeIndex(), i, slotSH);
+            slotUpdate.getSyncManager()
+                .syncValue("basic_fluid_filter_" + slotUpdate.getUpgradeIndex(), i, slotSH);
             slotSHs[i] = slotSH;
         }
-        group.put("basic_fluid_filter_slot_shs", slotSHs);
+        slotUpdate.put("basic_fluid_filter_slot_shs", slotSHs);
     }
 }

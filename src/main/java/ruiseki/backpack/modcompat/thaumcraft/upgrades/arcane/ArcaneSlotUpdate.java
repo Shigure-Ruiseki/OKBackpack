@@ -15,30 +15,30 @@ import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 public class ArcaneSlotUpdate implements IUpgradeSlotUpdateFactory {
 
     @Override
-    public void build(UpgradeSlotUpdate group) {
-        int slotIndex = group.getUpgradeIndex();
+    public void build(UpgradeSlotUpdate slotUpdate) {
+        int slotIndex = slotUpdate.getUpgradeIndex();
 
         String matrixGroupName = "arcane_matrix_" + slotIndex;
         String resultGroupName = "arcane_result_" + slotIndex;
         String wandGroupName = "arcane_wand_" + slotIndex;
 
         DelegatedItemHandlerSH arcaneHandler = new DelegatedItemHandlerSH(
-            group.getPanel(),
-            group::getContainer,
+            slotUpdate.getPanel(),
+            slotUpdate::getContainer,
             slotIndex,
             10);
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .syncValue("arcane_delegation_" + slotIndex, arcaneHandler);
-        group.put("arcane_handler", arcaneHandler);
+        slotUpdate.put("arcane_handler", arcaneHandler);
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .registerSlotGroup(new SlotGroup(matrixGroupName, 9, false));
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .registerSlotGroup(new SlotGroup(resultGroupName, 1, false));
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .registerSlotGroup(new SlotGroup(wandGroupName, 1, false));
 
         IndexedModularSlot[] slots = new IndexedModularSlot[9];
@@ -46,46 +46,48 @@ public class ArcaneSlotUpdate implements IUpgradeSlotUpdateFactory {
             IndexedModularSlot slot = new IndexedModularSlot(
                 arcaneHandler.getItemHandler(),
                 i,
-                group.getPanel(),
-                group.getUpgradeIndex());
+                slotUpdate.getPanel(),
+                slotUpdate.getUpgradeIndex());
             slot.slotGroup(matrixGroupName);
-            group.getSyncManager()
+            slotUpdate.getSyncManager()
                 .syncValue("arcane_slot_" + slotIndex, i, new ItemSlotSH(slot));
             slots[i] = slot;
         }
-        group.put("arcane_matrix_slots", slots);
+        slotUpdate.put("arcane_matrix_slots", slots);
 
-        ArcaneCraftingSlot arcaneResultSlot = new ArcaneCraftingSlot(group.getPanel(), slotIndex);
+        ArcaneCraftingSlot arcaneResultSlot = new ArcaneCraftingSlot(slotUpdate.getPanel(), slotIndex);
         arcaneResultSlot.slotGroup(resultGroupName);
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .syncValue(resultGroupName, 0, new ItemSlotSH(arcaneResultSlot));
-        group.put("arcane_result_slot", arcaneResultSlot);
+        slotUpdate.put("arcane_result_slot", arcaneResultSlot);
 
         IndexedModularSlot wandSlot = new IndexedModularSlot(
             arcaneHandler.getItemHandler(),
             9,
-            group.getPanel(),
+            slotUpdate.getPanel(),
             slotIndex);
         wandSlot.filter(ThaumcraftHelpers::isWand);
         wandSlot.slotGroup(wandGroupName);
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .syncValue(wandGroupName, 0, new ItemSlotSH(wandSlot));
-        group.put("arcane_wand_slot", wandSlot);
+        slotUpdate.put("arcane_wand_slot", wandSlot);
 
-        DelegatedBooleanSH hasWand = new DelegatedBooleanSH(group.getPanel(), group.getUpgradeIndex());
-        group.getSyncManager()
+        DelegatedBooleanSH hasWand = new DelegatedBooleanSH(slotUpdate.getPanel(), slotUpdate.getUpgradeIndex());
+        slotUpdate.getSyncManager()
             .syncValue("arcane_has_wand_" + slotIndex, hasWand);
-        group.put("arcane_has_wand", hasWand);
+        slotUpdate.put("arcane_has_wand", hasWand);
 
-        DelegatedStringSH missingResearch = new DelegatedStringSH(group.getPanel(), group.getUpgradeIndex());
-        group.getSyncManager()
+        DelegatedStringSH missingResearch = new DelegatedStringSH(slotUpdate.getPanel(), slotUpdate.getUpgradeIndex());
+        slotUpdate.getSyncManager()
             .syncValue("arcane_missing_research_" + slotIndex, missingResearch);
-        group.put("arcane_missing_research", missingResearch);
+        slotUpdate.put("arcane_missing_research", missingResearch);
 
-        DelegatedStringSH missingResearchName = new DelegatedStringSH(group.getPanel(), group.getUpgradeIndex());
-        group.getSyncManager()
+        DelegatedStringSH missingResearchName = new DelegatedStringSH(
+            slotUpdate.getPanel(),
+            slotUpdate.getUpgradeIndex());
+        slotUpdate.getSyncManager()
             .syncValue("arcane_missing_research_name_" + slotIndex, missingResearchName);
-        group.put("arcane_missing_research_name", missingResearchName);
+        slotUpdate.put("arcane_missing_research_name", missingResearchName);
 
     }
 }

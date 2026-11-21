@@ -2,6 +2,6 @@ package ruiseki.okstoragecore.client.gui.widget.update;
 
 public interface IUpgradeSlotUpdateFactory {
 
-    void build(UpgradeSlotUpdate group);
+    void build(UpgradeSlotUpdate slotUpdate);
 
 }

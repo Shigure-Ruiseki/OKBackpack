@@ -14,44 +14,44 @@ import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 public class AnvilSlotUpdate implements IUpgradeSlotUpdateFactory {
 
     @Override
-    public void build(UpgradeSlotUpdate group) {
-        int slotIndex = group.getUpgradeIndex();
+    public void build(UpgradeSlotUpdate slotUpdate) {
+        int slotIndex = slotUpdate.getUpgradeIndex();
 
         String inputGroupName = "anvil_slot_" + slotIndex;
         String resultGroupName = "anvil_result_" + slotIndex;
 
-        DelegatedStringSH nameField = new DelegatedStringSH(group.getPanel(), slotIndex);
-        group.getSyncManager()
+        DelegatedStringSH nameField = new DelegatedStringSH(slotUpdate.getPanel(), slotIndex);
+        slotUpdate.getSyncManager()
             .syncValue("anvil_name_field_" + slotIndex, nameField);
-        group.put("anvil_name_field", nameField);
+        slotUpdate.put("anvil_name_field", nameField);
 
-        DelegatedStringSH requiredField = new DelegatedStringSH(group.getPanel(), slotIndex);
-        group.getSyncManager()
+        DelegatedStringSH requiredField = new DelegatedStringSH(slotUpdate.getPanel(), slotIndex);
+        slotUpdate.getSyncManager()
             .syncValue("anvil_required_field_" + slotIndex, requiredField);
-        group.put("anvil_required_field", requiredField);
+        slotUpdate.put("anvil_required_field", requiredField);
 
         DelegatedItemHandlerSH anvilHandler = new DelegatedItemHandlerSH(
-            group.getPanel(),
-            group::getContainer,
+            slotUpdate.getPanel(),
+            slotUpdate::getContainer,
             slotIndex,
             2);
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .syncValue("anvil_delegation_" + slotIndex, anvilHandler);
 
-        group.put("anvil_handler", anvilHandler);
+        slotUpdate.put("anvil_handler", anvilHandler);
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .registerSlotGroup(new SlotGroup(inputGroupName, 2, false));
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .registerSlotGroup(new SlotGroup(resultGroupName, 1, false));
 
         for (int i = 0; i < 2; i++) {
             IndexedModularSlot slot = new IndexedModularSlot(
                 anvilHandler.getItemHandler(),
                 i,
-                group.getPanel(),
+                slotUpdate.getPanel(),
                 slotIndex);
 
             slot.changeListener((newItem, onlyAmountChanged, client, init) -> {
@@ -66,19 +66,19 @@ public class AnvilSlotUpdate implements IUpgradeSlotUpdateFactory {
 
             slot.slotGroup(inputGroupName);
 
-            group.getSyncManager()
+            slotUpdate.getSyncManager()
                 .syncValue("anvil_slot_" + slotIndex, i, new ItemSlotSH(slot));
 
-            group.put("anvil_slot_" + i, slot);
+            slotUpdate.put("anvil_slot_" + i, slot);
         }
 
-        ModularResultSlot resultSlot = new ModularResultSlot(group.getPanel(), slotIndex);
+        ModularResultSlot resultSlot = new ModularResultSlot(slotUpdate.getPanel(), slotIndex);
 
         resultSlot.slotGroup(resultGroupName);
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .syncValue(resultGroupName, 0, new ItemSlotSH(resultSlot));
 
-        group.put("anvil_result_slot", resultSlot);
+        slotUpdate.put("anvil_result_slot", resultSlot);
     }
 }

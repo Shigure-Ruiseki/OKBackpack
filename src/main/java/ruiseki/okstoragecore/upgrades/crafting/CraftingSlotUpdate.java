@@ -13,26 +13,26 @@ import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 public class CraftingSlotUpdate implements IUpgradeSlotUpdateFactory {
 
     @Override
-    public void build(UpgradeSlotUpdate group) {
-        int slotIndex = group.getUpgradeIndex();
+    public void build(UpgradeSlotUpdate slotUpdate) {
+        int slotIndex = slotUpdate.getUpgradeIndex();
 
         String matrixGroupName = "crafting_matrix_" + slotIndex;
         String resultGroupName = "crafting_result_" + slotIndex;
 
         DelegatedItemHandlerSH craftingHandler = new DelegatedItemHandlerSH(
-            group.getPanel(),
-            group::getContainer,
+            slotUpdate.getPanel(),
+            slotUpdate::getContainer,
             slotIndex,
             9);
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .syncValue("crafting_delegation_" + slotIndex, craftingHandler);
-        group.put("crafting_handler", craftingHandler);
+        slotUpdate.put("crafting_handler", craftingHandler);
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .registerSlotGroup(new SlotGroup(matrixGroupName, 9, false));
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .registerSlotGroup(new SlotGroup(resultGroupName, 1, false));
 
         IndexedModularSlot[] slots = new IndexedModularSlot[9];
@@ -40,23 +40,23 @@ public class CraftingSlotUpdate implements IUpgradeSlotUpdateFactory {
             IndexedModularSlot slot = new IndexedModularSlot(
                 craftingHandler.getItemHandler(),
                 i,
-                group.getPanel(),
-                group.getUpgradeIndex());
+                slotUpdate.getPanel(),
+                slotUpdate.getUpgradeIndex());
             slot.slotGroup(matrixGroupName);
-            group.getSyncManager()
+            slotUpdate.getSyncManager()
                 .syncValue("crafting_slot_" + slotIndex, i, new ItemSlotSH(slot));
             slots[i] = slot;
         }
 
-        group.put("crafting_matrix_slots", slots);
+        slotUpdate.put("crafting_matrix_slots", slots);
 
-        ModularCraftingSlot craftingResultSlot = new ModularCraftingSlot(group.getPanel(), slotIndex);
+        ModularCraftingSlot craftingResultSlot = new ModularCraftingSlot(slotUpdate.getPanel(), slotIndex);
 
         craftingResultSlot.slotGroup(resultGroupName);
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .syncValue(resultGroupName, 0, new ItemSlotSH(craftingResultSlot));
 
-        group.put("crafting_result_slot", craftingResultSlot);
+        slotUpdate.put("crafting_result_slot", craftingResultSlot);
     }
 }

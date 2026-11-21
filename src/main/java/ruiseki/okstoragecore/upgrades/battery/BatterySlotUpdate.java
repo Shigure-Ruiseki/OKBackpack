@@ -12,54 +12,54 @@ import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 public class BatterySlotUpdate implements IUpgradeSlotUpdateFactory {
 
     @Override
-    public void build(UpgradeSlotUpdate group) {
-        int slotIndex = group.getUpgradeIndex();
+    public void build(UpgradeSlotUpdate slotUpdate) {
+        int slotIndex = slotUpdate.getUpgradeIndex();
 
         DelegatedItemHandlerSH batteryHandler = new DelegatedItemHandlerSH(
-            group.getPanel(),
-            group::getContainer,
+            slotUpdate.getPanel(),
+            slotUpdate::getContainer,
             slotIndex,
             2);
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .syncValue("battery_delegation_" + slotIndex, batteryHandler);
-        group.put("battery_handler", batteryHandler);
+        slotUpdate.put("battery_handler", batteryHandler);
 
         // Input slot (index 0) - items that provide energy
         IndexedModularSlot inputSlot = new IndexedModularSlot(
             batteryHandler.getItemHandler(),
             0,
-            group.getPanel(),
+            slotUpdate.getPanel(),
             slotIndex);
         inputSlot.slotGroup("battery_slots_" + slotIndex);
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .syncValue("battery_slot_" + slotIndex, 0, new ItemSlotSH(inputSlot));
-        group.put("battery_input", inputSlot);
+        slotUpdate.put("battery_input", inputSlot);
 
         // Output slot (index 1) - items that receive energy
         IndexedModularSlot outputSlot = new IndexedModularSlot(
             batteryHandler.getItemHandler(),
             1,
-            group.getPanel(),
+            slotUpdate.getPanel(),
             slotIndex);
         outputSlot.slotGroup("battery_slots_" + slotIndex);
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .syncValue("battery_slot_" + slotIndex, 1, new ItemSlotSH(outputSlot));
-        group.put("battery_output", outputSlot);
+        slotUpdate.put("battery_output", outputSlot);
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .registerSlotGroup(new SlotGroup("battery_slots_" + slotIndex, 2, false));
 
         // Energy stored value sync
-        DelegatedIntSH energyStoredHandler = new DelegatedIntSH(group.getPanel(), slotIndex);
-        group.getSyncManager()
+        DelegatedIntSH energyStoredHandler = new DelegatedIntSH(slotUpdate.getPanel(), slotIndex);
+        slotUpdate.getSyncManager()
             .syncValue("battery_energy_stored_" + slotIndex, energyStoredHandler);
-        group.put("battery_energy_stored", energyStoredHandler);
+        slotUpdate.put("battery_energy_stored", energyStoredHandler);
 
         // Max energy value sync
-        DelegatedIntSH maxEnergyHandler = new DelegatedIntSH(group.getPanel(), slotIndex);
-        group.getSyncManager()
+        DelegatedIntSH maxEnergyHandler = new DelegatedIntSH(slotUpdate.getPanel(), slotIndex);
+        slotUpdate.getSyncManager()
             .syncValue("battery_max_energy_" + slotIndex, maxEnergyHandler);
-        group.put("battery_max_energy", maxEnergyHandler);
+        slotUpdate.put("battery_max_energy", maxEnergyHandler);
     }
 }

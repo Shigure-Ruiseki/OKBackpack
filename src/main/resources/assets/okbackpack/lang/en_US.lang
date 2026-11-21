@@ -271,6 +271,8 @@ gui.okbackpack.status.nothing_to_restock=Nothing to restock
 messages.backpack.cant.bag=Can't deploy the sleeping bag! Check the surrounding area.
 messages.cant.sleep.here=Ancient forces do not welcome sleep here.
 
+gui.okbackpack.status.no_space_for_mainhand_item=There's no place for item in hand in either backpack or player's inventory
+
 #Error
 gui.okbackpack.error.add.inception_exists=There's already Inception Upgrade in another upgrade slot
 gui.okbackpack.error.add.traveler_exists=There's already Traveler Upgrade in another upgrade slot
@@ -301,3 +303,13 @@ gui.okbackpack.upgrades.buttons.deposit_filter_type_inventory=Match Inventory Co
 gui.okbackpack.upgrades.anvil=Anvil
 
 gui.okbackpack.upgrades.arcane_crafting=Arcane Crafting
+
+gui.okbackpack.upgrades.refill.target_slot.tooltip=Refill %s
+gui.okbackpack.upgrades.refill.target_slot.any=A
+gui.okbackpack.upgrades.refill.target_slot.any.tooltip=Any slot
+gui.okbackpack.upgrades.refill.target_slot.main_hand=M
+gui.okbackpack.upgrades.refill.target_slot.main_hand.tooltip=Main hand
+gui.okbackpack.upgrades.refill.target_slot.off_hand=O
+gui.okbackpack.upgrades.refill.target_slot.off_hand.tooltip=Off hand
+gui.okbackpack.upgrades.refill.target_slot.hotbar.tooltip=Hotbar slot %s
+gui.okbackpack.upgrades.refill.scroll.tooltip=Scroll to change target slot

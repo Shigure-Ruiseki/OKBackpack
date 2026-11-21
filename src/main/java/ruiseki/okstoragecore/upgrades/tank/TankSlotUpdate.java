@@ -13,57 +13,57 @@ import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 public class TankSlotUpdate implements IUpgradeSlotUpdateFactory {
 
     @Override
-    public void build(UpgradeSlotUpdate group) {
-        int slotIndex = group.getUpgradeIndex();
+    public void build(UpgradeSlotUpdate slotUpdate) {
+        int slotIndex = slotUpdate.getUpgradeIndex();
 
         String slotGroupName = "tank_slots_" + slotIndex;
         String slotSyncName = "tank_slot_" + slotIndex;
 
         // Inventory handler
         DelegatedItemHandlerSH tankInvHandler = new DelegatedItemHandlerSH(
-            group.getPanel(),
-            group.getPanel()::getContainer,
+            slotUpdate.getPanel(),
+            slotUpdate.getPanel()::getContainer,
             slotIndex,
             4);
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .syncValue("tank_delegation_" + slotIndex, tankInvHandler);
-        group.put("tank_handler", tankInvHandler);
+        slotUpdate.put("tank_handler", tankInvHandler);
 
         // Input slot
         IndexedModularSlot inputSlot = new IndexedModularSlot(
             tankInvHandler.getItemHandler(),
             0,
-            group.getPanel(),
+            slotUpdate.getPanel(),
             slotIndex);
         inputSlot.slotGroup(slotGroupName);
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .syncValue(slotSyncName, 0, new ItemSlotSH(inputSlot));
-        group.put("tank_input", inputSlot);
+        slotUpdate.put("tank_input", inputSlot);
 
         // Output slot
         IndexedModularSlot outputSlot = new IndexedModularSlot(
             tankInvHandler.getItemHandler(),
             1,
-            group.getPanel(),
+            slotUpdate.getPanel(),
             slotIndex);
         outputSlot.slotGroup(slotGroupName);
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .syncValue(slotSyncName, 1, new ItemSlotSH(outputSlot));
-        group.put("tank_output", outputSlot);
+        slotUpdate.put("tank_output", outputSlot);
 
-        group.getSyncManager()
+        slotUpdate.getSyncManager()
             .registerSlotGroup(new SlotGroup(slotGroupName, 4, false));
 
         // Fluid stack
-        DelegatedFluidStackSH fluidStackHandler = new DelegatedFluidStackSH(group.getPanel(), slotIndex);
-        group.getSyncManager()
+        DelegatedFluidStackSH fluidStackHandler = new DelegatedFluidStackSH(slotUpdate.getPanel(), slotIndex);
+        slotUpdate.getSyncManager()
             .syncValue("tank_fluid_" + slotIndex, fluidStackHandler);
-        group.put("tank_fluid", fluidStackHandler);
+        slotUpdate.put("tank_fluid", fluidStackHandler);
 
         // Tank capacity
-        DelegatedIntSH tankCapacityHandler = new DelegatedIntSH(group.getPanel(), slotIndex);
-        group.getSyncManager()
+        DelegatedIntSH tankCapacityHandler = new DelegatedIntSH(slotUpdate.getPanel(), slotIndex);
+        slotUpdate.getSyncManager()
             .syncValue("tank_capacity_" + slotIndex, tankCapacityHandler);
-        group.put("tank_capacity", tankCapacityHandler);
+        slotUpdate.put("tank_capacity", tankCapacityHandler);
     }
 }

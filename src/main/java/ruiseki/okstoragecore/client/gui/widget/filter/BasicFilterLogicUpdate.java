@@ -11,28 +11,28 @@ import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 public class BasicFilterLogicUpdate implements IUpgradeSlotUpdateFactory {
 
     @Override
-    public void build(UpgradeSlotUpdate group) {
+    public void build(UpgradeSlotUpdate slotUpdate) {
 
         DelegatedFilterLogicSH logicSH = new DelegatedFilterLogicSH(
-            group.getPanel(),
-            group::getContainer,
-            group.getUpgradeIndex(),
+            slotUpdate.getPanel(),
+            slotUpdate::getContainer,
+            slotUpdate.getUpgradeIndex(),
             9);
-        group.getSyncManager()
-            .syncValue("basic_filter_delegation_" + group.getUpgradeIndex(), logicSH);
-        group.put("basic_filter_logic", logicSH);
+        slotUpdate.getSyncManager()
+            .syncValue("basic_filter_delegation_" + slotUpdate.getUpgradeIndex(), logicSH);
+        slotUpdate.put("basic_filter_logic", logicSH);
 
         ModularFilterSlot[] slots = new ModularFilterSlot[9];
         for (int i = 0; i < 9; i++) {
             ModularFilterSlot slot = new ModularFilterSlot(logicSH.getItemHandler(), i);
-            slot.slotGroup("basic_filters_" + group.getUpgradeIndex());
-            group.getSyncManager()
-                .syncValue("basic_filter_" + group.getUpgradeIndex(), i, new FilterSlotSH(slot));
+            slot.slotGroup("basic_filters_" + slotUpdate.getUpgradeIndex());
+            slotUpdate.getSyncManager()
+                .syncValue("basic_filter_" + slotUpdate.getUpgradeIndex(), i, new FilterSlotSH(slot));
             slots[i] = slot;
         }
 
-        group.put("basic_filter_slots", slots);
-        group.getSyncManager()
-            .registerSlotGroup(new SlotGroup("basic_filters_" + group.getUpgradeIndex(), 9, false));
+        slotUpdate.put("basic_filter_slots", slots);
+        slotUpdate.getSyncManager()
+            .registerSlotGroup(new SlotGroup("basic_filters_" + slotUpdate.getUpgradeIndex(), 9, false));
     }
 }
