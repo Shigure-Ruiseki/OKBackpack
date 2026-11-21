@@ -37,7 +37,9 @@ public class ItemJukeboxUpgrade extends ItemUpgradeBase<JukeboxUpgradeWrapper> {
 
         @Override
         public void updateTabDelegates(JukeboxUpgradeWrapper wrapper, UpgradeSlotUpdate slotUpdate) {
-            DelegatedItemHandlerSH handler = slotUpdate.get("jukebox_handler");
+            DelegatedItemHandlerSH handler = wrapper.getSlotCount() == 1 ? slotUpdate.get("basic_jukebox_handler")
+                : slotUpdate.get("adv_jukebox_handler");
+
             handler.setItemHandler(wrapper::getStorage);
             handler.syncToServer(CommonSHRegistries.STORAGE);
 

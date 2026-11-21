@@ -90,7 +90,6 @@ public abstract class ExpandedTab extends ParentWidget<ExpandedTab> {
             .padding(7)
             .paddingTop(5)
             .childPadding(2)
-            .crossAxisAlignment(Alignment.CrossAxis.START)
             .child(0, this.getHeaderRow());
     }
 

@@ -96,7 +96,6 @@ public class ArcaneCraftingUpgradeTab extends ExpandedUpgradeTab<ArcaneCraftingU
     protected Flow addButtonRow() {
         return Flow.row()
             .coverChildren()
-            .childPadding(2)
             .child(this.addShiftClickIntoButton())
             .child(this.addFillCraftingButton());
     }
@@ -111,7 +110,7 @@ public class ArcaneCraftingUpgradeTab extends ExpandedUpgradeTab<ArcaneCraftingU
                     .setRefillCraftingGrid(index == 0);
                 this.getSyncHandler()
                     .syncToServer(ThaumcraftSHRegistries.FILL_CRAFTING, buffer -> buffer.writeBoolean(index == 0));
-            }).size(20, 20);
+            });
     }
 
     protected CyclicVariantButtonWidget addShiftClickIntoButton() {
@@ -124,13 +123,12 @@ public class ArcaneCraftingUpgradeTab extends ExpandedUpgradeTab<ArcaneCraftingU
                     .setShiftClickIntoStorage(index == 0);
                 this.getSyncHandler()
                     .syncToServer(ThaumcraftSHRegistries.SHIFT_INTO_STORAGE, buffer -> buffer.writeBoolean(index == 0));
-            }).size(20, 20);
+            });
     }
 
     protected Flow addCraftingRow() {
         return Flow.row()
             .coverChildren()
-            .childPadding(2)
             .child(this.addCraftingGrid())
             .child(this.addAspectGrid())
             .child(this.addCraftingTweak());
@@ -191,7 +189,6 @@ public class ArcaneCraftingUpgradeTab extends ExpandedUpgradeTab<ArcaneCraftingU
     protected Flow addCraftingTweak() {
         return Flow.column()
             .coverChildren()
-            .childPadding(2)
             .topRel(0)
             .child(this.addRotatedButton())
             .child(this.addGridButton())

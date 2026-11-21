@@ -1,3 +1,4 @@
+
 package ruiseki.okstoragecore.upgrades.jukebox;
 
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
@@ -16,35 +17,65 @@ public class JukeboxSlotUpdate implements IUpgradeSlotUpdateFactory {
     public void build(UpgradeSlotUpdate slotUpdate) {
         int slotIndex = slotUpdate.getUpgradeIndex();
 
-        String jukebox_slotGroup = "jukebox_" + slotIndex;
+        // Basic jukebox
+        String basicSlotGroup = "basic_jukebox_" + slotIndex;
+        String basicSlotSyncKey = "basic_jukebox_slot_" + slotIndex;
 
-        DelegatedItemHandlerSH jukeboxHandler = new DelegatedItemHandlerSH(
+        DelegatedItemHandlerSH basicJukeboxHandler = new DelegatedItemHandlerSH(
+            slotUpdate.getPanel(),
+            slotUpdate::getContainer,
+            slotIndex,
+            1);
+
+        slotUpdate.getSyncManager()
+            .syncValue("basic_jukebox_delegation_" + slotIndex, basicJukeboxHandler);
+        slotUpdate.put("basic_jukebox_handler", basicJukeboxHandler);
+
+        IndexedModularSlot basicSlot = new IndexedModularSlot(
+            basicJukeboxHandler.getItemHandler(),
+            0,
+            slotUpdate.getPanel(),
+            slotIndex);
+        basicSlot.slotGroup(basicSlotGroup);
+
+        slotUpdate.getSyncManager()
+            .syncValue(basicSlotSyncKey, 0, new ItemSlotSH(basicSlot));
+        slotUpdate.getSyncManager()
+            .registerSlotGroup(new SlotGroup(basicSlotGroup, 1, false));
+
+        // Advanced jukebox
+        String advancedSlotGroup = "adv_jukebox_" + slotIndex;
+        String advancedSlotSyncKey = "adv_jukebox_slot_" + slotIndex;
+
+        DelegatedItemHandlerSH advancedJukeboxHandler = new DelegatedItemHandlerSH(
             slotUpdate.getPanel(),
             slotUpdate::getContainer,
             slotIndex,
             16);
 
         slotUpdate.getSyncManager()
-            .syncValue("jukebox_delegation_" + slotIndex, jukeboxHandler);
-        slotUpdate.put("jukebox_handler", jukeboxHandler);
+            .syncValue("adv_jukebox_delegation_" + slotIndex, advancedJukeboxHandler);
+        slotUpdate.put("adv_jukebox_handler", advancedJukeboxHandler);
 
         slotUpdate.getSyncManager()
-            .registerSlotGroup(new SlotGroup(jukebox_slotGroup, 16, false));
+            .registerSlotGroup(new SlotGroup(advancedSlotGroup, 16, false));
 
-        IndexedModularSlot[] slots = new IndexedModularSlot[16];
-        for (int i = 0; i < slots.length; i++) {
+        IndexedModularSlot[] advancedSlots = new IndexedModularSlot[16];
+        for (int i = 0; i < advancedSlots.length; i++) {
             IndexedModularSlot slot = new IndexedModularSlot(
-                jukeboxHandler.getItemHandler(),
+                advancedJukeboxHandler.getItemHandler(),
                 i,
                 slotUpdate.getPanel(),
-                slotUpdate.getUpgradeIndex());
-            slot.slotGroup(jukebox_slotGroup);
-            slotUpdate.getSyncManager()
-                .syncValue("jukebox_slot_" + slotIndex, i, new ItemSlotSH(slot));
-            slots[i] = slot;
-        }
-        slotUpdate.put("jukebox_slots", slots);
+                slotIndex);
+            slot.slotGroup(advancedSlotGroup);
 
+            slotUpdate.getSyncManager()
+                .syncValue(advancedSlotSyncKey, i, new ItemSlotSH(slot));
+            advancedSlots[i] = slot;
+        }
+        slotUpdate.put("adv_jukebox_slots", advancedSlots);
+
+        // Shared playback state
         DelegatedIntSH activeSlotHandler = new DelegatedIntSH(slotUpdate.getPanel(), slotIndex, -1);
         slotUpdate.getSyncManager()
             .syncValue("jukebox_slot_active_" + slotIndex, activeSlotHandler);

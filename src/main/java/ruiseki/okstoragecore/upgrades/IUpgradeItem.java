@@ -128,7 +128,7 @@ public interface IUpgradeItem<W extends IUpgradeWrapper> {
 
         Set<Integer> slotsWithUpgrade = new HashSet<>();
         InventoryHelpers.iterate(storageWrapper.getUpgradeHandler(), (slot, stack) -> {
-            if (!ItemHelpers.isEmpty(stack) && stack.getItem() == this) {
+            if (!ItemHelpers.isEmpty(stack) && ItemHelpers.getItem(stack) == this) {
                 slotsWithUpgrade.add(slot);
             }
         });
@@ -148,7 +148,7 @@ public interface IUpgradeItem<W extends IUpgradeWrapper> {
 
         Set<Integer> slotsWithUgradeGroup = new HashSet<>();
         InventoryHelpers.iterate(storageWrapper.getUpgradeHandler(), (slot, stack) -> {
-            if (ItemHelpers.getItem(stack) instanceof IUpgradeItem<?>upgradeItem
+            if (!ItemHelpers.isEmpty(stack) && ItemHelpers.getItem(stack) instanceof IUpgradeItem<?>upgradeItem
                 && upgradeItem.getUpgradeGroup() == getUpgradeGroup()) {
                 slotsWithUgradeGroup.add(slot);
             }
@@ -175,16 +175,17 @@ public interface IUpgradeItem<W extends IUpgradeWrapper> {
 
     default UpgradeSlotChangeResult canSwapUpgradeFor(ItemStack upgradeStackToPut, int upgradeSlot,
         IStorageWrapper storageWrapper, EntityPlayer player) {
-        if (upgradeStackToPut.getItem() == this) {
+        if (!ItemHelpers.isEmpty(upgradeStackToPut) && ItemHelpers.getItem(upgradeStackToPut) == this) {
             return new UpgradeSlotChangeResult.Success();
         }
 
-        if (upgradeStackToPut.getItem() instanceof IUpgradeItem<?>upgradeToPut) {
+        if (!ItemHelpers.isEmpty(upgradeStackToPut)
+            && ItemHelpers.getItem(upgradeStackToPut) instanceof IUpgradeItem<?>upgradeToPut) {
             int upgradesPerStorage = upgradeToPut.getUpgradesPerStorage(storageWrapper.getStorageType());
             int upgradesInGroupPerStorage = upgradeToPut.getUpgradesInGroupPerStorage(storageWrapper.getStorageType());
 
             if (upgradesPerStorage < upgradesInGroupPerStorage) {
-                if (upgradeStackToPut.getItem() != this) {
+                if (ItemHelpers.getItem(upgradeStackToPut) != this) {
                     UpgradeSlotChangeResult result = upgradeToPut.checkUpgradePerStorageTypeLimit(storageWrapper);
                     if (!result.isSuccessful()) {
                         return result;

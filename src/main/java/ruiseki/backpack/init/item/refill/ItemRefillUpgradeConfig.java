@@ -37,9 +37,8 @@ public class ItemRefillUpgradeConfig extends ItemConfig {
             true,
             "refill_upgrade",
             null,
-            config -> new ItemRefillUpgrade(() -> 12, () -> targetSlotSelection, () -> supportsBlockPick)
-                .tooltipBuilder(
-                    builder -> builder.add(LangHelpers.localize("item.items.okbackpack.refill_upgrade.tooltip"))));
+            config -> new ItemRefillUpgrade(() -> 6, () -> targetSlotSelection, () -> supportsBlockPick).tooltipBuilder(
+                builder -> builder.add(LangHelpers.localize("item.items.okbackpack.refill_upgrade.tooltip"))));
     }
 
     @Override

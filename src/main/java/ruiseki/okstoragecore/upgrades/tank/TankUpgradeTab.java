@@ -33,7 +33,6 @@ public class TankUpgradeTab extends ExpandedUpgradeTab<TankUpgradeWrapper> {
 
         return Flow.row()
             .coverChildren()
-            .childPadding(2)
             .child(inputSlot)
             .child(outputSlot);
     }

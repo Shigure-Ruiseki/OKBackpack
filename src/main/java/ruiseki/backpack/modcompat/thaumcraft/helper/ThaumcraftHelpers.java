@@ -45,7 +45,7 @@ public class ThaumcraftHelpers {
     private static Field shapedMirroredField;
 
     public static boolean isWand(ItemStack stack) {
-        return ItemHelpers.hasItem(stack, ItemWandCasting.class);
+        return !ItemHelpers.isEmpty(stack) && ItemHelpers.getItem(stack) instanceof ItemWandCasting;
     }
 
     private static TileMagicWorkbench createWorkbenchProxy(IInventory inventory) {

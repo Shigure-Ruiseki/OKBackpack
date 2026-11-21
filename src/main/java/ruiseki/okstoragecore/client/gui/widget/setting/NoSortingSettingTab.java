@@ -57,8 +57,7 @@ public class NoSortingSettingTab extends SettingTab {
     }
 
     protected ButtonWidget<?> addSelectAllButton() {
-        return new ButtonWidget<>().size(20)
-            .overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
+        return new ButtonWidget<>().overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
                     NoSortSettingsCategory settings = this.getNoSortSettingsCategory();
@@ -81,8 +80,7 @@ public class NoSortingSettingTab extends SettingTab {
     }
 
     protected ButtonWidget<?> addUnselectAllButton() {
-        return new ButtonWidget<>().size(20)
-            .overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
+        return new ButtonWidget<>().overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
                     NoSortSettingsCategory settings = this.getNoSortSettingsCategory();
@@ -130,14 +128,13 @@ public class NoSortingSettingTab extends SettingTab {
                     .top(0)
                     .rightRel(1f),
             true);
-        colorToggleButton.size(20)
-            .onMousePressed(button -> {
-                if (button == 0) {
-                    colorPicker.openPanel();
-                    return true;
-                }
-                return false;
-            })
+        colorToggleButton.onMousePressed(button -> {
+            if (button == 0) {
+                colorPicker.openPanel();
+                return true;
+            }
+            return false;
+        })
             .tooltipStatic(
                 t -> t.addLine(IKey.lang("gui.okstoragecore.settings.buttons.change_color"))
                     .addLine(

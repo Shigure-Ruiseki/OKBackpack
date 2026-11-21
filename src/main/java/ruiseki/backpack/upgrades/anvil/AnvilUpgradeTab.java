@@ -53,7 +53,6 @@ public class AnvilUpgradeTab extends ExpandedUpgradeTab<AnvilUpgradeWrapper> {
     protected Flow addButtonRow() {
         return Flow.row()
             .coverChildren()
-            .childPadding(2)
             .child(this.addShiftClickIntoButton());
     }
 
@@ -69,7 +68,7 @@ public class AnvilUpgradeTab extends ExpandedUpgradeTab<AnvilUpgradeWrapper> {
                     .syncToServer(
                         OBUpgradeSlotSHRegistries.SHIFT_INTO_STORAGE,
                         buffer -> buffer.writeBoolean(index == 0));
-            }).size(20, 20);
+            });
     }
 
     protected Flow addAnvilColumn() {

@@ -48,8 +48,7 @@ public class MagnetUpgradeTab extends ExpandedUpgradeTab<MagnetUpgradeWrapper> {
                     .setPickupXp(index == 0);
                 this.getSyncHandler()
                     .syncToServer(UpgradeSlotSHRegistries.PICKUP_XP, buffer -> buffer.writeBoolean(index == 0));
-            }).tooltip(tooltip -> tooltip.addLine(IKey.lang("gui.okstoragecore.upgrades.buttons.pickup_xp.detail")))
-                .size(20, 20);
+            }).tooltip(tooltip -> tooltip.addLine(IKey.lang("gui.okstoragecore.upgrades.buttons.pickup_xp.detail")));
     }
 
     protected CyclicVariantButtonWidget addPickupItemsButton() {
@@ -62,7 +61,7 @@ public class MagnetUpgradeTab extends ExpandedUpgradeTab<MagnetUpgradeWrapper> {
                     .setPickupItems(index == 0);
                 this.getSyncHandler()
                     .syncToServer(UpgradeSlotSHRegistries.PICKUP_ITEMS, buffer -> buffer.writeBoolean(index == 0));
-            }).size(20, 20);
+            });
     }
 
     public static class Basic extends MagnetUpgradeTab {
@@ -102,7 +101,6 @@ public class MagnetUpgradeTab extends ExpandedUpgradeTab<MagnetUpgradeWrapper> {
         protected Flow addButtonRow() {
             return Flow.row()
                 .coverChildren()
-                .childPadding(2)
                 .child(this.addPickupItemsButton())
                 .child(this.addPickupXpButton());
         }

@@ -57,7 +57,6 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
     protected Flow addButtonRow() {
         return Flow.row()
             .coverChildren()
-            .childPadding(2)
             .child(this.addShiftClickIntoButton())
             .child(this.addFillCraftingButton());
     }
@@ -72,7 +71,7 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
                     .setRefillCraftingGrid(index == 0);
                 this.getSyncHandler()
                     .syncToServer(UpgradeSlotSHRegistries.FILL_CRAFTING, buffer -> buffer.writeBoolean(index == 0));
-            }).size(20, 20);
+            });
     }
 
     protected CyclicVariantButtonWidget addShiftClickIntoButton() {
@@ -87,13 +86,12 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
                     .syncToServer(
                         UpgradeSlotSHRegistries.SHIFT_INTO_STORAGE,
                         buffer -> buffer.writeBoolean(index == 0));
-            }).size(20, 20);
+            });
     }
 
     protected Flow addCraftingRow() {
         return Flow.row()
             .coverChildren()
-            .childPadding(2)
             .child(this.addCraftingGrid())
             .child(this.addCraftingTweak());
     }
@@ -118,7 +116,6 @@ public class CraftingUpgradeTab extends ExpandedUpgradeTab<CraftingUpgradeWrappe
     protected Flow addCraftingTweak() {
         return Flow.column()
             .coverChildren()
-            .childPadding(2)
             .topRel(0)
             .child(this.addRotatedButton())
             .child(this.addGridButton())

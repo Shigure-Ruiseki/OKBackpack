@@ -14,7 +14,7 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
 import ruiseki.backpack.client.gui.slot.RefillPhantomSlot;
-import ruiseki.backpack.client.gui.sync.BackpackSHRegistries;
+import ruiseki.backpack.client.gui.sync.OBUpgradeSlotSHRegistries;
 import ruiseki.backpack.upgrades.refill.RefillUpgradeWrapper.TargetSlot;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
@@ -31,7 +31,7 @@ public class RefillUpgradeTab extends ExpandedUpgradeTab<RefillUpgradeWrapper> {
     public static class Basic extends RefillUpgradeTab {
 
         public Basic(int slotIndex, RefillUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
-            super(slotIndex, wrapper, stack, storagePanel, "gui.okstoragecore.upgrades.refill");
+            super(slotIndex, wrapper, stack, storagePanel, "gui.okbackpack.upgrades.refill");
         }
 
         @Override
@@ -44,7 +44,7 @@ public class RefillUpgradeTab extends ExpandedUpgradeTab<RefillUpgradeWrapper> {
     public static class Advanced extends RefillUpgradeTab {
 
         public Advanced(int slotIndex, RefillUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
-            super(slotIndex, wrapper, stack, storagePanel, "gui.okstoragecore.upgrades.advanced_refill");
+            super(slotIndex, wrapper, stack, storagePanel, "gui.okbackpack.upgrades.advanced_refill");
         }
 
         @Override
@@ -78,7 +78,7 @@ public class RefillUpgradeTab extends ExpandedUpgradeTab<RefillUpgradeWrapper> {
         protected Flow addContentColumn() {
             return Flow.column()
                 .coverChildren()
-                .childPadding(4)
+                .childPadding(2)
                 .collapseDisabledChild()
                 .child(this.addFilterGroup());
         }
@@ -123,7 +123,7 @@ public class RefillUpgradeTab extends ExpandedUpgradeTab<RefillUpgradeWrapper> {
             this.getWrapper()
                 .setTargetSlot(slotIdx, newTarget);
 
-            getSyncHandler().syncToServer(BackpackSHRegistries.REFILL_TARGET_SLOT, buf -> {
+            getSyncHandler().syncToServer(OBUpgradeSlotSHRegistries.REFILL_TARGET_SLOT, buf -> {
                 buf.writeInt(slotIdx);
                 buf.writeInt(newTarget.ordinal());
             });

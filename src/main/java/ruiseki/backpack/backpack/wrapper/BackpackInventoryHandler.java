@@ -7,6 +7,7 @@ import ruiseki.backpack.backpack.ItemBackpack;
 import ruiseki.backpack.capabilities.CapabilityBackpackWrapperConfig;
 import ruiseki.backpack.upgrades.inception.ItemInceptionUpgrade;
 import ruiseki.okcore.helper.CapabilityHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.inventory.InventoryHandler;
 
@@ -19,7 +20,7 @@ public class BackpackInventoryHandler extends InventoryHandler {
 
     @Override
     protected boolean isAllowed(ItemStack stack) {
-        return (!(stack.getItem() instanceof ItemBackpack)
+        return ItemHelpers.isEmpty(stack) || (!(ItemHelpers.getItem(stack) instanceof ItemBackpack)
             || (hasInceptionUpgrade() && isBackpackWithoutInceptionUpgrade(stack)));
     }
 
@@ -29,7 +30,7 @@ public class BackpackInventoryHandler extends InventoryHandler {
     }
 
     private boolean isBackpackWithoutInceptionUpgrade(ItemStack stack) {
-        return (stack.getItem() instanceof ItemBackpack)
+        return ItemHelpers.isEmpty(stack) || (ItemHelpers.getItem(stack) instanceof ItemBackpack)
             && !CapabilityHelpers.getCapability(stack, CapabilityBackpackWrapperConfig.CAPABILITY)
                 .map(
                     w -> w.getUpgradeHandler()

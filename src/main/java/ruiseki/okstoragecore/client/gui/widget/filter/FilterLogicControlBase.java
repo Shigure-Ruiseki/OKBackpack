@@ -82,7 +82,7 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
     protected Flow addContentColumn() {
         return Flow.column()
             .coverChildren()
-            .childPadding(4)
+            .childPadding(2)
             .collapseDisabledChild()
             .childIf(this.getShowMatchButtons().length > 0, this::addButtonRow)
             .child(this.addItemConfigGroup())
@@ -93,7 +93,6 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
         Flow buttonRow = Flow.row()
             .coverChildren()
             .crossAxisAlignment(Alignment.CrossAxis.START)
-            .childPadding(2)
             .name("filter_button_row_" + this.syncKey + "_" + this.slotIndex);
         if (this.shouldShow(MatchButton.ALLOW_LIST)) {
             buttonRow.child(this.addAllowListButton());
@@ -108,7 +107,6 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
     protected Flow addItemConfigRow() {
         Flow configRow = Flow.row()
             .coverChildren()
-            .childPadding(2)
             .setEnabledIf(
                 row -> this.getFilterLogic()
                     .getPrimaryMatch() == PrimaryMatch.ITEM)

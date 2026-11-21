@@ -54,7 +54,7 @@ public class FluidFilterLogicControlBase extends ParentWidget<FluidFilterLogicCo
     protected Flow addContentColumn() {
         return Flow.column()
             .coverChildren()
-            .childPadding(4)
+            .childPadding(2)
             .collapseDisabledChild()
             .child(this.addButtonRow())
             .child(this.addFluidFilterGroup());
@@ -63,8 +63,7 @@ public class FluidFilterLogicControlBase extends ParentWidget<FluidFilterLogicCo
     protected Flow addButtonRow() {
         Flow buttonRow = Flow.row()
             .coverChildren()
-            .crossAxisAlignment(Alignment.CrossAxis.START)
-            .childPadding(2);
+            .crossAxisAlignment(Alignment.CrossAxis.START);
         if (this.shouldShow(MatchButton.ALLOW_LIST)) {
             buttonRow.child(this.addAllowListButton());
         }

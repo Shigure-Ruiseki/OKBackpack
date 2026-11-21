@@ -169,42 +169,6 @@ public class OKBGuiTextures {
     public static final UITexture VOID_ALL = icon("void_all", 0, 48);
     public static final UITexture VOID_AUTOMATION = icon("void_automation", 16, 48);
 
-    public static final IDrawable SWAP_WEAPON_ICON = icon("swap_weapon", 32, 64);
-    public static final IDrawable NO_SWAP_WEAPON_ICON = icon("no_swap_weapon", 48, 64);
-    public static final IDrawable SWAP_TOOL_ICON = icon("swap_tool", 64, 64);
-    public static final IDrawable ONLY_TOOL_SWAP_TOOL_ICON = icon("only_tool_swap_tool", 80, 64);
-    public static final IDrawable NO_SWAP_TOOL_ICON = icon("no_swap_tool", 96, 64);
-
-    public static final IDrawable JUKEBOX_STOP_ICON = icon("jukebox_stop", 0, 64);
-    public static final IDrawable JUKEBOX_PLAY_ICON = icon("jukebox_play", 16, 64);
-    public static final IDrawable JUKEBOX_NEXT_ICON = icon("jukebox_next", 32, 96);
-    public static final IDrawable JUKEBOX_PREV_ICON = icon("jukebox_prev", 48, 96);
-
-    public static final IDrawable SHUFFLE_OFF_ICON = icon("shuffle_off", 112, 80);
-    public static final IDrawable SHUFFLE_ON_ICON = icon("shuffle_on", 96, 80);
-    public static final IDrawable LOOP_ALL_ICON = icon("loop_all", 128, 80);
-    public static final IDrawable LOOP_SINGLE_ICON = icon("loop_single", 144, 80);
-    public static final IDrawable LOOP_OFF_ICON = icon("loop_off", 160, 80);
-
-    public static final UITexture PUMP_INPUT_ICON = icon("pump_input", 144, 0);
-    public static final UITexture PUMP_OUTPUT_ICON = icon("pump_output", 160, 0);
-    public static final UITexture PUMP_INTERACT_TANKS_ICON = icon("pump_interact_tanks", 0, 112);
-    public static final UITexture PUMP_NO_INTERACT_TANKS_ICON = icon("pump_no_interact_tanks", 16, 112);
-    public static final UITexture PUMP_INTERACT_WORLD_ICON = icon("pump_interact_world", 176, 0);
-    public static final UITexture PUMP_NO_INTERACT_WORLD_ICON = icon("pump_no_interact_world", 192, 0);
-    public static final UITexture PUMP_INTERACT_HAND_ICON = icon("pump_interact_hand", 208, 0);
-    public static final UITexture PUMP_NO_INTERACT_HAND_ICON = icon("pump_no_interact_hand", 224, 0);
-
-    public static final UITexture XP_PUMP_OUTPUT_ICON = icon("xp_pump_output", 128, 16);
-    public static final UITexture XP_PUMP_KEEP_ICON = icon("xp_pump_keep", 96, 96);
-    public static final UITexture XP_PUMP_OFF = icon("xp_pump_off", 0, 96);
-    public static final UITexture XP_PUMP_MEND_ICON = icon("xp_pump_mend", 144, 32);
-    public static final UITexture XP_PUMP_NO_MEND_ICON = icon("xp_pump_no_mend", 160, 32);
-    public static final UITexture XP_PUMP_TAKE_ALL_ICON = icon("xp_pump_take_all", 144, 16);
-    public static final UITexture XP_PUMP_TAKE_LEVELS_ICON = icon("xp_pump_take_levels", 160, 16);
-    public static final UITexture XP_PUMP_STORE_LEVELS_ICON = icon("xp_pump_store_levels", 176, 16);
-    public static final UITexture XP_PUMP_STORE_ALL_ICON = icon("xp_pump_store_all", 192, 16);
-
     public static final UITexture SOLID_UP_ARROW_ICON = icon("solid_up_arrow", 0, 144, 12, 12);
     public static final UITexture SOLID_DOWN_ARROW_ICON = icon("solid_down_arrow", 12, 156, 12, 12);
     public static final UITexture DOT_DOWN_ARROW_ICON = icon("dot_down_arrow", 24, 156, 12, 12);

@@ -35,7 +35,6 @@ public class BatteryUpgradeTab extends ExpandedUpgradeTab<BatteryUpgradeWrapper>
 
         return Flow.row()
             .coverChildren()
-            .childPadding(2)
             .child(inputSlot)
             .child(outputSlot);
     }

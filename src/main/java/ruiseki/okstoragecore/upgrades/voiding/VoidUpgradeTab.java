@@ -8,8 +8,8 @@ import net.minecraft.item.ItemStack;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
-import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
+import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.filter.FilterLogicControl;
@@ -20,18 +20,18 @@ public class VoidUpgradeTab extends ExpandedUpgradeTab<VoidUpgradeWrapper> {
     private static final List<CyclicVariantButtonWidget.Variant> WORK_IN_GUI_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.upgrades.buttons.works_in_gui"),
-            OKBGuiTextures.VOID_ALL),
+            OSCTextures.VOID_ALL),
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.upgrades.buttons.only_automatic"),
-            OKBGuiTextures.VOID_AUTOMATION));
+            OSCTextures.VOID_AUTOMATION));
 
     private static final List<CyclicVariantButtonWidget.Variant> VOID_TYPE_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.upgrades.buttons.void_overflow"),
-            OKBGuiTextures.VOID_OVERFLOW),
+            OSCTextures.VOID_OVERFLOW),
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.upgrades.buttons.void_any"),
-            OKBGuiTextures.VOID_ANY));
+            OSCTextures.VOID_ANY));
 
     public VoidUpgradeTab(int slotIndex, VoidUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel,
         String titleKey) {
@@ -48,7 +48,7 @@ public class VoidUpgradeTab extends ExpandedUpgradeTab<VoidUpgradeWrapper> {
                     .setShouldVoidOverflow(index == 0);
                 this.getSyncHandler()
                     .syncToServer(UpgradeSlotSHRegistries.VOID_OVERFLOW, buffer -> buffer.writeBoolean(index == 0));
-            }).size(20, 20);
+            });
     }
 
     protected CyclicVariantButtonWidget addWorkInGUIButton() {
@@ -61,7 +61,7 @@ public class VoidUpgradeTab extends ExpandedUpgradeTab<VoidUpgradeWrapper> {
                     .setShouldWorkInGUI(index == 0);
                 this.getSyncHandler()
                     .syncToServer(UpgradeSlotSHRegistries.VOID_WORK_IN_GUI, buffer -> buffer.writeBoolean(index == 0));
-            }).size(20, 20);
+            });
     }
 
     public static class Basic extends VoidUpgradeTab {
@@ -101,7 +101,6 @@ public class VoidUpgradeTab extends ExpandedUpgradeTab<VoidUpgradeWrapper> {
         protected Flow addButtonRow() {
             return Flow.row()
                 .coverChildren()
-                .childPadding(2)
                 .child(this.addWorkInGUIButton())
                 .child(this.addVoidTypeButton());
         }

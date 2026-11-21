@@ -19,11 +19,11 @@ public class CyclicVariantButtonWidget extends ButtonWidget<CyclicVariantButtonW
 
     protected final List<Variant> variants;
 
-    private int iconOffset = 2;
+    private int iconOffset = 1;
     private int iconSize = 16;
 
-    private int buttonWidth = 20;
-    private int buttonHeight = 20;
+    private int buttonWidth = 18;
+    private int buttonHeight = 18;
 
     private boolean hasCustomTexture = false;
 
@@ -76,11 +76,11 @@ public class CyclicVariantButtonWidget extends ButtonWidget<CyclicVariantButtonW
     }
 
     public CyclicVariantButtonWidget(List<Variant> variants, int index, IntConsumer mousePressedUpdater) {
-        this(variants, index, 2, 16, mousePressedUpdater);
+        this(variants, index, 1, 16, mousePressedUpdater);
     }
 
     public CyclicVariantButtonWidget(List<Variant> variants, IntConsumer mousePressedUpdater) {
-        this(variants, 0, 2, 16, mousePressedUpdater);
+        this(variants, 0, 1, 16, mousePressedUpdater);
     }
 
     public CyclicVariantButtonWidget addMousePressedUpdater(IntConsumer updater) {

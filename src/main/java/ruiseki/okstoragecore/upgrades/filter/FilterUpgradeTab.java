@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
@@ -44,7 +45,7 @@ public class FilterUpgradeTab extends ExpandedUpgradeTab<FilterUpgradeWrapper> {
                     .setDirection(Direction.fromOrdinal(index));
                 this.getSyncHandler()
                     .syncToServer(UpgradeSlotSHRegistries.DIRECTION, buffer -> buffer.writeInt(index));
-            }).size(20, 20);
+            });
     }
 
     public static class Basic extends FilterUpgradeTab {
@@ -84,7 +85,7 @@ public class FilterUpgradeTab extends ExpandedUpgradeTab<FilterUpgradeWrapper> {
         protected Flow addButtonRow() {
             return Flow.row()
                 .coverChildren()
-                .childPadding(2)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
                 .child(this.addDirectionButton());
         }
     }

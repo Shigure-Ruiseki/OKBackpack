@@ -42,7 +42,7 @@ public class CompactingUpgradeTab extends ExpandedUpgradeTab<CompactingUpgradeWr
                     .syncToServer(
                         UpgradeSlotSHRegistries.COMPACT_UNCRAFTABLE,
                         buffer -> buffer.writeBoolean(index == 0));
-            }).size(20, 20);
+            });
     }
 
     public static class Basic extends CompactingUpgradeTab {
@@ -82,7 +82,6 @@ public class CompactingUpgradeTab extends ExpandedUpgradeTab<CompactingUpgradeWr
         protected Flow addButtonRow() {
             return Flow.row()
                 .coverChildren()
-                .childPadding(2)
                 .child(this.addCompactButton());
         }
     }

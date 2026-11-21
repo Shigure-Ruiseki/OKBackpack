@@ -46,6 +46,8 @@ import ruiseki.backpack.init.item.stack.ItemStackUpgradeTier2Config;
 import ruiseki.backpack.init.item.stack.ItemStackUpgradeTier3Config;
 import ruiseki.backpack.init.item.stack.ItemStackUpgradeTier4Config;
 import ruiseki.backpack.init.item.tank.ItemTankUpgradeConfig;
+import ruiseki.backpack.init.item.toolswapper.ItemAdvToolSwapperUpgradeConfig;
+import ruiseki.backpack.init.item.toolswapper.ItemToolSwapperUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemBatUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemBlazeUpgradeConfig;
 import ruiseki.backpack.init.item.traverler.ItemBookShelfUpgradeConfig;
@@ -75,8 +77,6 @@ import ruiseki.backpack.init.item.voiding.ItemAdvVoidUpgradeConfig;
 import ruiseki.backpack.init.item.voiding.ItemVoidUpgradeConfig;
 import ruiseki.backpack.init.item.xppump.ItemXpPumpUpgradeConfig;
 import ruiseki.okbackpack.common.block.BlockSleepingBagConfig;
-import ruiseki.okbackpack.common.item.toolswapper.ItemAdvancedToolSwapperUpgradeConfig;
-import ruiseki.okbackpack.common.item.toolswapper.ItemToolSwapperUpgradeConfig;
 import ruiseki.okcore.config.ConfigHandler;
 
 public class Configs {
@@ -87,7 +87,7 @@ public class Configs {
         configHandler.add(new ItemRefillUpgradeConfig());
         configHandler.add(new ItemAdvRefillUpgradeConfig());
         configHandler.add(new ItemToolSwapperUpgradeConfig());
-        configHandler.add(new ItemAdvancedToolSwapperUpgradeConfig());
+        configHandler.add(new ItemAdvToolSwapperUpgradeConfig());
 
         // Capabilities
         configHandler.add(new CapabilityBackpackWrapperConfig());

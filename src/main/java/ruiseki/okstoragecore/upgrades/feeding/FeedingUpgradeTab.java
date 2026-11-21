@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
@@ -52,7 +53,7 @@ public class FeedingUpgradeTab extends ExpandedUpgradeTab<FeedingUpgradeWrapper>
                     .setFeedAtHungerLevel(HungerLevel.fromOrdinal(index));
                 this.getSyncHandler()
                     .syncToServer(UpgradeSlotSHRegistries.FEED_AT_HUNGER_LEVEL, buffer -> buffer.writeInt(index));
-            }).size(20, 20);
+            });
     }
 
     protected CyclicVariantButtonWidget addFeedWhenHurtButton() {
@@ -65,7 +66,7 @@ public class FeedingUpgradeTab extends ExpandedUpgradeTab<FeedingUpgradeWrapper>
                     .setFeedImmediatelyWhenHurt(index == 0);
                 this.getSyncHandler()
                     .syncToServer(UpgradeSlotSHRegistries.FEED_WHEN_HURT, buffer -> buffer.writeBoolean(index == 0));
-            }).size(20, 20);
+            });
     }
 
     public static class Basic extends FeedingUpgradeTab {
@@ -105,7 +106,7 @@ public class FeedingUpgradeTab extends ExpandedUpgradeTab<FeedingUpgradeWrapper>
         protected Flow addButtonRow() {
             return Flow.row()
                 .coverChildren()
-                .childPadding(2)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
                 .child(this.addHungerLevelButton())
                 .child(this.addFeedWhenHurtButton());
         }

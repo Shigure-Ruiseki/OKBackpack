@@ -61,8 +61,7 @@ public class MemorySettingTab extends SettingTab {
     }
 
     protected ButtonWidget<?> addSelectAllButton() {
-        return new ButtonWidget<>().size(20)
-            .overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
+        return new ButtonWidget<>().overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
                     MemorySettingsCategory settings = this.getMemorySettings();
@@ -85,8 +84,7 @@ public class MemorySettingTab extends SettingTab {
     }
 
     protected ButtonWidget<?> addUnselectAllButton() {
-        return new ButtonWidget<>().size(20)
-            .overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
+        return new ButtonWidget<>().overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
                     MemorySettingsCategory settings = this.getMemorySettings();

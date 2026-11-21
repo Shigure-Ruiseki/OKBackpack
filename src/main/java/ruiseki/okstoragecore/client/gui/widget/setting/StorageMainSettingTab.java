@@ -302,14 +302,13 @@ public class StorageMainSettingTab extends SettingTab {
                         .top(0)
                         .rightRel(1f),
             true);
-        colorToggleButton.size(20)
-            .onMousePressed(button -> {
-                if (button == 0) {
-                    colorPicker.openPanel();
-                    return true;
-                }
-                return false;
-            })
+        colorToggleButton.onMousePressed(button -> {
+            if (button == 0) {
+                colorPicker.openPanel();
+                return true;
+            }
+            return false;
+        })
             .tooltipStatic(
                 t -> t.addLine(IKey.lang("gui.okstoragecore.main_color"))
                     .addLine(
@@ -346,14 +345,13 @@ public class StorageMainSettingTab extends SettingTab {
                         .top(0)
                         .rightRel(1f),
             true);
-        accentToggleButton.size(20)
-            .onMousePressed(button -> {
-                if (button == 0) {
-                    colorPicker.openPanel();
-                    return true;
-                }
-                return false;
-            })
+        accentToggleButton.onMousePressed(button -> {
+            if (button == 0) {
+                colorPicker.openPanel();
+                return true;
+            }
+            return false;
+        })
             .tooltipStatic(
                 t -> t.addLine(IKey.lang("gui.okstoragecore.accent_color"))
                     .addLine(

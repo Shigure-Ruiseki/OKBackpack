@@ -20,19 +20,19 @@ public class OSCTextures {
         "minecraft",
         "textures/gui/container/furnace.png");
 
-    public static final IDrawable SHIFT_CLICK_INVENTORY = icon("shift_click_inv", 64, 96);
-    public static final IDrawable SHIFT_CLICK_OPEN_TAB = icon("shift_click_tab", 80, 32);
+    public static final UITexture SHIFT_CLICK_INVENTORY = icon("shift_click_inv", 64, 96);
+    public static final UITexture SHIFT_CLICK_OPEN_TAB = icon("shift_click_tab", 80, 32);
 
     public static final UITexture CHECK = icon("check", 0, 0);
     public static final UITexture CROSS = icon("cross", 16, 0);
     public static final UITexture STORAGE = icon("storage", 64, 16);
     public static final UITexture BACKPACK = icon("backpack", 80, 16);
 
-    public static final IDrawable SETTING = icon("setting", 16, 96);
-    public static final IDrawable BACK = icon("back", 64, 80);
+    public static final UITexture SETTING = icon("setting", 16, 96);
+    public static final UITexture BACK = icon("back", 64, 80);
 
-    public static final IDrawable FILL_CRAFTING = icon("fill_crafting", 32, 112);
-    public static final IDrawable DO_NOT_FILL_CRAFTING = icon("not_fill_crafting", 48, 112);
+    public static final UITexture FILL_CRAFTING = icon("fill_crafting", 32, 112);
+    public static final UITexture DO_NOT_FILL_CRAFTING = icon("not_fill_crafting", 48, 112);
     public static final UITexture SHIFT_CLICK_INTO_STORAGE = icon("into_storage", 32, 48);
     public static final UITexture SHIFT_CLICK_INTO_INVENTORY = icon("into_inventory", 48, 48);
 
@@ -49,10 +49,10 @@ public class OSCTextures {
     public static final UITexture HALF_HEART = icon("half_heart", 96, 16);
     public static final UITexture IGNORE_HALF_HEART = icon("ignore_half_heart", 112, 16);
 
-    public static final IDrawable EXP_MAGNET = icon("exp_magnet", 96, 48);
-    public static final IDrawable IGNORE_EXP_MAGNET = icon("ignore_exp_magnet", 112, 48);
-    public static final IDrawable ITEM_MAGNET = icon("exp_magnet", 128, 48);
-    public static final IDrawable IGNORE_ITEM_MAGNET = icon("ignore_exp_magnet", 144, 48);
+    public static final UITexture EXP_MAGNET = icon("exp_magnet", 96, 48);
+    public static final UITexture IGNORE_EXP_MAGNET = icon("ignore_exp_magnet", 112, 48);
+    public static final UITexture ITEM_MAGNET = icon("exp_magnet", 128, 48);
+    public static final UITexture IGNORE_ITEM_MAGNET = icon("ignore_exp_magnet", 144, 48);
 
     public static final UITexture COMPACT_ONLY_UNCRAFTABLE = icon("compact_only_uncraftable", 80, 48);
     public static final UITexture COMPACT_ANY = icon("compact_anything", 80, 32);
@@ -76,16 +76,27 @@ public class OSCTextures {
     public static final UITexture XP_PUMP_MENDING_ON = icon("xp_pump_mending_on", 144, 32);
     public static final UITexture XP_PUMP_MENDING_OFF = icon("xp_pump_mending_off", 160, 32);
 
-    public static final IDrawable STOP = icon("stop", 0, 64);
-    public static final IDrawable PLAY = icon("play", 16, 64);
-    public static final IDrawable NEXT = icon("next", 32, 96);
-    public static final IDrawable PREVIOUS = icon("previous", 48, 96);
+    public static final UITexture STOP = icon("stop", 0, 64);
+    public static final UITexture PLAY = icon("play", 16, 64);
+    public static final UITexture NEXT = icon("next", 32, 96);
+    public static final UITexture PREVIOUS = icon("previous", 48, 96);
 
-    public static final IDrawable SHUFFLE_OFF = icon("shuffle_off", 112, 80);
-    public static final IDrawable SHUFFLE_ON = icon("shuffle_on", 96, 80);
-    public static final IDrawable REPEAT_ALL = icon("repeat_all", 128, 80);
-    public static final IDrawable REPEAT_ONE = icon("repeat_single", 144, 80);
-    public static final IDrawable REPEAT_OFF = icon("repeat_off", 160, 80);
+    public static final UITexture SHUFFLE_OFF = icon("shuffle_off", 112, 80);
+    public static final UITexture SHUFFLE_ON = icon("shuffle_on", 96, 80);
+    public static final UITexture REPEAT_ALL = icon("repeat_all", 128, 80);
+    public static final UITexture REPEAT_ONE = icon("repeat_single", 144, 80);
+    public static final UITexture REPEAT_OFF = icon("repeat_off", 160, 80);
+
+    public static final UITexture VOID_OVERFLOW = icon("void_overflow", 224, 16);
+    public static final UITexture VOID_ANY = icon("void_any", 208, 16);
+    public static final UITexture VOID_ALL = icon("void_all", 0, 48);
+    public static final UITexture VOID_AUTOMATION = icon("void_automation", 16, 48);
+
+    public static final UITexture SWAP_WEAPON = icon("swap_weapon", 32, 64);
+    public static final UITexture NO_SWAP_WEAPON = icon("no_swap_weapon", 48, 64);
+    public static final UITexture SWAP_TOOL = icon("swap_tool", 64, 64);
+    public static final UITexture ONLY_TOOL_SWAP_TOOL = icon("only_tool_swap_tool", 80, 64);
+    public static final UITexture NO_SWAP_TOOL = icon("no_swap_tool", 96, 64);
 
     public static final UITexture MAIN_FIRST = icon("main_first", 48, 32);
     public static final UITexture INCEPTION_FIRST = icon("inception_first", 64, 32);
@@ -97,14 +108,14 @@ public class OSCTextures {
     public static final UITexture MATCH_DURABILITY = icon("match_duration", 0, 16);
     public static final UITexture IGNORE_DURABILITY = icon("ignore_duration", 16, 16);
 
-    public static final IDrawable ADD = icon("add", 96, 32);
-    public static final IDrawable REMOVE = icon("remove", 112, 32);
+    public static final UITexture ADD = icon("add", 96, 32);
+    public static final UITexture REMOVE = icon("remove", 112, 32);
 
     public static final UITexture MATCH_NBT = icon("match_nbt", 32, 0);
     public static final UITexture IGNORE_NBT = icon("ignore_nbt", 48, 0);
 
-    public static final IDrawable ONE_IN_FOUR_SLOT = icon("one_in_four_slot", 0, 80);
-    public static final IDrawable ALL_FOUR_SLOT = icon("all_in_four_slot", 16, 80);
+    public static final UITexture ONE_IN_FOUR_SLOT = icon("one_in_four_slot", 0, 80);
+    public static final UITexture ALL_FOUR_SLOT = icon("all_in_four_slot", 16, 80);
 
     public static final UITexture TOGGLE_DISABLE = icon("disable", 0, 128, 4, 10);
     public static final UITexture TOGGLE_ENABLE = icon("enable", 4, 128, 4, 10);

@@ -45,6 +45,6 @@ public class InceptionUpgradeTab extends ExpandedUpgradeTab<InceptionUpgradeWrap
                     .setInventoryOrder(InventoryOrder.fromOrdinal(index));
                 this.getSyncHandler()
                     .syncToServer(OBUpgradeSlotSHRegistries.INVENTORY_ORDER, buffer -> buffer.writeInt(index));
-            }).size(20, 20);
+            });
     }
 }

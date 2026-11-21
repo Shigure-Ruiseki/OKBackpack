@@ -10,7 +10,6 @@ import ruiseki.backpack.backpack.TileBackpack;
 import ruiseki.backpack.settings.BackpackMainSettingsCategory;
 import ruiseki.backpack.upgrades.anvil.AnvilContainer;
 import ruiseki.backpack.upgrades.anvil.AnvilUpgradeWrapper;
-import ruiseki.backpack.upgrades.refill.RefillUpgradeWrapper;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.common.block.BlockSleepingBag;
 import ruiseki.okbackpack.common.entity.properties.BackpackProperty;
@@ -48,10 +47,6 @@ public class BackpackSHRegistries {
         "backpack_anvil_container");
     public static final ResourceLocation ANVIL_NAME = new ResourceLocation(Reference.MOD_ID, "backpack_anvil_name");
 
-    public static final ResourceLocation REFILL_TARGET_SLOT = new ResourceLocation(
-        Reference.MOD_ID,
-        "backpack_refill_target_slot");
-
     public static void load() {
         REGISTRY.registerServer(SET_ANOTHER_PLAYER_CAN_OPEN_SETTING, (handler, buf) -> {
             MainSettingsCategory<?> settings = getGlobalSettings(handler.getWrapper());
@@ -86,12 +81,6 @@ public class BackpackSHRegistries {
                 ((AnvilContainer) handler.getUpgradeUpdate()
                     .getUpgradeContainer()).updateRepairOutput();
             });
-        });
-
-        UPGRADE_REGISTRY.registerServer(REFILL_TARGET_SLOT, (handler, buf) -> {
-            IUpgradeWrapper wrapper = handler.getUpgradeWrapper();
-            if (!(wrapper instanceof RefillUpgradeWrapper upgradeWrapper)) return;
-            upgradeWrapper.setTargetSlot(buf.readInt(), RefillUpgradeWrapper.TargetSlot.fromOrdinal(buf.readInt()));
         });
     }
 

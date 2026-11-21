@@ -329,10 +329,10 @@ public class StorageContainer extends ModularContainer implements ISortableConta
             return false;
         }
         ItemStack slotStack = slot.getStack();
-        if (ItemHelpers.isEmpty(slotStack)
-            || (slot.canTakeStack(player) && ItemHelpers.getItem(slotStack) != ItemHelpers.getItem(cursorStack)
-                && ItemHelpers.getCount(cursorStack) <= stackLimit(slot, cursorStack)
-                && ItemHelpers.getCount(slotStack) <= ItemHelpers.getMaxStackSize(slotStack))) {
+        if (ItemHelpers.isEmpty(slotStack) || (slot.canTakeStack(player) && !ItemHelpers.isEmpty(slotStack)
+            && ItemHelpers.getItem(slotStack) != ItemHelpers.getItem(cursorStack)
+            && ItemHelpers.getCount(cursorStack) <= stackLimit(slot, cursorStack)
+            && ItemHelpers.getCount(slotStack) <= ItemHelpers.getMaxStackSize(slotStack))) {
             return processOverflowIfSlotWithSameItemFound(slotId, cursorStack, updateCursorStack);
         } else if (ItemHelpers.getItem(slotStack) == ItemHelpers.getItem(cursorStack)) {
             return processOverflowForAnythingOverSlotMaxSize(cursorStack, updateCursorStack, slot, slotStack);

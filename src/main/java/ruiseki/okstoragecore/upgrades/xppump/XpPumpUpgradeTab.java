@@ -124,8 +124,7 @@ public class XpPumpUpgradeTab extends ExpandedUpgradeTab<XpPumpUpgradeWrapper> {
     }
 
     protected ButtonWidget<?> addTakeAllButton() {
-        return new ButtonWidget<>().size(20)
-            .overlay(OSCTextures.XP_PUMP_TAKE_ALL)
+        return new ButtonWidget<>().overlay(OSCTextures.XP_PUMP_TAKE_ALL)
             .tooltipDynamic(
                 tooltip -> { tooltip.addLine(IKey.lang("gui.okstoragecore.upgrades.buttons.take_all_experience")); })
             .tooltipAutoUpdate(true)
@@ -139,8 +138,7 @@ public class XpPumpUpgradeTab extends ExpandedUpgradeTab<XpPumpUpgradeWrapper> {
     }
 
     protected ButtonWidget<?> addTakeLevelsButton() {
-        return new ButtonWidget<>().size(20)
-            .overlay(OSCTextures.XP_PUMP_TAKE_LEVELS)
+        return new ButtonWidget<>().overlay(OSCTextures.XP_PUMP_TAKE_LEVELS)
             .tooltipDynamic(tooltip -> {
                 tooltip.addLine(
                     IKey.lang(
@@ -170,8 +168,7 @@ public class XpPumpUpgradeTab extends ExpandedUpgradeTab<XpPumpUpgradeWrapper> {
     }
 
     protected ButtonWidget<?> addStoreLevelsButton() {
-        return new ButtonWidget<>().size(20)
-            .overlay(OSCTextures.XP_PUMP_STORE_LEVELS)
+        return new ButtonWidget<>().overlay(OSCTextures.XP_PUMP_STORE_LEVELS)
             .tooltipDynamic(tooltip -> {
                 tooltip.addLine(
                     IKey.lang(
@@ -203,8 +200,7 @@ public class XpPumpUpgradeTab extends ExpandedUpgradeTab<XpPumpUpgradeWrapper> {
     }
 
     protected ButtonWidget<?> addStoreAllButton() {
-        return new ButtonWidget<>().size(20)
-            .overlay(OSCTextures.XP_PUMP_STORE_ALL)
+        return new ButtonWidget<>().overlay(OSCTextures.XP_PUMP_STORE_ALL)
             .tooltipDynamic(
                 tooltip -> { tooltip.addLine(IKey.lang("gui.okstoragecore.upgrades.buttons.store_all_experience")); })
             .tooltipAutoUpdate(true)
