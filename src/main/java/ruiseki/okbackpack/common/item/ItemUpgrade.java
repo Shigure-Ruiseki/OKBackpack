@@ -35,6 +35,7 @@ public class ItemUpgrade<T extends IUpgradeWrapper> extends ItemBase implements 
 
     @Override
     public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
+        super.addInformation(itemstack, entityplayer, list, flag);
         list.add(LangHelpers.localize("tooltip.backpack.upgrade_base"));
     }
 

@@ -8,8 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
-import lombok.Getter;
-
 public enum TargetSlot {
 
     MAIN_HAND("main_hand", "gui.backpack.refill.target.main_hand.acronym", "gui.backpack.refill.target.main_hand",
@@ -58,9 +56,7 @@ public enum TargetSlot {
     }
 
     private final String name;
-    @Getter
     private final String acronymKey;
-    @Getter
     private final String tooltipKey;
     private final BiFunction<EntityPlayer, ItemStack, Integer> missingCountGetter;
     private final BiFunction<EntityPlayer, ItemStack, ItemStack> filler;
@@ -73,6 +69,14 @@ public enum TargetSlot {
         this.tooltipKey = tooltipKey;
         this.missingCountGetter = missingCountGetter;
         this.filler = filler;
+    }
+
+    public String getAcronymKey() {
+        return acronymKey;
+    }
+
+    public String getTooltipKey() {
+        return tooltipKey;
     }
 
     public String getSerializedName() {

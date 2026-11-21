@@ -13,7 +13,6 @@ import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.TextWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
-import lombok.Getter;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.client.gui.widget.TabWidget.ExpandDirection;
 
@@ -27,7 +26,6 @@ public abstract class ExpandedTabWidget extends ParentWidget<ExpandedTabWidget> 
         .tiled()
         .build();
 
-    @Getter
     protected final int coveredTabSize;
     protected final ExpandDirection expandDirection;
 
@@ -83,11 +81,14 @@ public abstract class ExpandedTabWidget extends ParentWidget<ExpandedTabWidget> 
         child(upperTabRow);
     }
 
+    public int getCoveredTabSize() {
+        return coveredTabSize;
+    }
+
     public abstract void updateTabState();
 
     protected class PhantomTabWidget extends SingleChildWidget<PhantomTabWidget> implements Interactable {
 
-        @Getter
         private final Widget<?> tabIcon;
 
         public PhantomTabWidget(Widget<?> tabIcon) {
@@ -108,6 +109,10 @@ public abstract class ExpandedTabWidget extends ParentWidget<ExpandedTabWidget> 
             }
 
             child(tabIcon);
+        }
+
+        public Widget<?> getTabIcon() {
+            return tabIcon;
         }
 
         @Override

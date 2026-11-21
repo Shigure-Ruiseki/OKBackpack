@@ -24,9 +24,8 @@ import com.cleanroommc.modularui.factory.inventory.InventoryType;
 import com.github.bsideup.jabel.Desugar;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
-import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
-import ruiseki.okbackpack.api.SortType;
+import ruiseki.okbackpack.api.SortBy;
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
@@ -50,7 +49,6 @@ import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackItemStackHelpers;
 import ruiseki.okbackpack.common.helpers.BackpackSettingsTemplate;
 import ruiseki.okbackpack.common.helpers.UpgradeFeatureHelper;
-import ruiseki.okbackpack.common.network.PacketJukeboxPlaybackState;
 import ruiseki.okbackpack.compat.thaumcraft.IUpgradeVisChargeTarget;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
@@ -73,7 +71,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     public int mainColor;
     public int accentColor;
 
-    public SortType sortType;
+    public SortBy sortBy;
 
     public boolean lockBackpack;
     public String playerUuid;
@@ -135,7 +133,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         this.upgradeSlots = tier.getUpgradeSlots();
         this.mainColor = 0xFFCC613A;
         this.accentColor = 0xFF622E1A;
-        this.sortType = SortType.BY_NAME;
+        this.sortBy = SortBy.NAME;
         this.lockBackpack = false;
         this.uuid = resolveUuid(backpack);
         this.playerUuid = "";
@@ -606,11 +604,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         float z = (float) player.posZ;
         int carrierEntityId = player.getEntityId();
         var targetPoint = new NetworkRegistry.TargetPoint(player.worldObj.provider.dimensionId, x, y, z, 64);
-        for (int slot : pendingJukeboxStops) {
-            var packet = new PacketJukeboxPlaybackState(uuid, slot, false, 0, 0, x, y, z, "", carrierEntityId);
-            OKBackpack._instance.getPacketHandler()
-                .sendToAllAround(packet, targetPoint);
-        }
+
         pendingJukeboxStops.clear();
     }
 
@@ -620,29 +614,14 @@ public class BackpackWrapper implements IBackpackWrapper {
         float y = pos.y + 0.5f;
         float z = pos.z + 0.5f;
         var targetPoint = new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 64);
-        for (int slot : pendingJukeboxStops) {
-            var packet = new PacketJukeboxPlaybackState(uuid, slot, false, 0, 0, x, y, z, "", -1);
-            OKBackpack._instance.getPacketHandler()
-                .sendToAllAround(packet, targetPoint);
-        }
+
         pendingJukeboxStops.clear();
     }
 
     public void forceStopAllJukeboxes(World world, float x, float y, float z) {
         if (world.isRemote) return;
         var targetPoint = new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 64);
-        for (int i = 0; i < upgradeSlots; i++) {
-            ItemStack stack = upgradeHandler.getStackInSlot(i);
-            if (stack == null) continue;
-            if (!ItemNBTHelpers.getBoolean(stack, IJukeboxUpgrade.PLAYING_TAG, false)) continue;
-            var packet = new PacketJukeboxPlaybackState(uuid, i, false, 0, 0, x, y, z, "", -1);
-            OKBackpack._instance.getPacketHandler()
-                .sendToAllAround(packet, targetPoint);
-            IUpgradeWrapper wrapper = upgradeHandler.getWrapperInSlot(i);
-            if (wrapper instanceof IJukeboxUpgrade jukebox) {
-                jukebox.stop();
-            }
-        }
+
     }
 
     public void writeAdditionalInfo(World world, float x, float y, float z) {
@@ -880,7 +859,7 @@ public class BackpackWrapper implements IBackpackWrapper {
         }
         tag.setByteArray(LOCKED_SLOTS_TAG, lockedBytes);
 
-        tag.setByte(SORT_TYPE_TAG, (byte) sortType.ordinal());
+        tag.setByte(SORT_TYPE_TAG, (byte) sortBy.ordinal());
 
         tag.setBoolean(LOCKED_BACKPACK_TAG, lockBackpack);
 
@@ -996,8 +975,8 @@ public class BackpackWrapper implements IBackpackWrapper {
 
         if (tag.hasKey(SORT_TYPE_TAG, 1)) {
             byte type = tag.getByte(SORT_TYPE_TAG);
-            if (type >= 0 && type < SortType.values().length) {
-                this.sortType = SortType.values()[type];
+            if (type >= 0 && type < SortBy.values().length) {
+                this.sortBy = SortBy.values()[type];
             }
         }
 
@@ -1069,13 +1048,13 @@ public class BackpackWrapper implements IBackpackWrapper {
     }
 
     @Override
-    public void setSortType(SortType sortType) {
-        this.sortType = sortType;
+    public void setSortType(SortBy sortBy) {
+        this.sortBy = sortBy;
     }
 
     @Override
-    public SortType getSortType() {
-        return sortType;
+    public SortBy getSortType() {
+        return sortBy;
     }
 
     @Override
@@ -1239,16 +1218,7 @@ public class BackpackWrapper implements IBackpackWrapper {
     @Override
     public boolean deploySleepingBag(EntityPlayer player, World world, int meta, int cX, int cY, int cZ) {
         if (world.isRemote) return false;
-
         if (sleepingBagDeployed) removeSleepingBag(world);
-
-        sleepingBagDeployed = BlockSleepingBag.spawnSleepingBag(player, world, meta, cX, cY, cZ);
-        if (sleepingBagDeployed) {
-            sleepingBagX = cX;
-            sleepingBagY = cY;
-            sleepingBagZ = cZ;
-            writeToItem();
-        }
         return sleepingBagDeployed;
     }
 

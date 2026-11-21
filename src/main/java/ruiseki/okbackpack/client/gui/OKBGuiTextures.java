@@ -21,11 +21,6 @@ public class OKBGuiTextures {
         .name("vanilla_search")
         .build();
 
-    public static final UITexture BREEDER_PROGRESS = UITexture.builder()
-        .location(Reference.MOD_ID, "gui/widgets/progress_breeder")
-        .imageSize(36, 36)
-        .build();
-
     public static final UITexture BASIC_BAR = UITexture.builder()
         .location(Reference.MOD_ID, "gui/progress_white")
         .imageSize(64, 32)
@@ -110,9 +105,9 @@ public class OKBGuiTextures {
     public static final UITexture MATCH_NBT_ICON = icon("consider_nbt", 32, 0);
     public static final UITexture IGNORE_NBT_ICON = icon("ignore_nbt", 48, 0);
 
-    public static final UITexture COMPLETE_HUNGER_ICON = icon("complete_hunger", 96, 0);
-    public static final UITexture HALF_HUNGER_ICON = icon("half_hunger", 112, 0);
-    public static final UITexture IMMEDIATE_HUNGER_ICON = icon("impose_hunger", 128, 0);
+    public static final UITexture FULL_HUNGER = icon("full_hunger", 96, 0);
+    public static final UITexture HALF_HUNGER = icon("half_hunger", 112, 0);
+    public static final UITexture ANY_HUNGER = icon("any_hunger", 128, 0);
 
     public static final UITexture MATCH_DURABILITY_ICON = icon("consider_duration", 0, 16);
     public static final UITexture IGNORE_DURABILITY_ICON = icon("ignore_duration", 16, 16);
@@ -156,9 +151,6 @@ public class OKBGuiTextures {
     public static final IDrawable NO_SORT_ICON = icon("no_sort", 32, 80);
     public static final IDrawable NONE_FOUR_SLOT_ICON = icon("none_in_four_slot", 48, 80);
 
-    public static final IDrawable SETTING_ICON = icon("setting", 16, 96);
-    public static final IDrawable BACK_ICON = icon("back", 64, 80);
-
     public static final IDrawable EXP_MAGNET_ICON = icon("exp_magnet", 96, 48);
     public static final IDrawable IGNORE_EXP_MAGNET_ICON = icon("ignore_exp_magnet", 112, 48);
     public static final IDrawable ITEM_MAGNET_ICON = icon("exp_magnet", 128, 48);
@@ -177,48 +169,6 @@ public class OKBGuiTextures {
     public static final UITexture VOID_ALL = icon("void_all", 0, 48);
     public static final UITexture VOID_AUTOMATION = icon("void_automation", 16, 48);
 
-    public static final IDrawable SWAP_WEAPON_ICON = icon("swap_weapon", 32, 64);
-    public static final IDrawable NO_SWAP_WEAPON_ICON = icon("no_swap_weapon", 48, 64);
-    public static final IDrawable SWAP_TOOL_ICON = icon("swap_tool", 64, 64);
-    public static final IDrawable ONLY_TOOL_SWAP_TOOL_ICON = icon("only_tool_swap_tool", 80, 64);
-    public static final IDrawable NO_SWAP_TOOL_ICON = icon("no_swap_tool", 96, 64);
-
-    public static final IDrawable JUKEBOX_STOP_ICON = icon("jukebox_stop", 0, 64);
-    public static final IDrawable JUKEBOX_PLAY_ICON = icon("jukebox_play", 16, 64);
-    public static final IDrawable JUKEBOX_NEXT_ICON = icon("jukebox_next", 32, 96);
-    public static final IDrawable JUKEBOX_PREV_ICON = icon("jukebox_prev", 48, 96);
-
-    public static final IDrawable SHUFFLE_OFF_ICON = icon("shuffle_off", 112, 80);
-    public static final IDrawable SHUFFLE_ON_ICON = icon("shuffle_on", 96, 80);
-    public static final IDrawable LOOP_ALL_ICON = icon("loop_all", 128, 80);
-    public static final IDrawable LOOP_SINGLE_ICON = icon("loop_single", 144, 80);
-    public static final IDrawable LOOP_OFF_ICON = icon("loop_off", 160, 80);
-
-    public static final UITexture PUMP_INPUT_ICON = icon("pump_input", 144, 0);
-    public static final UITexture PUMP_OUTPUT_ICON = icon("pump_output", 160, 0);
-    public static final UITexture PUMP_INTERACT_TANKS_ICON = icon("pump_interact_tanks", 0, 112);
-    public static final UITexture PUMP_NO_INTERACT_TANKS_ICON = icon("pump_no_interact_tanks", 16, 112);
-    public static final UITexture PUMP_INTERACT_WORLD_ICON = icon("pump_interact_world", 176, 0);
-    public static final UITexture PUMP_NO_INTERACT_WORLD_ICON = icon("pump_no_interact_world", 192, 0);
-    public static final UITexture PUMP_INTERACT_HAND_ICON = icon("pump_interact_hand", 208, 0);
-    public static final UITexture PUMP_NO_INTERACT_HAND_ICON = icon("pump_no_interact_hand", 224, 0);
-
-    public static final UITexture XP_PUMP_OUTPUT_ICON = icon("xp_pump_output", 128, 16);
-    public static final UITexture XP_PUMP_KEEP_ICON = icon("xp_pump_keep", 96, 96);
-    public static final UITexture XP_PUMP_OFF_ICON = icon("xp_pump_off", 0, 96);
-    public static final UITexture XP_PUMP_MEND_ICON = icon("xp_pump_mend", 144, 32);
-    public static final UITexture XP_PUMP_NO_MEND_ICON = icon("xp_pump_no_mend", 160, 32);
-    public static final UITexture XP_PUMP_TAKE_ALL_ICON = icon("xp_pump_take_all", 144, 16);
-    public static final UITexture XP_PUMP_TAKE_LEVELS_ICON = icon("xp_pump_take_levels", 160, 16);
-    public static final UITexture XP_PUMP_STORE_LEVELS_ICON = icon("xp_pump_store_levels", 176, 16);
-    public static final UITexture XP_PUMP_STORE_ALL_ICON = icon("xp_pump_store_all", 192, 16);
-
-    public static final UITexture ROTATED_RIGHT = icon("rotated_right", 0, 170);
-    public static final UITexture ROTATED_LEFT = icon("rotated_left", 48, 170);
-    public static final UITexture BALANCE = icon("balance", 32, 170);
-    public static final UITexture SPREAD = icon("spread", 80, 170);
-    public static final UITexture CLEAR = icon("clear", 16, 170);
-
     public static final UITexture SOLID_UP_ARROW_ICON = icon("solid_up_arrow", 0, 144, 12, 12);
     public static final UITexture SOLID_DOWN_ARROW_ICON = icon("solid_down_arrow", 12, 156, 12, 12);
     public static final UITexture DOT_DOWN_ARROW_ICON = icon("dot_down_arrow", 24, 156, 12, 12);
@@ -227,6 +177,7 @@ public class OKBGuiTextures {
     public static final UITexture TOGGLE_DISABLE_ICON = icon("disable", 0, 128, 4, 10);
     public static final UITexture TOGGLE_ENABLE_ICON = icon("enable", 4, 128, 4, 10);
     public static final UITexture SMALL_M_ICON = icon("small_m", 0, 156, 12, 12);
+    public static final UITexture SMALL_T_ICON = icon("small_a", 12, 144, 12, 12);
     public static final UITexture SMALL_A_ICON = icon("small_a", 24, 144, 12, 12);
     public static final UITexture SMALL_1_ICON = icon("small_1", 36, 144, 12, 12);
     public static final UITexture SMALL_O_ICON = icon("small_ore_dict", 64, 144, 12, 12);

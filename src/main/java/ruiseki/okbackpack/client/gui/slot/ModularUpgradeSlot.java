@@ -7,28 +7,30 @@ import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import lombok.Getter;
-import lombok.Setter;
 import ruiseki.okbackpack.api.IStorageWrapper;
 import ruiseki.okbackpack.api.upgrade.IUpgradeItem;
 import ruiseki.okbackpack.api.upgrade.UpgradeSlotChangeResult;
-import ruiseki.okbackpack.common.item.infinity.InfinityUpgradeWrapper;
-import ruiseki.okbackpack.common.item.infinity.ItemInfinityUpgrade;
-import ruiseki.okbackpack.common.item.infinity.ItemSurvivalInfinityUpgrade;
 import ruiseki.okcore.client.mui.gui.component.slot.ModularItemSlot;
+import ruiseki.okcore.helper.ItemHelpers;
 
 public class ModularUpgradeSlot extends ModularItemSlot {
 
     protected final IStorageWrapper wrapper;
 
-    @Getter
-    @Setter
     @Nullable
     private UpgradeSlotChangeResult lastChangeResult;
 
     public ModularUpgradeSlot(IStorageWrapper wrapper, int index) {
         super(wrapper.getUpgradeHandler(), index);
         this.wrapper = wrapper;
+    }
+
+    public void setLastChangeResult(@Nullable UpgradeSlotChangeResult lastChangeResult) {
+        this.lastChangeResult = lastChangeResult;
+    }
+
+    public @Nullable UpgradeSlotChangeResult getLastChangeResult() {
+        return lastChangeResult;
     }
 
     @Override
@@ -40,17 +42,6 @@ public class ModularUpgradeSlot extends ModularItemSlot {
     public UpgradeSlotChangeResult getBlockedTakeResult(EntityPlayer player) {
         ItemStack current = this.getStack();
         if (current == null) return null;
-
-        // Admin infinity upgrade: only admins can remove/replace.
-        if (current.getItem() instanceof ItemInfinityUpgrade) {
-            if (!InfinityUpgradeWrapper.isAdmin(player)) {
-                ItemStack cursor = player.inventory.getItemStack();
-                if (cursor == null || !(cursor.getItem() instanceof ItemInfinityUpgrade
-                    || cursor.getItem() instanceof ItemSurvivalInfinityUpgrade)) {
-                    return null;
-                }
-            }
-        }
 
         ItemStack cursor = player.inventory.getItemStack();
         int slot = getSlotIndex();
@@ -73,7 +64,7 @@ public class ModularUpgradeSlot extends ModularItemSlot {
     public boolean isItemValid(@Nullable ItemStack stack) {
         if (stack == null) return false;
 
-        Item item = stack.getItem();
+        Item item = ItemHelpers.getItem(stack);
         int slot = getSlotIndex();
 
         if (!(item instanceof IUpgradeItem<?>upgradeItem)) {
@@ -101,7 +92,7 @@ public class ModularUpgradeSlot extends ModularItemSlot {
     public UpgradeSlotChangeResult getBlockedInsertResult(@Nullable ItemStack stack) {
         if (stack == null) return null;
 
-        Item item = stack.getItem();
+        Item item = ItemHelpers.getItem(stack);
         int slot = getSlotIndex();
 
         if (!(item instanceof IUpgradeItem<?>upgradeItem)) {

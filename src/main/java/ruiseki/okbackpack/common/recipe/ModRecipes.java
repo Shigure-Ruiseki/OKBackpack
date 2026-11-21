@@ -5,23 +5,13 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
-import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
-import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
-import ruiseki.okbackpack.common.block.BlockIronBackpackConfig;
-import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
-import ruiseki.okbackpack.common.block.BlockObsidianBackpackConfig;
-import ruiseki.okbackpack.common.helpers.UpgradeFeatureHelper;
-import ruiseki.okbackpack.common.item.ItemUpgradeConfig;
-import ruiseki.okbackpack.common.item.arcane.ItemArcaneCraftingUpgradeConfig;
-import ruiseki.okbackpack.common.item.energizednode.ItemEnergizedNodeUpgradeConfig;
-import ruiseki.okbackpack.compat.Mods;
+import ruiseki.backpack.init.block.BlockDiamondBackpackConfig;
+import ruiseki.backpack.init.block.BlockGoldBackpackConfig;
+import ruiseki.backpack.init.block.BlockIronBackpackConfig;
+import ruiseki.backpack.init.block.BlockLeatherBackpackConfig;
+import ruiseki.backpack.init.block.BlockObsidianBackpackConfig;
 import ruiseki.okcore.init.IInitListener;
-import thaumcraft.api.ThaumcraftApi;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
-import thaumcraft.common.config.ConfigBlocks;
 
 public class ModRecipes implements IInitListener {
 
@@ -29,9 +19,6 @@ public class ModRecipes implements IInitListener {
     public void onInit(Step step) {
         if (step == Step.POSTINIT) {
             blockRecipes();
-            if (Mods.Thaumcraft.isModLoaded()) {
-                thaumcraftRecipes();
-            }
         }
     }
 
@@ -109,56 +96,4 @@ public class ModRecipes implements IInitListener {
                 'B',
                 new ItemStack(BlockDiamondBackpackConfig._instance.getInstance())));
     }
-
-    @Optional.Method(modid = "Thaumcraft")
-    private static void thaumcraftRecipes() {
-        if (UpgradeFeatureHelper.isArcaneCraftingUpgradeEnabled()) {
-            // Arcane Crafting Upgrade
-            ThaumcraftApi.addArcaneCraftingRecipe(
-                "ARCTABLE",
-                new ItemStack(ItemArcaneCraftingUpgradeConfig._instance.getInstance()),
-                new AspectList().add(Aspect.AIR, 10)
-                    .add(Aspect.EARTH, 10)
-                    .add(Aspect.FIRE, 10)
-                    .add(Aspect.WATER, 10)
-                    .add(Aspect.ORDER, 10)
-                    .add(Aspect.ENTROPY, 10),
-                " A ",
-                "IUI",
-                " C ",
-                'A',
-                new ItemStack(ConfigBlocks.blockTable, 1, 15),
-                'C',
-                new ItemStack(Blocks.chest, 1, 0),
-                'I',
-                "ingotIron",
-                'U',
-                new ItemStack(ItemUpgradeConfig._instance.getInstance()));
-        }
-
-        // Energized Node Upgrade
-        ThaumcraftApi.addArcaneCraftingRecipe(
-            "VISPOWER",
-            new ItemStack(ItemEnergizedNodeUpgradeConfig._instance.getInstance()),
-            new AspectList().add(Aspect.AIR, 50)
-                .add(Aspect.EARTH, 50)
-                .add(Aspect.FIRE, 50)
-                .add(Aspect.WATER, 50)
-                .add(Aspect.ORDER, 50)
-                .add(Aspect.ENTROPY, 50),
-            " T ",
-            "RUC",
-            " S ",
-            'T',
-            new ItemStack(ConfigBlocks.blockStoneDevice, 1, 11),
-            'R',
-            new ItemStack(ConfigBlocks.blockMetalDevice, 1, 14),
-            'C',
-            new ItemStack(ConfigBlocks.blockMetalDevice, 1, 2),
-            'S',
-            new ItemStack(ConfigBlocks.blockStoneDevice, 1, 10),
-            'U',
-            new ItemStack(ItemUpgradeConfig._instance.getInstance()));
-    }
-
 }

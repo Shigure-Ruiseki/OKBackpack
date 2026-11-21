@@ -1,5 +1,6 @@
 package ruiseki.okbackpack.api.wrapper;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fluids.FluidStack;
 
 import ruiseki.okbackpack.client.gui.handler.BaseItemStackHandler;
@@ -18,5 +19,5 @@ public interface ITankUpgrade extends IStorageUpgrade, ITickable {
 
     BaseItemStackHandler getStorage();
 
-    void interactWithCursorStack(net.minecraft.entity.player.EntityPlayer player);
+    void interactWithCursorStack(EntityPlayer player);
 }

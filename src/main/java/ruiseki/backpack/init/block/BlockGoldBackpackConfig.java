@@ -1,0 +1,37 @@
+package ruiseki.backpack.init.block;
+
+import static ruiseki.okbackpack.common.init.TierRegistries.GOLD;
+
+import net.minecraft.item.Item;
+
+import ruiseki.backpack.backpack.BlockBackpack;
+import ruiseki.backpack.backpack.ItemBackpack;
+import ruiseki.okbackpack.OKBackpack;
+import ruiseki.okcore.config.ConfigurableProperty;
+import ruiseki.okcore.config.extendedconfig.BlockContainerConfig;
+
+public class BlockGoldBackpackConfig extends BlockContainerConfig {
+
+    /**
+     * The unique instance.
+     */
+    public static BlockGoldBackpackConfig _instance;
+
+    @ConfigurableProperty(category = "block", comment = "Number of item slots for Gold Backpack.")
+    public static int goldBackpackSlots = 81;
+
+    @ConfigurableProperty(category = "block", comment = "Number of upgrade slots for Gold Backpack.")
+    public static int goldUpgradeSlots = 3;
+
+    /**
+     * Make a new instance.
+     */
+    public BlockGoldBackpackConfig() {
+        super(OKBackpack._instance, true, "gold_backpack", null, config -> new BlockBackpack(GOLD));
+    }
+
+    @Override
+    public Class<? extends Item> getItemBlockClass() {
+        return ItemBackpack.class;
+    }
+}

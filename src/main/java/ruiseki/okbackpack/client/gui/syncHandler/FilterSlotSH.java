@@ -6,6 +6,8 @@ import com.cleanroommc.modularui.utils.MouseData;
 import com.cleanroommc.modularui.value.sync.PhantomItemSlotSH;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
+import ruiseki.okcore.helper.ItemHelpers;
+
 public class FilterSlotSH extends PhantomItemSlotSH {
 
     public FilterSlotSH(ModularSlot slot) {
@@ -19,11 +21,11 @@ public class FilterSlotSH extends PhantomItemSlotSH {
             return;
         }
 
-        if (cursorStack != null) {
+        if (!ItemHelpers.isEmpty(cursorStack)) {
             if (!isItemValid(cursorStack)) return;
 
-            ItemStack copy = cursorStack.copy();
-            copy.stackSize = 1;
+            ItemStack copy = ItemHelpers.copy(cursorStack);
+            ItemHelpers.setCount(copy, 1);
             getSlot().putStack(copy);
             return;
         }

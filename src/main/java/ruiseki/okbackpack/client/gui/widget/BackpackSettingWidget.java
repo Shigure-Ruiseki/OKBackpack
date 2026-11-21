@@ -240,7 +240,6 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
             .pos(6, 44)
             .height(20)
             .coverChildrenWidth()
-            .childPadding(0)
             .child(shiftClickButton)
             .child(tabButton)
             .child(searchButton)
@@ -302,7 +301,7 @@ public class BackpackSettingWidget extends ExpandedTabWidget {
             .pos(6, 66)
             .height(20)
             .coverChildrenWidth()
-            .childPadding(4)
+            .childPadding(2)
             .child(mainColorButton)
             .child(accentColorButton);
 

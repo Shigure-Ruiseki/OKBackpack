@@ -11,7 +11,6 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import cpw.mods.fml.common.Optional;
-import lombok.Getter;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSH;
@@ -44,7 +43,6 @@ public class SortingSettingWidget extends ExpandedTabWidget {
         0x8080FF, // Light Blue
     };
 
-    @Getter
     private int currentColorIndex;
 
     private final IStoragePanel<?> panel;
@@ -64,11 +62,9 @@ public class SortingSettingWidget extends ExpandedTabWidget {
         Flow buttonRow = Flow.row()
             .leftRel(0.5f)
             .height(20)
-            .coverChildrenWidth()
-            .childPadding(0);
+            .coverChildrenWidth();
 
-        ButtonWidget<?> selectAllButton = new ButtonWidget<>().size(20)
-            .overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
+        ButtonWidget<?> selectAllButton = new ButtonWidget<>().overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
                     for (int i = 0; i < wrapper.getSlots(); i++) {
@@ -88,8 +84,7 @@ public class SortingSettingWidget extends ExpandedTabWidget {
                 t -> t.addLine(IKey.lang("gui.backpack.select_all_slots"))
                     .pos(RichTooltip.Pos.NEXT_TO_MOUSE));
 
-        ButtonWidget<?> unselectAllButton = new ButtonWidget<>().size(20)
-            .overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
+        ButtonWidget<?> unselectAllButton = new ButtonWidget<>().overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
             .onMousePressed(button -> {
                 if (button == 0) {
                     for (int i = 0; i < wrapper.getSlots(); i++) {
@@ -130,7 +125,6 @@ public class SortingSettingWidget extends ExpandedTabWidget {
                 return true;
             }
         };
-        colorToggleButton.size(20);
         colorToggleButton.onMousePressed(button -> {
             if (button == 0) {
                 cycleColor(1);
@@ -163,6 +157,10 @@ public class SortingSettingWidget extends ExpandedTabWidget {
             });
         phantomTabWidget.getTabIcon()
             .tooltipAutoUpdate(true);
+    }
+
+    public int getCurrentColorIndex() {
+        return currentColorIndex;
     }
 
     @Optional.Method(modid = "bogosorter")

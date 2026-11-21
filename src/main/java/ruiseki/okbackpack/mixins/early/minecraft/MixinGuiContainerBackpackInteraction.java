@@ -21,20 +21,6 @@ public abstract class MixinGuiContainerBackpackInteraction extends GuiScreen {
     @Shadow
     private Slot theSlot;
 
-    @Inject(method = "func_146977_a", at = @At("TAIL"))
-    private void okbackpack$renderInventoryInteractionOverlay(Slot slotIn, CallbackInfo ci) {
-        if (mc == null || mc.thePlayer == null || fontRendererObj == null || slotIn == null) {
-            return;
-        }
-
-        ItemStack cursorStack = mc.thePlayer.inventory.getItemStack();
-        if (cursorStack == null || cursorStack.stackSize <= 0) {
-            return;
-        }
-
-        BackpackInventoryInteractionOverlay.renderOverlay(fontRendererObj, mc.thePlayer, slotIn, cursorStack);
-    }
-
     @Inject(method = "drawScreen", at = @At("RETURN"))
     private void okbackpack$renderInventoryInteractionTooltip(int mouseX, int mouseY, float partialTicks,
         CallbackInfo ci) {
@@ -52,11 +38,6 @@ public abstract class MixinGuiContainerBackpackInteraction extends GuiScreen {
             return;
         }
 
-        BackpackInventoryInteractionOverlay.renderTooltip(
-            fontRendererObj,
-            lines,
-            mouseX,
-            mouseY,
-            (tooltipLines, x, y) -> this.func_146283_a(tooltipLines, x, y));
+        BackpackInventoryInteractionOverlay.renderTooltip(fontRendererObj, lines, mouseX, mouseY, this::func_146283_a);
     }
 }

@@ -2,14 +2,14 @@ package ruiseki.okbackpack.common.init;
 
 import net.minecraft.util.ResourceLocation;
 
+import ruiseki.backpack.init.block.BlockDiamondBackpackConfig;
+import ruiseki.backpack.init.block.BlockGoldBackpackConfig;
+import ruiseki.backpack.init.block.BlockIronBackpackConfig;
+import ruiseki.backpack.init.block.BlockLeatherBackpackConfig;
+import ruiseki.backpack.init.block.BlockObsidianBackpackConfig;
 import ruiseki.okbackpack.Reference;
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
-import ruiseki.okbackpack.common.block.BlockDiamondBackpackConfig;
-import ruiseki.okbackpack.common.block.BlockGoldBackpackConfig;
-import ruiseki.okbackpack.common.block.BlockIronBackpackConfig;
-import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
-import ruiseki.okbackpack.common.block.BlockObsidianBackpackConfig;
 import ruiseki.okcore.init.IInitListener;
 
 public class TierRegistries implements IInitListener {

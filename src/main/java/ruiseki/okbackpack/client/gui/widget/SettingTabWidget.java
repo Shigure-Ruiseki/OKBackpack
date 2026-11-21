@@ -11,8 +11,8 @@ import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widget.Widget;
 
-import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 import ruiseki.okbackpack.common.block.BackpackPanel;
+import ruiseki.okstoragecore.client.gui.OSCTextures;
 
 public class SettingTabWidget extends Widget<SettingTabWidget> implements Interactable {
 
@@ -67,9 +67,9 @@ public class SettingTabWidget extends Widget<SettingTabWidget> implements Intera
         super.draw(context, widgetTheme);
         BackpackPanel panel = (BackpackPanel) getPanel();
         if (panel.settingPanel.isPanelOpen()) {
-            OKBGuiTextures.BACK_ICON.draw(context, 8, 6, 16, 16, widgetTheme.getTheme());
+            OSCTextures.BACK.draw(context, 8, 6, 16, 16, widgetTheme.getTheme());
         } else {
-            OKBGuiTextures.SETTING_ICON.draw(context, 8, 6, 16, 16, widgetTheme.getTheme());
+            OSCTextures.SETTING.draw(context, 8, 6, 16, 16, widgetTheme.getTheme());
         }
     }
 }

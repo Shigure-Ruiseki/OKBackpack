@@ -38,6 +38,10 @@ public class TierRegistry {
         return REGISTRY.get(LEATHER);
     }
 
+    public static String getDisplayName(String tierID) {
+        return getDisplayName(TierRegistry.getTier(tierID));
+    }
+
     public static String getDisplayName(BackpackTier tier) {
         if (tier == null) return null;
 

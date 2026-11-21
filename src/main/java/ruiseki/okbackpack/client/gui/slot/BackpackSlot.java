@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.common.MinecraftForge;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -31,35 +32,38 @@ import com.cleanroommc.modularui.utils.Platform;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import lombok.Getter;
-import lombok.Setter;
 import ruiseki.okbackpack.api.IStoragePanel;
 import ruiseki.okbackpack.api.IStorageWrapper;
-import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionOverlay;
-import ruiseki.okbackpack.client.gui.interaction.BackpackInventoryInteractionResult;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSH;
 import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
 import ruiseki.okbackpack.client.gui.widget.upgrade.SortingSettingWidget;
 import ruiseki.okbackpack.common.block.BackpackPanel;
+import ruiseki.okbackpack.compat.Mods;
 import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
 import ruiseki.okbackpack.mixins.early.modularui2.ItemSlotInvoker;
+import ruiseki.okcore.event.gui.SlotRenderEvent;
 
 public class BackpackSlot extends ItemSlot {
 
     private final IStoragePanel<?> panel;
     private final IStorageWrapper wrapper;
 
-    @Getter
-    @Setter
     private boolean focus;
 
     public BackpackSlot(IStoragePanel<?> panel, IStorageWrapper wrapper) {
         this.panel = panel;
         this.wrapper = wrapper;
         this.focus = true;
+    }
+
+    public boolean isFocus() {
+        return focus;
+    }
+
+    public void setFocus(boolean focus) {
+        this.focus = focus;
     }
 
     private boolean isInSettingMode() {
@@ -170,7 +174,9 @@ public class BackpackSlot extends ItemSlot {
             if (isMemorySet && mouseButton == 1) {
                 wrapper.unsetMemoryStack(index);
                 getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_MEMORY_STACK));
-                refreshBogoSortingContext();
+                if (Mods.InventoryBogoSorter.isModLoaded()) {
+                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                }
                 return Result.SUCCESS;
 
             } else if (!isMemorySet && mouseButton == 0) {
@@ -178,7 +184,9 @@ public class BackpackSlot extends ItemSlot {
                 getSyncHandler().syncToServer(
                     BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_MEMORY_STACK),
                     buf -> buf.writeBoolean(panel.shouldMemorizeRespectNBT()));
-                refreshBogoSortingContext();
+                if (Mods.InventoryBogoSorter.isModLoaded()) {
+                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                }
                 return Result.SUCCESS;
 
             }
@@ -191,12 +199,16 @@ public class BackpackSlot extends ItemSlot {
             if (locked && mouseButton == 1) {
                 wrapper.setSlotLocked(index, false);
                 getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_UNSET_SLOT_LOCK));
-                refreshBogoSortingContext();
+                if (Mods.InventoryBogoSorter.isModLoaded()) {
+                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                }
                 return Result.SUCCESS;
             } else if (!locked && mouseButton == 0) {
                 wrapper.setSlotLocked(index, true);
                 getSyncHandler().syncToServer(BackpackSlotSH.getId(BackpackSlotSHRegisters.UPDATE_SET_SLOT_LOCK));
-                refreshBogoSortingContext();
+                if (Mods.InventoryBogoSorter.isModLoaded()) {
+                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                }
                 return Result.SUCCESS;
             }
             return Result.STOP;
@@ -205,13 +217,9 @@ public class BackpackSlot extends ItemSlot {
         return null;
     }
 
-    @Optional.Method(modid = "bogosorter")
-    private static void refreshBogoSortingContext() {
-        BackpackBogoSorterClientCompat.invalidateSortingContext();
-    }
-
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetThemeEntry) {
+        if (MinecraftForge.EVENT_BUS.post(new SlotRenderEvent.Pre(this.getSlot(), 1, 1))) return;
         WidgetTheme widgetTheme = widgetThemeEntry.getTheme() != null ? widgetThemeEntry.getTheme()
             : WidgetTheme.getDefault()
                 .getTheme();
@@ -232,7 +240,7 @@ public class BackpackSlot extends ItemSlot {
             GlStateManager.enableDepth();
         }
 
-        renderInventoryInteractionOverlay();
+        MinecraftForge.EVENT_BUS.post(new SlotRenderEvent.Post(this.getSlot(), 1, 1));
     }
 
     private boolean shouldHighlightConflict() {
@@ -243,7 +251,7 @@ public class BackpackSlot extends ItemSlot {
     }
 
     private void drawDimmedSlot(ModularGuiContext context) {
-        GuiDraw.drawRect(1, 1, 17, 17, 0x88000000);
+        GuiDraw.drawRect(1, 1, 16, 16, 0x88000000);
     }
 
     private void drawSettingStack(ModularGuiContext context, WidgetTheme widgetTheme) {
@@ -370,22 +378,6 @@ public class BackpackSlot extends ItemSlot {
             GuiDraw.drawRect(1, 1, 16, 16, getSlotHoverColor());
             GlStateManager.colorMask(true, true, true, true);
         }
-    }
-
-    private void renderInventoryInteractionOverlay() {
-        Minecraft minecraft = Minecraft.getMinecraft();
-        if (minecraft == null || minecraft.thePlayer == null || minecraft.fontRenderer == null) {
-            return;
-        }
-
-        ItemStack cursorStack = minecraft.thePlayer.inventory.getItemStack();
-        if (cursorStack == null || cursorStack.stackSize <= 0) {
-            return;
-        }
-
-        BackpackInventoryInteractionResult result = BackpackInventoryInteractionOverlay
-            .getRenderableResult(minecraft.thePlayer, getSlot(), cursorStack);
-        BackpackInventoryInteractionOverlay.renderOverlayAt(minecraft.fontRenderer, result, 1, 1);
     }
 
     @SideOnly(Side.CLIENT)

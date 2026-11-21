@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -28,6 +27,7 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
 import cpw.mods.fml.common.Optional;
+import ruiseki.backpack.modcompat.thaumcraft.helper.ThaumcraftHelpers;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okbackpack.api.IBackpackWrapper;
 import ruiseki.okbackpack.api.IStorageContainer;
@@ -48,7 +48,6 @@ import ruiseki.okbackpack.client.gui.slot.ModularUpgradeWidgetSlot;
 import ruiseki.okbackpack.common.block.BackpackWrapper;
 import ruiseki.okbackpack.common.network.PacketBackpackNBT;
 import ruiseki.okbackpack.compat.Mods;
-import ruiseki.okbackpack.compat.thaumcraft.ThaumcraftHelpers;
 import ruiseki.okbackpack.compat.tic.TinkersHelpers;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.item.handler.IItemHandlerModifiable;
@@ -210,7 +209,7 @@ public class BackPackContainer extends ModularContainer
         var arcane = arcaneUpgrades.get(upgradeSlotIndex);
         if (arcane != null) {
             ItemStack wandStack = arcane.getStorage()
-                .getStackInSlot(IArcaneCraftingUpgrade.WAND_SLOT_INDEX);
+                .getStackInSlot(9);
             if (ThaumcraftHelpers.isWand(wandStack)) {
                 var recipe = ThaumcraftHelpers.findArcaneRecipeIgnoringResearch(inventoryCrafting, player);
                 if (recipe != null) {
@@ -701,7 +700,7 @@ public class BackPackContainer extends ModularContainer
                 .filter(slot -> slot instanceof ModularSlot)
                 .map(slot -> (ModularSlot) slot)
                 .filter(slotFilter)
-                .collect(Collectors.toList());
+                .toList();
 
             for (ModularSlot toSlot : targets) {
                 if (fromStack.stackSize <= 0) break;
@@ -849,7 +848,6 @@ public class BackPackContainer extends ModularContainer
 
         // merge stack
         if (fromStack.stackSize > 0 && !fromSlot.isPhantom()
-            && toStack != null
             && ItemHandlerHelpers.canItemStacksStack(fromStack, toStack)) {
 
             int j = toStack.stackSize + fromStack.stackSize;

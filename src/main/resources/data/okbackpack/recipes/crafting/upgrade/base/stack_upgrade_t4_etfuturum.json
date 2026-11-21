@@ -16,13 +16,11 @@
       "ore": "blockNetherite"
     },
     "U": {
-      "item": "okbackpack:stack_upgrade",
-      "meta": 2
+      "item": "okbackpack:stack_upgrade_tier_3"
     }
   },
   "result": {
-    "item": "okbackpack:stack_upgrade",
-    "meta": 3,
+    "item": "okbackpack:stack_upgrade_tier_4",
     "count": 1
   }
 }

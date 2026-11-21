@@ -11,22 +11,19 @@ import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 
-import lombok.Getter;
-import lombok.Setter;
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
 
 public class CyclicVariantButtonWidget extends ButtonWidget<CyclicVariantButtonWidget> {
 
-    @Getter
     protected int index = 0;
 
     protected final List<Variant> variants;
 
-    private int iconOffset = 2;
+    private int iconOffset = 1;
     private int iconSize = 16;
 
-    private int buttonWidth = 20;
-    private int buttonHeight = 20;
+    private int buttonWidth = 18;
+    private int buttonHeight = 18;
 
     private boolean hasCustomTexture = false;
 
@@ -35,8 +32,6 @@ public class CyclicVariantButtonWidget extends ButtonWidget<CyclicVariantButtonW
 
     private final List<IntConsumer> mousePressedUpdaters = new ArrayList<>();
 
-    @Getter
-    @Setter
     private boolean inEffect = true;
 
     public CyclicVariantButtonWidget(List<Variant> variants, int index, int iconOffset, int iconSize,
@@ -81,11 +76,11 @@ public class CyclicVariantButtonWidget extends ButtonWidget<CyclicVariantButtonW
     }
 
     public CyclicVariantButtonWidget(List<Variant> variants, int index, IntConsumer mousePressedUpdater) {
-        this(variants, index, 2, 16, mousePressedUpdater);
+        this(variants, index, 1, 16, mousePressedUpdater);
     }
 
     public CyclicVariantButtonWidget(List<Variant> variants, IntConsumer mousePressedUpdater) {
-        this(variants, 0, 2, 16, mousePressedUpdater);
+        this(variants, 0, 1, 16, mousePressedUpdater);
     }
 
     public CyclicVariantButtonWidget addMousePressedUpdater(IntConsumer updater) {
@@ -99,6 +94,15 @@ public class CyclicVariantButtonWidget extends ButtonWidget<CyclicVariantButtonW
         this.index = Math.floorMod(index, variants.size());
         markTooltipDirty();
         return this;
+    }
+
+    public CyclicVariantButtonWidget setInEffect(boolean inEffect) {
+        this.inEffect = inEffect;
+        return this;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     @Override

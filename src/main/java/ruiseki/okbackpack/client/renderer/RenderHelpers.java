@@ -1,9 +1,7 @@
 package ruiseki.okbackpack.client.renderer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -62,18 +60,6 @@ public class RenderHelpers {
 
     public static void translateToBoots() {
         GL11.glTranslatef(0F, 0.1F, 0F);
-    }
-
-    public static TextureManager engine() {
-        return Minecraft.getMinecraft().renderEngine;
-    }
-
-    public static void bindTexture(String string) {
-        engine().bindTexture(new ResourceLocation(string));
-    }
-
-    public static void bindTexture(ResourceLocation tex) {
-        engine().bindTexture(tex);
     }
 
     public static void renderErrorOverlay(BackpackPanel panel, float partialTicks) {

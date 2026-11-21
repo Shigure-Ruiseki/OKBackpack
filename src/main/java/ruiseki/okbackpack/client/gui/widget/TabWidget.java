@@ -10,8 +10,6 @@ import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widget.SingleChildWidget;
 
-import lombok.Getter;
-import lombok.Setter;
 import ruiseki.okbackpack.client.gui.widget.upgrade.ExpandedTabWidget;
 
 public class TabWidget extends SingleChildWidget<TabWidget> implements Interactable {
@@ -23,17 +21,11 @@ public class TabWidget extends SingleChildWidget<TabWidget> implements Interacta
 
     public static final TabTexture TAB_TEXTURE = GuiTextures.TAB_RIGHT;
 
-    @Getter
     private final int tabIndex;
     private final ExpandDirection expandDirection;
 
-    @Setter
-    @Getter
     private boolean showExpanded = false;
-    @Getter
     private ExpandedTabWidget expandedWidget = null;
-    @Setter
-    @Getter
     private IDrawable tabIcon = null;
 
     public TabWidget(int tabIndex) {
@@ -65,6 +57,26 @@ public class TabWidget extends SingleChildWidget<TabWidget> implements Interacta
         }
     }
 
+    public int getTabIndex() {
+        return tabIndex;
+    }
+
+    public boolean isShowExpanded() {
+        return showExpanded;
+    }
+
+    public void setShowExpanded(boolean showExpanded) {
+        this.showExpanded = showExpanded;
+    }
+
+    public ExpandDirection getExpandDirection() {
+        return expandDirection;
+    }
+
+    public ExpandedTabWidget getExpandedWidget() {
+        return expandedWidget;
+    }
+
     public void setExpandedWidget(ExpandedTabWidget value) {
         this.expandedWidget = value;
 
@@ -74,6 +86,14 @@ public class TabWidget extends SingleChildWidget<TabWidget> implements Interacta
             }
             child(value.setEnabledIf(expandedTabWidget -> showExpanded));
         }
+    }
+
+    public IDrawable getTabIcon() {
+        return tabIcon;
+    }
+
+    public void setTabIcon(IDrawable tabIcon) {
+        this.tabIcon = tabIcon;
     }
 
     @Override
