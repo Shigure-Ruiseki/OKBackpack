@@ -17,7 +17,7 @@ public class DepositUpgradeTab extends ExpandedUpgradeTab<DepositUpgradeWrapper>
     public static class Basic extends DepositUpgradeTab {
 
         public Basic(int slotIndex, DepositUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
-            super(slotIndex, wrapper, stack, storagePanel, "gui.okstoragecore.upgrades.deposit");
+            super(slotIndex, wrapper, stack, storagePanel, "gui.okbackpack.upgrades.deposit");
         }
 
         @Override
@@ -34,7 +34,7 @@ public class DepositUpgradeTab extends ExpandedUpgradeTab<DepositUpgradeWrapper>
     public static class Advanced extends DepositUpgradeTab {
 
         public Advanced(int slotIndex, DepositUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
-            super(slotIndex, wrapper, stack, storagePanel, "gui.okstoragecore.upgrades.advanced_deposit");
+            super(slotIndex, wrapper, stack, storagePanel, "gui.okbackpack.upgrades.advanced_deposit");
         }
 
         @Override

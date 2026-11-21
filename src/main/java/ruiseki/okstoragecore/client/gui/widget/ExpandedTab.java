@@ -104,7 +104,8 @@ public abstract class ExpandedTab extends ParentWidget<ExpandedTab> {
     }
 
     protected Flow addHeaderRow() {
-        Flow row = Flow.row();
+        Flow row = Flow.row()
+            .leftRel(0f);
         switch (this.getExpandDirection()) {
             case LEFT:
                 row.coverChildren()

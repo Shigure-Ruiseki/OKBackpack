@@ -31,7 +31,14 @@ public class InceptionUpgradeTab extends ExpandedUpgradeTab<InceptionUpgradeWrap
 
     @Override
     protected Flow addUpgradeColumn() {
-        return super.addUpgradeColumn().child(addInventoryOrderButton());
+        return super.addUpgradeColumn().child(this.addButtonRow());
+    }
+
+    protected Flow addButtonRow() {
+        return Flow.row()
+            .leftRel(0f)
+            .coverChildren()
+            .child(this.addInventoryOrderButton());
     }
 
     protected CyclicVariantButtonWidget addInventoryOrderButton() {

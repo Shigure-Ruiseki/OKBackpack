@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
-import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import ruiseki.okbackpack.client.gui.OKBGuiTextures;
@@ -84,8 +83,8 @@ public class FilterUpgradeTab extends ExpandedUpgradeTab<FilterUpgradeWrapper> {
 
         protected Flow addButtonRow() {
             return Flow.row()
+                .leftRel(0f)
                 .coverChildren()
-                .crossAxisAlignment(Alignment.CrossAxis.START)
                 .child(this.addDirectionButton());
         }
     }

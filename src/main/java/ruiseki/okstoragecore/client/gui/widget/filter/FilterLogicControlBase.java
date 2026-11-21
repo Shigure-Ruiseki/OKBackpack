@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.value.ISyncOrValue;
-import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
@@ -91,8 +90,8 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
 
     protected Flow addButtonRow() {
         Flow buttonRow = Flow.row()
+            .leftRel(0f)
             .coverChildren()
-            .crossAxisAlignment(Alignment.CrossAxis.START)
             .name("filter_button_row_" + this.syncKey + "_" + this.slotIndex);
         if (this.shouldShow(MatchButton.ALLOW_LIST)) {
             buttonRow.child(this.addAllowListButton());
@@ -185,8 +184,8 @@ public class FilterLogicControlBase extends ParentWidget<FilterLogicControlBase>
     }
 
     protected Flow addItemConfigGroup() {
-        final int columns = 4;
-        final int rows = (this.slotCount + columns - 1) / columns;
+        final int columns = Math.clamp(slotCount, 1, 4);
+        final int rows = Math.max(1, (slotCount + columns - 1) / columns);
         StorageSlotGrid<ItemSlot> slotGrid = StorageSlotGrid.<ItemSlot>builder()
             .matrix(columns, rows, 'F')
             .maxSlots(this.slotCount)

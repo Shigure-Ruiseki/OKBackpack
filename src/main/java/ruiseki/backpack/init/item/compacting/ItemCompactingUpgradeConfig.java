@@ -26,7 +26,7 @@ public class ItemCompactingUpgradeConfig extends ItemConfig {
             null,
             config -> new ItemCompactingUpgrade(
                 () -> basicShouldCompactThreeByThree,
-                () -> 16,
+                () -> 9,
                 GeneralConfig.maxUpgradesPerStorageConfig).tooltipBuilder(
                     builder -> builder.add(LangHelpers.localize("item.items.okbackpack.compacting_upgrade.tooltip"))
                         .add(LangHelpers.localize("item.items.okbackpack.compacting_upgrade.tooltip.1"))));

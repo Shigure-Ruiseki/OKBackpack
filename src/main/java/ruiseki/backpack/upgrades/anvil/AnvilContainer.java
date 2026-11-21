@@ -269,7 +269,7 @@ public class AnvilContainer extends UpgradeContainer {
             }
         }
 
-        if (!costText.equals(this.requiredField.getStringValue())) {
+        if (this.requiredField != null && !costText.equals(this.requiredField.getStringValue())) {
             this.requiredField.setValue(costText);
         }
     }

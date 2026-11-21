@@ -100,6 +100,7 @@ public class MagnetUpgradeTab extends ExpandedUpgradeTab<MagnetUpgradeWrapper> {
 
         protected Flow addButtonRow() {
             return Flow.row()
+                .leftRel(0f)
                 .coverChildren()
                 .child(this.addPickupItemsButton())
                 .child(this.addPickupXpButton());

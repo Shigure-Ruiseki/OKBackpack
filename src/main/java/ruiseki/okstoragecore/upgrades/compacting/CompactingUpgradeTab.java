@@ -81,6 +81,7 @@ public class CompactingUpgradeTab extends ExpandedUpgradeTab<CompactingUpgradeWr
 
         protected Flow addButtonRow() {
             return Flow.row()
+                .leftRel(0f)
                 .coverChildren()
                 .child(this.addCompactButton());
         }

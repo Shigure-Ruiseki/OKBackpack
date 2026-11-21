@@ -52,7 +52,7 @@ public class ItemAnvilUpgrade extends ItemUpgradeBase<AnvilUpgradeWrapper> {
                 wrapper.setItemName(s);
                 container.updateRepairOutput();
             });
-            handler.syncToServer(BackpackSHRegistries.ANVIL_NAME);
+            nameField.syncToServer(BackpackSHRegistries.ANVIL_NAME);
         }
 
         @Override

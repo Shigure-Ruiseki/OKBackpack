@@ -86,6 +86,7 @@ public class PumpUpgradeTab extends ExpandedUpgradeTab<PumpUpgradeWrapper> {
 
         protected Flow addButtonRow() {
             return Flow.row()
+                .leftRel(0f)
                 .coverChildren()
                 .child(this.addInputButton());
         }
@@ -106,6 +107,7 @@ public class PumpUpgradeTab extends ExpandedUpgradeTab<PumpUpgradeWrapper> {
 
         protected Flow addButtonRow() {
             return Flow.row()
+                .leftRel(0f)
                 .coverChildren()
                 .child(this.addInputButton())
                 .child(this.addHandButton())

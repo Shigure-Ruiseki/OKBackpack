@@ -10,7 +10,6 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import ruiseki.backpack.client.gui.sync.OBUpgradeSlotSHRegistries;
 import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
-import ruiseki.okstoragecore.client.gui.widget.filter.ContentsFilterControl;
 import ruiseki.okstoragecore.client.gui.widget.filter.FilterLogicControl;
 import ruiseki.okstoragecore.upgrades.FilterLogic;
 import ruiseki.okstoragecore.upgrades.PrimaryMatch;
@@ -73,14 +72,14 @@ public class DepositFilterLogicControl extends FilterLogicControl {
         return (DepositFilterLogic) this.getFilterLogic();
     }
 
-    public static class Basic extends ContentsFilterControl {
+    public static class Basic extends DepositFilterLogicControl {
 
         public Basic(int slotIndex, FilterLogic filterLogic, String syncKey) {
             super(slotIndex, filterLogic, syncKey, 9);
         }
     }
 
-    public static class Advanced extends ContentsFilterControl {
+    public static class Advanced extends DepositFilterLogicControl {
 
         public Advanced(int slotIndex, FilterLogic filterLogic, String syncKey) {
             super(

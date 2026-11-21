@@ -62,6 +62,7 @@ public class FluidFilterLogicControlBase extends ParentWidget<FluidFilterLogicCo
 
     protected Flow addButtonRow() {
         Flow buttonRow = Flow.row()
+            .leftRel(0f)
             .coverChildren()
             .crossAxisAlignment(Alignment.CrossAxis.START);
         if (this.shouldShow(MatchButton.ALLOW_LIST)) {

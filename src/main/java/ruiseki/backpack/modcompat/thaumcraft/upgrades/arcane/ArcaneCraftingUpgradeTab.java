@@ -95,6 +95,7 @@ public class ArcaneCraftingUpgradeTab extends ExpandedUpgradeTab<ArcaneCraftingU
 
     protected Flow addButtonRow() {
         return Flow.row()
+            .leftRel(0f)
             .coverChildren()
             .child(this.addShiftClickIntoButton())
             .child(this.addFillCraftingButton());
@@ -196,7 +197,7 @@ public class ArcaneCraftingUpgradeTab extends ExpandedUpgradeTab<ArcaneCraftingU
     }
 
     protected ButtonWidget<?> addRotatedButton() {
-        return new ShiftButtonWidget().size(16)
+        return new ShiftButtonWidget().size(18)
             .setNotShift(OSCTextures.ROTATED_RIGHT)
             .setShift(OSCTextures.ROTATED_LEFT)
             .onMousePressed(button -> {
@@ -210,7 +211,7 @@ public class ArcaneCraftingUpgradeTab extends ExpandedUpgradeTab<ArcaneCraftingU
     }
 
     protected ButtonWidget<?> addGridButton() {
-        return new ShiftButtonWidget().size(16)
+        return new ShiftButtonWidget().size(18)
             .setNotShift(OSCTextures.BALANCE)
             .setShift(OSCTextures.SPREAD)
             .onMousePressed(button -> {
@@ -225,7 +226,7 @@ public class ArcaneCraftingUpgradeTab extends ExpandedUpgradeTab<ArcaneCraftingU
     }
 
     protected ButtonWidget<?> addClearButton() {
-        return new ButtonWidget<>().size(16)
+        return new ButtonWidget<>().size(18)
             .overlay(OSCTextures.CLEAR)
             .onMousePressed(button -> {
                 if (button != 0) return false;

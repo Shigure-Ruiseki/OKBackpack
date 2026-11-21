@@ -18,7 +18,7 @@ public class RestockUpgradeTab extends ExpandedUpgradeTab<RestockUpgradeWrapper>
     public static class Basic extends RestockUpgradeTab {
 
         public Basic(int slotIndex, RestockUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
-            super(slotIndex, wrapper, stack, storagePanel, "gui.okstoragecore.upgrades.restock");
+            super(slotIndex, wrapper, stack, storagePanel, "gui.okbackpack.upgrades.restock");
         }
 
         @Override
@@ -35,7 +35,7 @@ public class RestockUpgradeTab extends ExpandedUpgradeTab<RestockUpgradeWrapper>
     public static class Advanced extends RestockUpgradeTab {
 
         public Advanced(int slotIndex, RestockUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel) {
-            super(slotIndex, wrapper, stack, storagePanel, "gui.okstoragecore.upgrades.advanced_restock");
+            super(slotIndex, wrapper, stack, storagePanel, "gui.okbackpack.upgrades.advanced_restock");
         }
 
         @Override

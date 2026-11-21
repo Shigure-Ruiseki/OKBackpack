@@ -88,7 +88,7 @@ public class XpPumpUpgradeTab extends ExpandedUpgradeTab<XpPumpUpgradeWrapper> {
 
     protected XpControlWidget addXpControlWidget() {
         return new XpControlWidget(this).background(BACKGROUND_TILE_TEXTURE)
-            .size(60, 20);
+            .size(54, 18);
     }
 
     protected Flow addMendingRow() {

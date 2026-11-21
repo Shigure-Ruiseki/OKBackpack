@@ -84,9 +84,8 @@ public class RefillUpgradeTab extends ExpandedUpgradeTab<RefillUpgradeWrapper> {
         }
 
         protected Flow addFilterGroup() {
-            final int columns = 4;
-            final int slotCount = this.getSlotCount();
-            final int rows = (slotCount + columns - 1) / columns;
+            final int columns = Math.clamp(slotCount, 1, 4);
+            final int rows = Math.max(1, (slotCount + columns - 1) / columns);
 
             StorageSlotGrid<ItemSlot> slotGrid = StorageSlotGrid.<ItemSlot>builder()
                 .matrix(columns, rows, 'F')

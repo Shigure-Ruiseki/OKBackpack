@@ -34,6 +34,11 @@ public class EnergizedNodeUpgradeWrapper
     }
 
     @Override
+    public boolean hideSettingsTab() {
+        return true;
+    }
+
+    @Override
     public void tick(@Nullable EntityLivingBase entity, World world, BlockPos pos) {
         if (!hasAspect(upgrade)) return;
         AspectBudget budget = ThaumcraftChargeHelper.createBudget(getStoredAspectRates(upgrade));
