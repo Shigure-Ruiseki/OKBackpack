@@ -9,11 +9,10 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import cpw.mods.fml.common.Optional;
-import ruiseki.okbackpack.client.gui.OKBGuiTextures;
-import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
-import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
+import ruiseki.okstoragecore.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.StorageSettingPanel;
 import ruiseki.okstoragecore.client.gui.widget.Tab;
@@ -24,15 +23,15 @@ public class MemorySettingTab extends SettingTab {
     private static final List<CyclicVariantButtonWidget.Variant> RESPECT_NBT_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.upgrades.buttons.ignore_nbt"),
-            OKBGuiTextures.IGNORE_NBT_ICON),
+            OSCTextures.IGNORE_NBT),
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.upgrades.buttons.match_nbt"),
-            OKBGuiTextures.MATCH_NBT_ICON));
+            OSCTextures.MATCH_NBT));
 
     public MemorySettingTab(IStorageWrapper storageWrapper, StoragePanel storagePanel, StorageSettingPanel settingPanel,
         Tab parentTab) {
         super(
-            OKBGuiTextures.BRAIN_ICON,
+            OSCTextures.BRAIN,
             "gui.okstoragecore.settings.memory",
             Tab.ExpandDirection.RIGHT,
             storageWrapper,
@@ -61,7 +60,7 @@ public class MemorySettingTab extends SettingTab {
     }
 
     protected ButtonWidget<?> addSelectAllButton() {
-        return new ButtonWidget<>().overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
+        return new ButtonWidget<>().overlay(OSCTextures.ALL_FOUR_SLOT)
             .onMousePressed(button -> {
                 if (button == 0) {
                     MemorySettingsCategory settings = this.getMemorySettings();
@@ -84,7 +83,7 @@ public class MemorySettingTab extends SettingTab {
     }
 
     protected ButtonWidget<?> addUnselectAllButton() {
-        return new ButtonWidget<>().overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
+        return new ButtonWidget<>().overlay(OSCTextures.NONE_FOUR_SLOT)
             .onMousePressed(button -> {
                 if (button == 0) {
                     MemorySettingsCategory settings = this.getMemorySettings();
@@ -123,6 +122,6 @@ public class MemorySettingTab extends SettingTab {
 
     @Optional.Method(modid = "bogosorter")
     private static void refreshBogoSortingContext() {
-        BackpackBogoSorterClientCompat.invalidateSortingContext();
+        // BackpackBogoSorterClientCompat.invalidateSortingContext();
     }
 }

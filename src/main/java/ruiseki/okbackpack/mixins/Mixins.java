@@ -6,7 +6,7 @@ import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ruiseki.okbackpack.GeneralConfig;
-import ruiseki.okbackpack.compat.Mods;
+import ruiseki.okcore.mixins.TargetMods;
 
 @RequiredArgsConstructor
 public enum Mixins implements IMixins {
@@ -15,13 +15,13 @@ public enum Mixins implements IMixins {
         .addCommonMixins("thaumcraft.MixinTileMagicWorkbench", "thaumcraft.MixinTileMagicWorkbenchCharger")
         .setPhase(Phase.LATE)
         .setApplyIf(() -> GeneralConfig.enableArcaneCraftingUpgrade)
-        .addRequiredMod(Mods.Thaumcraft)),
+        .addRequiredMod(TargetMods.Thaumcraft)),
 
     TINKERS_BOGO_SORTER(new MixinBuilder("TConstruct Bogo Sorter compatibility")
         .addCommonMixins("bogosorter.MixinSortHandler", "bogosorter.MixinBogoSortAPI")
         .setPhase(Phase.LATE)
-        .addRequiredMod(Mods.TConstruct)
-        .addRequiredMod(Mods.InventoryBogoSorter)),
+        .addRequiredMod(TargetMods.TConstruct)
+        .addRequiredMod(TargetMods.BogoSorter)),
 
     LOGISTICS_PIPES(new MixinBuilder("Logistics Pipes extended backpack capacity compatibility")
         .addCommonMixins(
@@ -30,22 +30,11 @@ public enum Mixins implements IMixins {
             "logisticspipes.MixinInventoryIteratorSimple",
             "logisticspipes.MixinInventoryIteratorSided")
         .setPhase(Phase.LATE)
-        .addRequiredMod(Mods.LogisticsPipes)),
+        .addRequiredMod(TargetMods.LogisticsPipes)),
 
-    GUI_BACKPACK_OPENER(new MixinBuilder("Backpack GUI opener")
-        .addSidedMixins(
-            Side.CLIENT,
-            "minecraft.MixinGuiContainerBackpackOpener",
-            "modularui2.MixinItemSlotBackpackOpener")
-        .setPhase(Phase.EARLY)),
-
-    INVENTORY_INTERACTION(new MixinBuilder("Backpack inventory interaction")
-        .addSidedMixins(
-            Side.CLIENT,
-            "modularui2.MixinItemSlotBackpackInteraction",
-            "minecraft.MixinGuiContainerBackpackInteraction")
-        .setApplyIf(() -> GeneralConfig.enableBackpackInventoryInteraction)
-        .setPhase(Phase.EARLY)),
+    GUI_BACKPACK_OPENER(
+        new MixinBuilder("Backpack GUI opener").addSidedMixins(Side.CLIENT, "modularui2.MixinItemSlotBackpackOpener")
+            .setPhase(Phase.EARLY)),
 
     MUI2(new MixinBuilder("Mui2 Mixin").addClientMixins("modularui2.ItemSlotInvoker")
         .setPhase(Phase.EARLY)),

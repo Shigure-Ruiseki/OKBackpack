@@ -7,9 +7,9 @@ import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
-import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
+import ruiseki.okstoragecore.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.upgrades.ContentsFilterLogic;
 import ruiseki.okstoragecore.upgrades.ContentsFilterType;
 import ruiseki.okstoragecore.upgrades.FilterLogic;

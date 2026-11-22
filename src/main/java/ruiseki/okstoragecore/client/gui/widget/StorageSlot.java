@@ -29,13 +29,11 @@ import com.cleanroommc.modularui.utils.GlStateManager;
 import com.cleanroommc.modularui.utils.NumberFormat;
 import com.cleanroommc.modularui.utils.Platform;
 
-import ruiseki.okbackpack.client.gui.slot.ResizableItemSlot;
-import ruiseki.okbackpack.client.gui.slot.UpgradeSlot;
-import ruiseki.okbackpack.compat.Mods;
-import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
+import ruiseki.okcore.enums.Mods;
 import ruiseki.okcore.event.gui.SlotRenderEvent;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.slot.ResizableItemSlot;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
 import ruiseki.okstoragecore.client.gui.sync.StorageSlotSH;
 import ruiseki.okstoragecore.settings.memory.MemorySettingsCategory;
@@ -183,8 +181,8 @@ public class StorageSlot extends ResizableItemSlot {
                 this.getStoragePanel()
                     .getStorageSH()
                     .syncToServer(StorageSHRegisters.UNSET_MEMORY_SLOT, buffer -> buffer.writeInt(this.getSlotIndex()));
-                if (Mods.InventoryBogoSorter.isModLoaded()) {
-                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                if (Mods.BogoSorter.isModLoaded()) {
+                    // BackpackBogoSorterClientCompat.invalidateSortingContext();
                 }
                 return Result.SUCCESS;
             } else if (!isMemorySet && mouseButton == 0) {
@@ -193,8 +191,8 @@ public class StorageSlot extends ResizableItemSlot {
                 this.getStoragePanel()
                     .getStorageSH()
                     .syncToServer(StorageSHRegisters.SET_MEMORY_SLOT, buffer -> buffer.writeInt(this.getSlotIndex()));
-                if (Mods.InventoryBogoSorter.isModLoaded()) {
-                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                if (Mods.BogoSorter.isModLoaded()) {
+                    // BackpackBogoSorterClientCompat.invalidateSortingContext();
                 }
                 return Result.SUCCESS;
             }
@@ -211,8 +209,8 @@ public class StorageSlot extends ResizableItemSlot {
                     .syncToServer(
                         StorageSHRegisters.UNSET_NO_SORT_SLOT,
                         buffer -> buffer.writeInt(this.getSlotIndex()));
-                if (Mods.InventoryBogoSorter.isModLoaded()) {
-                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                if (Mods.BogoSorter.isModLoaded()) {
+                    // BackpackBogoSorterClientCompat.invalidateSortingContext();
                 }
                 return Result.SUCCESS;
             } else if (!noSorting && mouseButton == 0) {
@@ -221,8 +219,8 @@ public class StorageSlot extends ResizableItemSlot {
                 this.getStoragePanel()
                     .getStorageSH()
                     .syncToServer(StorageSHRegisters.SET_NO_SORT_SLOT, buffer -> buffer.writeInt(this.getSlotIndex()));
-                if (Mods.InventoryBogoSorter.isModLoaded()) {
-                    BackpackBogoSorterClientCompat.invalidateSortingContext();
+                if (Mods.BogoSorter.isModLoaded()) {
+                    // BackpackBogoSorterClientCompat.invalidateSortingContext();
                 }
                 return Result.SUCCESS;
             }

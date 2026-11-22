@@ -2,10 +2,10 @@ package ruiseki.okstoragecore.client.gui.widget.filter;
 
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
-import ruiseki.okbackpack.client.gui.slot.ModularFilterSlot;
-import ruiseki.okbackpack.client.gui.syncHandler.FilterSlotSH;
 import ruiseki.okcore.item.handler.ItemStackHandler;
+import ruiseki.okstoragecore.client.gui.slot.ModularFilterSlot;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedFilterLogicSH;
+import ruiseki.okstoragecore.client.gui.sync.FilterSlotSH;
 import ruiseki.okstoragecore.client.gui.widget.update.IUpgradeSlotUpdateFactory;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;
 

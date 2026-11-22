@@ -20,11 +20,10 @@ import com.cleanroommc.modularui.widgets.ColorPickerDialog;
 import com.cleanroommc.modularui.widgets.ToggleButton;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
-import ruiseki.okbackpack.client.gui.OKBGuiTextures;
-import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
+import ruiseki.okstoragecore.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.StorageSettingPanel;
 import ruiseki.okstoragecore.client.gui.widget.Tab;
@@ -44,18 +43,18 @@ public class StorageMainSettingTab extends SettingTab {
     protected static final List<CyclicVariantButtonWidget.Variant> KEEP_TAB_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.settings.buttons.keep_tab_open.on"),
-            OKBGuiTextures.KEEP_TAB_ICON),
+            OSCTextures.KEEP_TAB),
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.settings.buttons.keep_tab_open.off"),
-            OKBGuiTextures.NOT_KEEP_TAB_ICON));
+            OSCTextures.NOT_KEEP_TAB));
 
     protected static final List<CyclicVariantButtonWidget.Variant> KEEP_SEARCH_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.settings.buttons.keep_search_phrase.on"),
-            OKBGuiTextures.LOCK_SEARCH_ICON),
+            OSCTextures.LOCK_SEARCH),
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.settings.buttons.keep_search_phrase.off"),
-            OKBGuiTextures.UNLOCK_SEARCH_ICON));
+            OSCTextures.UNLOCK_SEARCH));
 
     protected boolean usingPlayerSettings;
 

@@ -12,8 +12,8 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import ruiseki.okbackpack.compat.Mods;
-import ruiseki.okbackpack.compat.tic.TinkersHelpers;
+import ruiseki.okbackpack.modcompat.tic.TinkersHelpers;
+import ruiseki.okcore.enums.Mods;
 import ruiseki.okcore.helper.ItemHandlerHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.item.handler.IItemHandlerModifiable;

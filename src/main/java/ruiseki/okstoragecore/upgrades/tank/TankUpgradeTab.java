@@ -6,8 +6,8 @@ import net.minecraft.item.ItemStack;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
-import ruiseki.okbackpack.client.gui.slot.CustomBackgroundSlot;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
+import ruiseki.okstoragecore.client.gui.slot.CustomBackgroundSlot;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
 

@@ -18,28 +18,21 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import ruiseki.backpack.backpack.BackpackStorage;
-import ruiseki.backpack.client.gui.sync.BackpackSHRegistries;
-import ruiseki.backpack.client.gui.sync.OBUpgradeSlotSHRegistries;
-import ruiseki.backpack.init.block.BlockLeatherBackpackConfig;
-import ruiseki.backpack.modcompat.efr.EFRModCompat;
-import ruiseki.backpack.modcompat.jfmuy.JFMUYModCompat;
-import ruiseki.backpack.modcompat.nei.NEIModCompat;
-import ruiseki.backpack.modcompat.thaumcraft.ThaumcraftModCompat;
-import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
-import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
-import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
-import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
-import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedValueSHRegisters;
-import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotGroupRegisters;
+import ruiseki.okbackpack.backpack.BackpackStorage;
+import ruiseki.okbackpack.client.gui.sync.BackpackSHRegistries;
+import ruiseki.okbackpack.client.gui.sync.OBUpgradeSlotSHRegistries;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
-import ruiseki.okbackpack.common.init.ModOreDicts;
-import ruiseki.okbackpack.common.init.TierRegistries;
-import ruiseki.okbackpack.common.recipe.ModRecipes;
-import ruiseki.okbackpack.compat.bauble.BaubleCompat;
-import ruiseki.okbackpack.compat.findit.FindItCompat;
-import ruiseki.okbackpack.compat.structurelib.StructureLibCompat;
-import ruiseki.okbackpack.compat.tic.TConstructTabCompat;
+import ruiseki.okbackpack.init.ModOreDicts;
+import ruiseki.okbackpack.init.ModRecipes;
+import ruiseki.okbackpack.init.TierRegistries;
+import ruiseki.okbackpack.init.block.BlockLeatherBackpackConfig;
+import ruiseki.okbackpack.modcompat.bauble.BaubleModCompat;
+import ruiseki.okbackpack.modcompat.efr.EFRModCompat;
+import ruiseki.okbackpack.modcompat.jfmuy.JFMUYModCompat;
+import ruiseki.okbackpack.modcompat.nei.NEIModCompat;
+import ruiseki.okbackpack.modcompat.structurelib.StructureLibModCompat;
+import ruiseki.okbackpack.modcompat.thaumcraft.ThaumcraftModCompat;
+import ruiseki.okbackpack.modcompat.tic.TConstructTabCompat;
 import ruiseki.okcore.config.ConfigHandler;
 import ruiseki.okcore.config.extendedconfig.BlockItemConfigReference;
 import ruiseki.okcore.data.condition.ConfigCondition;
@@ -73,16 +66,8 @@ public class OKBackpack extends ModBaseVersionable {
             new ResourceLocation(Reference.MOD_ID, "enableTravelersUpgrades"),
             GeneralConfig.enableTravelersUpgrades);
 
-        addInitListeners(new BaubleCompat());
-        addInitListeners(new StructureLibCompat());
         addInitListeners(new ModRecipes());
         addInitListeners(new ModOreDicts());
-        addInitListeners(new UpgradeSlotGroupRegisters());
-        addInitListeners(new UpgradeSlotSHRegisters());
-        addInitListeners(new BackpackSlotSHRegisters());
-        addInitListeners(new BackpackSHRegisters());
-        addInitListeners(new DelegatedStackHandlerSHRegisters());
-        addInitListeners(new DelegatedValueSHRegisters());
         addInitListeners(new TierRegistries());
     }
 
@@ -107,6 +92,8 @@ public class OKBackpack extends ModBaseVersionable {
         modCompatLoader.addModCompat(new NEIModCompat());
         modCompatLoader.addModCompat(new JFMUYModCompat());
         modCompatLoader.addModCompat(new EFRModCompat());
+        modCompatLoader.addModCompat(new StructureLibModCompat());
+        modCompatLoader.addModCompat(new BaubleModCompat());
     }
 
     @Override
@@ -122,7 +109,6 @@ public class OKBackpack extends ModBaseVersionable {
         if (MinecraftHelpers.isClientSide()) {
             TConstructTabCompat.registerClientTabs();
         }
-        FindItCompat.registerProvider();
     }
 
     @Override

@@ -37,11 +37,7 @@ import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 
 import ruiseki.okbackpack.Reference;
-import ruiseki.okbackpack.client.gui.OKBGuiTextures;
-import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
-import ruiseki.okbackpack.client.gui.widget.ShiftButtonWidget;
-import ruiseki.okbackpack.client.gui.widget.TileWidget;
-import ruiseki.okbackpack.common.block.BackpackSettingPanel;
+import ruiseki.okbackpack.client.gui.widget.BackpackSettingPanel;
 import ruiseki.okcore.helper.CapabilityHelpers;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.LangHelpers;
@@ -52,6 +48,7 @@ import ruiseki.okcore.inventory.search.SearchParser;
 import ruiseki.okcore.item.capability.wrapper.PlayerMainInvWrapper;
 import ruiseki.okstoragecore.api.IStorageWrapper;
 import ruiseki.okstoragecore.capabilities.CapabilityStorageWrapperConfig;
+import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.container.StorageContainer;
 import ruiseki.okstoragecore.client.gui.container.StorageGuiContainer;
 import ruiseki.okstoragecore.client.gui.slot.ModularStorageSlot;
@@ -83,17 +80,11 @@ public class StoragePanel extends ModularPanel {
     protected static final List<CyclicVariantButtonWidget.Variant> SORT_TYPE_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
             IKey.lang(LangHelpers.localize("gui.okstoragecore.sort_by_name")),
-            OKBGuiTextures.SMALL_A_ICON),
-        new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.okstoragecore.sort_by_mod_id"),
-            OKBGuiTextures.SMALL_M_ICON),
-        new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.okstoragecore.sort_by_count"),
-            OKBGuiTextures.SMALL_1_ICON),
-        new CyclicVariantButtonWidget.Variant(
-            IKey.lang("gui.okstoragecore.sort_by_ore_dict"),
-            OKBGuiTextures.SMALL_T_ICON),
-        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.okstoragecore.sort_by_tag"), OKBGuiTextures.SMALL_T_ICON));
+            OSCTextures.SMALL_A),
+        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.okstoragecore.sort_by_mod_id"), OSCTextures.SMALL_M),
+        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.okstoragecore.sort_by_count"), OSCTextures.SMALL_1),
+        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.okstoragecore.sort_by_ore_dict"), OSCTextures.SMALL_T),
+        new CyclicVariantButtonWidget.Variant(IKey.lang("gui.okstoragecore.sort_by_tag"), OSCTextures.SMALL_T));
 
     protected final EntityPlayer player;
     protected final PanelSyncManager syncManager;
@@ -260,7 +251,7 @@ public class StoragePanel extends ModularPanel {
             .leftRel(0f)
             // Search
             .child(
-                new TextFieldWidget().background(OKBGuiTextures.VANILLA_SEARCH_BACKGROUND)
+                new TextFieldWidget().background(OSCTextures.VANILLA_SEARCH_BACKGROUND)
                     .autoUpdateOnChange(true)
                     .leftRel(0f)
                     .value(this.searchValue)
@@ -278,7 +269,7 @@ public class StoragePanel extends ModularPanel {
                     .rightRel(0f)
                     // Sort
                     .child(
-                        new ButtonWidget<>().overlay(OKBGuiTextures.SOLID_DOWN_ARROW_ICON)
+                        new ButtonWidget<>().overlay(OSCTextures.SOLID_DOWN_ARROW)
                             .onMousePressed(button -> {
                                 if (button == 0) {
                                     Interactable.playButtonClickSound();
@@ -311,8 +302,8 @@ public class StoragePanel extends ModularPanel {
                             }).size(12))
                     // Upgrade Index
                     .child(
-                        new ShiftButtonWidget().setNotShift(OKBGuiTextures.DOT_UP_ARROW_ICON)
-                            .setShift(OKBGuiTextures.DOT_DOWN_ARROW_ICON)
+                        new ShiftButtonWidget().setNotShift(OSCTextures.DOT_UP_ARROW)
+                            .setShift(OSCTextures.DOT_DOWN_ARROW)
                             .onMousePressed(button -> {
                                 if (button == 0) {
                                     int tabCount = this.tabCount;
@@ -419,8 +410,8 @@ public class StoragePanel extends ModularPanel {
 
         // Player -> Storage
         transferRow.child(
-            new ShiftButtonWidget().setNotShift(OKBGuiTextures.DOT_UP_ARROW_ICON)
-                .setShift(OKBGuiTextures.SOLID_UP_ARROW_ICON)
+            new ShiftButtonWidget().setNotShift(OSCTextures.DOT_UP_ARROW)
+                .setShift(OSCTextures.SOLID_UP_ARROW)
                 .size(12)
                 .onMousePressed(mouseButton -> {
                     if (mouseButton == 0) {
@@ -450,8 +441,8 @@ public class StoragePanel extends ModularPanel {
 
         // Storage -> Player
         transferRow.child(
-            new ShiftButtonWidget().setNotShift(OKBGuiTextures.DOT_DOWN_ARROW_ICON)
-                .setShift(OKBGuiTextures.SOLID_DOWN_ARROW_ICON)
+            new ShiftButtonWidget().setNotShift(OSCTextures.DOT_DOWN_ARROW)
+                .setShift(OSCTextures.SOLID_DOWN_ARROW)
                 .size(12)
                 .onMousePressed(mouseButton -> {
                     if (mouseButton == 0) {

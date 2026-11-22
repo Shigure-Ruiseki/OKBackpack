@@ -6,7 +6,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ruiseki.okbackpack.client.renderer.RenderHelpers.RenderType;
+import ruiseki.okstoragecore.helper.RenderHelpers.RenderType;
 
 public interface IPlayerItemRender {
 

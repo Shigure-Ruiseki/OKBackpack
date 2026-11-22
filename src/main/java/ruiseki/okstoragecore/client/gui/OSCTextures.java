@@ -20,8 +20,31 @@ public class OSCTextures {
         "minecraft",
         "textures/gui/container/furnace.png");
 
+    public static final UITexture VANILLA_SEARCH_BACKGROUND = UITexture.builder()
+        .location(ruiseki.okbackpack.Reference.MOD_ID, "gui/vanilla_search")
+        .imageSize(18, 18)
+        .adaptable(1)
+        .name("vanilla_search")
+        .build();
+
+    public static final UITexture SLEEPING_BAG = UITexture.builder()
+        .location(ruiseki.okbackpack.Reference.MOD_ID, "textures/items/sleepingBag.png")
+        .imageSize(16, 16)
+        .xy(0, 0, 16, 16)
+        .build();
+
     public static final UITexture SHIFT_CLICK_INVENTORY = icon("shift_click_inv", 64, 96);
     public static final UITexture SHIFT_CLICK_OPEN_TAB = icon("shift_click_tab", 80, 32);
+
+    public static final UITexture SOLID_UP_ARROW = icon("solid_up_arrow", 0, 144, 12, 12);
+    public static final UITexture SOLID_DOWN_ARROW = icon("solid_down_arrow", 12, 156, 12, 12);
+    public static final UITexture DOT_DOWN_ARROW = icon("dot_down_arrow", 24, 156, 12, 12);
+    public static final UITexture DOT_UP_ARROW = icon("dot_up_arrow", 36, 156, 12, 12);
+
+    public static final UITexture SMALL_M = icon("small_m", 0, 156, 12, 12);
+    public static final UITexture SMALL_T = icon("small_a", 12, 144, 12, 12);
+    public static final UITexture SMALL_A = icon("small_a", 24, 144, 12, 12);
+    public static final UITexture SMALL_1 = icon("small_1", 36, 144, 12, 12);
 
     public static final UITexture CHECK = icon("check", 0, 0);
     public static final UITexture CROSS = icon("cross", 16, 0);
@@ -98,6 +121,10 @@ public class OSCTextures {
     public static final UITexture ONLY_TOOL_SWAP_TOOL = icon("only_tool_swap_tool", 80, 64);
     public static final UITexture NO_SWAP_TOOL = icon("no_swap_tool", 96, 64);
 
+    public static final IDrawable IN_OUT = icon("in_out", 0, 32);
+    public static final IDrawable IN = icon("in", 16, 32);
+    public static final IDrawable OUT = icon("out", 32, 32);
+
     public static final UITexture MAIN_FIRST = icon("main_first", 48, 32);
     public static final UITexture INCEPTION_FIRST = icon("inception_first", 64, 32);
 
@@ -110,15 +137,25 @@ public class OSCTextures {
 
     public static final UITexture ADD = icon("add", 96, 32);
     public static final UITexture REMOVE = icon("remove", 112, 32);
+    public static final IDrawable BRAIN = icon("brain", 128, 32);
 
     public static final UITexture MATCH_NBT = icon("match_nbt", 32, 0);
     public static final UITexture IGNORE_NBT = icon("ignore_nbt", 48, 0);
 
     public static final UITexture ONE_IN_FOUR_SLOT = icon("one_in_four_slot", 0, 80);
     public static final UITexture ALL_FOUR_SLOT = icon("all_in_four_slot", 16, 80);
+    public static final IDrawable NO_SORT = icon("no_sort", 32, 80);
+    public static final IDrawable NONE_FOUR_SLOT = icon("none_in_four_slot", 48, 80);
 
     public static final UITexture TOGGLE_DISABLE = icon("disable", 0, 128, 4, 10);
     public static final UITexture TOGGLE_ENABLE = icon("enable", 4, 128, 4, 10);
+
+    public static final IDrawable UNLOCK_BACKPACK = icon("unlock_backpack", 176, 32);
+    public static final IDrawable LOCK_BACKPACK = icon("lock_backpack", 192, 32);
+    public static final IDrawable UNLOCK_SEARCH = icon("unlock_search", 224, 32);
+    public static final IDrawable LOCK_SEARCH = icon("lock_search", 208, 32);
+    public static final IDrawable KEEP_TAB = icon("keep_tab", 80, 80);
+    public static final IDrawable NOT_KEEP_TAB = icon("not_keep_tab", 80, 96);
 
     // Battery upgrade GUI textures
     public static final UITexture BATTERY_BAR_BACKGROUND = UITexture.builder()
@@ -277,6 +314,23 @@ public class OSCTextures {
         .name("furnace_arrow_fg")
         .build();
 
+    public static final UITexture SLOT_DISABLED = UITexture.builder()
+        .location(ruiseki.okbackpack.Reference.MOD_ID, "gui/slot_disabled.png")
+        .imageSize(18, 18)
+        .xy(0, 0, 18, 18)
+        .build();
+
+    public static final UITexture STANDARD_BUTTON = UITexture.builder()
+        .location(ruiseki.okbackpack.Reference.MOD_ID, "gui/gui_controls.png")
+        .imageSize(256, 256)
+        .xy(29, 0, 18, 18)
+        .build();
+    public static final UITexture STANDARD_BUTTON_HOVERED = UITexture.builder()
+        .location(ruiseki.okbackpack.Reference.MOD_ID, "gui/gui_controls.png")
+        .imageSize(256, 256)
+        .xy(47, 0, 18, 18)
+        .build();
+
     public static UITexture icon(String name, int x, int y) {
         return icon(name, x, y, 16, 16, ICON_LOCATION);
     }
@@ -297,4 +351,6 @@ public class OSCTextures {
             .name(name)
             .build();
     }
+
+    public enum LOCK_BACKPACK {}
 }

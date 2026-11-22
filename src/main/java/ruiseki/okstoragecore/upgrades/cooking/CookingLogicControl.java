@@ -4,9 +4,8 @@ import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.ProgressWidget;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
-import ruiseki.okbackpack.client.gui.OKBGuiTextures;
-import ruiseki.okbackpack.client.gui.slot.ResizableItemSlot;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
+import ruiseki.okstoragecore.client.gui.slot.ResizableItemSlot;
 
 public class CookingLogicControl extends ParentWidget<CookingLogicControl> {
 
@@ -33,7 +32,7 @@ public class CookingLogicControl extends ParentWidget<CookingLogicControl> {
 
     protected ProgressWidget addFuelProgress() {
         return new ProgressWidget().size(14, 14)
-            .texture(OKBGuiTextures.FURNACE_FLAME_BACKGROUND, OKBGuiTextures.FURNACE_FLAME_FOREGROUND, 14)
+            .texture(OSCTextures.FURNACE_FLAME_BACKGROUND, OSCTextures.FURNACE_FLAME_FOREGROUND, 14)
             .direction(ProgressWidget.Direction.UP)
             .syncHandler("cooking_burn_progress_" + slotIndex)
             .pos(2, 20)

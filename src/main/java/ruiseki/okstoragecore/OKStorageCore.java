@@ -16,11 +16,13 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import ruiseki.okbackpack.OKBackpack;
 import ruiseki.okcore.config.ConfigHandler;
 import ruiseki.okcore.init.ModBaseVersionable;
+import ruiseki.okcore.modcompat.ModCompatLoader;
 import ruiseki.okcore.proxy.ICommonProxy;
 import ruiseki.okstoragecore.client.gui.sync.CommonSHRegistries;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdateRegistries;
+import ruiseki.okstoragecore.modcompat.findit.FindItCompat;
 
 @Mod(
     modid = Reference.MOD_ID,
@@ -38,6 +40,12 @@ public class OKStorageCore extends ModBaseVersionable {
 
     public OKStorageCore() {
         super(Reference.MOD_ID, Reference.MOD_NAME, Reference.MOD_VERSION);
+    }
+
+    @Override
+    protected void loadModCompats(ModCompatLoader modCompatLoader) {
+        super.loadModCompats(modCompatLoader);
+        modCompatLoader.addModCompat(new FindItCompat());
     }
 
     @Override

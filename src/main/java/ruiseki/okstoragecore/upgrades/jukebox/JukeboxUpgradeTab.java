@@ -18,11 +18,11 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 
-import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedBooleanSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedIntSH;
+import ruiseki.okstoragecore.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.StorageSlotGrid;
 import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;

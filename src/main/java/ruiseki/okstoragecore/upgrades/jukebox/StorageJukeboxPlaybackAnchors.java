@@ -10,7 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
-import ruiseki.backpack.backpack.TileBackpack;
+import ruiseki.okbackpack.backpack.TileBackpack;
 import ruiseki.okcore.datastructure.BlockPos;
 import ruiseki.okcore.helper.PlayerHelpers;
 

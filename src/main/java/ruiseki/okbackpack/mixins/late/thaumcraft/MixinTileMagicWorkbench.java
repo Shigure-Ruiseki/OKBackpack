@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import ruiseki.backpack.modcompat.thaumcraft.IVisChargeTarget;
+import ruiseki.okbackpack.modcompat.thaumcraft.IVisChargeTarget;
 import thaumcraft.common.tiles.TileMagicWorkbench;
 
 @Mixin(value = TileMagicWorkbench.class, remap = false)

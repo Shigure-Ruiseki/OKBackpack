@@ -2,7 +2,6 @@ package ruiseki.okstoragecore.client.gui.sync;
 
 import java.util.function.Supplier;
 
-import ruiseki.okbackpack.client.gui.handler.DelegatedItemHandler;
 import ruiseki.okcore.item.handler.EmptyHandler;
 import ruiseki.okcore.item.handler.IItemHandlerModifiable;
 import ruiseki.okstoragecore.client.gui.container.StorageContainer;

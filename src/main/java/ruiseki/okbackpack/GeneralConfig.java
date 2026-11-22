@@ -3,7 +3,7 @@ package ruiseki.okbackpack;
 
 import org.apache.logging.log4j.Level;
 
-import ruiseki.backpack.config.NoInteractionBlocks;
+import ruiseki.okbackpack.config.NoInteractionBlocks;
 import ruiseki.okcore.config.ConfigLocation;
 import ruiseki.okcore.config.ConfigurableProperty;
 import ruiseki.okcore.config.extendedconfig.DummyConfig;

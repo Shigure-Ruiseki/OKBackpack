@@ -3,11 +3,11 @@ package ruiseki.okstoragecore.upgrades.cooking;
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 
-import ruiseki.okbackpack.client.gui.slot.ModularFilterSlot;
-import ruiseki.okbackpack.client.gui.syncHandler.FilterSlotSH;
 import ruiseki.okstoragecore.client.gui.slot.IndexedModularSlot;
+import ruiseki.okstoragecore.client.gui.slot.ModularFilterSlot;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedFilterLogicSH;
 import ruiseki.okstoragecore.client.gui.sync.DelegatedItemHandlerSH;
+import ruiseki.okstoragecore.client.gui.sync.FilterSlotSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedFloatSH;
 import ruiseki.okstoragecore.client.gui.widget.update.IUpgradeSlotUpdateFactory;
 import ruiseki.okstoragecore.client.gui.widget.update.UpgradeSlotUpdate;

@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
-import ruiseki.okbackpack.client.gui.OKBGuiTextures;
-import ruiseki.okbackpack.client.gui.widget.CyclicVariantButtonWidget;
+import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
+import ruiseki.okstoragecore.client.gui.widget.CyclicVariantButtonWidget;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.filter.ContentsFilterControl;
 import ruiseki.okstoragecore.client.gui.widget.upgrade.ExpandedUpgradeTab;
@@ -20,13 +20,13 @@ public class FilterUpgradeTab extends ExpandedUpgradeTab<FilterUpgradeWrapper> {
     private static final List<CyclicVariantButtonWidget.Variant> DIRECTION_VARIANTS = Arrays.asList(
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.upgrades.buttons.direction_both"),
-            OKBGuiTextures.IN_OUT_ICON),
+            OSCTextures.IN_OUT),
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.upgrades.buttons.direction_input"),
-            OKBGuiTextures.IN_ICON),
+            OSCTextures.IN),
         new CyclicVariantButtonWidget.Variant(
             IKey.lang("gui.okstoragecore.upgrades.buttons.direction_output"),
-            OKBGuiTextures.OUT_ICON));
+            OSCTextures.OUT));
 
     public FilterUpgradeTab(int slotIndex, FilterUpgradeWrapper wrapper, ItemStack stack, StoragePanel storagePanel,
         String titleKey) {

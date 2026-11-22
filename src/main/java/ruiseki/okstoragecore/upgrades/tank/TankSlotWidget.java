@@ -19,15 +19,15 @@ import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widget.Widget;
 
-import ruiseki.okbackpack.client.gui.OKBGuiTextures;
-import ruiseki.okbackpack.client.gui.slot.UpgradeSlot;
 import ruiseki.okcore.enums.EnumDye;
 import ruiseki.okcore.helper.FluidHelpers;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.OKStorageCore;
+import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedFluidStackSH;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedIntSH;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
+import ruiseki.okstoragecore.client.gui.widget.UpgradeSlot;
 import ruiseki.okstoragecore.network.packet.PacketTankClick;
 
 public class TankSlotWidget extends Widget<TankSlotWidget> implements Interactable {
@@ -61,7 +61,7 @@ public class TankSlotWidget extends Widget<TankSlotWidget> implements Interactab
         int visibleHeight = getArea().height;
 
         // 1. Background - top section
-        OKBGuiTextures.TANK_BAR_TOP
+        OSCTextures.TANK_BAR_TOP
             .draw(context, 0, 0, BAR_WIDTH, Math.min(OVERLAY_HEIGHT, visibleHeight), widgetTheme.getTheme());
 
         // 2. Background - middle sections (repeated to fill between top and bottom)
@@ -69,13 +69,13 @@ public class TankSlotWidget extends Widget<TankSlotWidget> implements Interactab
         int bottomStart = visibleHeight - OVERLAY_HEIGHT;
         while (yOffset < bottomStart) {
             int drawHeight = Math.min(OVERLAY_HEIGHT, bottomStart - yOffset);
-            OKBGuiTextures.TANK_BAR_MIDDLE.draw(context, 0, yOffset, BAR_WIDTH, drawHeight, widgetTheme.getTheme());
+            OSCTextures.TANK_BAR_MIDDLE.draw(context, 0, yOffset, BAR_WIDTH, drawHeight, widgetTheme.getTheme());
             yOffset += drawHeight;
         }
 
         // 3. Background - bottom section
         if (visibleHeight > OVERLAY_HEIGHT) {
-            OKBGuiTextures.TANK_BAR_BOTTOM
+            OSCTextures.TANK_BAR_BOTTOM
                 .draw(context, 0, visibleHeight - OVERLAY_HEIGHT, BAR_WIDTH, OVERLAY_HEIGHT, widgetTheme.getTheme());
         }
 
@@ -87,8 +87,7 @@ public class TankSlotWidget extends Widget<TankSlotWidget> implements Interactab
         GL11.glTranslatef(0, 0, 100);
         int overlayTiles = visibleHeight / OVERLAY_HEIGHT;
         for (int i = 0; i < overlayTiles; i++) {
-            OKBGuiTextures.TANK_OVERLAY
-                .draw(context, 1, i * OVERLAY_HEIGHT, 16, OVERLAY_HEIGHT, widgetTheme.getTheme());
+            OSCTextures.TANK_OVERLAY.draw(context, 1, i * OVERLAY_HEIGHT, 16, OVERLAY_HEIGHT, widgetTheme.getTheme());
         }
         GL11.glPopMatrix();
 

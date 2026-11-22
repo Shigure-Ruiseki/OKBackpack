@@ -9,11 +9,11 @@ import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widget.Widget;
 
-import ruiseki.okbackpack.client.gui.slot.UpgradeSlot;
 import ruiseki.okcore.helper.LangHelpers;
 import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.value.DelegatedIntSH;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
+import ruiseki.okstoragecore.client.gui.widget.UpgradeSlot;
 
 public class BatterySlotWidget extends Widget<BatterySlotWidget> {
 

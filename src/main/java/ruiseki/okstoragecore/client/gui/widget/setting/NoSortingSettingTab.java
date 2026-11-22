@@ -12,9 +12,8 @@ import com.cleanroommc.modularui.widgets.ColorPickerDialog;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import cpw.mods.fml.common.Optional;
-import ruiseki.okbackpack.client.gui.OKBGuiTextures;
-import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.StorageSHRegisters;
 import ruiseki.okstoragecore.client.gui.widget.StoragePanel;
 import ruiseki.okstoragecore.client.gui.widget.StorageSettingPanel;
@@ -28,7 +27,7 @@ public class NoSortingSettingTab extends SettingTab {
     public NoSortingSettingTab(IStorageWrapper storageWrapper, StoragePanel storagePanel,
         StorageSettingPanel settingPanel, Tab parentTab) {
         super(
-            OKBGuiTextures.NO_SORT_ICON,
+            OSCTextures.NO_SORT,
             "gui.okstoragecore.settings.no_sort",
             Tab.ExpandDirection.RIGHT,
             storageWrapper,
@@ -57,7 +56,7 @@ public class NoSortingSettingTab extends SettingTab {
     }
 
     protected ButtonWidget<?> addSelectAllButton() {
-        return new ButtonWidget<>().overlay(OKBGuiTextures.ALL_FOUR_SLOT_ICON)
+        return new ButtonWidget<>().overlay(OSCTextures.ALL_FOUR_SLOT)
             .onMousePressed(button -> {
                 if (button == 0) {
                     NoSortSettingsCategory settings = this.getNoSortSettingsCategory();
@@ -80,7 +79,7 @@ public class NoSortingSettingTab extends SettingTab {
     }
 
     protected ButtonWidget<?> addUnselectAllButton() {
-        return new ButtonWidget<>().overlay(OKBGuiTextures.NONE_FOUR_SLOT_ICON)
+        return new ButtonWidget<>().overlay(OSCTextures.NONE_FOUR_SLOT)
             .onMousePressed(button -> {
                 if (button == 0) {
                     NoSortSettingsCategory settings = this.getNoSortSettingsCategory();
@@ -167,6 +166,6 @@ public class NoSortingSettingTab extends SettingTab {
 
     @Optional.Method(modid = "bogosorter")
     private static void refreshBogoSortingContext() {
-        BackpackBogoSorterClientCompat.invalidateSortingContext();
+        // BackpackBogoSorterClientCompat.invalidateSortingContext();
     }
 }

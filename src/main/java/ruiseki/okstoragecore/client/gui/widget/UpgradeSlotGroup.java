@@ -1,8 +1,5 @@
 package ruiseki.okstoragecore.client.gui.widget;
 
-import static ruiseki.okbackpack.client.gui.OKBGuiTextures.TOGGLE_DISABLE_ICON;
-import static ruiseki.okbackpack.client.gui.OKBGuiTextures.TOGGLE_ENABLE_ICON;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +17,7 @@ import com.cleanroommc.modularui.widget.Widget;
 
 import ruiseki.okbackpack.Reference;
 import ruiseki.okstoragecore.api.IStorageWrapper;
+import ruiseki.okstoragecore.client.gui.OSCTextures;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSH;
 import ruiseki.okstoragecore.client.gui.sync.UpgradeSlotSHRegistries;
 import ruiseki.okstoragecore.upgrades.IUpgradeWrapper;
@@ -210,9 +208,9 @@ public class UpgradeSlotGroup extends ParentWidget<UpgradeSlotGroup> {
         public void drawOverlay(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
             super.drawOverlay(context, widgetTheme);
             if (this.isToggleEnabled) {
-                TOGGLE_ENABLE_ICON.draw(context, 4, 4, 4, 10, widgetTheme.getTheme());
+                OSCTextures.TOGGLE_ENABLE.draw(context, 4, 4, 4, 10, widgetTheme.getTheme());
             } else {
-                TOGGLE_DISABLE_ICON.draw(context, 4, 4, 4, 10, widgetTheme.getTheme());
+                OSCTextures.TOGGLE_DISABLE.draw(context, 4, 4, 4, 10, widgetTheme.getTheme());
             }
         }
 
