@@ -1,0 +1,117 @@
+package ruiseki.okstoragecore.helper;
+
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+
+import cpw.mods.fml.common.Optional;
+import ganymedes01.etfuturum.ModEnchantments;
+import ganymedes01.etfuturum.configuration.configs.ConfigEnchantsPotions;
+import ruiseki.okcore.enums.Mods;
+import ruiseki.okcore.helper.PlayerHelpers;
+
+/**
+ * Helper utilities for converting between vanilla XP points / levels and the {@code xpjuice} fluid
+ * volume. Mirrors the math used by Sophisticated Backpacks (1 XP point = 20 mB).
+ */
+public final class XpHelpers {
+
+    private static final String XPJUICE_FLUID_NAME = "xpjuice";
+    public static final int RATIO = 20;
+
+    private XpHelpers() {}
+
+    public static Fluid getXpJuiceFluid() {
+        return FluidRegistry.getFluid(XPJUICE_FLUID_NAME);
+    }
+
+    public static float liquidToExperience(int liquid) {
+        return (float) liquid / RATIO;
+    }
+
+    public static int experienceToLiquid(float xp) {
+        return (int) (xp * RATIO);
+    }
+
+    /**
+     * Returns the total amount of XP needed to reach the given level from level 0.
+     */
+    public static int getExperienceForLevel(int level) {
+        if (level <= 0) {
+            return 0;
+        }
+        if (level < 16) {
+            return level * (12 + level * 2) / 2;
+        } else if (level < 31) {
+            return (level - 15) * (69 + (level - 15) * 5) / 2 + 315;
+        } else {
+            return (int) Math.min(Integer.MAX_VALUE, (level - 30L) * (215 + (level - 30) * 9L) / 2 + 1395);
+        }
+    }
+
+    /**
+     * XP needed to advance from the start of the given level to the next one.
+     */
+    public static int getExperienceLimitOnLevel(int level) {
+        if (level >= 30) {
+            return 112 + (level - 30) * 9;
+        } else {
+            if (level >= 15) {
+                return 37 + (level - 15) * 5;
+            }
+            return 7 + level * 2;
+        }
+    }
+
+    public static int getLevelForExperience(int experience) {
+        int i = 0;
+        while (getExperienceForLevel(i) <= experience) {
+            i++;
+        }
+        return i - 1;
+    }
+
+    public static double getLevelsForExperience(int experience) {
+        int baseLevel = getLevelForExperience(experience);
+        int remainingExperience = experience - getExperienceForLevel(baseLevel);
+        return baseLevel + ((double) remainingExperience / getExperienceLimitOnLevel(baseLevel));
+    }
+
+    public static int getPlayerTotalExperience(EntityPlayer player) {
+        int currentLevelPoints = getExperienceForLevel(player.experienceLevel);
+        int partialLevelPoints = (int) (player.experience * PlayerHelpers.getXpNeededForNextLevel(player));
+        return currentLevelPoints + partialLevelPoints;
+    }
+
+    public static void playXpPickupSound(World world, EntityPlayer player) {
+        world.playSoundAtEntity(
+            player,
+            "random.orb",
+            0.1F,
+            (world.rand.nextFloat() - world.rand.nextFloat()) * 0.35F + 0.9F);
+    }
+
+    public static boolean isMendingEnabled() {
+        return Mods.EtFuturum.isModLoaded() && readMendingFlag();
+    }
+
+    public static int getMendingLevel(ItemStack stack) {
+        if (stack == null) return 0;
+        if (!isMendingEnabled()) return 0;
+        return readMendingLevel(stack);
+    }
+
+    @Optional.Method(modid = "etfuturum")
+    private static int readMendingLevel(ItemStack stack) {
+        if (ModEnchantments.mending == null) return 0;
+        return EnchantmentHelper.getEnchantmentLevel(ModEnchantments.mending.effectId, stack);
+    }
+
+    @Optional.Method(modid = "etfuturum")
+    private static boolean readMendingFlag() {
+        return ConfigEnchantsPotions.enableMending;
+    }
+}

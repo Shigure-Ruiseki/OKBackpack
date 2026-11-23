@@ -16,7 +16,7 @@ import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
 
-import ruiseki.okbackpack.api.wrapper.TargetSlot;
+import ruiseki.okbackpack.upgrades.refill.RefillUpgradeWrapper.TargetSlot;
 import ruiseki.okcore.helper.LangHelpers;
 
 public class RefillPhantomSlot extends PhantomItemSlot {
@@ -39,9 +39,9 @@ public class RefillPhantomSlot extends PhantomItemSlot {
         if (stack == null) return;
 
         TargetSlot ts = targetSlotGetter.get();
-        String slotDescription = resolveTooltipText(ts);
-        tooltip.addLine(LangHelpers.localize("gui.backpack.refill.target_tooltip", slotDescription));
-        tooltip.addLine(LangHelpers.localize("gui.backpack.refill.scroll_hint"));
+        String slotDescription = ts.getDescription();
+        tooltip.addLine(LangHelpers.localize("gui.okbackpack.upgrades.refill.target_slot.tooltip", slotDescription));
+        tooltip.addLine(LangHelpers.localize("gui.okbackpack.upgrades.refill.scroll.tooltip"));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class RefillPhantomSlot extends PhantomItemSlot {
         if (stack == null) return;
 
         TargetSlot ts = targetSlotGetter.get();
-        String text = resolveAcronym(ts);
+        String text = ts.getAcronym();
         FontRenderer font = Minecraft.getMinecraft().fontRenderer;
         int textWidth = font.getStringWidth(text);
 
@@ -80,17 +80,4 @@ public class RefillPhantomSlot extends PhantomItemSlot {
         return true;
     }
 
-    public static String resolveAcronym(TargetSlot ts) {
-        if (ts.getAcronymKey() != null) {
-            return LangHelpers.localize(ts.getAcronymKey());
-        }
-        return String.valueOf(ts.getHotbarIndex() + 1);
-    }
-
-    public static String resolveTooltipText(TargetSlot ts) {
-        if (ts == TargetSlot.MAIN_HAND || ts == TargetSlot.ANY) {
-            return LangHelpers.localize(ts.getTooltipKey());
-        }
-        return LangHelpers.localize(ts.getTooltipKey(), ts.getHotbarIndex() + 1);
-    }
 }

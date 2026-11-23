@@ -12,9 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import logisticspipes.utils.transactor.IInvSlot;
 import logisticspipes.utils.transactor.TransactorSimple;
-import ruiseki.okbackpack.api.mixinHelper.IExtendedLogisticsSlot;
-import ruiseki.okbackpack.common.block.TEBackpack;
-import ruiseki.okbackpack.common.helpers.BackpackInventoryHelpers;
+import ruiseki.okbackpack.api.IExtendedLogisticsSlot;
+import ruiseki.okbackpack.backpack.TileBackpack;
 
 @Mixin(value = TransactorSimple.class, remap = false)
 public abstract class MixinTransactorSimple {
@@ -27,10 +26,12 @@ public abstract class MixinTransactorSimple {
         CallbackInfoReturnable<Integer> cir) {
         if (!(okbackpack$isBackpackInventory() && slot instanceof IExtendedLogisticsSlot indexedSlot)) return;
 
-        TEBackpack backpack = (TEBackpack) inventory;
+        TileBackpack backpack = (TileBackpack) inventory;
         int slotIndex = indexedSlot.okbackpack$getSlotIndex();
         int available = stack.stackSize - injected;
-        int maximum = BackpackInventoryHelpers.getExtendedStackLimit(backpack, slotIndex, stack);
+        int maximum = backpack.getBackpackWrapper()
+            .getInventoryHandler()
+            .getStackLimit(slotIndex, stack);
         ItemStack stored = slot.getStackInSlot();
 
         if (stored == null) {
@@ -38,8 +39,8 @@ public abstract class MixinTransactorSimple {
             if (doAdd && wanted > 0) {
                 ItemStack placed = stack.copy();
                 placed.stackSize = wanted;
-                backpack.getWrapper()
-                    .getStackHandler()
+                backpack.getBackpackWrapper()
+                    .getInventoryHandler()
                     .setStackInSlot(slotIndex, placed);
             }
             cir.setReturnValue(Math.max(0, wanted));
@@ -55,8 +56,8 @@ public abstract class MixinTransactorSimple {
         if (doAdd && wanted > 0) {
             ItemStack merged = stored.copy();
             merged.stackSize += wanted;
-            backpack.getWrapper()
-                .getStackHandler()
+            backpack.getBackpackWrapper()
+                .getInventoryHandler()
                 .setStackInSlot(slotIndex, merged);
         }
         cir.setReturnValue(Math.max(0, wanted));
@@ -64,7 +65,7 @@ public abstract class MixinTransactorSimple {
 
     @Unique
     private boolean okbackpack$isBackpackInventory() {
-        return inventory instanceof TEBackpack;
+        return inventory instanceof TileBackpack;
     }
 
     @Unique

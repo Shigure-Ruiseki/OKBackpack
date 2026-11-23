@@ -1,12 +1,12 @@
 package ruiseki.okbackpack.client.gui.container;
 
-import com.cleanroommc.modularui.screen.GuiContainerWrapper;
-import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.screen.ModularScreen;
 
-public class BackpackGuiContainer extends GuiContainerWrapper {
+import ruiseki.okstoragecore.client.gui.container.StorageGuiContainer;
 
-    public BackpackGuiContainer(ModularContainer container, ModularScreen screen) {
+public class BackpackGuiContainer extends StorageGuiContainer {
+
+    public BackpackGuiContainer(BackpackContainer container, ModularScreen screen) {
         super(container, screen);
     }
 }

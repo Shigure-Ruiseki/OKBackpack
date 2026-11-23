@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import ruiseki.okbackpack.api.mixinHelper.IExtendedLogisticsSlot;
+import ruiseki.okbackpack.api.IExtendedLogisticsSlot;
 
 @Mixin(targets = "logisticspipes.utils.transactor.InventoryIteratorSided$InvSlot", remap = false)
 public abstract class MixinInventoryIteratorSided implements IExtendedLogisticsSlot {

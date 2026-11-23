@@ -1,6 +1,5 @@
 package ruiseki.okbackpack;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -8,7 +7,6 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
@@ -20,30 +18,30 @@ import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import ruiseki.okbackpack.client.gui.syncHandler.BackpackSHRegisters;
-import ruiseki.okbackpack.client.gui.syncHandler.BackpackSlotSHRegisters;
-import ruiseki.okbackpack.client.gui.syncHandler.DelegatedStackHandlerSHRegisters;
-import ruiseki.okbackpack.client.gui.syncHandler.UpgradeSlotSHRegisters;
-import ruiseki.okbackpack.client.gui.syncHandler.value.DelegatedValueSHRegisters;
-import ruiseki.okbackpack.client.gui.widget.updateGroup.UpgradeSlotGroupRegisters;
+import ruiseki.okbackpack.backpack.BackpackStorage;
+import ruiseki.okbackpack.client.gui.sync.BackpackSHRegistries;
+import ruiseki.okbackpack.client.gui.sync.OBUpgradeSlotSHRegistries;
 import ruiseki.okbackpack.client.renderer.JsonModelISBRH;
-import ruiseki.okbackpack.common.block.BlockLeatherBackpackConfig;
-import ruiseki.okbackpack.common.command.CommandBackpack;
-import ruiseki.okbackpack.common.init.ModOreDicts;
-import ruiseki.okbackpack.common.init.TierRegistries;
-import ruiseki.okbackpack.common.recipe.CompactingRecipeCache;
-import ruiseki.okbackpack.common.recipe.ModRecipes;
-import ruiseki.okbackpack.compat.bauble.BaubleCompat;
-import ruiseki.okbackpack.compat.findit.FindItCompat;
-import ruiseki.okbackpack.compat.structurelib.StructureLibCompat;
-import ruiseki.okbackpack.compat.tic.TConstructTabCompat;
+import ruiseki.okbackpack.init.ModOreDicts;
+import ruiseki.okbackpack.init.ModRecipes;
+import ruiseki.okbackpack.init.TierRegistries;
+import ruiseki.okbackpack.init.block.BlockLeatherBackpackConfig;
+import ruiseki.okbackpack.modcompat.bauble.BaubleModCompat;
+import ruiseki.okbackpack.modcompat.efr.EFRModCompat;
+import ruiseki.okbackpack.modcompat.jfmuy.JFMUYModCompat;
+import ruiseki.okbackpack.modcompat.nei.NEIModCompat;
+import ruiseki.okbackpack.modcompat.structurelib.StructureLibModCompat;
+import ruiseki.okbackpack.modcompat.thaumcraft.ThaumcraftModCompat;
+import ruiseki.okbackpack.modcompat.tic.TConstructTabCompat;
 import ruiseki.okcore.config.ConfigHandler;
 import ruiseki.okcore.config.extendedconfig.BlockItemConfigReference;
 import ruiseki.okcore.data.condition.ConfigCondition;
 import ruiseki.okcore.helper.MinecraftHelpers;
 import ruiseki.okcore.init.ItemCreativeTab;
 import ruiseki.okcore.init.ModBaseVersionable;
+import ruiseki.okcore.modcompat.ModCompatLoader;
 import ruiseki.okcore.proxy.ICommonProxy;
+import ruiseki.okstoragecore.helper.RecipeHelpers;
 
 @Mod(
     modid = Reference.MOD_ID,
@@ -62,20 +60,14 @@ public class OKBackpack extends ModBaseVersionable {
     public OKBackpack() {
         super(Reference.MOD_ID, Reference.MOD_NAME, Reference.MOD_VERSION);
 
+        registerWorldStorage(BackpackStorage.getInstance(this));
+
         ConfigCondition.registerConfig(
             new ResourceLocation(Reference.MOD_ID, "enableTravelersUpgrades"),
             GeneralConfig.enableTravelersUpgrades);
 
-        addInitListeners(new BaubleCompat());
-        addInitListeners(new StructureLibCompat());
         addInitListeners(new ModRecipes());
         addInitListeners(new ModOreDicts());
-        addInitListeners(new UpgradeSlotGroupRegisters());
-        addInitListeners(new UpgradeSlotSHRegisters());
-        addInitListeners(new BackpackSlotSHRegisters());
-        addInitListeners(new BackpackSHRegisters());
-        addInitListeners(new DelegatedStackHandlerSHRegisters());
-        addInitListeners(new DelegatedValueSHRegisters());
         addInitListeners(new TierRegistries());
     }
 
@@ -83,6 +75,10 @@ public class OKBackpack extends ModBaseVersionable {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+
+        BackpackSHRegistries.load();
+        OBUpgradeSlotSHRegistries.load();
+
         if (MinecraftHelpers.isClientSide()) {
             ModelRegistry.registerModid(Reference.MOD_ID);
             RenderingRegistry.registerBlockHandler(JsonModelISBRH.INSTANCE);
@@ -90,10 +86,14 @@ public class OKBackpack extends ModBaseVersionable {
     }
 
     @Override
-    protected LiteralArgumentBuilder<ICommandSender> constructBaseCommand(MinecraftServer server) {
-        LiteralArgumentBuilder<ICommandSender> builder = super.constructBaseCommand(server);
-        builder.then(new CommandBackpack(this, server).make());
-        return builder;
+    protected void loadModCompats(ModCompatLoader modCompatLoader) {
+        super.loadModCompats(modCompatLoader);
+        modCompatLoader.addModCompat(new ThaumcraftModCompat());
+        modCompatLoader.addModCompat(new NEIModCompat());
+        modCompatLoader.addModCompat(new JFMUYModCompat());
+        modCompatLoader.addModCompat(new EFRModCompat());
+        modCompatLoader.addModCompat(new StructureLibModCompat());
+        modCompatLoader.addModCompat(new BaubleModCompat());
     }
 
     @Override
@@ -109,7 +109,6 @@ public class OKBackpack extends ModBaseVersionable {
         if (MinecraftHelpers.isClientSide()) {
             TConstructTabCompat.registerClientTabs();
         }
-        FindItCompat.registerProvider();
     }
 
     @Override
@@ -122,10 +121,9 @@ public class OKBackpack extends ModBaseVersionable {
     @Mod.EventHandler
     public void onServerStarted(FMLServerStartedEvent event) {
         super.onServerStarted(event);
-        CompactingRecipeCache.getInstance()
-            .initialize(
-                MinecraftServer.getServer()
-                    .getEntityWorld());
+        RecipeHelpers.setWorld(
+            MinecraftServer.getServer()
+                .getEntityWorld());
     }
 
     @Override
@@ -138,8 +136,7 @@ public class OKBackpack extends ModBaseVersionable {
     @Mod.EventHandler
     public void onServerStopped(FMLServerStoppedEvent event) {
         super.onServerStopped(event);
-        CompactingRecipeCache.getInstance()
-            .invalidate();
+        RecipeHelpers.clearCache();
     }
 
     @Override
