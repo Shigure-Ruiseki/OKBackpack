@@ -114,7 +114,7 @@ public class BackpackWrapper implements IBackpackWrapper, IJukeboxPlaybackLocati
 
     @Override
     public InventoryHandler getInventoryHandler() {
-        if (handler == null) {
+        if (handler == null || handler.getSlots() == 0) {
             handler = new BackpackInventoryHandler(getNumberOfInventorySlots(), this, getBackpackContentsNbt(), () -> {
                 this.markBackpackContentsDirty();
                 this.inventorySlotChangeHandler.run();
@@ -132,7 +132,8 @@ public class BackpackWrapper implements IBackpackWrapper, IJukeboxPlaybackLocati
             return inventorySlots.get();
         }
 
-        int itemInventorySlots = ((ItemBackpack) backpack.getItem()).getNumberOfSlots();
+        if (ItemHelpers.isEmpty(backpack)) return 0;
+        int itemInventorySlots = ((ItemBackpack) ItemHelpers.getItem(backpack)).getNumberOfSlots();
         setNumberOfInventorySlots(itemInventorySlots);
         return itemInventorySlots;
     }
@@ -229,7 +230,7 @@ public class BackpackWrapper implements IBackpackWrapper, IJukeboxPlaybackLocati
 
     @Override
     public UpgradeHandler getUpgradeHandler() {
-        if (upgradeHandler == null) {
+        if (upgradeHandler == null || upgradeHandler.getSlots() == 0) {
             if (getContentsUuid().isPresent()) {
                 upgradeHandler = new UpgradeHandler(
                     getNumberOfUpgradeSlots(),

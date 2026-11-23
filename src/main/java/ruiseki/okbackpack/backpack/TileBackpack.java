@@ -45,6 +45,7 @@ import ruiseki.okcore.item.IItemSharedTag;
 import ruiseki.okcore.item.capability.CapabilityItemHandler;
 import ruiseki.okcore.persist.nbt.NBTPersist;
 import ruiseki.okcore.tileentity.TileTicking;
+import ruiseki.okstoragecore.capabilities.CapabilityStorageWrapperConfig;
 import ruiseki.okstoragecore.upgrades.ITickableUpgrade;
 
 public class TileBackpack extends TileTicking
@@ -69,9 +70,6 @@ public class TileBackpack extends TileTicking
     private final EnergyHandlerComponent energyStorage = new EnergyHandlerComponent(this);
 
     @NBTPersist
-    private ForgeDirection facing = ForgeDirection.NORTH;
-
-    @NBTPersist
     private boolean sleepingBagDeployed;
     @NBTPersist
     private BlockPos sleepingBagPos;
@@ -79,6 +77,8 @@ public class TileBackpack extends TileTicking
     public TileBackpack() {
         this.capabilityCache.addCapabilityResolver(
             BasicCapabilityResolver.create(CapabilityBackpackWrapperConfig.CAPABILITY, this::getBackpackWrapper));
+        this.capabilityCache.addCapabilityResolver(
+            BasicCapabilityResolver.create(CapabilityStorageWrapperConfig.CAPABILITY, this::getBackpackWrapper));
 
         this.capabilityCache.addCapabilityResolver(
             BasicCapabilityResolver.create(
@@ -176,18 +176,10 @@ public class TileBackpack extends TileTicking
         return new BackpackGuiHolder.TileEntityGuiHolder().buildUI(data, syncManager, settings);
     }
 
-    public int getMainColor() {
-        return this.backpackWrapper.getMainColor();
-    }
-
-    public int getAccentColor() {
-        return this.backpackWrapper.getAccentColor();
-    }
-
     public void setSleepingBagDeployed(boolean state) {
         this.sleepingBagDeployed = state;
-        markDirty();
-        onSendUpdate();
+        this.markDirty();
+        this.onSendUpdate();
     }
 
     public boolean isSleepingBagDeployed() {

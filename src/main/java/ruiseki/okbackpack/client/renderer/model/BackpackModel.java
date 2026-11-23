@@ -26,12 +26,25 @@ import ruiseki.okbackpack.api.tier.TierRegistry;
 import ruiseki.okbackpack.backpack.BlockBackpack;
 import ruiseki.okbackpack.mixins.early.gtnhlib.JSONModelAccessor;
 import ruiseki.okcore.datastructure.ThreadsafeCache;
+import ruiseki.okcore.helper.DirectionHelpers;
 
 public class BackpackModel implements BakedModel {
 
-    private static final ResourceLoc.ModelLoc MODEL = new ResourceLoc.ModelLoc(
+    private static final ResourceLoc.ModelLoc MODEL_BASE = new ResourceLoc.ModelLoc(
         Reference.MOD_ID,
         "block/part/backpack_base");
+
+    private static final ResourceLoc.ModelLoc MODEL_FRONT = new ResourceLoc.ModelLoc(
+        Reference.MOD_ID,
+        "block/part/backpack_front_pouch");
+
+    private static final ResourceLoc.ModelLoc MODEL_LEFT = new ResourceLoc.ModelLoc(
+        Reference.MOD_ID,
+        "block/part/backpack_left_pouch");
+
+    private static final ResourceLoc.ModelLoc MODEL_RIGHT = new ResourceLoc.ModelLoc(
+        Reference.MOD_ID,
+        "block/part/backpack_right_pouch");
 
     private record CacheKey(ResourceLoc.ModelLoc modelLoc, String tierId) {}
 
@@ -44,30 +57,48 @@ public class BackpackModel implements BakedModel {
 
     @Override
     public List<ModelQuadView> getQuads(BakedModelQuadContext context) {
+        List<ModelQuadView> quads = new ArrayList<>();
+
         ForgeDirection facing = ForgeDirection.SOUTH;
         BackpackTier tier = TierRegistry.getTier(LEATHER);
 
         if (context.getBlockState() != null) {
             facing = context.getBlockState()
                 .getPropertyValue(BlockBackpack.DIRECTION_PROPERTY);
+
             tier = TierRegistry.getTier(
                 context.getBlockState()
                     .getPropertyValue(BlockBackpack.TIER_PROPERTY));
         }
 
-        JSONVariant variant = createVariant(facing);
-        try {
-            JSONModel model = JSON_CACHE.get(new CacheKey(MODEL, tier.getId()));
-            if (model == null) return new ArrayList<>();
+        addPartQuads(quads, MODEL_BASE, facing, context, tier);
+        addPartQuads(quads, MODEL_FRONT, facing, context, tier);
+        addPartQuads(quads, MODEL_LEFT, facing, context, tier);
+        addPartQuads(quads, MODEL_RIGHT, facing, context, tier);
 
-            BakedModel bakedModel = model.bake(variant);
-            if (bakedModel == null) return new ArrayList<>();
+        return quads;
+    }
+
+    private void addPartQuads(List<ModelQuadView> target, ResourceLoc.ModelLoc modelLoc, ForgeDirection facing,
+        BakedModelQuadContext context, BackpackTier tier) {
+        try {
+            JSONModel model = JSON_CACHE.get(new CacheKey(modelLoc, tier.getId()));
+            if (model == null) return;
+
+            BakedModel bakedModel = model.bake(createVariant(modelLoc, facing));
+            if (bakedModel == null) return;
 
             List<ModelQuadView> quads = bakedModel.getQuads(context);
-            return quads != null ? quads : new ArrayList<>();
+            if (quads != null) {
+                target.addAll(quads);
+            }
         } catch (Exception e) {
-            return new ArrayList<>();
+            // Ignore failed model part.
         }
+    }
+
+    private static JSONVariant createVariant(ResourceLoc.ModelLoc modelLoc, ForgeDirection facing) {
+        return new JSONVariant(modelLoc, 0, DirectionHelpers.directionToRotationY(facing), false);
     }
 
     private static JSONModel loadAndPrepareJSON(CacheKey key) {
@@ -92,24 +123,11 @@ public class BackpackModel implements BakedModel {
             accessor.getElements());
     }
 
-    private static JSONVariant createVariant(ForgeDirection facing) {
-        int angleY = switch (facing) {
-            case SOUTH -> 0;
-            case EAST -> 270;
-            case NORTH -> 180;
-            case WEST -> 90;
-            default -> 0;
-        };
-
-        return new JSONVariant(MODEL, 0, angleY, false);
-    }
-
     @Override
     public ModelDisplay getDisplay(Position pos, BakedModelQuadContext context) {
-        JSONModel model = ModelRegistry.getJSONModel(MODEL);
-
+        JSONModel model = ModelRegistry.getJSONModel(MODEL_BASE);
         if (model != null) {
-            return model.bake(createVariant(ForgeDirection.SOUTH))
+            return model.bake(createVariant(MODEL_BASE, ForgeDirection.SOUTH))
                 .getDisplay(pos, context);
         }
 
@@ -118,12 +136,12 @@ public class BackpackModel implements BakedModel {
 
     @Override
     public IIcon getParticle(BakedModelQuadContext context) {
-        JSONModel model = ModelRegistry.getJSONModel(MODEL);
+        JSONModel model = ModelRegistry.getJSONModel(MODEL_BASE);
         if (model != null) {
-            return model.bake(createVariant(ForgeDirection.SOUTH))
+            return model.bake(createVariant(MODEL_BASE, ForgeDirection.SOUTH))
                 .getParticle(context);
         }
-
         return null;
     }
+
 }

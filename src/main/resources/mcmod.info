@@ -17,5 +17,22 @@
 		"dependencies": [],
 		"dependants": [],
 		"useDependencyInformation": false
-	}]
+	}, {
+    "modid": "okstoragecore",
+    "name": "OK Storage Core",
+    "description": "",
+    "version": "${modVersion}",
+    "mcversion": "${minecraftVersion}",
+    "url": "https://github.com/Shigure-Ruiseki/OKBackpack",
+    "updateUrl": "",
+    "authorList": ["Shigure Ruiseki"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "parent": "",
+    "requiredMods": [],
+    "dependencies": [],
+    "dependants": [],
+    "useDependencyInformation": false
+  }]
 }

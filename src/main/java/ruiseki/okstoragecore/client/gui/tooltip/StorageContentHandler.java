@@ -45,7 +45,7 @@ public class StorageContentHandler {
 
     public record UpgradeInfo(ItemStack stack, boolean canBeDisabled, boolean enabled) {}
 
-    public static final String RIGHT_CLICK_ADD_KEY = "tooltip.backpack.inventory_interaction.right_click_add";
+    public static final String RIGHT_CLICK_ADD_KEY = "tooltip.okbackpack.inventory_interaction.right_click_add";
 
     public static List<String> prependInteractionLine(List<String> lines) {
         List<String> result = new ArrayList<>();
@@ -74,11 +74,11 @@ public class StorageContentHandler {
         boolean hasContents = !contents.isEmpty();
 
         if (!hasUpgrades && !hasContents) {
-            lines.add("§e" + LangHelpers.localize("tooltip.backpack.contents.empty"));
+            lines.add("§e" + LangHelpers.localize("tooltip.okbackpack.contents.empty"));
         } else {
             if (hasUpgrades) {
                 lines.addAll(upgradeTooltipLines);
-                lines.add("§e" + LangHelpers.localize("tooltip.backpack.contents.upgrades"));
+                lines.add("§e" + LangHelpers.localize("tooltip.okbackpack.contents.upgrades"));
 
                 lines.add(TooltipLineHandler.register(new ITooltipLine() {
 
@@ -100,7 +100,7 @@ public class StorageContentHandler {
             }
 
             if (hasContents) {
-                lines.add("§e" + LangHelpers.localize("tooltip.backpack.contents.inventory"));
+                lines.add("§e" + LangHelpers.localize("tooltip.okbackpack.contents.inventory"));
 
                 lines.add(TooltipLineHandler.register(new ITooltipLine() {
 
@@ -124,13 +124,13 @@ public class StorageContentHandler {
 
         lines.add(
             LangHelpers.localize(
-                "tooltip.backpack.inventory_size",
+                "tooltip.okbackpack.inventory_size",
                 wrapper.getInventoryHandler()
                     .getSlots()));
 
         lines.add(
             LangHelpers.localize(
-                "tooltip.backpack.upgrade_slots_size",
+                "tooltip.okbackpack.upgrade_slots_size",
                 wrapper.getUpgradeHandler()
                     .getSlots()));
 

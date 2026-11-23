@@ -18,8 +18,10 @@ import org.jetbrains.annotations.Nullable;
 
 import com.gtnewhorizon.gtnhlib.api.BlockModelInfo;
 import com.gtnewhorizon.gtnhlib.api.IBlockModelProvider;
+import com.gtnewhorizon.gtnhlib.blockstate.core.BlockState;
 import com.gtnewhorizon.gtnhlib.client.model.BakedModelQuadContext;
 import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
+import com.gtnewhorizon.gtnhlib.client.model.color.IBlockColor;
 
 import ruiseki.okbackpack.api.tier.BackpackTier;
 import ruiseki.okbackpack.api.tier.TierRegistry;
@@ -28,12 +30,17 @@ import ruiseki.okbackpack.init.block.property.TierProperty;
 import ruiseki.okcore.block.BlockTile;
 import ruiseki.okcore.block.property.BlockProperty;
 import ruiseki.okcore.block.property.DirectionProperty;
+import ruiseki.okcore.datastructure.BlockPos;
+import ruiseki.okcore.helper.CapabilityHelpers;
+import ruiseki.okcore.helper.DirectionHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.helper.TileHelpers;
+import ruiseki.okstoragecore.capabilities.CapabilityStorageWrapperConfig;
 import ruiseki.okstoragecore.upgrades.IBookshelfUpgrade;
 import ruiseki.okstoragecore.upgrades.ILightUpgrade;
 import ruiseki.okstoragecore.upgrades.IRedstoneUpgrade;
 
-public class BlockBackpack extends BlockTile implements IBlockModelProvider, BlockModelInfo {
+public class BlockBackpack extends BlockTile implements IBlockModelProvider, BlockModelInfo, IBlockColor {
 
     @BlockProperty
     public final static TierProperty TIER_PROPERTY = TierProperty.tier(LEATHER, (world, x, y, z) -> {
@@ -46,12 +53,16 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
     public static final DirectionProperty DIRECTION_PROPERTY = DirectionProperty.facing();
 
     private final String tierId;
-    private boolean isModeled = true;
 
     public BlockBackpack(String tierId) {
         super(Material.cloth, TileBackpack.class);
         this.tierId = tierId;
         this.setRotatable(true);
+    }
+
+    @Override
+    public boolean isOpaqueCube() {
+        return false;
     }
 
     /**
@@ -76,10 +87,44 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
     }
 
     @Override
+    public int colorMultiplier(@Nullable IBlockAccess world, int x, int y, int z, int tintIndex) {
+        return CapabilityHelpers.getCapability(world, x, y, z, CapabilityStorageWrapperConfig.CAPABILITY)
+            .map(wrapper -> {
+                if (tintIndex == 0) {
+                    return wrapper.getMainColor();
+                } else {
+                    return wrapper.getAccentColor();
+                }
+            })
+            .orElse(-1);
+    }
+
+    @Override
+    public int colorMultiplier(@Nullable ItemStack stack, int tintIndex) {
+        return CapabilityHelpers.getCapability(stack, CapabilityStorageWrapperConfig.CAPABILITY)
+            .map(wrapper -> {
+                if (tintIndex == 0) {
+                    return wrapper.getMainColor();
+                } else {
+                    return wrapper.getAccentColor();
+                }
+            })
+            .orElse(-1);
+    }
+
+    @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack) {
         super.onBlockPlacedBy(world, x, y, z, entity, stack);
         TileHelpers.get(world, x, y, z, TileBackpack.class)
-            .ifPresent(tile -> { tile.setBackpack(stack); });
+            .ifPresent(tile -> { tile.setBackpack(ItemHelpers.copy(stack)); });
+    }
+
+    @Override
+    public BlockState getStateForPlacement(World world, BlockPos pos, ForgeDirection facing, float hitX, float hitY,
+        float hitZ, int meta, EntityLivingBase placer) {
+        BlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
+        state.setPropertyValue(DIRECTION_PROPERTY, DirectionHelpers.yawToDirection4(placer));
+        return state;
     }
 
     @Override
@@ -163,12 +208,12 @@ public class BlockBackpack extends BlockTile implements IBlockModelProvider, Blo
 
     @Override
     public boolean nhlib$isModeled() {
-        return this.isModeled;
+        return true;
     }
 
     @Override
     public void nhlib$setModeled(boolean modeled) {
-        this.isModeled = modeled;
+
     }
 
     @Override
