@@ -2,7 +2,7 @@ name: Auto tag on merge
 
 on:
   pull_request:
-    branches: [ master, main ]
+    branches: [ master, main, pre ]
     types:
       - closed
   workflow_dispatch:
