@@ -37,14 +37,4 @@ public abstract class ItemUpgradeBase<T extends IUpgradeWrapper> extends ItemBas
     public String getName() {
         return LangHelpers.localize(getUnlocalizedName());
     }
-
-    @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer entityPlayer, List<String> list, boolean flag) {
-        super.addInformation(itemStack, entityPlayer, list, flag);
-        if (itemStack.hasTagCompound()) {
-            list.add(
-                itemStack.getTagCompound()
-                    .toString());
-        }
-    }
 }
