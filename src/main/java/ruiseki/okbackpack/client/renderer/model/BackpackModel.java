@@ -132,6 +132,7 @@ public class BackpackModel implements BakedModel {
         if (baseJson == null) return null;
 
         JSONModelAccessor accessor = (JSONModelAccessor) baseJson;
+
         var modifiableTextures = new Object2ObjectOpenHashMap<>(baseJson.getTextures());
         modifiableTextures.put(
             "#clips",
@@ -142,6 +143,7 @@ public class BackpackModel implements BakedModel {
         return new JSONModel(
             accessor.getParentId(),
             accessor.isUseAO(),
+            accessor.getRenderType(),
             accessor.getDisplay(),
             modifiableTextures,
             accessor.getElements());

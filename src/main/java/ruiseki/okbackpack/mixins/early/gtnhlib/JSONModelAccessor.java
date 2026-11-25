@@ -26,4 +26,7 @@ public interface JSONModelAccessor {
 
     @Accessor(value = "elements", remap = false)
     List<ModelElement> getElements();
+
+    @Accessor("renderType")
+    String getRenderType();
 }
