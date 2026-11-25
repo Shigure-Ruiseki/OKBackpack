@@ -22,9 +22,6 @@ import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.ModelQuadView;
 import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.properties.ModelQuadFacing;
 import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 
-import ruiseki.okcore.helper.ItemHelpers;
-import ruiseki.okcore.helper.RenderHelpers;
-
 @ThreadSafeISBRH(perThread = true)
 public class JsonModelISBRH extends ModelISBRH {
 
@@ -36,7 +33,7 @@ public class JsonModelISBRH extends ModelISBRH {
     public JsonModelISBRH() {}
 
     public void renderToEntity(ItemStack stack) {
-        Block block = Block.getBlockFromItem(ItemHelpers.getItem(stack));
+        Block block = Block.getBlockFromItem(stack.getItem());
         if (block == null) return;
         int meta = stack.getItemDamage();
 
@@ -68,7 +65,7 @@ public class JsonModelISBRH extends ModelISBRH {
 
             for (ModelQuadView quad : quads) {
                 int quadColor = color;
-                if (ItemHelpers.getItem(stack) != null && quad.getColorIndex() != -1) {
+                if (stack.getItem() != null && quad.getColorIndex() != -1) {
                     quadColor = BlockColor.getColor(block, stack, quad.getColorIndex());
                 }
 

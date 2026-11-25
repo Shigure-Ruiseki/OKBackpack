@@ -10,7 +10,8 @@
     "U": { "item": "okbackpack:upgrade_base" }
   },
   "result": {
-    "item": "okbackpack:stack_upgrade_starter",
+    "item": "okbackpack:stack_upgrade",
+    "meta": 5,
     "count": 1
   }
 }

@@ -19,11 +19,13 @@
       "item": "minecraft:nether_star"
     },
     "U": {
-      "item": "okbackpack:stack_upgrade_tier_3"
+      "item": "okbackpack:stack_upgrade",
+      "meta": 2
     }
   },
   "result": {
-    "item": "okbackpack:stack_upgrade_tier_4",
+    "item": "okbackpack:stack_upgrade",
+    "meta": 3,
     "count": 1
   }
 }

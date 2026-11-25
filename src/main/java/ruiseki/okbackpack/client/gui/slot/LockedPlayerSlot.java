@@ -3,14 +3,13 @@ package ruiseki.okbackpack.client.gui.slot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 
+import com.cleanroommc.modularui.utils.item.PlayerInvWrapper;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
-
-import ruiseki.okstoragecore.inventory.PlayerInvWrapperExtended;
 
 public class LockedPlayerSlot extends ModularSlot {
 
     public LockedPlayerSlot(InventoryPlayer inventory, int index) {
-        super(new PlayerInvWrapperExtended(inventory), index);
+        super(new PlayerInvWrapper(inventory), index);
     }
 
     @Override

@@ -4,8 +4,18 @@ import net.minecraftforge.common.MinecraftForge;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import ruiseki.okbackpack.OKBackpack;
-import ruiseki.okbackpack.event.CommonEventHandler;
-import ruiseki.okbackpack.network.packet.PacketBlockPick;
+import ruiseki.okbackpack.common.event.BackpackEventHandler;
+import ruiseki.okbackpack.common.event.ToolSwapEventHandler;
+import ruiseki.okbackpack.common.network.PacketBackpackNBT;
+import ruiseki.okbackpack.common.network.PacketJukeboxPlaybackState;
+import ruiseki.okbackpack.common.network.PacketJukeboxPositionUpdate;
+import ruiseki.okbackpack.common.network.PacketQuickDraw;
+import ruiseki.okbackpack.common.network.PacketRecordDuration;
+import ruiseki.okbackpack.common.network.PacketStatusMessage;
+import ruiseki.okbackpack.common.network.PacketSyncCarriedItem;
+import ruiseki.okbackpack.common.network.PacketTankClick;
+import ruiseki.okbackpack.common.network.PacketToggleUpgrade;
+import ruiseki.okbackpack.common.network.PacketToolSwap;
 import ruiseki.okcore.init.ModBase;
 import ruiseki.okcore.network.PacketHandler;
 import ruiseki.okcore.proxy.CommonProxyComponent;
@@ -20,16 +30,25 @@ public class CommonProxy extends CommonProxyComponent {
     @Override
     public void registerPacketHandlers(PacketHandler packetHandler) {
         super.registerPacketHandlers(packetHandler);
-        packetHandler.register(PacketBlockPick.class);
+        packetHandler.register(PacketBackpackNBT.class);
+        packetHandler.register(PacketSyncCarriedItem.class);
+        packetHandler.register(PacketQuickDraw.class);
+        packetHandler.register(PacketJukeboxPlaybackState.class);
+        packetHandler.register(PacketJukeboxPositionUpdate.class);
+        packetHandler.register(PacketRecordDuration.class);
+        packetHandler.register(PacketToolSwap.class);
+        packetHandler.register(PacketToggleUpgrade.class);
+        packetHandler.register(PacketTankClick.class);
+        packetHandler.register(PacketStatusMessage.class);
     }
 
     @Override
     public void registerEventHooks() {
         super.registerEventHooks();
-        MinecraftForge.EVENT_BUS.register(CommonEventHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(BackpackEventHandler.INSTANCE);
         FMLCommonHandler.instance()
             .bus()
-            .register(CommonEventHandler.INSTANCE);
-
+            .register(BackpackEventHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(ToolSwapEventHandler.INSTANCE);
     }
 }

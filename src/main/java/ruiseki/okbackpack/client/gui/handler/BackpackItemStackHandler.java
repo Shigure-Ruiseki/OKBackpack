@@ -1,0 +1,235 @@
+package ruiseki.okbackpack.client.gui.handler;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.item.ItemStack;
+
+import ruiseki.okbackpack.api.IStorageWrapper;
+import ruiseki.okbackpack.api.handler.ILockedItemHandler;
+import ruiseki.okbackpack.api.handler.IMemoryItemHandler;
+import ruiseki.okbackpack.common.helpers.BackpackEntityHelpers;
+import ruiseki.okcore.helper.ItemHandlerHelpers;
+import ruiseki.okcore.helper.ItemHelpers;
+
+public class BackpackItemStackHandler extends BaseItemStackHandler implements IMemoryItemHandler, ILockedItemHandler {
+
+    private final IStorageWrapper wrapper;
+
+    public final List<ItemStack> memorizedSlotStack;
+    public final List<Boolean> memorizedSlotRespectNbtList;
+    public final List<Boolean> sortLockedSlots;
+
+    public BackpackItemStackHandler(int size, IStorageWrapper wrapper) {
+        super(size);
+        this.wrapper = wrapper;
+
+        this.memorizedSlotStack = new ArrayList<>(size);
+        this.memorizedSlotRespectNbtList = new ArrayList<>(size);
+        this.sortLockedSlots = new ArrayList<>(size);
+
+        for (int i = 0; i < size; i++) {
+            memorizedSlotStack.add(null);
+            memorizedSlotRespectNbtList.add(false);
+            sortLockedSlots.add(false);
+        }
+    }
+
+    @Override
+    public boolean isItemValid(int slot, ItemStack stack) {
+        if (!isVisualSlot(slot)) return false;
+        if (memorizedSlotStack.get(slot) == null) {
+            return !BackpackEntityHelpers.isBackpackStack(stack, false) || wrapper.canAddStack(slot, stack);
+        }
+        if (memorizedSlotRespectNbtList.get(slot)) {
+            return ItemStack.areItemStacksEqual(stack, memorizedSlotStack.get(slot));
+        }
+        return ItemHelpers.areItemsEqualIgnoreDurability(stack, memorizedSlotStack.get(slot));
+    }
+
+    @Override
+    public int getStackLimit(int slot, ItemStack stack) {
+        double mod = wrapper.applyStackLimitModifiers();
+        double raw = (stack == null ? 64 : stack.getMaxStackSize()) * mod;
+        if (raw >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
+        return (int) Math.ceil(raw);
+    }
+
+    @Override
+    public int getSlotLimit(int slot) {
+        double mod = wrapper.applySlotLimitModifiers();
+        double raw = 64.0 * mod;
+        if (raw >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
+        return (int) Math.ceil(raw);
+    }
+
+    @Override
+    public void resize(int newSize) {
+        super.resize(newSize);
+        syncListSize(this.memorizedSlotStack, newSize, null);
+        syncListSize(this.memorizedSlotRespectNbtList, newSize, false);
+        syncListSize(this.sortLockedSlots, newSize, false);
+    }
+
+    @Override
+    public boolean isSizeInconsistent(int newSize) {
+        return super.isSizeInconsistent(newSize) || this.memorizedSlotStack.size() != newSize
+            || this.memorizedSlotRespectNbtList.size() != newSize
+            || this.sortLockedSlots.size() != newSize;
+    }
+
+    @Override
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        if (!isVisualSlot(slot)) return stack;
+        if (stack == null) return null;
+        if (!isItemValid(slot, stack)) return stack;
+
+        ItemStack existing = stacks.get(slot);
+
+        int limit = getStackLimit(slot, stack);
+
+        if (existing != null) {
+            if (!ItemHandlerHelpers.canItemStacksStack(stack, existing)) {
+                return stack;
+            }
+            limit -= existing.stackSize;
+        }
+
+        if (limit <= 0) {
+            return stack;
+        }
+
+        boolean reachedLimit = stack.stackSize > limit;
+
+        if (!simulate) {
+            if (existing == null) {
+                stacks.set(slot, ItemHandlerHelpers.copyStackWithSize(stack, reachedLimit ? limit : stack.stackSize));
+            } else {
+                existing.stackSize += (reachedLimit ? limit : stack.stackSize);
+            }
+            onContentsChanged(slot);
+        }
+
+        return reachedLimit ? ItemHandlerHelpers.copyStackWithSize(stack, stack.stackSize - limit) : null;
+    }
+
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        if (!isVisualSlot(slot)) return null;
+        if (amount == 0) return null;
+
+        ItemStack existing = stacks.get(slot);
+        if (existing == null) return null;
+
+        double stackMod = wrapper.applyStackLimitModifiers();
+        double rawMax = existing.getMaxStackSize() * stackMod;
+        int slotMaxStackSize = rawMax >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) Math.ceil(rawMax);
+        int toExtract = Math.min(amount, slotMaxStackSize);
+
+        ItemStack extracted;
+
+        if (existing.stackSize <= toExtract) {
+            extracted = existing;
+            if (!simulate) {
+                stacks.set(slot, null);
+                onContentsChanged(slot);
+            }
+        } else {
+            extracted = ItemHandlerHelpers.copyStackWithSize(existing, toExtract);
+            if (!simulate) {
+                stacks.set(slot, ItemHandlerHelpers.copyStackWithSize(existing, existing.stackSize - toExtract));
+                onContentsChanged(slot);
+            }
+        }
+
+        return extracted;
+    }
+
+    @Override
+    public boolean isSlotMemorized(int slot) {
+        return memorizedSlotStack.get(slot) != null;
+    }
+
+    @Override
+    public ItemStack getMemoryStack(int slot) {
+        return memorizedSlotStack.get(slot);
+    }
+
+    @Override
+    public void setMemoryStack(int slot, ItemStack stack) {
+        if (stack == null) {
+            memorizedSlotStack.set(slot, null);
+            return;
+        }
+        ItemStack copy = stack.copy();
+        copy.stackSize = 1;
+        memorizedSlotStack.set(slot, copy);
+    }
+
+    @Override
+    public boolean isRespectNBT(int slot) {
+        return memorizedSlotRespectNbtList.get(slot);
+    }
+
+    @Override
+    public void setRespectNBT(int slot, boolean respect) {
+        memorizedSlotRespectNbtList.set(slot, respect);
+    }
+
+    @Override
+    public ItemStack insertItemToMemorySlots(ItemStack stack, boolean simulate) {
+        if (stack == null) return null;
+        for (int i = 0; i < memorizedSlotStack.size(); i++) {
+            ItemStack mem = memorizedSlotStack.get(i);
+            if (mem == null) continue;
+
+            boolean match = memorizedSlotRespectNbtList.get(i) ? ItemStack.areItemStacksEqual(stack, mem)
+                : stack.isItemEqual(mem);
+
+            if (!match) continue;
+
+            stack = insertItem(i, stack, simulate);
+            if (stack == null) return null;
+        }
+
+        return stack;
+    }
+
+    @Override
+    public ItemStack prioritizedInsertion(int slot, ItemStack stack, boolean simulate) {
+        if (!isVisualSlot(slot)) return stack;
+        if (stack == null || stack.stackSize <= 0) return stack;
+
+        if (!wrapper.canAddStack(slot, stack)) {
+            return stack;
+        }
+
+        stack = insertItemToMemorySlots(stack, simulate);
+        return insertItem(slot, stack, simulate);
+    }
+
+    @Override
+    public List<ItemStack> getMemorizedStacks() {
+        return memorizedSlotStack;
+    }
+
+    @Override
+    public List<Boolean> getRespectNBTList() {
+        return memorizedSlotRespectNbtList;
+    }
+
+    @Override
+    public boolean isSlotLocked(int slot) {
+        return sortLockedSlots.get(slot);
+    }
+
+    @Override
+    public void setSlotLocked(int slot, boolean locked) {
+        sortLockedSlots.set(slot, locked);
+    }
+
+    @Override
+    public List<Boolean> getLockedSlotList() {
+        return sortLockedSlots;
+    }
+}

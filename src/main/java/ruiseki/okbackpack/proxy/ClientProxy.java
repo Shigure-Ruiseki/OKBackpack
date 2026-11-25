@@ -6,20 +6,25 @@ import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 
 import ruiseki.okbackpack.OKBackpack;
+import ruiseki.okbackpack.client.audio.BackpackJukeboxSoundManager;
 import ruiseki.okbackpack.client.key.OpenBackpackHandler;
+import ruiseki.okbackpack.client.key.PickBlockHandler;
 import ruiseki.okbackpack.client.key.ToggleUpgradeHandler;
-import ruiseki.okbackpack.event.ClientEventHandler;
-import ruiseki.okbackpack.event.ItemRenderEvent;
-import ruiseki.okbackpack.modcompat.bogosorter.BackpackBogoSorterClientCompat;
+import ruiseki.okbackpack.client.key.ToolSwapHandler;
+import ruiseki.okbackpack.client.renderer.BackpackContentHandler;
+import ruiseki.okbackpack.common.event.ItemRenderEvent;
+import ruiseki.okbackpack.compat.Mods;
+import ruiseki.okbackpack.compat.bogosorter.BackpackBogoSorterClientCompat;
 import ruiseki.okcore.client.key.IKeyRegistry;
 import ruiseki.okcore.client.key.KeyRegistry;
-import ruiseki.okcore.enums.Mods;
 import ruiseki.okcore.init.ModBase;
 import ruiseki.okcore.proxy.ClientProxyComponent;
 
 public class ClientProxy extends ClientProxyComponent {
 
     public static KeyBinding keyOpenBackpack;
+    public static KeyBinding keyBackpackPickBlock;
+    public static KeyBinding keyToolSwap;
     public static KeyBinding keyToggleUpgrade1;
     public static KeyBinding keyToggleUpgrade2;
     public static KeyBinding keyToggleUpgrade3;
@@ -42,6 +47,12 @@ public class ClientProxy extends ClientProxyComponent {
         keyOpenBackpack = KeyRegistry.newKeyBinding(getMod(), "open_backpack", Keyboard.KEY_B);
         keyRegistry.addKeyHandler(keyOpenBackpack, new OpenBackpackHandler());
 
+        keyBackpackPickBlock = KeyRegistry.newKeyBinding(getMod(), "pick_block", Keyboard.KEY_NONE);
+        keyRegistry.addKeyHandler(keyBackpackPickBlock, new PickBlockHandler());
+
+        keyToolSwap = KeyRegistry.newKeyBinding(getMod(), "tool_swap", Keyboard.KEY_NONE);
+        keyRegistry.addKeyHandler(keyToolSwap, new ToolSwapHandler());
+
         keyToggleUpgrade1 = KeyRegistry.newKeyBinding(getMod(), "toggle_upgrade_1", Keyboard.KEY_NONE);
         keyRegistry.addKeyHandler(keyToggleUpgrade1, new ToggleUpgradeHandler(0));
 
@@ -62,9 +73,12 @@ public class ClientProxy extends ClientProxyComponent {
     public void registerEventHooks() {
         super.registerEventHooks();
         MinecraftForge.EVENT_BUS.register(new ItemRenderEvent());
-        if (Mods.BogoSorter.isModLoaded()) {
+        MinecraftForge.EVENT_BUS.register(BackpackJukeboxSoundManager.getInstance());
+        if (Mods.CodeChickenCore.isModLoaded()) {
+            MinecraftForge.EVENT_BUS.register(new BackpackContentHandler());
+        }
+        if (Mods.InventoryBogoSorter.isModLoaded()) {
             MinecraftForge.EVENT_BUS.register(new BackpackBogoSorterClientCompat());
         }
-        MinecraftForge.EVENT_BUS.register(ClientEventHandler.INSTANCE);
     }
 }

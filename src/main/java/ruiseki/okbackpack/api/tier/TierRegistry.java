@@ -1,6 +1,6 @@
 package ruiseki.okbackpack.api.tier;
 
-import static ruiseki.okbackpack.init.TierRegistries.LEATHER;
+import static ruiseki.okbackpack.common.init.TierRegistries.LEATHER;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -36,10 +36,6 @@ public class TierRegistry {
 
     private static BackpackTier getLeatherTier() {
         return REGISTRY.get(LEATHER);
-    }
-
-    public static String getDisplayName(String tierID) {
-        return getDisplayName(TierRegistry.getTier(tierID));
     }
 
     public static String getDisplayName(BackpackTier tier) {
