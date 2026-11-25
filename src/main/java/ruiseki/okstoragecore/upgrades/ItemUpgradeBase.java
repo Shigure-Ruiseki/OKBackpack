@@ -1,10 +1,6 @@
 package ruiseki.okstoragecore.upgrades;
 
-import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import ruiseki.okcore.helper.LangHelpers;
