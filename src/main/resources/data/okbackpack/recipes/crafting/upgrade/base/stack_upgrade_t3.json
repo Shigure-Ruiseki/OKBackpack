@@ -10,11 +10,12 @@
       "ore": "blockDiamond"
     },
     "U": {
-      "item": "okbackpack:stack_upgrade_tier_2"
+      "item": "okbackpack:stack_upgrade",
+      "meta": 1
     }
   },
   "result": {
-    "item": "okbackpack:stack_upgrade_tier_3",
+    "item": "okbackpack:stack_upgrade",
     "meta": 2,
     "count": 1
   }

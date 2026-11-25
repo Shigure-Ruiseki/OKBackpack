@@ -1,0 +1,56 @@
+package ruiseki.okbackpack.client.gui.widget.upgrade;
+
+import net.minecraft.item.ItemStack;
+
+import com.cleanroommc.modularui.widgets.layout.Flow;
+
+import ruiseki.okbackpack.api.IStoragePanel;
+import ruiseki.okbackpack.api.wrapper.IBasicFilterable;
+import ruiseki.okbackpack.common.item.UpgradeWrapperBase;
+
+public class BasicExpandedTabWidget<T extends UpgradeWrapperBase & IBasicFilterable>
+    extends ExpandedUpgradeTabWidget<T> {
+
+    protected final T wrapper;
+    protected final Flow startingRow;
+    protected final BasicFilterWidget filterWidget;
+
+    public BasicExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, IStoragePanel<?> panel,
+        String titleKey, String filterSyncKey, int coveredTabSize, int width) {
+        super(slotIndex, coveredTabSize, delegatedIconStack, panel, titleKey, width);
+
+        this.wrapper = wrapper;
+
+        this.startingRow = Flow.row()
+            .height(0)
+            .name("starting_row");
+
+        this.filterWidget = new BasicFilterWidget(wrapper, slotIndex, filterSyncKey).width(64)
+            .coverChildrenHeight()
+            .name("filter_widget");
+
+        Flow column = Flow.column()
+            .pos(8, 28)
+            .coverChildren()
+            .childPadding(2)
+            .child(startingRow)
+            .child(filterWidget);
+
+        child(column);
+    }
+
+    public BasicExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, IStoragePanel<?> panel,
+        String titleKey) {
+        this(slotIndex, wrapper, delegatedIconStack, panel, titleKey, "common_filter", 4, 75);
+    }
+
+    public BasicExpandedTabWidget(int slotIndex, T wrapper, ItemStack delegatedIconStack, IStoragePanel<?> panel,
+        String titleKey, String filterSyncKey) {
+        this(slotIndex, wrapper, delegatedIconStack, panel, titleKey, filterSyncKey, 4, 75);
+    }
+
+    @Override
+    public T getWrapper() {
+        return wrapper;
+    }
+}

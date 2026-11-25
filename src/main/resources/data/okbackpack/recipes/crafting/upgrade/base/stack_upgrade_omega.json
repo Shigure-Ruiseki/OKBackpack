@@ -7,11 +7,13 @@
   ],
   "key": {
     "B": {
-      "item": "okbackpack:stack_upgrade_tier_4"
+      "item": "okbackpack:stack_upgrade",
+      "meta": 3
     }
   },
   "result": {
-    "item": "okbackpack:stack_upgrade_omega",
+    "item": "okbackpack:stack_upgrade",
+    "meta": 4,
     "count": 1
   }
 }
