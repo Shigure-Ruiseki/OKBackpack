@@ -26,6 +26,8 @@ public class SelectBackpackGuiHolder implements IGuiHolder<GuiData> {
 
     @Override
     public ModularPanel buildUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new SelectBackpackPanel(data.getPlayer(), syncManager, settings);
+        SelectBackpackPanel panel = new SelectBackpackPanel(data.getPlayer(), syncManager, settings);
+        panel.addContent();
+        return panel;
     }
 }

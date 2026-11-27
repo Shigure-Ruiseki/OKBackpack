@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 
 public class SelectBackpackPanel extends ModularPanel {
 
@@ -21,5 +22,9 @@ public class SelectBackpackPanel extends ModularPanel {
         this.coverChildren();
     }
 
-
+    public void addContent() {
+        Flow column = Flow.column()
+            .coverChildren();
+        this.child(column);
+    }
 }
