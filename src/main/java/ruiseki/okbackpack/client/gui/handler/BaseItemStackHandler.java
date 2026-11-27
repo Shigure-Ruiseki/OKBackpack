@@ -5,9 +5,9 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 
+import ruiseki.okcore.datastructure.NonNullList;
 import ruiseki.okcore.helper.ItemHelpers;
 import ruiseki.okcore.item.handler.ItemStackHandler;
 
@@ -20,13 +20,13 @@ public class BaseItemStackHandler extends ItemStackHandler {
     }
 
     public void resize(int newSize) {
-        List<ItemStack> newStacks = new ArrayList<>(newSize);
+        NonNullList<ItemStack> newStacks = NonNullList.withSize(newSize, ItemHelpers.EMPTY);
 
         for (int i = 0; i < newSize; i++) {
             if (i < stacks.size()) {
                 newStacks.add(stacks.get(i));
             } else {
-                newStacks.add(null);
+                newStacks.add(ItemHelpers.EMPTY);
             }
         }
 
@@ -67,7 +67,7 @@ public class BaseItemStackHandler extends ItemStackHandler {
     public int[] getFilledSlotsInRange(int from, int to) {
         List<Integer> indices = new ArrayList<>();
         for (int i = from; i < to && i < stacks.size(); i++) {
-            if (stacks.get(i) != null) indices.add(i);
+            if (!ItemHelpers.isEmpty(stacks.get(i))) indices.add(i);
         }
         return indices.stream()
             .mapToInt(Integer::intValue)
@@ -128,29 +128,9 @@ public class BaseItemStackHandler extends ItemStackHandler {
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        // ItemStack.loadItemStackFromNBT reads "Count" as a signed byte, and ItemHelpers.isEmpty is
-        // checked before the int "Count" tag is restored. Stacks of 128..255, 256, 384..512, ...
-        // therefore look empty and are dropped. Restore the int count first so the real stack size
-        // is authoritative before deciding whether the slot is empty.
-        setSize(nbt.hasKey("Size", Constants.NBT.TAG_INT) ? nbt.getInteger("Size") : stacks.size());
+        super.deserializeNBT(nbt);
 
-        NBTTagList items = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < items.tagCount(); i++) {
-            NBTTagCompound itemTag = items.getCompoundTagAt(i);
-            int slot = itemTag.hasKey("Slot", Constants.NBT.TAG_INT) ? itemTag.getInteger("Slot")
-                : itemTag.getByte("Slot") & 255;
-            if (slot < 0 || slot >= stacks.size()) continue;
-
-            ItemStack loaded = ItemStack.loadItemStackFromNBT(itemTag);
-            if (loaded != null && itemTag.hasKey("Count", Constants.NBT.TAG_INT)) {
-                loaded.stackSize = itemTag.getInteger("Count");
-            }
-            stacks.set(slot, ItemHelpers.isEmpty(loaded) ? ItemHelpers.EMPTY : loaded);
-        }
-
-        onLoad();
-
-        if (nbt.hasKey("VisualSize")) {
+        if (nbt.hasKey("VisualSize", Constants.NBT.TAG_INT)) {
             setVisualSize(nbt.getInteger("VisualSize"));
         } else {
             setVisualSize(getSlots());
