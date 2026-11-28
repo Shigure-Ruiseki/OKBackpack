@@ -35,7 +35,7 @@
  */
 dependencies {
     implementation("com.github.GTNewHorizons:GTNHLib:0.11.58:dev")
-    implementation("com.github.GTNewHorizons:ModularUI2:2.3.91-1.7.10:dev")
+    implementation("com.github.GTNewHorizons:ModularUI2:2.3.94-1.7.10:dev")
     implementation("com.github.Shigure-Ruiseki:OKCore:26.11.27.0:dev") { transitive = false }
 
     devOnlyNonPublishable("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
