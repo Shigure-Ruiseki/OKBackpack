@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import ruiseki.okbackpack.common.block.BackpackWrapper;
+import ruiseki.okbackpack.common.block.BlockBackpack.ItemBackpack;
 
 public class BackpackUpgradeRecipe extends ShapedOreRecipe {
 
@@ -42,6 +43,9 @@ public class BackpackUpgradeRecipe extends ShapedOreRecipe {
             }
         }
 
+        if (result.getItem() instanceof ItemBackpack backpack) {
+            backpackNBT.setString(BackpackWrapper.TIER_TAG, backpack.getTierId());
+        }
         backpackNBT.setInteger(BackpackWrapper.BACKPACK_SLOTS, backpackSlots);
         backpackNBT.setInteger(BackpackWrapper.UPGRADE_SLOTS, upgradeSlots);
 

@@ -22,12 +22,9 @@ public class BaseItemStackHandler extends ItemStackHandler {
     public void resize(int newSize) {
         NonNullList<ItemStack> newStacks = NonNullList.withSize(newSize, ItemHelpers.EMPTY);
 
-        for (int i = 0; i < newSize; i++) {
-            if (i < stacks.size()) {
-                newStacks.add(stacks.get(i));
-            } else {
-                newStacks.add(ItemHelpers.EMPTY);
-            }
+        int slotsToCopy = Math.min(stacks.size(), newSize);
+        for (int i = 0; i < slotsToCopy; i++) {
+            newStacks.set(i, stacks.get(i));
         }
 
         this.stacks = newStacks;
